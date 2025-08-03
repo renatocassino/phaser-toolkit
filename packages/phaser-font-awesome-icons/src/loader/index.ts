@@ -1,1 +1,1 @@
-export * from './loadFont';
+export * from './load-font';

@@ -1,3 +1,2 @@
-export * from './getIconChar';
-export * from './getIconHex';
-
+export * from './get-icon-char';
+export * from './get-icon-hex';

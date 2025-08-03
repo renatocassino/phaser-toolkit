@@ -1,12 +1,12 @@
 import {
   defaultLightTheme,
   type BaseThemeConfig,
-  type DefaultThemeTokens,
+  type DefaultThemeStructure,
 } from './theme-config';
 
 /**
  * Global theme manager for Phaser Wind
- * Handles theme registration, switching, and token resolution
+ * Handles theme registration, switching, and token resolution with nested object support
  */
 class ThemeManagerClass {
   private currentTheme: BaseThemeConfig = defaultLightTheme;
@@ -61,18 +61,77 @@ class ThemeManagerClass {
   }
 
   /**
-   * Get a specific token from the current theme
+   * Get a nested token using dot notation (e.g., 'colors.primary', 'fonts.display')
+   * @param path - The path to the token (e.g., 'colors.primary')
+   * @returns The resolved token value
    */
-  getToken(key: string): string | undefined {
-    const value = this.currentTheme[key];
+  getToken(path: string): unknown {
+    return this.getNestedValue(this.currentTheme, path);
+  }
+
+  /**
+   * Check if a nested token exists using dot notation
+   * @param path - The path to check (e.g., 'colors.primary')
+   * @returns True if the token exists
+   */
+  hasToken(path: string): boolean {
+    return this.getNestedValue(this.currentTheme, path) !== undefined;
+  }
+
+  /**
+   * Get a token with type safety for specific namespaces
+   */
+  getColorToken(key: string): string | undefined {
+    const value = this.getToken(`colors.${key}`);
     return typeof value === 'string' ? value : undefined;
   }
 
   /**
-   * Check if a token exists in the current theme
+   * Get a font token
    */
-  hasToken(key: string): boolean {
-    return key in this.currentTheme;
+  getFontToken(key: string): string | undefined {
+    const value = this.getToken(`fonts.${key}`);
+    return typeof value === 'string' ? value : undefined;
+  }
+
+  /**
+   * Get a spacing token
+   */
+  getSpacingToken(key: string): number | undefined {
+    const value = this.getToken(`spacing.${key}`);
+    return typeof value === 'number' ? value : undefined;
+  }
+
+  /**
+   * Get a typography token
+   */
+  getTypographyToken(key: string): unknown {
+    return this.getToken(`typography.${key}`);
+  }
+
+  /**
+   * Get an effect token
+   */
+  getEffectToken(key: string): unknown {
+    return this.getToken(`effects.${key}`);
+  }
+
+  /**
+   * Resolve a theme reference (e.g., 'colors.primary' -> actual color value)
+   * This allows theme tokens to reference other theme tokens
+   */
+  resolveToken(value: string): unknown {
+    if (typeof value === 'string' && value.includes('.')) {
+      // Check if it's a theme reference
+      const resolved = this.getToken(value);
+      if (resolved !== undefined) {
+        // Recursively resolve in case of nested references
+        return typeof resolved === 'string' && resolved.includes('.')
+          ? this.resolveToken(resolved)
+          : resolved;
+      }
+    }
+    return value;
   }
 
   /**
@@ -120,6 +179,20 @@ class ThemeManagerClass {
   private notifyListeners(): void {
     this.listeners.forEach(listener => listener(this.currentTheme));
   }
+
+  /**
+   * Helper method to get nested values using dot notation
+   * @param obj - The object to search in
+   * @param path - The dot notation path (e.g., 'colors.primary')
+   * @returns The value at the path or undefined
+   */
+  private getNestedValue(obj: unknown, path: string): unknown {
+    return path.split('.').reduce((current, key) => {
+      return current && typeof current === 'object'
+        ? (current as Record<string, unknown>)[key]
+        : undefined;
+    }, obj);
+  }
 }
 
 // Export singleton instance
@@ -129,4 +202,4 @@ export const ThemeManager = new ThemeManagerClass();
 export const createTheme = <T extends BaseThemeConfig>(theme: T): T => theme;
 
 // Type helper for theme configuration
-export type ThemeConfig<T extends BaseThemeConfig = DefaultThemeTokens> = T;
+export type ThemeConfig<T extends BaseThemeConfig = DefaultThemeStructure> = T;

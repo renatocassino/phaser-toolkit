@@ -6,6 +6,10 @@ settings:
 
 importers:
   .:
+    dependencies:
+      phaser-wind:
+        specifier: link:packages/phaser-wind
+        version: link:packages/phaser-wind
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.1

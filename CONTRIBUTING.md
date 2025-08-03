@@ -1,6 +1,6 @@
 # Guia de Contribuição
 
-Obrigado por seu interesse em contribuir com o @cassinodev/phaser-toolkit!
+Obrigado por seu interesse em contribuir com o @renatocassino/phaser-toolkit!
 
 ## 🚀 Configuração do Ambiente
 
@@ -13,7 +13,7 @@ Obrigado por seu interesse em contribuir com o @cassinodev/phaser-toolkit!
 
 ```bash
 # Clone o repositório
-git clone https://github.com/cassinodev/phaser-toolkit.git
+git clone https://github.com/renatocassino/phaser-toolkit.git
 cd phaser-toolkit
 
 # Instale as dependências

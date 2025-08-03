@@ -45,7 +45,7 @@
     "eslint": "^8.55.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "phaser-font-awesome-icons": "link:packages/phaser-font-awesome-icons",
+    "font-awesome-for-phaser": "link:packages/font-awesome-for-phaser",
     "prettier": "^3.1.0",
     "typescript": "^5.3.0",
     "vitest": "^1.0.0",

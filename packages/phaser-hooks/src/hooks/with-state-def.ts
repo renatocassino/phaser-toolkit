@@ -178,7 +178,7 @@ export const withStateDef = <T>(
 
     registry.events.on(
       eventKey,
-      (parent: unknown, key: string, value: T, previousValue: T) => {
+      (_parent: unknown, key: string, value: T, previousValue: T) => {
         if (debug) {
           // eslint-disable-next-line no-console
           console.debug(`[withStateDef] Change detected for "${key}":`, {

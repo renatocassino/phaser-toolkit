@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.4.0
+
+### Minor Changes
+
+- 9e362fb: add update readme
+
 ## 0.3.7
 
 ### Patch Changes

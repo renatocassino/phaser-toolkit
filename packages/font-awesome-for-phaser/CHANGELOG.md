@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.3.6
+
+### Patch Changes
+
+- 9f517f4: remove npmrc
+
 ## 0.3.5
 
 ### Patch Changes

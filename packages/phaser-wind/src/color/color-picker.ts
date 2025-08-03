@@ -1,5 +1,7 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { ThemeManager } from '../theme/theme-manager';
+
 import { pallete } from './pallete';
 
 export type ColorKey = keyof typeof pallete;
@@ -20,17 +22,80 @@ export type ColorToken = `${ColorKey}-${ShadeKey}` | 'black' | 'white';
 export class ColorPicker {
   constructor(private colorKey: ColorKey) {}
 
-  static rgb(color: ColorToken): string {
+  /**
+   * Get RGB string for a color token or theme token
+   * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
+   * @returns RGB string format 'rgb(r, g, b)'
+   */
+  static rgb(color: ColorToken | string): string {
+    // First check if it's a theme token (with or without colors. prefix)
+    const colorPath = color.includes('.') ? color : `colors.${color}`;
+
+    if (ThemeManager.hasToken(colorPath)) {
+      const themeValue = ThemeManager.getToken(colorPath);
+      if (themeValue) {
+        // Recursively resolve the theme token
+        const resolved = ThemeManager.resolveToken(themeValue as string);
+        return ColorPicker.rgb(resolved as ColorToken);
+      }
+    }
+
+    // Fallback: check if it's a direct theme token (backwards compatibility)
+    if (ThemeManager.hasToken(color)) {
+      const themeValue = ThemeManager.getToken(color);
+      if (themeValue) {
+        const resolved = ThemeManager.resolveToken(themeValue as string);
+        return ColorPicker.rgb(resolved as ColorToken);
+      }
+    }
+
+    // Handle direct color tokens
     const parts = color.split('-');
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
-      return pallete[colorKey][shade] as string;
+      const colorValue = pallete[colorKey]?.[shade];
+      if (!colorValue) {
+        throw new Error(`Color token "${colorKey}-${shade}" not found`);
+      }
+      return colorValue;
     }
-    return pallete[color as 'black' | 'white'] as string;
+
+    const colorValue = pallete[color as 'black' | 'white'];
+    if (!colorValue) {
+      throw new Error(`Color token "${color}" not found`);
+    }
+    return colorValue;
   }
 
-  static hex(color: ColorToken): number {
+  /**
+   * Get hex number for a color token or theme token
+   * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
+   * @returns Hex number format 0xRRGGBB
+   */
+  static hex(color: ColorToken | string): number {
+    // First check if it's a theme token (with or without colors. prefix)
+    const colorPath = color.includes('.') ? color : `colors.${color}`;
+
+    if (ThemeManager.hasToken(colorPath)) {
+      const themeValue = ThemeManager.getToken(colorPath);
+      if (themeValue) {
+        // Recursively resolve the theme token
+        const resolved = ThemeManager.resolveToken(themeValue as string);
+        return ColorPicker.hex(resolved as ColorToken);
+      }
+    }
+
+    // Fallback: check if it's a direct theme token (backwards compatibility)
+    if (ThemeManager.hasToken(color)) {
+      const themeValue = ThemeManager.getToken(color);
+      if (themeValue) {
+        const resolved = ThemeManager.resolveToken(themeValue as string);
+        return ColorPicker.hex(resolved as ColorToken);
+      }
+    }
+
+    // Handle direct color tokens
     const parts = color.split('-');
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;

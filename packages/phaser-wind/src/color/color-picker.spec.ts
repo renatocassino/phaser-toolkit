@@ -2,6 +2,8 @@
 /* eslint-disable max-lines-per-function */
 import { describe, expect, it } from 'vitest';
 
+import { createTheme, ThemeManager } from '../theme';
+
 import { ColorPicker, type ColorKey, type ShadeKey } from './color-picker';
 
 describe('ColorPicker', () => {
@@ -41,5 +43,30 @@ describe('ColorPicker', () => {
     expect(ColorPicker.hex('slate-50')).toBe(0xf8fafc);
     expect(ColorPicker.hex('slate-950')).toBe(0x020617);
     expect(ColorPicker.hex('slate-800')).toBe(0x1e293b);
+  });
+
+  describe('with theme manager', () => {
+    const fakeTheme = createTheme({
+      colors: {
+        primary: 'red-500',
+        secondary: 'slate-50',
+      },
+    });
+
+    ThemeManager.init(fakeTheme);
+
+    it('should get the correct hex in theme', () => {
+      expect(ColorPicker.rgb('colors.primary')).toBe('rgb(239, 68, 68)');
+    });
+
+    it('should get the correct hex in theme using color token', () => {
+      expect(ColorPicker.rgb('colors.secondary')).toBe('rgb(248, 250, 252)');
+    });
+
+    it('should throw an error if the color token is not found', () => {
+      expect(() => ColorPicker.rgb('colors.not-found')).toThrow(
+        'Color token "colors.not-found" not found'
+      );
+    });
   });
 });

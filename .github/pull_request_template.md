@@ -1,40 +1,39 @@
-## Descrição
+## Description
 
-Descreva brevemente as mudanças neste PR.
+Briefly describe the changes in this PR.
 
-## Tipo de Mudança
+## Type of Change
 
-- [ ] 🐛 Bug fix (mudança que corrige um problema)
-- [ ] ✨ Nova feature (mudança que adiciona funcionalidade)
-- [ ] 💥 Breaking change (fix ou feature que causaria quebra de compatibilidade)
-- [ ] 📚 Documentação (mudanças apenas na documentação)
-- [ ] 🎨 Estilo (formatação, falta de ponto e vírgula, etc; sem mudanças de código)
-- [ ] ♻️ Refatoração (código que não corrige bugs nem adiciona features)
-- [ ] ⚡ Performance (mudança que melhora performance)
-- [ ] ✅ Teste (adicionar testes faltantes ou corrigir testes existentes)
-- [ ] 🔧 Chore (mudanças no processo de build ou ferramentas auxiliares)
+- [ ] 🐛 Bug fix (change that fixes an issue)
+- [ ] ✨ New feature (change that adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 📚 Documentation (changes to documentation only)
+- [ ] 🎨 Style (formatting, missing semicolons, etc; no code changes)
+- [ ] ♻️ Refactor (code change that neither fixes a bug nor adds a feature)
+- [ ] ⚡ Performance (change that improves performance)
+- [ ] ✅ Test (adding missing tests or correcting existing tests)
+- [ ] 🔧 Chore (changes to the build process or auxiliary tools)
 
-## Pacotes Afetados
+## Affected Packages
 
-- [ ] @cassinodev/phaser-toolkit-core
-- [ ] @cassinodev/phaser-toolkit-ui
-- [ ] Outro (especifique): ******\_\_\_******
+- [ ] font-awesome-for-phaser
+- [ ] Other (please specify): **\*\***\_\_\_**\*\***
 
-## Mudanças
+## Changes
 
-### Adicionado
-
--
-
-### Alterado
+### Added
 
 -
 
-### Removido
+### Changed
 
 -
 
-## Como Testar
+### Removed
+
+-
+
+## How to Test
 
 1.
 2.
@@ -42,15 +41,15 @@ Descreva brevemente as mudanças neste PR.
 
 ## Checklist
 
-- [ ] Meu código segue as diretrizes de estilo deste projeto
-- [ ] Eu realizei uma auto-revisão do meu código
-- [ ] Eu comentei meu código, particularmente em áreas difíceis de entender
-- [ ] Eu fiz mudanças correspondentes na documentação
-- [ ] Minhas mudanças não geram novos warnings
-- [ ] Eu adicionei testes que provam que minha correção é efetiva ou que minha feature funciona
-- [ ] Testes unitários novos e existentes passam localmente com minhas mudanças
-- [ ] Eu criei um changeset para documentar esta mudança (`pnpm changeset`)
+- [ ] My code follows the style guidelines of this project
+- [ ] I have performed a self-review of my code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] I have created a changeset to document this change (`pnpm changeset`)
 
-## Contexto Adicional
+## Additional Context
 
-Adicione qualquer contexto adicional sobre o PR aqui.
+Add any additional context about the PR here.

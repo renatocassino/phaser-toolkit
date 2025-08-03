@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.3.0
+
+### Minor Changes
+
+- d2a915b: first version
+
 ## 0.2.0
 
 ### Minor Changes

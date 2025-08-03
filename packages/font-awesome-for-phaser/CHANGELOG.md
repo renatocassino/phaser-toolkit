@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.3.5
+
+### Patch Changes
+
+- ea6e89e: try new version
+
 ## 0.3.4
 
 ### Patch Changes

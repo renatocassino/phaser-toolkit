@@ -1,330 +1,446 @@
-# Phaser Hooks (like "use" hooks in React)
+# 🌪️ Phaser Wind
 
-A comprehensive state management library for Phaser games with React-like hooks pattern.
+<center>
+<img src="data/image.png" height="350" style="margin: 0 auto;" alt="Phaser + TailWIND">
+</center>
 
-## Installation
+> **Tired of fighting with Phaser layouts and colors?**
+>
+> **Love Tailwind CSS but stuck with Phaser?**
+>
+> **Welcome to Phaser Wind** - bringing the joy and simplicity of Tailwind CSS design tokens to Phaser games! 🎮✨
+
+[![NPM Version](https://img.shields.io/npm/v/phaser-wind)](https://www.npmjs.com/package/phaser-wind)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+
+---
+
+## 🎯 Why Phaser Wind?
+
+### The Problem 😫
+
+```typescript
+// Ugh... more magic numbers and random colors
+const button = this.add.text(100, 50, 'Click me!', {
+  fontSize: '18px', // Is this too big? Too small? 🤷‍♂️
+  fill: '#3B82F6', // What color is this again?
+  backgroundColor: '#1F2937', // Does this even look good?
+});
+
+const title = this.add.text(200, 100, 'Game Title', {
+  fontSize: '32px', // Different magic number...
+  fill: '#EF4444', // Another random hex...
+});
+```
+
+### The Solution 🌟
+
+```typescript
+import { ColorPicker, FontSizePicker } from 'phaser-wind';
+
+// Clean, semantic, consistent!
+const button = this.add.text(100, 50, 'Click me!', {
+  fontSize: FontSizePicker.css('lg'), // Clear intention!
+  fill: ColorPicker.rgb('blue-500'), // Beautiful blue
+  backgroundColor: ColorPicker.rgb('gray-800'), // Perfect contrast
+});
+
+const title = this.add.text(200, 100, 'Game Title', {
+  fontSize: FontSizePicker.css('3xl'), // Clearly bigger!
+  fill: ColorPicker.rgb('red-500'), // Vibrant red
+});
+```
+
+---
+
+## 🚀 Features
+
+- 🎨 **Complete Tailwind Color Palette** - All 22 color families with 11 shades each
+- 📐 **Semantic Font Sizes** - From `xs` to `6xl`, just like Tailwind
+- 🔧 **TypeScript First** - Full type safety and IntelliSense
+- 🎮 **Phaser Ready** - Designed specifically for Phaser 3 games
+- 🌈 **Consistent Design** - No more guessing colors and sizes
+- 📦 **Tiny Bundle** - Zero runtime overhead, just better DX
+
+---
+
+## 📦 Installation
 
 ```bash
-npm install phaser-hooks
+npm install phaser-wind
 # or
-pnpm add phaser-hooks
+yarn add phaser-wind
 # or
-yarn add phaser-hooks
+pnpm add phaser-wind
 ```
 
-## Why "with" instead of "use"?
+---
 
-While React hooks traditionally use the "use" prefix (e.g., useState, useEffect), this library intentionally uses "with" to avoid linting issues. Many linting configurations, including ESLint's built-in hooks rules, expect functions starting with "use" to be used only within React components and in .jsx/.tsx files.
+## 🎨 Color System
 
-Since this library is designed to work with Phaser games, which typically use plain TypeScript/JavaScript files (.ts/.js), using the "with" prefix helps avoid false positives from linters while maintaining a clear and consistent naming convention that indicates the hook-like pattern these functions follow.
+### Complete Tailwind Palette
 
-This approach allows you to use these state management utilities in your Phaser games without having to modify your linting configuration or suppress warnings.
-
-## Available Hooks
-
-### Core Hooks
-
-#### `withLocalState`
-
-Scene-specific state management that gets cleaned up when the scene is destroyed.
+Access all Tailwind colors with semantic naming:
 
 ```typescript
-const playerState = withLocalState<PlayerData>(scene, 'player', {
-  hp: 100,
-  level: 1,
-  exp: 0,
-});
+import { ColorPicker } from 'phaser-wind';
+
+// RGB strings (for Phaser text styles)
+const blueText = ColorPicker.rgb('blue-500'); // 'rgb(59, 130, 246)'
+const redButton = ColorPicker.rgb('red-600'); // 'rgb(220, 38, 38)'
+
+// Hex numbers (for Phaser graphics)
+const greenRect = ColorPicker.hex('green-400'); // 0x4ADE80
+const purpleCircle = ColorPicker.hex('purple-300'); // 0xD8B4FE
+
+// Basic colors
+const blackText = ColorPicker.rgb('black'); // 'rgb(0, 0, 0)'
+const whiteBackground = ColorPicker.hex('white'); // 0xFFFFFF
 ```
 
-#### `withGlobalState`
+### Available Colors
 
-Application-wide state that persists across all scenes.
+**Grays:** `slate`, `gray`, `zinc`, `neutral`, `stone`  
+**Colors:** `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`  
+**Shades:** `50`, `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`, `950`
+
+---
+
+## 📏 Font Size System
+
+### Semantic Sizing
+
+Stop guessing font sizes and use semantic tokens:
 
 ```typescript
-const settingsState = withGlobalState<GameSettings>('settings', {
-  soundVolume: 0.8,
-  musicEnabled: true,
-});
+import { FontSizePicker } from 'phaser-wind';
+
+// Get pixel values
+const smallText = FontSizePicker.px('sm'); // 14
+const normalText = FontSizePicker.px('md'); // 16
+const largeTitle = FontSizePicker.px('3xl'); // 30
+
+// Get CSS strings (perfect for Phaser)
+const buttonText = FontSizePicker.css('lg'); // '18px'
+const heroTitle = FontSizePicker.css('6xl'); // '60px'
+
+// Get rem values (if needed)
+const responsiveText = FontSizePicker.rem('xl'); // 1.25
 ```
 
-#### `withStateDef`
+### Font Size Scale
 
-Low-level state definition with custom behaviors and validation.
+| Token | Pixels | Use Case                |
+| ----- | ------ | ----------------------- |
+| `xs`  | 12px   | Small labels, captions  |
+| `sm`  | 14px   | Body text, descriptions |
+| `md`  | 16px   | Default text size       |
+| `lg`  | 18px   | Slightly larger text    |
+| `xl`  | 20px   | Subheadings             |
+| `2xl` | 24px   | Headings                |
+| `3xl` | 30px   | Large headings          |
+| `4xl` | 36px   | Hero text               |
+| `5xl` | 48px   | Display text            |
+| `6xl` | 60px   | Giant display text      |
 
-```typescript
-const customState = withStateDef<number>(scene, 'score', {
-  initialValue: 0,
-  validator: value => value >= 0,
-  onChange: (newValue, oldValue) => console.log('Score changed!'),
-});
-```
+---
 
-### Enhanced Hooks
+## 💡 Real-World Examples
 
-#### `withPersistentState`
-
-State with automatic localStorage persistence.
-
-```typescript
-const persistentSettings = withPersistentState<UserSettings>('settings', {
-  volume: 0.8,
-  difficulty: 'normal',
-});
-```
-
-#### `withComputedState`
-
-Derived state that automatically updates when source state changes.
+### Game UI Components
 
 ```typescript
-const healthPercentage = withComputedState(
-  scene,
-  'healthPercent',
-  playerState,
-  player => (player.hp / player.maxHp) * 100
-);
-```
-
-#### `withUndoableState`
-
-State with undo/redo functionality.
-
-```typescript
-const undoableText = withUndoableState<string>(scene, 'text', 'initial', 10);
-
-undoableText.set('first change');
-undoableText.set('second change');
-undoableText.undo(); // Back to 'first change'
-undoableText.redo(); // Forward to 'second change'
-```
-
-#### `withDebouncedState`
-
-State with debounced updates to prevent rapid successive changes.
-
-```typescript
-const debouncedSearch = withDebouncedState<string>(scene, 'search', '', 300);
-
-// These rapid calls will be debounced
-debouncedSearch.set('a');
-debouncedSearch.set('ab');
-debouncedSearch.set('abc'); // Only this final value will be set after 300ms
-```
-
-### Utilities
-
-#### `validators`
-
-Pre-built validation functions for common patterns.
-
-```typescript
-import { validators } from 'phaser-hooks';
-
-const scoreState = withGlobalState<number>('score', 0, {
-  validator: validators.numberRange(0, 1000),
-});
-
-const nameState = withGlobalState<string>('name', '', {
-  validator: validators.nonEmptyString,
-});
-```
-
-#### `batchStateUpdates`
-
-Utility for batching multiple state updates.
-
-```typescript
-batchStateUpdates(() => {
-  playerState.set({ ...playerState.get(), hp: 90 });
-  inventoryState.set([...inventoryState.get(), 'new-item']);
-  scoreState.set(scoreState.get() + 100);
-});
-```
-
-## Basic Usage Example
-
-```typescript
-import { withLocalState, withGlobalState } from 'phaser-hooks';
+import { ColorPicker, FontSizePicker } from 'phaser-wind';
 
 export class GameScene extends Phaser.Scene {
   create() {
-    // Local state - specific to this scene
-    const playerState = withLocalState<{ hp: number; mp: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        mp: 50,
-      }
-    );
+    // Main title
+    this.add
+      .text(400, 100, 'SPACE RAIDERS', {
+        fontSize: FontSizePicker.css('5xl'),
+        fill: ColorPicker.rgb('yellow-400'),
+        stroke: ColorPicker.rgb('yellow-800'),
+        strokeThickness: 2,
+      })
+      .setOrigin(0.5);
 
-    // Global state - persists across scenes
-    const gameState = withGlobalState<{ score: number; level: number }>(
-      'game',
-      {
-        score: 0,
-        level: 1,
-      }
-    );
-
-    // Listen to changes
-    playerState.onChange((newPlayer, oldPlayer) => {
-      console.log('Player health changed:', newPlayer.hp);
+    // Score display
+    this.add.text(50, 50, 'Score: 12,500', {
+      fontSize: FontSizePicker.css('xl'),
+      fill: ColorPicker.rgb('green-400'),
     });
 
-    // Update state
-    playerState.set({
-      ...playerState.get(),
-      hp: playerState.get().hp - 10,
-    });
+    // Health bar background
+    const healthBg = this.add.graphics();
+    healthBg.fillStyle(ColorPicker.hex('red-900'));
+    healthBg.fillRect(50, 100, 200, 20);
+
+    // Health bar fill
+    const healthFill = this.add.graphics();
+    healthFill.fillStyle(ColorPicker.hex('red-500'));
+    healthFill.fillRect(52, 102, 156, 16); // 80% health
+
+    // Game over screen
+    this.add.rectangle(400, 300, 600, 400, ColorPicker.hex('slate-900'), 0.9);
+
+    this.add
+      .text(400, 250, 'GAME OVER', {
+        fontSize: FontSizePicker.css('4xl'),
+        fill: ColorPicker.rgb('red-500'),
+      })
+      .setOrigin(0.5);
+
+    this.add
+      .text(400, 320, 'Final Score: 12,500', {
+        fontSize: FontSizePicker.css('2xl'),
+        fill: ColorPicker.rgb('slate-300'),
+      })
+      .setOrigin(0.5);
   }
 }
 ```
 
-## Advanced Example
+### Button System
 
 ```typescript
-import {
-  withPersistentState,
-  withComputedState,
-  withUndoableState,
-  validators,
-} from 'phaser-hooks';
-
-export class AdvancedGameScene extends Phaser.Scene {
-  create() {
-    // Persistent settings
-    const settings = withPersistentState<GameSettings>('settings', {
-      soundVolume: 0.8,
-      musicVolume: 0.6,
-      difficulty: 'normal',
-    });
-
-    // Player state with validation
-    const player = withLocalState<PlayerData>(
-      this,
-      'player',
-      {
-        hp: 100,
-        maxHp: 100,
-        level: 1,
+class GameButton {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    text: string,
+    variant: 'primary' | 'secondary' | 'danger' = 'primary'
+  ) {
+    const colors = {
+      primary: {
+        bg: ColorPicker.hex('blue-600'),
+        bgHover: ColorPicker.hex('blue-700'),
+        text: ColorPicker.rgb('white'),
       },
-      {
-        validator: validators.oneOf(['easy', 'normal', 'hard']),
-      }
-    );
+      secondary: {
+        bg: ColorPicker.hex('slate-600'),
+        bgHover: ColorPicker.hex('slate-700'),
+        text: ColorPicker.rgb('slate-100'),
+      },
+      danger: {
+        bg: ColorPicker.hex('red-600'),
+        bgHover: ColorPicker.hex('red-700'),
+        text: ColorPicker.rgb('white'),
+      },
+    };
 
-    // Computed health percentage
-    const healthPercent = withComputedState(this, 'healthPercent', player, p =>
-      Math.round((p.hp / p.maxHp) * 100)
-    );
+    const style = colors[variant];
 
-    // Undoable action system
-    const actionHistory = withUndoableState<string>(this, 'actions', 'start');
+    // Background
+    this.background = scene.add
+      .rectangle(x, y, 200, 50, style.bg)
+      .setInteractive()
+      .on('pointerover', () => this.background.setFillStyle(style.bgHover))
+      .on('pointerout', () => this.background.setFillStyle(style.bg));
 
-    // Use the states
-    console.log('Health:', healthPercent.get() + '%');
-
-    if (healthPercent.get() < 20) {
-      console.log('Low health warning!');
-    }
+    // Text
+    this.text = scene.add
+      .text(x, y, text, {
+        fontSize: FontSizePicker.css('lg'),
+        fill: style.text,
+      })
+      .setOrigin(0.5);
   }
 }
+
+// Usage
+const playButton = new GameButton(this, 400, 200, 'PLAY', 'primary');
+const settingsButton = new GameButton(this, 400, 280, 'SETTINGS', 'secondary');
+const quitButton = new GameButton(this, 400, 360, 'QUIT', 'danger');
 ```
 
-### Composing Hooks
-
-You can compose your own hooks using other with\* hooks — similar to how custom React hooks are built. This is a powerful way to isolate logic, reuse behavior, and keep your scenes clean and focused.
-
-Example: Extracting a withPlayerEnergy hook from withPlayerState
-
-Imagine you have a local player state like this:
-
-```ts
-interface PlayerAttributes {
-  energy: number;
-  stamina: number;
-  strength: number;
-  agility: number;
-}
-
-const playerState = withLocalState<PlayerAttributes>(scene, 'player', {
-  energy: 100,
-  stamina: 80,
-  strength: 50,
-  agility: 40,
-});
-```
-
-You can now create a custom hook focused only on energy:
-
-```ts
-function withPlayerEnergy(scene: Phaser.Scene) {
-  const player = withLocalState<PlayerAttributes>(scene, 'player', {
-    energy: 100,
-    stamina: 80,
-    strength: 50,
-    agility: 40,
-  });
-
-  return {
-    get: () => player.get().energy,
-    set: (value: number) => player.set({ ...player.get(), energy: value }),
-    onChange: (fn: (energy: number) => void) =>
-      player.onChange(newVal => fn(newVal.energy)),
-  };
-}
-```
-
-Usage in a scene
-
-```ts
-const energy = withPlayerEnergy(this);
-
-console.log('Current energy:', energy.get());
-
-energy.set(energy.get() - 10);
-
-energy.onChange(newEnergy => {
-  if (newEnergy <= 0) {
-    console.warn('You are out of energy!');
-  }
-});
-```
-
-### Why use this pattern?
-
-✅ Keeps your scene code focused on intent (e.g., energy.get()) rather than structure (player.get().energy)
-
-✅ Allows centralized validation, side effects, or formatting for specific state slices
-
-✅ Makes it easier to refactor or share logic across scenes and systems
-
-You can extend this idea to compose computed hooks, persistent hooks, undoable hooks, and more — everything works with the same API.
-
-## TypeScript Support
-
-All hooks are fully typed and provide excellent TypeScript support:
+### Particle Effects with Color Harmony
 
 ```typescript
-interface PlayerData {
-  hp: number;
-  maxHp: number;
-  level: number;
-  inventory: string[];
-}
-
-const playerState = withLocalState<PlayerData>(scene, 'player', {
-  hp: 100,
-  maxHp: 100,
-  level: 1,
-  inventory: [],
+// Create harmonious particle effects
+this.add.particles(player.x, player.y, 'sparkle', {
+  speed: { min: 50, max: 100 },
+  tint: [
+    ColorPicker.hex('blue-400'),
+    ColorPicker.hex('blue-500'),
+    ColorPicker.hex('blue-600'),
+    ColorPicker.hex('cyan-400'),
+    ColorPicker.hex('cyan-500'),
+  ],
+  lifespan: 1000,
 });
-
-// TypeScript knows the exact type
-const currentPlayer: PlayerData = playerState.get();
 ```
 
-## License
+---
 
-MIT
+## 🎮 Integration with Phaser
+
+### Scene Setup
+
+```typescript
+import { ColorPicker, FontSizePicker } from 'phaser-wind';
+
+export class MenuScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'MenuScene' });
+  }
+
+  create() {
+    // Background gradient effect
+    const bg = this.add.graphics();
+    bg.fillGradientStyle(
+      ColorPicker.hex('slate-900'), // top-left
+      ColorPicker.hex('slate-800'), // top-right
+      ColorPicker.hex('slate-800'), // bottom-left
+      ColorPicker.hex('slate-700') // bottom-right
+    );
+    bg.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
+
+    // Consistent UI elements
+    this.createTitle();
+    this.createMenu();
+  }
+
+  private createTitle() {
+    this.add
+      .text(this.cameras.main.centerX, 150, 'MY AWESOME GAME', {
+        fontSize: FontSizePicker.css('4xl'),
+        fill: ColorPicker.rgb('yellow-400'),
+        stroke: ColorPicker.rgb('yellow-700'),
+        strokeThickness: 3,
+      })
+      .setOrigin(0.5);
+  }
+
+  private createMenu() {
+    const menuItems = ['Play', 'Options', 'Credits', 'Quit'];
+
+    menuItems.forEach((item, index) => {
+      this.add
+        .text(this.cameras.main.centerX, 250 + index * 60, item, {
+          fontSize: FontSizePicker.css('xl'),
+          fill: ColorPicker.rgb('slate-300'),
+        })
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerover', function () {
+          this.setTint(ColorPicker.hex('yellow-400'));
+        })
+        .on('pointerout', function () {
+          this.clearTint();
+        });
+    });
+  }
+}
+```
+
+---
+
+## 🔧 Advanced Usage
+
+### Custom Color Schemes
+
+```typescript
+// Create consistent themes
+const darkTheme = {
+  background: ColorPicker.hex('slate-900'),
+  surface: ColorPicker.hex('slate-800'),
+  primary: ColorPicker.hex('blue-500'),
+  secondary: ColorPicker.hex('slate-600'),
+  text: ColorPicker.rgb('slate-100'),
+  textMuted: ColorPicker.rgb('slate-400'),
+};
+
+const lightTheme = {
+  background: ColorPicker.hex('slate-50'),
+  surface: ColorPicker.hex('white'),
+  primary: ColorPicker.hex('blue-600'),
+  secondary: ColorPicker.hex('slate-200'),
+  text: ColorPicker.rgb('slate-900'),
+  textMuted: ColorPicker.rgb('slate-600'),
+};
+```
+
+### Responsive Text Sizing
+
+```typescript
+// Scale text based on screen size
+const getResponsiveTextSize = (baseSize: FontSizeKey): string => {
+  const scale = this.cameras.main.width / 1920; // Base on 1920px width
+  const basePixels = FontSizePicker.px(baseSize);
+  return `${Math.round(basePixels * scale)}px`;
+};
+
+this.add.text(x, y, 'Responsive Text', {
+  fontSize: getResponsiveTextSize('2xl'),
+  fill: ColorPicker.rgb('blue-500'),
+});
+```
+
+---
+
+## 🤝 Why "Wind" instead of "Tailwind"?
+
+We love Tailwind CSS, but we're not affiliated with them. "Phaser Wind" captures the essence:
+
+- **Wind** = Fast, natural, refreshing (like your development experience)
+- **Wind** = Carries things forward (like your game development)
+- **Wind** = Invisible but powerful (like good design tokens)
+
+Plus, `phaser-wind` is way easier to type than `phaser-tailwind-css-design-tokens-for-games` 😉
+
+---
+
+## 📚 Compared to Raw Phaser
+
+| Without Phaser Wind      | With Phaser Wind                     |
+| ------------------------ | ------------------------------------ |
+| `fill: '#3B82F6'`        | `fill: ColorPicker.rgb('blue-500')`  |
+| `fontSize: '18px'`       | `fontSize: FontSizePicker.css('lg')` |
+| `tint: 0x4ADE80`         | `tint: ColorPicker.hex('green-400')` |
+| Magic numbers everywhere | Semantic, consistent tokens          |
+| Color picking hell       | Harmonious color palettes            |
+| Inconsistent sizing      | Perfect typography scale             |
+
+---
+
+## 🔮 Coming Soon
+
+- 🎯 **Spacing System** - Consistent margins and padding tokens
+- 📐 **Layout Utilities** - Flexbox-inspired alignment helpers
+- 🎨 **Theme System** - Easy dark/light mode switching
+- 📱 **Responsive Utilities** - Breakpoint-based design tokens
+- ⚡ **Animation Presets** - Smooth, consistent transitions
+
+---
+
+## 🤝 Contributing
+
+We'd love your help making Phaser Wind even better!
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+MIT © [CassinoDev](https://github.com/cassinodev)
+
+---
+
+## 🌟 Show Your Support
+
+If Phaser Wind makes your game development life better, give us a ⭐ on GitHub!
+
+**Happy Gaming!** 🎮✨
+
+---
+
+> _"Making Phaser development as enjoyable as Tailwind CSS"_
+>
+> — The Phaser Wind Team

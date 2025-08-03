@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.3.3
+
+### Patch Changes
+
+- c55709d: remove comments to try another deploy
+
 ## 0.3.2
 
 ### Patch Changes

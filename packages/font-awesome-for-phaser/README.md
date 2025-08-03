@@ -60,9 +60,16 @@ const iconText = scene.add.text(0, 0, char, {
   color: '#ffffff',
 });
 iconText.setOrigin(0.5);
+scene.add.existing(iconText);
 
 // Or you can use our component
 import { IconText } from 'font-awesome-for-phaser';
 
-const iconText = new IconText(this, 10, 10, 'facebook', { fontSize: 42 });
+// PS: `this` is the scene
+const icon = new IconText(this, 90, 90, 'gamepad', 64, {
+  color: '#0066cc',
+});
+this.add.existing(icon); // Don't forget to add in scene
 ```
+
+<img src="data/image.png" alt="example of button">

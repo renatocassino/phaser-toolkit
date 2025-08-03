@@ -134,6 +134,7 @@
     "node_modules/",
     "*.config.js",
     "*.config.mjs",
+    "*.config.ts",
     "scripts/",
     "src/constants/icons.ts"
   ]

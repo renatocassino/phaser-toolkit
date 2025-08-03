@@ -1,5 +1,5 @@
 {
-  "name": "phaser-font-awesome-icons",
+  "name": "font-awesome-for-phaser",
   "version": "0.1.0",
   "description": "Font Awesome icons integration for Phaser games",
   "type": "module",
@@ -37,13 +37,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cassinodev/phaser-toolkit.git",
-    "directory": "packages/phaser-font-awesome-icons"
+    "url": "https://github.com/renatocassino/phaser-toolkit.git",
+    "directory": "packages/font-awesome-for-phaser"
   },
   "bugs": {
-    "url": "https://github.com/cassinodev/phaser-toolkit/issues"
+    "url": "https://github.com/renatocassino/phaser-toolkit/issues"
   },
-  "homepage": "https://github.com/cassinodev/phaser-toolkit/tree/main/packages/phaser-font-awesome-icons#readme",
+  "homepage": "https://github.com/renatocassino/phaser-toolkit/tree/main/packages/font-awesome-for-phaser#readme",
   "devDependencies": {
     "@eslint-recommended/eslint-config": "^28.0.0",
     "@types/node": "^20.10.0",

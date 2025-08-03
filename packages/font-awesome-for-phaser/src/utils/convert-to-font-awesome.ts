@@ -12,8 +12,3 @@ export const convertFromFontAwesome = (fontAwesome: string): number => {
   const hex = fontAwesome.replace('\\uf', '');
   return parseInt(hex, 16);
 };
-
-// Usage examples:
-// convertToFontAwesome(58) → "\uf03a"
-// convertToFontAwesome(4) → "\uf004"
-// convertFromFontAwesome("\uf03a") → 58

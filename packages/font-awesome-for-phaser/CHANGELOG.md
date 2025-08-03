@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.3.4
+
+### Patch Changes
+
+- d0b6a1d: fix deploy with correct env
+
 ## 0.3.3
 
 ### Patch Changes

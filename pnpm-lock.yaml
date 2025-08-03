@@ -22,15 +22,15 @@ importers:
       eslint:
         specifier: ^8.55.0
         version: 8.57.1
+      font-awesome-for-phaser:
+        specifier: link:packages/font-awesome-for-phaser
+        version: link:packages/font-awesome-for-phaser
       husky:
         specifier: ^8.0.3
         version: 8.0.3
       lint-staged:
         specifier: ^15.2.0
         version: 15.5.2
-      phaser-font-awesome-icons:
-        specifier: link:packages/phaser-font-awesome-icons
-        version: link:packages/phaser-font-awesome-icons
       prettier:
         specifier: ^3.1.0
         version: 3.6.2

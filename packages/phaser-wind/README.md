@@ -58,6 +58,9 @@ const title = this.add.text(200, 100, 'Game Title', {
 
 - 🎨 **Complete Tailwind Color Palette** - All 22 color families with 11 shades each
 - 📐 **Semantic Font Sizes** - From `xs` to `6xl`, just like Tailwind
+- 🎨 **Structured Theme System** - Nested design tokens for colors, fonts, spacing, typography, and effects
+- 🔄 **Dynamic Theme Switching** - Change themes at runtime with full type safety
+- 🎯 **Smart Token Resolution** - Themes can reference other theme tokens automatically
 - 🔧 **TypeScript First** - Full type safety and IntelliSense
 - 🎮 **Phaser Ready** - Designed specifically for Phaser 3 games
 - 🌈 **Consistent Design** - No more guessing colors and sizes
@@ -143,6 +146,234 @@ const responsiveText = FontSizePicker.rem('xl'); // 1.25
 | `4xl` | 36px   | Hero text               |
 | `5xl` | 48px   | Display text            |
 | `6xl` | 60px   | Giant display text      |
+
+---
+
+## 🎨 Theme System
+
+Phaser Wind includes a powerful **structured theme system** that lets you organize your design tokens into logical categories and create consistent, reusable designs.
+
+### 🏗️ **Theme Structure**
+
+```typescript
+import { createTheme, ThemeManager } from 'phaser-wind';
+
+const gameTheme = createTheme({
+  fonts: {
+    primary: 'Inter, system-ui, sans-serif',
+    display: 'Orbitron, monospace', // Sci-fi font for headers
+    ui: 'Roboto, Arial, sans-serif',
+  },
+  colors: {
+    primary: 'purple-600',
+    secondary: 'cyan-500',
+    'ui-background': 'slate-900',
+    'player-health': 'green-500',
+    'enemy-health': 'red-600',
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+  },
+  typography: {
+    heading: {
+      fontSize: '2xl',
+      fontFamily: 'fonts.display', // 🔗 References fonts.display!
+      fontWeight: 600,
+      lineHeight: 1.2,
+    },
+    body: {
+      fontSize: 'md',
+      fontFamily: 'fonts.primary',
+      fontWeight: 400,
+      lineHeight: 1.5,
+    },
+  },
+  effects: {
+    'glow-primary': {
+      blur: 8,
+      color: 'colors.primary', // 🔗 References colors.primary!
+      alpha: 0.6,
+    },
+  },
+  // Custom categories work too!
+  animations: {
+    duration: 300,
+    easing: 'ease-out',
+  },
+});
+
+// Initialize your theme
+ThemeManager.init(gameTheme);
+```
+
+### 🎯 **Using Theme Tokens**
+
+```typescript
+import {
+  ColorPicker,
+  FontPicker,
+  SpacingPicker,
+  TypographyPicker,
+  EffectPicker,
+} from 'phaser-wind';
+
+// Colors - automatically looks in colors.*
+const primaryColor = ColorPicker.rgb('primary'); // Gets colors.primary
+const uiBackground = ColorPicker.hex('ui-background'); // Gets colors.ui-background
+
+// Fonts
+const displayFont = FontPicker.family('display'); // Gets fonts.display
+const primaryFont = FontPicker.family('primary'); // Gets fonts.primary
+
+// Spacing
+const mediumSpace = SpacingPicker.px('md'); // Gets spacing.md (16px)
+const largeSpace = SpacingPicker.px('lg'); // Gets spacing.lg (24px)
+
+// Complete typography styles
+const headingStyle = TypographyPicker.phaserStyle('heading');
+// Returns: { fontSize: '24px', fontFamily: 'Orbitron, monospace', fontStyle: 'bold' }
+
+// Effects
+const glowConfig = EffectPicker.config('glow-primary');
+// Returns: { blur: 8, color: 'purple-600', alpha: 0.6 }
+
+// Custom tokens
+const animDuration = ThemeManager.getToken('animations.duration'); // 300
+```
+
+### 🔄 **Dynamic Theme Switching**
+
+```typescript
+// Register multiple themes
+ThemeManager.registerTheme('light', lightTheme);
+ThemeManager.registerTheme('dark', darkTheme);
+ThemeManager.registerTheme('cyberpunk', cyberpunkTheme);
+
+// Switch themes instantly
+ThemeManager.setTheme('dark');
+
+// Listen for theme changes
+ThemeManager.onThemeChange(newTheme => {
+  console.log('Theme changed!', newTheme);
+  // Update your game UI here
+});
+
+// Get available themes
+const themes = ThemeManager.getRegisteredThemes(); // ['light', 'dark', 'cyberpunk']
+```
+
+### 🎮 **Real Game Example**
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  create() {
+    // Player health bar with theme colors
+    const healthWidth = SpacingPicker.px('massive'); // 96px
+    const healthHeight = SpacingPicker.px('md'); // 16px
+
+    this.add.rectangle(
+      50,
+      50,
+      healthWidth,
+      healthHeight,
+      ColorPicker.hex('player-health')
+    ); // Green from theme
+
+    // Game title with theme typography
+    const titleStyle = TypographyPicker.phaserStyle('heading');
+    this.add
+      .text(400, 50, 'CYBER QUEST', {
+        ...titleStyle,
+        color: ColorPicker.rgb('primary'), // Purple from theme
+      })
+      .setOrigin(0.5);
+
+    // UI button with consistent spacing and colors
+    this.createButton(
+      400,
+      400,
+      'START GAME',
+      SpacingPicker.px('huge'), // 64px width
+      SpacingPicker.px('lg') // 24px height
+    );
+  }
+
+  createButton(
+    x: number,
+    y: number,
+    text: string,
+    width: number,
+    height: number
+  ) {
+    const button = this.add
+      .rectangle(x, y, width, height, ColorPicker.hex('ui-background'))
+      .setInteractive()
+      .on('pointerover', () =>
+        button.setFillStyle(ColorPicker.hex('secondary'))
+      )
+      .on('pointerout', () =>
+        button.setFillStyle(ColorPicker.hex('ui-background'))
+      );
+
+    const buttonText = TypographyPicker.phaserStyle('body');
+    this.add
+      .text(x, y, text, {
+        ...buttonText,
+        color: ColorPicker.rgb('primary'),
+      })
+      .setOrigin(0.5);
+  }
+}
+```
+
+### 🎨 **Pre-built Themes**
+
+```typescript
+import { defaultLightTheme, defaultDarkTheme } from 'phaser-wind';
+
+// Light theme with professional colors
+ThemeManager.init(defaultLightTheme);
+
+// Dark theme perfect for games
+ThemeManager.init(defaultDarkTheme);
+
+// Create variations
+const winterTheme = ThemeManager.extendCurrentTheme({
+  'colors.primary': 'blue-400',
+  'colors.secondary': 'cyan-300',
+  'colors.accent': 'white',
+});
+```
+
+### 🔗 **Smart Token References**
+
+Themes can reference other tokens using dot notation:
+
+```typescript
+const theme = createTheme({
+  colors: {
+    brand: 'purple-600',
+    danger: 'red-500',
+  },
+  typography: {
+    title: {
+      fontSize: '4xl',
+      fontFamily: 'fonts.display', // 🔗 Auto-resolves to fonts.display
+      color: 'colors.brand', // 🔗 Auto-resolves to purple-600
+    },
+  },
+  effects: {
+    'brand-glow': {
+      color: 'colors.brand', // 🔗 Auto-resolves to purple-600
+      blur: 8,
+    },
+  },
+});
+```
 
 ---
 
@@ -394,24 +625,26 @@ Plus, `phaser-wind` is way easier to type than `phaser-tailwind-css-design-token
 
 ## 📚 Compared to Raw Phaser
 
-| Without Phaser Wind      | With Phaser Wind                     |
-| ------------------------ | ------------------------------------ |
-| `fill: '#3B82F6'`        | `fill: ColorPicker.rgb('blue-500')`  |
-| `fontSize: '18px'`       | `fontSize: FontSizePicker.css('lg')` |
-| `tint: 0x4ADE80`         | `tint: ColorPicker.hex('green-400')` |
-| Magic numbers everywhere | Semantic, consistent tokens          |
-| Color picking hell       | Harmonious color palettes            |
-| Inconsistent sizing      | Perfect typography scale             |
+| Without Phaser Wind      | With Phaser Wind                      |
+| ------------------------ | ------------------------------------- |
+| `fill: '#3B82F6'`        | `fill: ColorPicker.rgb('primary')`    |
+| `fontSize: '18px'`       | `fontSize: FontSizePicker.css('lg')`  |
+| `tint: 0x4ADE80`         | `tint: ColorPicker.hex('success')`    |
+| `fontFamily: 'Arial'`    | `fontFamily: FontPicker.family('ui')` |
+| Magic numbers everywhere | Semantic, consistent tokens           |
+| Color picking hell       | Harmonious color palettes             |
+| Inconsistent sizing      | Perfect typography scale              |
+| No design system         | Complete theme architecture           |
 
 ---
 
 ## 🔮 Coming Soon
 
-- 🎯 **Spacing System** - Consistent margins and padding tokens
 - 📐 **Layout Utilities** - Flexbox-inspired alignment helpers
-- 🎨 **Theme System** - Easy dark/light mode switching
 - 📱 **Responsive Utilities** - Breakpoint-based design tokens
 - ⚡ **Animation Presets** - Smooth, consistent transitions
+- 🎮 **Component Library** - Pre-built Phaser components with theme support
+- 🔧 **CLI Tool** - Generate themes and components from the command line
 
 ---
 

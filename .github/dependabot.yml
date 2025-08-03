@@ -8,9 +8,9 @@ updates:
       day: 'monday'
     open-pull-requests-limit: 10
     reviewers:
-      - 'cassinodev'
+      - 'renatocassino'
     assignees:
-      - 'cassinodev'
+      - 'renatocassino'
     commit-message:
       prefix: 'chore'
       include: 'scope'
@@ -23,9 +23,9 @@ updates:
       day: 'monday'
     open-pull-requests-limit: 5
     reviewers:
-      - 'cassinodev'
+      - 'renatocassino'
     assignees:
-      - 'cassinodev'
+      - 'renatocassino'
     commit-message:
       prefix: 'ci'
       include: 'scope'

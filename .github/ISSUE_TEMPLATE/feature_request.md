@@ -1,26 +1,25 @@
 ---
 name: Feature Request
-about: Sugira uma ideia para este projeto
+about: Suggest an idea for this project
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
 ---
 
-**Sua solicitação de feature está relacionada a um problema? Por favor, descreva.**
-Uma descrição clara e concisa de qual é o problema. Ex. Estou sempre frustrado quando [...]
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-**Descreva a solução que você gostaria**
-Uma descrição clara e concisa do que você quer que aconteça.
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
 
-**Descreva alternativas que você considerou**
-Uma descrição clara e concisa de quaisquer soluções ou features alternativas que você considerou.
+**Describe alternatives you've considered**
+A clear and concise description of any alternative solutions or features you've considered.
 
-**Contexto Adicional**
-Adicione qualquer outro contexto ou screenshots sobre a solicitação de feature aqui.
+**Additional context**
+Add any other context or screenshots about the feature request here.
 
-**Pacote Relacionado**
-Qual pacote esta feature afetaria?
+**Related Package**
+Which package would this feature affect?
 
-- [ ] @cassinodev/phaser-toolkit-core
-- [ ] @cassinodev/phaser-toolkit-ui
-- [ ] Outro (especifique)
+- [ ] font-awesome-for-phaser
+- [ ] Other (please specify)

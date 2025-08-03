@@ -3,7 +3,6 @@
  * 
  * Font Awesome icons for Phaser game development
  */
-
-export function helloWorldTest() {
-    console.log('Hello World');
-}
+export * from './components';
+export * from './constants/icons';
+export * from './utils';

@@ -30,14 +30,8 @@
   },
   "include": [
     "packages/*/src/**/*",
-    "apps/*/src/**/*"
+    "apps/*/src/**/*",
+    "packages/phaser-font-awesome-icons/scripts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "lib",
-    "es",
-    "cjs"
-  ]
+  "exclude": ["node_modules", "dist", "build", "lib", "es", "cjs"]
 }

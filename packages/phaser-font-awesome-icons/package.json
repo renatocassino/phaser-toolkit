@@ -1,7 +1,7 @@
 {
-  "name": "@cassinodev/phaser-font-awesome-icons",
+  "name": "phaser-font-awesome-icons",
   "version": "0.1.0",
-  "description": "Core utilities and types for Phaser Toolkit",
+  "description": "Font Awesome icons integration for Phaser games",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -19,15 +19,16 @@
     "build": "tsc --build",
     "dev": "tsc --build --watch",
     "clean": "rm -rf dist",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "keywords": [
     "phaser",
     "game-development",
-    "core",
-    "utilities",
+    "font-awesome",
+    "icons",
     "typescript"
   ],
   "author": "CassinoDev",

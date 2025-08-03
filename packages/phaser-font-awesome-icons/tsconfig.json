@@ -8,14 +8,9 @@
     "sourceMap": true,
     "noEmit": false,
     "composite": true,
-    "allowImportingTsExtensions": false
+    "allowImportingTsExtensions": false,
+    "types": ["vitest/globals"]
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.test.*"
-  ]
+  "include": ["src/**/*", "scripts"],
+  "exclude": ["dist", "node_modules", "**/*.test.*"]
 }

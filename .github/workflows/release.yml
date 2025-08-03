@@ -29,8 +29,6 @@ jobs:
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -51,19 +49,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Setup NPM authentication
-        run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
-          echo "always-auth=true" >> ~/.npmrc
-
-          # Also create in project root for pnpm
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          echo "registry=https://registry.npmjs.org/" >> .npmrc
-          echo "always-auth=true" >> .npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Build packages
         run: pnpm build
 
@@ -71,7 +56,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: true
+          publish: pnpm release
           title: 'Release: Version Packages'
           commit: 'chore: release packages'
           createGithubReleases: true
@@ -79,5 +64,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
-          NPM_CONFIG__AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

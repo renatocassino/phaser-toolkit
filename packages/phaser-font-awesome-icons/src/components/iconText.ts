@@ -16,6 +16,7 @@ import { getIconChar } from "../utils";
 export class IconText extends Phaser.GameObjects.Text {
     constructor(scene: Scene, x: number, y: number, icon: IconKey, size: number = 16, style: Phaser.Types.GameObjects.Text.TextStyle = {}) {
         super(scene, x, y, getIconChar(icon), { fontSize: `${size}px`, ...style });
+        this.setFontFamily('\'FontAwesome\'');
         this.setOrigin(0.5, 0.5);
     }
 

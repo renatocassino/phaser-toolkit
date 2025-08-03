@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.3.1
+
+### Patch Changes
+
+- 870beff: fix deploy
+
 ## 0.3.0
 
 ### Minor Changes

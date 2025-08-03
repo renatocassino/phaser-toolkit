@@ -12,6 +12,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    environment: prod
     permissions:
       contents: write
       issues: write
@@ -29,6 +30,7 @@ jobs:
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
+          always-auth: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -51,6 +53,22 @@ jobs:
 
       - name: Build packages
         run: pnpm build
+
+      - name: Configure NPM for publishing
+        run: |
+          echo "NPM_TOKEN length: ${#NPM_TOKEN}"
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "❌ NPM_TOKEN is empty!"
+            exit 1
+          fi
+          echo "✅ NPM_TOKEN is set"
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+          echo "📝 Created ~/.npmrc:"
+          cat ~/.npmrc | sed 's/:_authToken=.*/:_authToken=***HIDDEN***/'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets

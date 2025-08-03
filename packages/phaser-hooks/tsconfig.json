@@ -11,6 +11,6 @@
     "allowImportingTsExtensions": false,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*", "scripts"],
+  "include": ["src/**/*", "scripts", "src/*"],
   "exclude": ["dist", "node_modules"]
 }

@@ -19,6 +19,7 @@ const getAllFonts = async () => {
     'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/refs/heads/6.x/metadata/icons.yml';
   const req = await fetch(url);
   const data = await req.text();
+  console.log('Successfully fetched icons.yml');
   return YAML.parse(data);
 };
 

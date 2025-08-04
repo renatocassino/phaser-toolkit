@@ -46,7 +46,7 @@
   "homepage": "https://github.com/renatocassino/phaser-toolkit/tree/main/packages/font-awesome-for-phaser#readme",
   "devDependencies": {
     "@eslint-recommended/eslint-config": "^28.0.0",
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.2.0",
     "@types/webfontloader": "^1.6.38",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.15.0",

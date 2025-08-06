@@ -12,6 +12,10 @@
  * - OKLCH colors (oklch(l c h [/ a]))
  */
 export const isValidColor = (color: string): boolean => {
+  if (typeof color !== 'string') {
+    return false;
+  }
+
   const trimmedColor = color.trim();
   if (/^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(trimmedColor)) {
     return true;
@@ -34,7 +38,7 @@ export const isValidColor = (color: string): boolean => {
   }
 
   if (
-    /^oklch\(\s*(\d+%)\s+(\d*\.?\d+)\s+(\d*\.?\d+)(?:\s*\/\s*([01]|0?\.\d+))?\s*\)$/.test(
+    /^oklch\(\s*(\d*\.?\d+%?)\s+(\d*\.?\d+)\s+(\d*\.?\d+)(?:\s*\/\s*([01]|0?\.\d+))?\s*\)$/.test(
       trimmedColor
     )
   ) {

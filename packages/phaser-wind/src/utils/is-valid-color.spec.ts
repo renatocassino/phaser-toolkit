@@ -59,6 +59,7 @@ describe('isValidColor', () => {
       expect(isValidColor('oklch( 40% 0.268 34.568 )')).toBe(true);
       expect(isValidColor('  oklch(40% 0.268 34.568)')).toBe(true);
       expect(isValidColor('oklch(40% 0.268 34.568)  ')).toBe(true);
+      expect(isValidColor('oklch(0.5 0.2 268)')).toBe(true);
     });
   });
 

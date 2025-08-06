@@ -104,6 +104,51 @@ describe('ColorPicker', () => {
     ])('should convert %s to rgb %s', (colorToken, expected) => {
       expect(Color.rgb(colorToken as ColorToken)).toBe(expected);
     });
+
+    it('should return the color if it is a valid color', () => {
+      expect(Color.rgb('#000000')).toBe('#000000');
+      expect(Color.rgb('#ffffff')).toBe('#ffffff');
+      expect(Color.rgb('#ff0000')).toBe('#ff0000');
+      expect(Color.rgb('#00ff00')).toBe('#00ff00');
+      expect(Color.rgb('#0000ff')).toBe('#0000ff');
+    });
+
+    it('should return the color if it is a valid rgb color', () => {
+      expect(Color.rgb('rgb(255, 255, 255)')).toBe('rgb(255, 255, 255)');
+      expect(Color.rgb('rgb(0, 0, 0)')).toBe('rgb(0, 0, 0)');
+      expect(Color.rgb('rgb(255, 0, 0)')).toBe('rgb(255, 0, 0)');
+      expect(Color.rgb('rgb(0, 255, 0)')).toBe('rgb(0, 255, 0)');
+      expect(Color.rgb('rgb(0, 0, 255)')).toBe('rgb(0, 0, 255)');
+    });
+
+    it('should return the color if it is a valid rgba color', () => {
+      expect(Color.rgb('rgba(255, 255, 255, 1)')).toBe(
+        'rgba(255, 255, 255, 1)'
+      );
+      expect(Color.rgb('rgba(0, 0, 0, 1)')).toBe('rgba(0, 0, 0, 1)');
+      expect(Color.rgb('rgba(255, 0, 0, 1)')).toBe('rgba(255, 0, 0, 1)');
+      expect(Color.rgb('rgba(0, 255, 0, 1)')).toBe('rgba(0, 255, 0, 1)');
+      expect(Color.rgb('rgba(0, 0, 255, 1)')).toBe('rgba(0, 0, 255, 1)');
+    });
+
+    it('should return the color if it is a valida oklch color', () => {
+      expect(Color.rgb('oklch(0.5 0.2 268)')).toBe('oklch(0.5 0.2 268)');
+      expect(Color.rgb('oklch(0.5 0.2 270)')).toBe('oklch(0.5 0.2 270)');
+    });
+
+    it('should return the theme color when pass a token', () => {
+      ThemeManager.init(
+        createTheme({
+          colors: {
+            primary: 'red-500',
+            secondary: 'slate-50',
+          },
+        })
+      );
+
+      expect(Color.rgb('primary')).toBe(RED_500_RGB);
+      expect(Color.rgb('secondary')).toBe(SLATE_50_RGB);
+    });
   });
 
   describe('hex method', () => {
@@ -228,9 +273,9 @@ describe('ColorPicker', () => {
     });
 
     it('should resolve theme token with colors. prefix', () => {
-      expect(Color.rgb('colors.primary' as ColorToken)).toBe(RED_500_RGB);
-      expect(Color.rgb('colors.secondary' as ColorToken)).toBe(SLATE_50_RGB);
-      expect(Color.rgb('colors.another' as ColorToken)).toBe('#ff9887');
+      expect(Color.rgb('primary' as ColorToken)).toBe(RED_500_RGB);
+      expect(Color.rgb('secondary' as ColorToken)).toBe(SLATE_50_RGB);
+      expect(Color.rgb('another' as ColorToken)).toBe('#ff9887');
     });
 
     it('should resolve theme token without colors. prefix', () => {
@@ -239,8 +284,8 @@ describe('ColorPicker', () => {
     });
 
     it('should convert theme tokens to hex', () => {
-      expect(Color.hex('colors.primary' as ColorToken)).toBe(0xef4444);
-      expect(Color.hex('colors.secondary' as ColorToken)).toBe(0xf8fafc);
+      expect(Color.hex('primary' as ColorToken)).toBe(0xef4444);
+      expect(Color.hex('secondary' as ColorToken)).toBe(0xf8fafc);
     });
 
     it('should throw an error if theme token is not found', () => {

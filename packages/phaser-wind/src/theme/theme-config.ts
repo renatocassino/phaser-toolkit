@@ -1,7 +1,12 @@
 /* eslint-disable max-lines */
 /* eslint-disable sonarjs/no-duplicate-string */
 import type { ColorToken } from '../core/color';
-import type { FontSizeKey } from '../core/font-size';
+import {
+  fontSizeMap,
+  type FontSizeKey,
+  type FontSizeMap,
+} from '../core/font-size';
+import { spacingMap, type SpacingMap } from '../core/spacing';
 
 /**
  * Font configuration structure
@@ -61,7 +66,9 @@ export type BaseThemeConfig = {
   typography?: TypographyConfig;
   effects?: EffectConfig;
   // Allow additional custom categories
-  [key: string]: unknown;
+  custom: {
+    [key: string]: unknown;
+  };
 };
 
 /**
@@ -74,6 +81,7 @@ export type DefaultThemeStructure = {
     monospace: string;
     display: string;
   };
+  fontSizes: FontSizeMap;
   colors: {
     // Primary colors
     primary: ColorToken;
@@ -112,16 +120,7 @@ export type DefaultThemeStructure = {
     shadow: ColorToken;
     overlay: ColorToken;
   };
-  spacing: {
-    xs: number;
-    sm: number;
-    md: number;
-    lg: number;
-    xl: number;
-    '2xl': number;
-    '3xl': number;
-    '4xl': number;
-  };
+  spacing: SpacingMap;
   typography: {
     heading: {
       fontSize: FontSizeKey;
@@ -168,6 +167,9 @@ export type DefaultThemeStructure = {
       alpha: number;
     };
   };
+  custom: {
+    [key: string]: unknown;
+  };
 };
 
 /**
@@ -180,6 +182,7 @@ export const defaultLightTheme: DefaultThemeStructure = {
     monospace: 'Fira Code, Consolas, monospace',
     display: 'Poppins, Inter, sans-serif',
   },
+  fontSizes: { ...fontSizeMap },
   colors: {
     // Primary colors
     primary: 'blue-600',
@@ -218,16 +221,7 @@ export const defaultLightTheme: DefaultThemeStructure = {
     shadow: 'black',
     overlay: 'black',
   },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    '2xl': 48,
-    '3xl': 64,
-    '4xl': 96,
-  },
+  spacing: { ...spacingMap },
   typography: {
     heading: {
       fontSize: '2xl',
@@ -242,7 +236,7 @@ export const defaultLightTheme: DefaultThemeStructure = {
       lineHeight: 1.1,
     },
     body: {
-      fontSize: 'md',
+      fontSize: 'base',
       fontFamily: 'fonts.primary',
       fontWeight: 400,
       lineHeight: 1.5,
@@ -274,6 +268,7 @@ export const defaultLightTheme: DefaultThemeStructure = {
       alpha: 0.1,
     },
   },
+  custom: {},
 };
 
 export const defaultDarkTheme: DefaultThemeStructure = {
@@ -283,6 +278,7 @@ export const defaultDarkTheme: DefaultThemeStructure = {
     monospace: 'Fira Code, Consolas, monospace',
     display: 'Poppins, Inter, sans-serif',
   },
+  fontSizes: { ...fontSizeMap },
   colors: {
     // Primary colors
     primary: 'blue-400',
@@ -321,16 +317,7 @@ export const defaultDarkTheme: DefaultThemeStructure = {
     shadow: 'black',
     overlay: 'black',
   },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    '2xl': 48,
-    '3xl': 64,
-    '4xl': 96,
-  },
+  spacing: { ...spacingMap },
   typography: {
     heading: {
       fontSize: '2xl',
@@ -345,7 +332,7 @@ export const defaultDarkTheme: DefaultThemeStructure = {
       lineHeight: 1.1,
     },
     body: {
-      fontSize: 'md',
+      fontSize: 'base',
       fontFamily: 'fonts.primary',
       fontWeight: 400,
       lineHeight: 1.5,
@@ -377,6 +364,7 @@ export const defaultDarkTheme: DefaultThemeStructure = {
       alpha: 0.2,
     },
   },
+  custom: {},
 };
 
 /**

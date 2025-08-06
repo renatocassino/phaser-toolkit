@@ -16,10 +16,12 @@ export type FontSizeKey =
   | '8xl'
   | '9xl';
 
+export type FontSizeMap = Record<FontSizeKey, number>;
+
 /**
  * Mapping of font size keys to their pixel values
  */
-export const fontSizeMap: Record<FontSizeKey, number> = {
+export const fontSizeMap: FontSizeMap = {
   xs: 12,
   sm: 14,
   base: 16,

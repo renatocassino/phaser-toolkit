@@ -677,3 +677,8 @@ If Phaser Wind makes your game development life better, give us a ⭐ on GitHub!
 > _"Making Phaser development as enjoyable as Tailwind CSS"_
 >
 > — The Phaser Wind Team
+
+type SpacingKey = '0'|'0.5'|'1'|'1.5'|…|'96';
+type FontSizeKey = 'xs'|'sm'|'base'|'lg'|'xl'|'2xl'|'3xl'|'4xl'|'5xl'|'6xl'|'7xl'|'8xl'|'9xl';
+type RadiusKey = 'sm'|'md'|'lg'|'xl'|'full';
+type ShadowKey = 'sm'|'default'|'lg'|'xl'|'2xl'|'inner';

@@ -1,7 +1,7 @@
 import {
-  defaultLightTheme,
   type BaseThemeConfig,
   type DefaultThemeStructure,
+  defaultLightTheme,
 } from './theme-config';
 
 /**

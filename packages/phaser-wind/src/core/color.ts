@@ -17,8 +17,14 @@ export type ShadeKey =
   | '800'
   | '900'
   | '950';
+
 export type ColorToken = `${ColorKey}-${ShadeKey}` | 'black' | 'white';
 
+/**
+ * Convert hex color value to number
+ * @param hexValue - Hex color value (e.g., '#ff0000')
+ * @returns Number representation of hex color
+ */
 const convertHexToNumber = (hexValue: string): number => {
   const hex = hexValue.slice(1);
   if (hex.length === 3) {
@@ -30,6 +36,11 @@ const convertHexToNumber = (hexValue: string): number => {
   return parseInt(hex, 16);
 };
 
+/**
+ * Convert RGB color value to number
+ * @param rgbValue - RGB color value (e.g., 'rgb(255, 0, 0)')
+ * @returns Number representation of RGB color
+ */
 const convertRgbToNumber = (rgbValue: string): number => {
   const matches = rgbValue.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
   if (!matches) {
@@ -43,6 +54,11 @@ const convertRgbToNumber = (rgbValue: string): number => {
   return (r << 16) + (g << 8) + b;
 };
 
+/**
+ * Convert color value to number
+ * @param colorValue - Color value (e.g., '#ff0000' or 'rgb(255, 0, 0)')
+ * @returns Number representation of color
+ */
 const convertColorValueToNumber = (colorValue: string): number => {
   if (colorValue.startsWith('#')) {
     return convertHexToNumber(colorValue);
@@ -50,6 +66,11 @@ const convertColorValueToNumber = (colorValue: string): number => {
   return convertRgbToNumber(colorValue);
 };
 
+/**
+ * Resolve theme token
+ * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
+ * @returns Resolved color token or null if not found
+ */
 const resolveThemeToken = (color: string): string | null => {
   const colorPath = color.includes('.') ? color : `colors.${color}`;
 
@@ -70,6 +91,9 @@ const resolveThemeToken = (color: string): string | null => {
   return null;
 };
 
+/**
+ * Color utility functions
+ */
 export const Color = {
   /**
    * Get RGB string for a color token or theme token

@@ -1,3 +1,7 @@
+/**
+ * Valid spacing scale keys following Tailwind's spacing scale
+ * Values range from '0' to '96', including fractional values
+ */
 export type SpacingKey =
   | '0'
   | 'px'
@@ -35,7 +39,16 @@ export type SpacingKey =
   | '80'
   | '96';
 
-export const spacingMap: Record<SpacingKey, number> = {
+/**
+ * Maps spacing scale keys to their pixel values
+ */
+export type SpacingMap = Record<SpacingKey, number>;
+
+/**
+ * Spacing scale mapping following Tailwind's spacing scale
+ * Values are in pixels, with a base unit of 4px (1 = 4px)
+ */
+export const spacingMap: SpacingMap = {
   '0': 0,
   px: 1,
   '0.5': 2,
@@ -73,6 +86,28 @@ export const spacingMap: Record<SpacingKey, number> = {
   '96': 384,
 };
 
+/**
+ * Utility functions for working with spacing values
+ */
 export const Spacing = {
+  /**
+   * Get spacing value in pixels
+   * @param key - Spacing scale key
+   * @returns Pixel value
+   */
   px: (key: SpacingKey): number => spacingMap[key],
+
+  /**
+   * Get spacing value in rem units (divided by 16)
+   * @param key - Spacing scale key
+   * @returns Rem value
+   */
+  rem: (key: SpacingKey): number => spacingMap[key] / 16,
+
+  /**
+   * Get spacing value as CSS pixel string
+   * @param key - Spacing scale key
+   * @returns CSS pixel value string (e.g. "16px")
+   */
+  css: (key: SpacingKey): string => `${spacingMap[key]}px`,
 };

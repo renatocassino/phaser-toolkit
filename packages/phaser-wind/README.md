@@ -37,18 +37,18 @@ const title = this.add.text(200, 100, 'Game Title', {
 ### The Solution 🌟
 
 ```typescript
-import { ColorPicker, FontSizePicker } from 'phaser-wind';
+import { Color, FontSize } from 'phaser-wind';
 
 // Clean, semantic, consistent!
 const button = this.add.text(100, 50, 'Click me!', {
-  fontSize: FontSizePicker.css('lg'), // Clear intention!
-  fill: ColorPicker.rgb('blue-500'), // Beautiful blue
-  backgroundColor: ColorPicker.rgb('gray-800'), // Perfect contrast
+  fontSize: FontSize.css('lg'), // Clear intention!
+  fill: Color.rgb('blue-500'), // Beautiful blue
+  backgroundColor: Color.rgb('gray-800'), // Perfect contrast
 });
 
 const title = this.add.text(200, 100, 'Game Title', {
-  fontSize: FontSizePicker.css('3xl'), // Clearly bigger!
-  fill: ColorPicker.rgb('red-500'), // Vibrant red
+  fontSize: FontSize.css('3xl'), // Clearly bigger!
+  fill: Color.rgb('red-500'), // Vibrant red
 });
 ```
 
@@ -87,19 +87,19 @@ pnpm add phaser-wind
 Access all Tailwind colors with semantic naming:
 
 ```typescript
-import { ColorPicker } from 'phaser-wind';
+import { Color } from 'phaser-wind';
 
 // RGB strings (for Phaser text styles)
-const blueText = ColorPicker.rgb('blue-500'); // 'rgb(59, 130, 246)'
-const redButton = ColorPicker.rgb('red-600'); // 'rgb(220, 38, 38)'
+const blueText = Color.rgb('blue-500'); // 'rgb(59, 130, 246)'
+const redButton = Color.rgb('red-600'); // 'rgb(220, 38, 38)'
 
 // Hex numbers (for Phaser graphics)
-const greenRect = ColorPicker.hex('green-400'); // 0x4ADE80
-const purpleCircle = ColorPicker.hex('purple-300'); // 0xD8B4FE
+const greenRect = Color.hex('green-400'); // 0x4ADE80
+const purpleCircle = Color.hex('purple-300'); // 0xD8B4FE
 
 // Basic colors
-const blackText = ColorPicker.rgb('black'); // 'rgb(0, 0, 0)'
-const whiteBackground = ColorPicker.hex('white'); // 0xFFFFFF
+const blackText = Color.rgb('black'); // 'rgb(0, 0, 0)'
+const whiteBackground = Color.hex('white'); // 0xFFFFFF
 ```
 
 ### Available Colors
@@ -117,35 +117,35 @@ const whiteBackground = ColorPicker.hex('white'); // 0xFFFFFF
 Stop guessing font sizes and use semantic tokens:
 
 ```typescript
-import { FontSizePicker } from 'phaser-wind';
+import { FontSize } from 'phaser-wind';
 
 // Get pixel values
-const smallText = FontSizePicker.px('sm'); // 14
-const normalText = FontSizePicker.px('md'); // 16
-const largeTitle = FontSizePicker.px('3xl'); // 30
+const smallText = FontSize.px('sm'); // 14
+const normalText = FontSize.px('base'); // 16
+const largeTitle = FontSize.px('3xl'); // 30
 
 // Get CSS strings (perfect for Phaser)
-const buttonText = FontSizePicker.css('lg'); // '18px'
-const heroTitle = FontSizePicker.css('6xl'); // '60px'
+const buttonText = FontSize.css('lg'); // '18px'
+const heroTitle = FontSize.css('6xl'); // '60px'
 
 // Get rem values (if needed)
-const responsiveText = FontSizePicker.rem('xl'); // 1.25
+const responsiveText = FontSize.rem('xl'); // 1.25
 ```
 
 ### Font Size Scale
 
-| Token | Pixels | Use Case                |
-| ----- | ------ | ----------------------- |
-| `xs`  | 12px   | Small labels, captions  |
-| `sm`  | 14px   | Body text, descriptions |
-| `md`  | 16px   | Default text size       |
-| `lg`  | 18px   | Slightly larger text    |
-| `xl`  | 20px   | Subheadings             |
-| `2xl` | 24px   | Headings                |
-| `3xl` | 30px   | Large headings          |
-| `4xl` | 36px   | Hero text               |
-| `5xl` | 48px   | Display text            |
-| `6xl` | 60px   | Giant display text      |
+| Token  | Pixels | Use Case                |
+| ------ | ------ | ----------------------- |
+| `xs`   | 12px   | Small labels, captions  |
+| `sm`   | 14px   | Body text, descriptions |
+| `base` | 16px   | Default text size       |
+| `lg`   | 18px   | Slightly larger text    |
+| `xl`   | 20px   | Subheadings             |
+| `2xl`  | 24px   | Headings                |
+| `3xl`  | 30px   | Large headings          |
+| `4xl`  | 36px   | Hero text               |
+| `5xl`  | 48px   | Display text            |
+| `6xl`  | 60px   | Giant display text      |
 
 ---
 
@@ -213,33 +213,26 @@ ThemeManager.init(gameTheme);
 ### 🎯 **Using Theme Tokens**
 
 ```typescript
-import {
-  ColorPicker,
-  FontPicker,
-  SpacingPicker,
-  TypographyPicker,
-  EffectPicker,
-} from 'phaser-wind';
+import { Color, Font, FontSize, Spacing, ThemeManager } from 'phaser-wind';
 
 // Colors - automatically looks in colors.*
-const primaryColor = ColorPicker.rgb('primary'); // Gets colors.primary
-const uiBackground = ColorPicker.hex('ui-background'); // Gets colors.ui-background
+const primaryColor = Color.rgb('primary'); // Gets colors.primary
+const uiBackground = Color.hex('ui-background'); // Gets colors.ui-background
 
 // Fonts
-const displayFont = FontPicker.family('display'); // Gets fonts.display
-const primaryFont = FontPicker.family('primary'); // Gets fonts.primary
+const displayFont = Font.family('display'); // Gets fonts.display
+const primaryFont = Font.family('primary'); // Gets fonts.primary
 
 // Spacing
-const mediumSpace = SpacingPicker.px('md'); // Gets spacing.md (16px)
-const largeSpace = SpacingPicker.px('lg'); // Gets spacing.lg (24px)
+const mediumSpace = Spacing.px('md'); // Gets spacing.md (16px)
+const largeSpace = Spacing.px('lg'); // Gets spacing.lg (24px)
 
-// Complete typography styles
-const headingStyle = TypographyPicker.phaserStyle('heading');
-// Returns: { fontSize: '24px', fontFamily: 'Orbitron, monospace', fontStyle: 'bold' }
-
-// Effects
-const glowConfig = EffectPicker.config('glow-primary');
-// Returns: { blur: 8, color: 'purple-600', alpha: 0.6 }
+// Complete typography styles - using basic components for now
+const headingStyle = {
+  fontSize: FontSize.css('2xl'),
+  fontFamily: Font.family('display'),
+  fontWeight: 'bold',
+};
 
 // Custom tokens
 const animDuration = ThemeManager.getToken('animations.duration'); // 300
@@ -272,23 +265,23 @@ const themes = ThemeManager.getRegisteredThemes(); // ['light', 'dark', 'cyberpu
 export class GameScene extends Phaser.Scene {
   create() {
     // Player health bar with theme colors
-    const healthWidth = SpacingPicker.px('massive'); // 96px
-    const healthHeight = SpacingPicker.px('md'); // 16px
+    const healthWidth = Spacing.px('24'); // 96px
+    const healthHeight = Spacing.px('4'); // 16px
 
     this.add.rectangle(
       50,
       50,
       healthWidth,
       healthHeight,
-      ColorPicker.hex('player-health')
+      Color.hex('player-health')
     ); // Green from theme
 
     // Game title with theme typography
-    const titleStyle = TypographyPicker.phaserStyle('heading');
     this.add
       .text(400, 50, 'CYBER QUEST', {
-        ...titleStyle,
-        color: ColorPicker.rgb('primary'), // Purple from theme
+        fontSize: FontSize.css('4xl'),
+        fontFamily: Font.family('display'),
+        color: Color.rgb('primary'), // Purple from theme
       })
       .setOrigin(0.5);
 
@@ -297,8 +290,8 @@ export class GameScene extends Phaser.Scene {
       400,
       400,
       'START GAME',
-      SpacingPicker.px('huge'), // 64px width
-      SpacingPicker.px('lg') // 24px height
+      Spacing.px('16'), // 64px width
+      Spacing.px('6') // 24px height
     );
   }
 
@@ -310,20 +303,16 @@ export class GameScene extends Phaser.Scene {
     height: number
   ) {
     const button = this.add
-      .rectangle(x, y, width, height, ColorPicker.hex('ui-background'))
+      .rectangle(x, y, width, height, Color.hex('ui-background'))
       .setInteractive()
-      .on('pointerover', () =>
-        button.setFillStyle(ColorPicker.hex('secondary'))
-      )
-      .on('pointerout', () =>
-        button.setFillStyle(ColorPicker.hex('ui-background'))
-      );
+      .on('pointerover', () => button.setFillStyle(Color.hex('secondary')))
+      .on('pointerout', () => button.setFillStyle(Color.hex('ui-background')));
 
-    const buttonText = TypographyPicker.phaserStyle('body');
     this.add
       .text(x, y, text, {
-        ...buttonText,
-        color: ColorPicker.rgb('primary'),
+        fontSize: FontSize.css('base'),
+        fontFamily: Font.family('primary'),
+        color: Color.rgb('primary'),
       })
       .setOrigin(0.5);
   }
@@ -382,50 +371,50 @@ const theme = createTheme({
 ### Game UI Components
 
 ```typescript
-import { ColorPicker, FontSizePicker } from 'phaser-wind';
+import { Color, FontSize } from 'phaser-wind';
 
 export class GameScene extends Phaser.Scene {
   create() {
     // Main title
     this.add
       .text(400, 100, 'SPACE RAIDERS', {
-        fontSize: FontSizePicker.css('5xl'),
-        fill: ColorPicker.rgb('yellow-400'),
-        stroke: ColorPicker.rgb('yellow-800'),
+        fontSize: FontSize.css('5xl'),
+        fill: Color.rgb('yellow-400'),
+        stroke: Color.rgb('yellow-800'),
         strokeThickness: 2,
       })
       .setOrigin(0.5);
 
     // Score display
     this.add.text(50, 50, 'Score: 12,500', {
-      fontSize: FontSizePicker.css('xl'),
-      fill: ColorPicker.rgb('green-400'),
+      fontSize: FontSize.css('xl'),
+      fill: Color.rgb('green-400'),
     });
 
     // Health bar background
     const healthBg = this.add.graphics();
-    healthBg.fillStyle(ColorPicker.hex('red-900'));
+    healthBg.fillStyle(Color.hex('red-900'));
     healthBg.fillRect(50, 100, 200, 20);
 
     // Health bar fill
     const healthFill = this.add.graphics();
-    healthFill.fillStyle(ColorPicker.hex('red-500'));
+    healthFill.fillStyle(Color.hex('red-500'));
     healthFill.fillRect(52, 102, 156, 16); // 80% health
 
     // Game over screen
-    this.add.rectangle(400, 300, 600, 400, ColorPicker.hex('slate-900'), 0.9);
+    this.add.rectangle(400, 300, 600, 400, Color.hex('slate-900'), 0.9);
 
     this.add
       .text(400, 250, 'GAME OVER', {
-        fontSize: FontSizePicker.css('4xl'),
-        fill: ColorPicker.rgb('red-500'),
+        fontSize: FontSize.css('4xl'),
+        fill: Color.rgb('red-500'),
       })
       .setOrigin(0.5);
 
     this.add
       .text(400, 320, 'Final Score: 12,500', {
-        fontSize: FontSizePicker.css('2xl'),
-        fill: ColorPicker.rgb('slate-300'),
+        fontSize: FontSize.css('2xl'),
+        fill: Color.rgb('slate-300'),
       })
       .setOrigin(0.5);
   }
@@ -445,19 +434,19 @@ class GameButton {
   ) {
     const colors = {
       primary: {
-        bg: ColorPicker.hex('blue-600'),
-        bgHover: ColorPicker.hex('blue-700'),
-        text: ColorPicker.rgb('white'),
+        bg: Color.hex('blue-600'),
+        bgHover: Color.hex('blue-700'),
+        text: Color.rgb('white'),
       },
       secondary: {
-        bg: ColorPicker.hex('slate-600'),
-        bgHover: ColorPicker.hex('slate-700'),
-        text: ColorPicker.rgb('slate-100'),
+        bg: Color.hex('slate-600'),
+        bgHover: Color.hex('slate-700'),
+        text: Color.rgb('slate-100'),
       },
       danger: {
-        bg: ColorPicker.hex('red-600'),
-        bgHover: ColorPicker.hex('red-700'),
-        text: ColorPicker.rgb('white'),
+        bg: Color.hex('red-600'),
+        bgHover: Color.hex('red-700'),
+        text: Color.rgb('white'),
       },
     };
 
@@ -473,7 +462,7 @@ class GameButton {
     // Text
     this.text = scene.add
       .text(x, y, text, {
-        fontSize: FontSizePicker.css('lg'),
+        fontSize: FontSize.css('lg'),
         fill: style.text,
       })
       .setOrigin(0.5);
@@ -493,11 +482,11 @@ const quitButton = new GameButton(this, 400, 360, 'QUIT', 'danger');
 this.add.particles(player.x, player.y, 'sparkle', {
   speed: { min: 50, max: 100 },
   tint: [
-    ColorPicker.hex('blue-400'),
-    ColorPicker.hex('blue-500'),
-    ColorPicker.hex('blue-600'),
-    ColorPicker.hex('cyan-400'),
-    ColorPicker.hex('cyan-500'),
+    Color.hex('blue-400'),
+    Color.hex('blue-500'),
+    Color.hex('blue-600'),
+    Color.hex('cyan-400'),
+    Color.hex('cyan-500'),
   ],
   lifespan: 1000,
 });
@@ -510,7 +499,7 @@ this.add.particles(player.x, player.y, 'sparkle', {
 ### Scene Setup
 
 ```typescript
-import { ColorPicker, FontSizePicker } from 'phaser-wind';
+import { Color, FontSize } from 'phaser-wind';
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -521,10 +510,10 @@ export class MenuScene extends Phaser.Scene {
     // Background gradient effect
     const bg = this.add.graphics();
     bg.fillGradientStyle(
-      ColorPicker.hex('slate-900'), // top-left
-      ColorPicker.hex('slate-800'), // top-right
-      ColorPicker.hex('slate-800'), // bottom-left
-      ColorPicker.hex('slate-700') // bottom-right
+      Color.hex('slate-900'), // top-left
+      Color.hex('slate-800'), // top-right
+      Color.hex('slate-800'), // bottom-left
+      Color.hex('slate-700') // bottom-right
     );
     bg.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
 
@@ -536,9 +525,9 @@ export class MenuScene extends Phaser.Scene {
   private createTitle() {
     this.add
       .text(this.cameras.main.centerX, 150, 'MY AWESOME GAME', {
-        fontSize: FontSizePicker.css('4xl'),
-        fill: ColorPicker.rgb('yellow-400'),
-        stroke: ColorPicker.rgb('yellow-700'),
+        fontSize: FontSize.css('4xl'),
+        fill: Color.rgb('yellow-400'),
+        stroke: Color.rgb('yellow-700'),
         strokeThickness: 3,
       })
       .setOrigin(0.5);
@@ -550,13 +539,13 @@ export class MenuScene extends Phaser.Scene {
     menuItems.forEach((item, index) => {
       this.add
         .text(this.cameras.main.centerX, 250 + index * 60, item, {
-          fontSize: FontSizePicker.css('xl'),
-          fill: ColorPicker.rgb('slate-300'),
+          fontSize: FontSize.css('xl'),
+          fill: Color.rgb('slate-300'),
         })
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerover', function () {
-          this.setTint(ColorPicker.hex('yellow-400'));
+          this.setTint(Color.hex('yellow-400'));
         })
         .on('pointerout', function () {
           this.clearTint();
@@ -575,21 +564,21 @@ export class MenuScene extends Phaser.Scene {
 ```typescript
 // Create consistent themes
 const darkTheme = {
-  background: ColorPicker.hex('slate-900'),
-  surface: ColorPicker.hex('slate-800'),
-  primary: ColorPicker.hex('blue-500'),
-  secondary: ColorPicker.hex('slate-600'),
-  text: ColorPicker.rgb('slate-100'),
-  textMuted: ColorPicker.rgb('slate-400'),
+  background: Color.hex('slate-900'),
+  surface: Color.hex('slate-800'),
+  primary: Color.hex('blue-500'),
+  secondary: Color.hex('slate-600'),
+  text: Color.rgb('slate-100'),
+  textMuted: Color.rgb('slate-400'),
 };
 
 const lightTheme = {
-  background: ColorPicker.hex('slate-50'),
-  surface: ColorPicker.hex('white'),
-  primary: ColorPicker.hex('blue-600'),
-  secondary: ColorPicker.hex('slate-200'),
-  text: ColorPicker.rgb('slate-900'),
-  textMuted: ColorPicker.rgb('slate-600'),
+  background: Color.hex('slate-50'),
+  surface: Color.hex('white'),
+  primary: Color.hex('blue-600'),
+  secondary: Color.hex('slate-200'),
+  text: Color.rgb('slate-900'),
+  textMuted: Color.rgb('slate-600'),
 };
 ```
 
@@ -599,13 +588,13 @@ const lightTheme = {
 // Scale text based on screen size
 const getResponsiveTextSize = (baseSize: FontSizeKey): string => {
   const scale = this.cameras.main.width / 1920; // Base on 1920px width
-  const basePixels = FontSizePicker.px(baseSize);
+  const basePixels = FontSize.px(baseSize);
   return `${Math.round(basePixels * scale)}px`;
 };
 
 this.add.text(x, y, 'Responsive Text', {
   fontSize: getResponsiveTextSize('2xl'),
-  fill: ColorPicker.rgb('blue-500'),
+  fill: Color.rgb('blue-500'),
 });
 ```
 
@@ -625,16 +614,16 @@ Plus, `phaser-wind` is way easier to type than `phaser-tailwind-css-design-token
 
 ## 📚 Compared to Raw Phaser
 
-| Without Phaser Wind      | With Phaser Wind                      |
-| ------------------------ | ------------------------------------- |
-| `fill: '#3B82F6'`        | `fill: ColorPicker.rgb('primary')`    |
-| `fontSize: '18px'`       | `fontSize: FontSizePicker.css('lg')`  |
-| `tint: 0x4ADE80`         | `tint: ColorPicker.hex('success')`    |
-| `fontFamily: 'Arial'`    | `fontFamily: FontPicker.family('ui')` |
-| Magic numbers everywhere | Semantic, consistent tokens           |
-| Color picking hell       | Harmonious color palettes             |
-| Inconsistent sizing      | Perfect typography scale              |
-| No design system         | Complete theme architecture           |
+| Without Phaser Wind      | With Phaser Wind                |
+| ------------------------ | ------------------------------- |
+| `fill: '#3B82F6'`        | `fill: Color.rgb('primary')`    |
+| `fontSize: '18px'`       | `fontSize: FontSize.css('lg')`  |
+| `tint: 0x4ADE80`         | `tint: Color.hex('success')`    |
+| `fontFamily: 'Arial'`    | `fontFamily: Font.family('ui')` |
+| Magic numbers everywhere | Semantic, consistent tokens     |
+| Color picking hell       | Harmonious color palettes       |
+| Inconsistent sizing      | Perfect typography scale        |
+| No design system         | Complete theme architecture     |
 
 ---
 

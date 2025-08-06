@@ -1,7 +1,10 @@
+import merge from 'lodash/merge';
+
 import {
-  defaultLightTheme,
   type BaseThemeConfig,
-  type DefaultThemeStructure,
+  type ThemeOverride,
+  defaultDarkTheme,
+  defaultLightTheme,
 } from './theme-config';
 
 /**
@@ -16,8 +19,15 @@ class ThemeManagerClass {
   /**
    * Initialize the theme manager with a default theme
    */
-  init<T extends BaseThemeConfig>(theme: T): void {
-    this.currentTheme = theme;
+  init<T extends BaseThemeConfig>(
+    theme: T,
+    type: 'light' | 'dark' = 'light'
+  ): void {
+    this.currentTheme = merge(
+      {},
+      type === 'light' ? defaultLightTheme : defaultDarkTheme,
+      theme
+    );
     this.registerTheme('default', theme);
   }
 
@@ -46,10 +56,19 @@ class ThemeManagerClass {
   }
 
   /**
-   * Set theme directly with object
+   * Set theme directly with object by merging with current theme
+   * This method will merge the provided theme object with the current theme:
+   * - Existing properties will be replaced with new values
+   * - New properties will be added
+   * - Properties not specified in the new theme will be preserved
+   *
+   * Example:
+   * Current theme: { colors: { primary: 'blue', secondary: 'gray' } }
+   * New theme: { colors: { primary: 'red', accent: 'yellow' } }
+   * Result: { colors: { primary: 'red', secondary: 'gray', accent: 'yellow' } }
    */
-  setThemeObject<T extends BaseThemeConfig>(theme: T): void {
-    this.currentTheme = theme;
+  setThemeObject(theme: ThemeOverride): void {
+    this.currentTheme = merge({}, this.currentTheme, theme);
     this.notifyListeners();
   }
 
@@ -176,6 +195,16 @@ class ThemeManagerClass {
     }
   }
 
+  /**
+   * Clear all registered themes and reset to default
+   */
+  clear(): void {
+    this.registeredThemes.clear();
+    this.currentTheme = defaultLightTheme;
+    this.registerTheme('default', defaultLightTheme);
+    this.listeners = [];
+  }
+
   private notifyListeners(): void {
     this.listeners.forEach(listener => listener(this.currentTheme));
   }
@@ -199,7 +228,5 @@ class ThemeManagerClass {
 export const ThemeManager = new ThemeManagerClass();
 
 // Type helper for creating themes with proper typing
-export const createTheme = <T extends BaseThemeConfig>(theme: T): T => theme;
-
-// Type helper for theme configuration
-export type ThemeConfig<T extends BaseThemeConfig = DefaultThemeStructure> = T;
+export const createTheme = <T extends ThemeOverride>(theme: T): T =>
+  merge({}, defaultLightTheme, theme);

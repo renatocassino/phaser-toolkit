@@ -1,24 +1,43 @@
 /* eslint-disable no-magic-numbers */
 import { ThemeManager } from '../theme/theme-manager';
 
+import { FontSize, type FontSizeKey } from './font-size';
+
 /**
  * Font picker for accessing theme fonts and font families
  */
-export class FontPicker {
+export const Font = {
+  /**
+   * Get font size in pixels
+   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
+   * @returns Font size in pixels
+   */
+  size: (key: FontSizeKey): number => {
+    return FontSize.px(key);
+  },
+
+  /**
+   * Get font size and family combined in CSS format
+   * @param size - Font size key (e.g., 'sm', 'lg', '2xl')
+   * @param family - Font family key (e.g., 'primary', 'display') or full path
+   * @returns Font string in format "16px 'Arial'"
+   */
+  format: ({ size, family }: { size: FontSizeKey; family: string }): string => {
+    return `${FontSize.px(size)}px '${Font.family(family)}'`;
+  },
+
   /**
    * Get font family from theme
    * @param key - Font key (e.g., 'primary', 'display') or full path (e.g., 'fonts.primary')
    * @returns Font family string
    */
-  static family(key: string): string {
+  family: (key: string): string => {
     // Check if it's a theme token (with or without fonts. prefix)
     const fontPath = key.includes('.') ? key : `fonts.${key}`;
 
-    if (ThemeManager.hasToken(fontPath)) {
-      const themeValue = ThemeManager.getToken(fontPath);
-      if (themeValue && typeof themeValue === 'string') {
-        return themeValue;
-      }
+    const themeValue = ThemeManager.getToken(fontPath);
+    if (themeValue && typeof themeValue === 'string') {
+      return themeValue;
     }
 
     // Fallback: check if it's a direct theme token (backwards compatibility)
@@ -31,76 +50,20 @@ export class FontPicker {
 
     // Fallback to the key itself if not found in theme
     return key;
-  }
+  },
 
   /**
    * Get all available font tokens from current theme
    * @returns Array of font token keys
    */
-  static getAvailableFonts(): string[] {
+  getAvailableFonts: (): string[] => {
     const theme = ThemeManager.getCurrentTheme();
     if (theme.fonts && typeof theme.fonts === 'object') {
       return Object.keys(theme.fonts);
     }
     return [];
-  }
-}
-
-/**
- * Spacing picker for accessing theme spacing values
- */
-export class SpacingPicker {
-  /**
-   * Get spacing value in pixels from theme
-   * @param key - Spacing key (e.g., 'sm', 'lg') or full path (e.g., 'spacing.md')
-   * @returns Spacing value in pixels
-   */
-  static px(key: string): number {
-    // Check if it's a theme token (with or without spacing. prefix)
-    const spacingPath = key.includes('.') ? key : `spacing.${key}`;
-
-    if (ThemeManager.hasToken(spacingPath)) {
-      const themeValue = ThemeManager.getToken(spacingPath);
-      if (themeValue && typeof themeValue === 'number') {
-        return themeValue;
-      }
-    }
-
-    // Fallback: check if it's a direct theme token (backwards compatibility)
-    if (ThemeManager.hasToken(key)) {
-      const themeValue = ThemeManager.getToken(key);
-      if (themeValue && typeof themeValue === 'number') {
-        return themeValue;
-      }
-    }
-
-    // Default fallback values
-    const defaultSpacing: Record<string, number> = {
-      xs: 4,
-      sm: 8,
-      md: 16,
-      lg: 24,
-      xl: 32,
-      '2xl': 48,
-      '3xl': 64,
-      '4xl': 96,
-    };
-
-    return defaultSpacing[key] ?? 16; // Default to 16px
-  }
-
-  /**
-   * Get all available spacing tokens from current theme
-   * @returns Array of spacing token keys
-   */
-  static getAvailableSpacing(): string[] {
-    const theme = ThemeManager.getCurrentTheme();
-    if (theme.spacing && typeof theme.spacing === 'object') {
-      return Object.keys(theme.spacing);
-    }
-    return [];
-  }
-}
+  },
+} as const;
 
 /**
  * Typography picker for accessing complete typography styles from theme

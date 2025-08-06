@@ -1,2 +1,2 @@
-export * from './font-picker';
-export * from './font-size-picker';
+export * from '../core/font';
+export * from '../core/font-size';

@@ -201,6 +201,7 @@ class ThemeManagerClass {
   clear(): void {
     this.registeredThemes.clear();
     this.currentTheme = defaultLightTheme;
+    this.registerTheme('default', defaultLightTheme);
     this.listeners = [];
   }
 

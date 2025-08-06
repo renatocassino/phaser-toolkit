@@ -35,11 +35,9 @@ export const Font = {
     // Check if it's a theme token (with or without fonts. prefix)
     const fontPath = key.includes('.') ? key : `fonts.${key}`;
 
-    if (ThemeManager.hasToken(fontPath)) {
-      const themeValue = ThemeManager.getToken(fontPath);
-      if (themeValue && typeof themeValue === 'string') {
-        return themeValue;
-      }
+    const themeValue = ThemeManager.getToken(fontPath);
+    if (themeValue && typeof themeValue === 'string') {
+      return themeValue;
     }
 
     // Fallback: check if it's a direct theme token (backwards compatibility)

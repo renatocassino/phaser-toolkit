@@ -1,3 +1,5 @@
+import { ThemeManager } from '../theme';
+
 /**
  * Available border radius keys matching Tailwind CSS radius scale
  */
@@ -12,10 +14,12 @@ export type RadiusKey =
   | '3xl'
   | 'full';
 
+export type RadiusMap = Record<RadiusKey, number>;
+
 /**
  * Mapping of radius keys to their pixel values
  */
-export const radiusMap: Record<RadiusKey, number> = {
+export const radiusMap: RadiusMap = {
   none: 0,
   sm: 2,
   default: 4,
@@ -31,6 +35,14 @@ export const radiusMap: Record<RadiusKey, number> = {
  * Utility functions for working with border radius values
  */
 export const Radius = {
+  getValueByKey: (key: RadiusKey | string): number => {
+    const value = ThemeManager.getToken(`radius.${key}`);
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    return radiusMap[key as RadiusKey] ?? 0;
+  },
   /**
    * Get border radius in pixels
    * @param key - Radius key (e.g., 'sm', 'lg', 'full')

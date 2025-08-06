@@ -1,6 +1,3 @@
-/**
- * Available shadow keys matching common shadow scales
- */
 export type ShadowKey = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'inner';
 
 /**

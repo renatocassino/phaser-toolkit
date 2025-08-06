@@ -11,6 +11,7 @@
     "dev": "pnpm -r dev",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
+    "validate": "pnpm -r validate",
     "clean": "pnpm -r clean",
     "ci": "pnpm install --frozen-lockfile && pnpm typecheck && pnpm lint && pnpm build && pnpm test",
     "changeset": "changeset",

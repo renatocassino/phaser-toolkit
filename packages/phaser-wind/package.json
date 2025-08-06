@@ -24,7 +24,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "lint:report": "eslint src --ext .ts,.tsx --format html --output-file eslint-report.html"
+    "lint:report": "eslint src --ext .ts,.tsx --format html --output-file eslint-report.html",
+    "validate": "pnpm run lint && pnpm run typecheck && pnpm run test && lint-staged"
   },
   "keywords": [
     "phaser",

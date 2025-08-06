@@ -2,7 +2,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { ThemeManager } from '../theme/theme-manager';
 
@@ -10,7 +10,11 @@ import { Spacing } from './spacing';
 
 describe('Spacing', () => {
   beforeEach(() => {
-    ThemeManager.reset();
+    ThemeManager.clear();
+  });
+
+  afterAll(() => {
+    ThemeManager.clear();
   });
 
   describe('px', () => {

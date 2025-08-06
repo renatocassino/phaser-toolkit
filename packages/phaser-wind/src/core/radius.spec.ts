@@ -2,13 +2,21 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
-import { ThemeManager } from '../theme';
+import { ThemeManager, defaultLightTheme } from '../theme';
 
 import { Radius, radiusMap } from './radius';
 
 describe('Radius', () => {
+  afterAll(() => {
+    ThemeManager.clear();
+  });
+
+  beforeEach(() => {
+    ThemeManager.init(defaultLightTheme);
+  });
+
   describe('px', () => {
     it('should return pixel value for radius key', () => {
       expect(Radius.px('sm')).toBe(2);

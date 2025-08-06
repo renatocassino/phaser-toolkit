@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable max-lines-per-function */
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { createTheme, ThemeManager } from '../theme';
 
@@ -10,6 +10,14 @@ const RED_500_RGB = 'rgb(239, 68, 68)';
 const SLATE_50_RGB = 'rgb(248, 250, 252)';
 
 describe('ColorPicker', () => {
+  beforeEach(() => {
+    ThemeManager.clear();
+  });
+
+  afterAll(() => {
+    ThemeManager.clear();
+  });
+
   describe('rgb method', () => {
     it.each([
       // slate
@@ -211,14 +219,18 @@ describe('ColorPicker', () => {
       colors: {
         primary: 'red-500',
         secondary: 'slate-50',
+        another: '#ff9887',
       },
     });
 
-    ThemeManager.init(fakeTheme);
+    beforeEach(() => {
+      ThemeManager.init(fakeTheme);
+    });
 
     it('should resolve theme token with colors. prefix', () => {
       expect(Color.rgb('colors.primary' as ColorToken)).toBe(RED_500_RGB);
       expect(Color.rgb('colors.secondary' as ColorToken)).toBe(SLATE_50_RGB);
+      expect(Color.rgb('colors.another' as ColorToken)).toBe('#ff9887');
     });
 
     it('should resolve theme token without colors. prefix', () => {

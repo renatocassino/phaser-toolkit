@@ -1,3 +1,5 @@
+import { ThemeManager } from '../theme';
+
 /**
  * Available font size keys matching Tailwind CSS font size scale
  */
@@ -41,24 +43,53 @@ export const fontSizeMap: FontSizeMap = {
  * Utility functions for working with font sizes
  */
 export const FontSize = {
+  getValueByKey: (key: FontSizeKey | string): number => {
+    const value = ThemeManager.getToken(`fontSizes.${key}`);
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    return fontSizeMap[key as FontSizeKey] ?? 0;
+  },
   /**
    * Get font size in pixels
    * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
    * @returns Font size in pixels
    */
-  px: (key: FontSizeKey): number => fontSizeMap[key],
+  px: (key: FontSizeKey | string): number => {
+    const value = ThemeManager.getToken(`fontSizes.${key}`);
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    return fontSizeMap[key as FontSizeKey] ?? 0;
+  },
 
   /**
    * Get font size in rem units (relative to 16px base)
    * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
    * @returns Font size in rem units
    */
-  rem: (key: FontSizeKey): number => fontSizeMap[key] / 16,
+  rem: (key: FontSizeKey | string): number => {
+    const value = ThemeManager.getToken(`fontSizes.${key}`);
+    if (typeof value === 'number') {
+      return value / 16;
+    }
+
+    return (fontSizeMap[key as FontSizeKey] ?? 0) / 16;
+  },
 
   /**
    * Get font size as CSS pixel string
    * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
    * @returns Font size as CSS string (e.g., '14px')
    */
-  css: (key: FontSizeKey): string => `${fontSizeMap[key]}px`,
+  css: (key: FontSizeKey | string): string => {
+    const value = ThemeManager.getToken(`fontSizes.${key}`);
+    if (typeof value === 'number') {
+      return `${value}px`;
+    }
+
+    return `${fontSizeMap[key as FontSizeKey] ?? 0}px`;
+  },
 };

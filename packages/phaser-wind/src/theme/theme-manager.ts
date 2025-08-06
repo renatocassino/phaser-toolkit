@@ -3,6 +3,7 @@ import { merge } from 'lodash';
 import {
   type BaseThemeConfig,
   type ThemeOverride,
+  defaultDarkTheme,
   defaultLightTheme,
 } from './theme-config';
 
@@ -18,8 +19,15 @@ class ThemeManagerClass {
   /**
    * Initialize the theme manager with a default theme
    */
-  init<T extends BaseThemeConfig>(theme: T): void {
-    this.currentTheme = theme;
+  init<T extends BaseThemeConfig>(
+    theme: T,
+    type: 'light' | 'dark' = 'light'
+  ): void {
+    this.currentTheme = merge(
+      {},
+      type === 'light' ? defaultLightTheme : defaultDarkTheme,
+      theme
+    );
     this.registerTheme('default', theme);
   }
 
@@ -185,6 +193,15 @@ class ThemeManagerClass {
       this.currentTheme = defaultTheme;
       this.notifyListeners();
     }
+  }
+
+  /**
+   * Clear all registered themes and reset to default
+   */
+  clear(): void {
+    this.registeredThemes.clear();
+    this.currentTheme = defaultLightTheme;
+    this.listeners = [];
   }
 
   private notifyListeners(): void {

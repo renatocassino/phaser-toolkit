@@ -1,6 +1,7 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ThemeManager } from '../theme/theme-manager';
+import { isValidColor } from '../utils';
 
 import { pallete } from './pallete';
 
@@ -119,6 +120,10 @@ export const Color = {
 
     const colorValue = pallete[color as 'black' | 'white'];
     if (!colorValue) {
+      if (isValidColor(color)) {
+        return color;
+      }
+
       throw new Error(`Color token "${color}" not found`);
     }
     return colorValue;

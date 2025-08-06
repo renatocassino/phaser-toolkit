@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.3.0
+
+### Minor Changes
+
+- 2a6d7ac: change way to build components
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,3 +1,5 @@
+import { merge } from 'lodash';
+
 import {
   type BaseThemeConfig,
   type DefaultThemeStructure,
@@ -48,8 +50,8 @@ class ThemeManagerClass {
   /**
    * Set theme directly with object
    */
-  setThemeObject<T extends BaseThemeConfig>(theme: T): void {
-    this.currentTheme = theme;
+  setThemeObject(theme: Partial<BaseThemeConfig>): void {
+    this.currentTheme = merge({}, this.currentTheme, theme);
     this.notifyListeners();
   }
 

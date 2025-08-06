@@ -1,3 +1,5 @@
+import { ThemeManager } from '../theme/theme-manager';
+
 /**
  * Valid spacing scale keys following Tailwind's spacing scale
  * Values range from '0' to '96', including fractional values
@@ -90,24 +92,42 @@ export const spacingMap: SpacingMap = {
  * Utility functions for working with spacing values
  */
 export const Spacing = {
+  getValueByKey: (key: SpacingKey | string): number => {
+    const value = ThemeManager.getToken(`spacing.${key}`);
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    return spacingMap[key as SpacingKey] ?? 0;
+  },
+
   /**
    * Get spacing value in pixels
    * @param key - Spacing scale key
    * @returns Pixel value
    */
-  px: (key: SpacingKey): number => spacingMap[key],
+  px: (key: SpacingKey | string): number => {
+    const value = Spacing.getValueByKey(key);
+    return value;
+  },
 
   /**
    * Get spacing value in rem units (divided by 16)
    * @param key - Spacing scale key
    * @returns Rem value
    */
-  rem: (key: SpacingKey): number => spacingMap[key] / 16,
+  rem: (key: SpacingKey | string): number => {
+    const value = Spacing.getValueByKey(key);
+    return value / 16;
+  },
 
   /**
    * Get spacing value as CSS pixel string
    * @param key - Spacing scale key
    * @returns CSS pixel value string (e.g. "16px")
    */
-  css: (key: SpacingKey): string => `${spacingMap[key]}px`,
+  css: (key: SpacingKey | string): string => {
+    const value = Spacing.getValueByKey(key);
+    return `${value}px`;
+  },
 };

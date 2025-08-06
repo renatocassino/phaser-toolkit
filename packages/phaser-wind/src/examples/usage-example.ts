@@ -8,7 +8,7 @@
 import Phaser from 'phaser';
 
 import {
-  ColorPicker,
+  Color,
   FontSizePicker,
   ThemeManager,
   createTheme,
@@ -71,7 +71,7 @@ export class ExampleGameScene extends Phaser.Scene {
         0,
         this.cameras.main.width,
         this.cameras.main.height,
-        ColorPicker.hex('background')
+        Color.hex('background')
       )
       .setOrigin(0);
 
@@ -79,7 +79,7 @@ export class ExampleGameScene extends Phaser.Scene {
     this.add
       .text(400, 50, 'MY GAME', {
         fontSize: FontSizePicker.css('4xl'),
-        color: ColorPicker.rgb('primary') as string,
+        color: Color.rgb('primary') as string,
       })
       .setOrigin(0.5);
 
@@ -97,13 +97,7 @@ export class ExampleGameScene extends Phaser.Scene {
     height: number
   ): void {
     // Background
-    this.add.rectangle(
-      x,
-      y,
-      width,
-      height,
-      ColorPicker.hex('background-panel')
-    );
+    this.add.rectangle(x, y, width, height, Color.hex('background-panel'));
 
     // Health fill (80% health example)
     const healthWidth = width * 0.8;
@@ -112,14 +106,14 @@ export class ExampleGameScene extends Phaser.Scene {
       y,
       healthWidth,
       height - 4,
-      ColorPicker.hex('player-health')
+      Color.hex('player-health')
     );
 
     // Health text
     this.add
       .text(x, y, '80 / 100', {
         fontSize: FontSizePicker.css('sm'),
-        color: ColorPicker.rgb('text') as string,
+        color: Color.rgb('text') as string,
       })
       .setOrigin(0.5);
   }
@@ -131,59 +125,48 @@ export class ExampleGameScene extends Phaser.Scene {
     height: number
   ): void {
     // Panel background
-    this.add.rectangle(
-      x,
-      y,
-      width,
-      height,
-      ColorPicker.hex('background-panel')
-    );
+    this.add.rectangle(x, y, width, height, Color.hex('background-panel'));
 
     // Panel title
     this.add
       .text(x, y - height / 2 + 20, 'Inventory', {
         fontSize: FontSizePicker.css('lg'),
-        color: ColorPicker.rgb('text') as string,
+        color: Color.rgb('text') as string,
       })
       .setOrigin(0.5);
 
     // Rare item
-    this.add.circle(x - 50, y, 15, ColorPicker.hex('pickup-rare'));
+    this.add.circle(x - 50, y, 15, Color.hex('pickup-rare'));
     this.add
       .text(x - 50, y + 25, 'Rare', {
         fontSize: FontSizePicker.css('xs'),
-        color: ColorPicker.rgb('pickup-rare') as string,
+        color: Color.rgb('pickup-rare') as string,
       })
       .setOrigin(0.5);
 
     // Common item
-    this.add.circle(x + 50, y, 15, ColorPicker.hex('pickup-common'));
+    this.add.circle(x + 50, y, 15, Color.hex('pickup-common'));
     this.add
       .text(x + 50, y + 25, 'Common', {
         fontSize: FontSizePicker.css('xs'),
-        color: ColorPicker.rgb('pickup-common') as string,
+        color: Color.rgb('pickup-common') as string,
       })
       .setOrigin(0.5);
   }
 
   private createGameElements(): void {
     // Enemy with theme-based health
-    const enemy = this.add.circle(
-      600,
-      300,
-      30,
-      ColorPicker.hex('enemy-health')
-    );
+    const enemy = this.add.circle(600, 300, 30, Color.hex('enemy-health'));
 
     // Player with theme-based color
-    const player = this.add.circle(200, 300, 25, ColorPicker.hex('primary'));
+    const player = this.add.circle(200, 300, 25, Color.hex('primary'));
 
     // eslint-disable-next-line no-console
     console.log(enemy, player);
 
     // Pickup items with theme colors
-    this.add.star(400, 400, 5, 10, 20, ColorPicker.hex('pickup-rare'));
-    this.add.star(450, 400, 5, 8, 16, ColorPicker.hex('pickup-common'));
+    this.add.star(400, 400, 5, 10, 20, Color.hex('pickup-rare'));
+    this.add.star(450, 400, 5, 8, 16, Color.hex('pickup-common'));
   }
 }
 

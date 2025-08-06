@@ -10,9 +10,9 @@
 import Phaser from 'phaser';
 
 import {
-  ColorPicker,
+  Color,
   EffectPicker,
-  FontPicker,
+  Font,
   FontSizePicker,
   SpacingPicker,
   ThemeManager,
@@ -151,10 +151,10 @@ export class AdvancedGameScene extends Phaser.Scene {
     // Create gradient background using theme colors
     const bg = this.add.graphics();
     bg.fillGradientStyle(
-      ColorPicker.hex('ui-background'), // Top-left
-      ColorPicker.hex('ui-panel'), // Top-right
-      ColorPicker.hex('ui-panel'), // Bottom-left
-      ColorPicker.hex('ui-background') // Bottom-right
+      Color.hex('ui-background'), // Top-left
+      Color.hex('ui-panel'), // Top-right
+      Color.hex('ui-panel'), // Bottom-left
+      Color.hex('ui-background') // Bottom-right
     );
     bg.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
   }
@@ -167,7 +167,7 @@ export class AdvancedGameScene extends Phaser.Scene {
     this.add
       .text(this.cameras.main.centerX, hudY, 'CYBER QUEST', {
         ...titleStyle,
-        color: ColorPicker.rgb('primary') as string,
+        color: Color.rgb('primary') as string,
       })
       .setOrigin(0.5);
 
@@ -203,18 +203,18 @@ export class AdvancedGameScene extends Phaser.Scene {
     const labelStyle = TypographyPicker.phaserStyle('caption');
     this.add.text(x, y - SpacingPicker.px('sm'), label, {
       ...labelStyle,
-      color: ColorPicker.rgb('ui-text') as string,
+      color: Color.rgb('ui-text') as string,
     });
 
     // Background bar
     this.add
-      .rectangle(x, y, width, height, ColorPicker.hex('ui-panel'))
+      .rectangle(x, y, width, height, Color.hex('ui-panel'))
       .setOrigin(0, 0.5);
 
     // Fill bar
     const fillWidth = width * percentage;
     this.add
-      .rectangle(x, y, fillWidth, height - 2, ColorPicker.hex(colorKey))
+      .rectangle(x, y, fillWidth, height - 2, Color.hex(colorKey))
       .setOrigin(0, 0.5);
 
     // Text overlay
@@ -222,7 +222,7 @@ export class AdvancedGameScene extends Phaser.Scene {
     this.add
       .text(x + width / 2, y, `${Math.round(percentage * 100)}%`, {
         ...bodyStyle,
-        color: ColorPicker.rgb('ui-text') as string,
+        color: Color.rgb('ui-text') as string,
       })
       .setOrigin(0.5);
   }
@@ -236,7 +236,7 @@ export class AdvancedGameScene extends Phaser.Scene {
       centerX - SpacingPicker.px('massive'),
       centerY,
       SpacingPicker.px('lg'),
-      ColorPicker.hex('primary')
+      Color.hex('primary')
     );
 
     // Enemy
@@ -244,7 +244,7 @@ export class AdvancedGameScene extends Phaser.Scene {
       centerX + SpacingPicker.px('massive'),
       centerY,
       SpacingPicker.px('xl'),
-      ColorPicker.hex('enemy-health')
+      Color.hex('enemy-health')
     );
 
     // Items with different rarities
@@ -271,17 +271,11 @@ export class AdvancedGameScene extends Phaser.Scene {
       5,
       SpacingPicker.px('sm'),
       SpacingPicker.px('md'),
-      ColorPicker.hex(rarityColor)
+      Color.hex(rarityColor)
     );
 
     // Item glow effect (simulated)
-    this.add.circle(
-      x,
-      y,
-      SpacingPicker.px('lg'),
-      ColorPicker.hex(rarityColor),
-      0.2
-    );
+    this.add.circle(x, y, SpacingPicker.px('lg'), Color.hex(rarityColor), 0.2);
   }
 
   private createUI(): void {
@@ -316,13 +310,13 @@ export class AdvancedGameScene extends Phaser.Scene {
 
     // Button background
     const button = this.add
-      .rectangle(x, y, width, height, ColorPicker.hex('ui-button'))
+      .rectangle(x, y, width, height, Color.hex('ui-button'))
       .setInteractive()
       .on('pointerover', () => {
-        button.setFillStyle(ColorPicker.hex('ui-button-hover'));
+        button.setFillStyle(Color.hex('ui-button-hover'));
       })
       .on('pointerout', () => {
-        button.setFillStyle(ColorPicker.hex('ui-button'));
+        button.setFillStyle(Color.hex('ui-button'));
       })
       .on('pointerdown', () => {
         console.log(`${text} button clicked!`);
@@ -333,7 +327,7 @@ export class AdvancedGameScene extends Phaser.Scene {
     this.add
       .text(x, y, text, {
         ...buttonStyle,
-        color: ColorPicker.rgb(variant) as string,
+        color: Color.rgb(variant) as string,
       })
       .setOrigin(0.5);
   }
@@ -375,13 +369,13 @@ export const demonstrateAPIUsage = (): void => {
   console.log('=== Theme API Demo ===');
 
   // Colors
-  console.log('Primary color (RGB):', ColorPicker.rgb('primary'));
-  console.log('Primary color (HEX):', ColorPicker.hex('primary'));
-  console.log('UI background:', ColorPicker.rgb('ui-background'));
+  console.log('Primary color (RGB):', Color.rgb('primary'));
+  console.log('Primary color (HEX):', Color.hex('primary'));
+  console.log('UI background:', Color.rgb('ui-background'));
 
   // Fonts
-  console.log('Display font:', FontPicker.family('display'));
-  console.log('Available fonts:', FontPicker.getAvailableFonts());
+  console.log('Display font:', Font.family('display'));
+  console.log('Available fonts:', Font.getAvailableFonts());
 
   // Spacing
   console.log('Large spacing:', SpacingPicker.px('lg'));
@@ -429,7 +423,7 @@ export class ThemedButton {
 
     // Background with theme colors
     this.background = scene.add
-      .rectangle(x, y, width, height, ColorPicker.hex('ui-button'))
+      .rectangle(x, y, width, height, Color.hex('ui-button'))
       .setInteractive()
       .on('pointerover', () => this.onHover())
       .on('pointerout', () => this.onLeave())
@@ -440,17 +434,17 @@ export class ThemedButton {
     this.text = scene.add
       .text(x, y, label, {
         ...textStyle,
-        color: ColorPicker.rgb(variant) as string,
+        color: Color.rgb(variant) as string,
       })
       .setOrigin(0.5);
   }
 
   private onHover(): void {
-    this.background.setFillStyle(ColorPicker.hex('ui-button-hover'));
+    this.background.setFillStyle(Color.hex('ui-button-hover'));
   }
 
   private onLeave(): void {
-    this.background.setFillStyle(ColorPicker.hex('ui-button'));
+    this.background.setFillStyle(Color.hex('ui-button'));
   }
 
   private onClick(): void {

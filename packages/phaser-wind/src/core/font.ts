@@ -4,7 +4,7 @@ import { ThemeManager } from '../theme/theme-manager';
 /**
  * Font picker for accessing theme fonts and font families
  */
-export class FontPicker {
+export class Font {
   /**
    * Get font family from theme
    * @param key - Font key (e.g., 'primary', 'display') or full path (e.g., 'fonts.primary')

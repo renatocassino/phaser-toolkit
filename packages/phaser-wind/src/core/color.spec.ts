@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createTheme, ThemeManager } from '../theme';
 
-import { ColorPicker, type ColorToken } from './color-picker';
+import { Color, type ColorToken } from './color';
 
 const RED_500_RGB = 'rgb(239, 68, 68)';
 const SLATE_50_RGB = 'rgb(248, 250, 252)';
@@ -94,7 +94,7 @@ describe('ColorPicker', () => {
       ['black', '#000'],
       ['white', '#fff'],
     ])('should convert %s to rgb %s', (colorToken, expected) => {
-      expect(ColorPicker.rgb(colorToken as ColorToken)).toBe(expected);
+      expect(Color.rgb(colorToken as ColorToken)).toBe(expected);
     });
   });
 
@@ -182,25 +182,25 @@ describe('ColorPicker', () => {
       ['black', 0x000000],
       ['white', 0xffffff],
     ])('should convert %s to hex 0x%s', (colorToken, expected) => {
-      expect(ColorPicker.hex(colorToken as ColorToken)).toBe(expected);
+      expect(Color.hex(colorToken as ColorToken)).toBe(expected);
     });
   });
 
   describe('error handling', () => {
     it('should throw an error for invalid color token', () => {
-      expect(() => ColorPicker.rgb('invalid-color' as ColorToken)).toThrow(
+      expect(() => Color.rgb('invalid-color' as ColorToken)).toThrow(
         'Color token "invalid-color" not found'
       );
     });
 
     it('should throw an error for invalid shade', () => {
-      expect(() => ColorPicker.rgb('red-999' as ColorToken)).toThrow(
+      expect(() => Color.rgb('red-999' as ColorToken)).toThrow(
         'Color token "red-999" not found'
       );
     });
 
     it('should throw an error for invalid color key', () => {
-      expect(() => ColorPicker.hex('purples-500' as ColorToken)).toThrow(
+      expect(() => Color.hex('purples-500' as ColorToken)).toThrow(
         'Color token "purples-500" not found'
       );
     });
@@ -217,24 +217,22 @@ describe('ColorPicker', () => {
     ThemeManager.init(fakeTheme);
 
     it('should resolve theme token with colors. prefix', () => {
-      expect(ColorPicker.rgb('colors.primary' as ColorToken)).toBe(RED_500_RGB);
-      expect(ColorPicker.rgb('colors.secondary' as ColorToken)).toBe(
-        SLATE_50_RGB
-      );
+      expect(Color.rgb('colors.primary' as ColorToken)).toBe(RED_500_RGB);
+      expect(Color.rgb('colors.secondary' as ColorToken)).toBe(SLATE_50_RGB);
     });
 
     it('should resolve theme token without colors. prefix', () => {
-      expect(ColorPicker.rgb('primary' as ColorToken)).toBe(RED_500_RGB);
-      expect(ColorPicker.rgb('secondary' as ColorToken)).toBe(SLATE_50_RGB);
+      expect(Color.rgb('primary' as ColorToken)).toBe(RED_500_RGB);
+      expect(Color.rgb('secondary' as ColorToken)).toBe(SLATE_50_RGB);
     });
 
     it('should convert theme tokens to hex', () => {
-      expect(ColorPicker.hex('colors.primary' as ColorToken)).toBe(0xef4444);
-      expect(ColorPicker.hex('colors.secondary' as ColorToken)).toBe(0xf8fafc);
+      expect(Color.hex('colors.primary' as ColorToken)).toBe(0xef4444);
+      expect(Color.hex('colors.secondary' as ColorToken)).toBe(0xf8fafc);
     });
 
     it('should throw an error if theme token is not found', () => {
-      expect(() => ColorPicker.rgb('colors.not-found' as ColorToken)).toThrow(
+      expect(() => Color.rgb('colors.not-found' as ColorToken)).toThrow(
         'Color token "colors.not-found" not found'
       );
     });

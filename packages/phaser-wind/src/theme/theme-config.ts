@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable sonarjs/no-duplicate-string */
-import type { ColorToken } from '../core/color-picker';
-import type { FontSizeKey } from '../font/font-size-picker';
+import type { ColorToken } from '../core/color';
+import type { FontSizeKey } from '../core/font-size';
 
 /**
  * Font configuration structure

@@ -70,7 +70,7 @@ const resolveThemeToken = (color: string): string | null => {
   return null;
 };
 
-export const ColorPicker = {
+export const Color = {
   /**
    * Get RGB string for a color token or theme token
    * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
@@ -79,7 +79,7 @@ export const ColorPicker = {
   rgb: (color: ColorToken): string => {
     const resolved = resolveThemeToken(color);
     if (resolved) {
-      return ColorPicker.rgb(resolved as ColorToken);
+      return Color.rgb(resolved as ColorToken);
     }
 
     const parts = color.split('-');
@@ -108,7 +108,7 @@ export const ColorPicker = {
   hex: (color: ColorToken): number => {
     const resolved = resolveThemeToken(color);
     if (resolved) {
-      return ColorPicker.hex(resolved as ColorToken);
+      return Color.hex(resolved as ColorToken);
     }
 
     const parts = color.split('-');
@@ -131,54 +131,54 @@ export const ColorPicker = {
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  slate: (shade: ShadeKey) => ColorPicker.rgb(`slate-${shade}`),
+  slate: (shade: ShadeKey) => Color.rgb(`slate-${shade}`),
 
   /**
    * Get RGB color value for gray color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  gray: (shade: ShadeKey) => ColorPicker.rgb(`gray-${shade}`),
+  gray: (shade: ShadeKey) => Color.rgb(`gray-${shade}`),
 
   /**
    * Get RGB color value for zinc color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  zinc: (shade: ShadeKey) => ColorPicker.rgb(`zinc-${shade}`),
+  zinc: (shade: ShadeKey) => Color.rgb(`zinc-${shade}`),
 
   /**
    * Get RGB color value for neutral color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  neutral: (shade: ShadeKey) => ColorPicker.rgb(`neutral-${shade}`),
+  neutral: (shade: ShadeKey) => Color.rgb(`neutral-${shade}`),
 
   /**
    * Get hex number for slate color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  slateHex: (shade: ShadeKey) => ColorPicker.hex(`slate-${shade}`),
+  slateHex: (shade: ShadeKey) => Color.hex(`slate-${shade}`),
 
   /**
    * Get hex number for gray color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  grayHex: (shade: ShadeKey) => ColorPicker.hex(`gray-${shade}`),
+  grayHex: (shade: ShadeKey) => Color.hex(`gray-${shade}`),
 
   /**
    * Get hex number for zinc color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  zincHex: (shade: ShadeKey) => ColorPicker.hex(`zinc-${shade}`),
+  zincHex: (shade: ShadeKey) => Color.hex(`zinc-${shade}`),
 
   /**
    * Get hex number for neutral color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  neutralHex: (shade: ShadeKey) => ColorPicker.hex(`neutral-${shade}`),
+  neutralHex: (shade: ShadeKey) => Color.hex(`neutral-${shade}`),
 } as const;

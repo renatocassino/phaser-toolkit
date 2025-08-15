@@ -1,5 +1,6 @@
 import { Plugins } from 'phaser';
 
+import { createFontSize, FontSizeApi } from '../core';
 import { createColor, type Color } from '../core/color';
 import {
   BaseThemeConfig,
@@ -31,6 +32,7 @@ export class PhaserWindPlugin<
   T extends BaseThemeConfig,
 > extends Plugins.BasePlugin {
   private colorInstance: Color<T['colors']> | null = null;
+  private fontSizeInstance: FontSizeApi<T['fontSizes']> | null = null;
 
   /** Current theme configuration */
   private theme: T & BaseThemeConfig;
@@ -74,6 +76,13 @@ export class PhaserWindPlugin<
     }
 
     this.theme = theme as T & BaseThemeConfig;
+
+    this.colorInstance = createColor<T['colors']>(
+      this.theme.colors as T['colors']
+    );
+    this.fontSizeInstance = createFontSize<T['fontSizes']>(
+      this.theme.fontSizes
+    );
   }
 
   /**
@@ -85,12 +94,10 @@ export class PhaserWindPlugin<
   }
 
   public get color(): Color<T['colors']> {
-    if (!this.colorInstance) {
-      this.colorInstance = createColor<T['colors']>(
-        this.theme.colors as T['colors']
-      );
-    }
+    return this.colorInstance as Color<T['colors']>;
+  }
 
-    return this.colorInstance;
+  public get fontSize(): FontSizeApi<T['fontSizes']> {
+    return this.fontSizeInstance as FontSizeApi<T['fontSizes']>;
   }
 }

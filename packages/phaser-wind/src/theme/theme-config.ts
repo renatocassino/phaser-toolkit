@@ -1,9 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable sonarjs/no-duplicate-string */
-import {
-  fontSizeMap,
-  type FontSizeMap,
-} from '../core/font-size';
+import { fontSizeMap, type FontSizeMap } from '../core/font-size';
 import { radiusMap, type RadiusMap } from '../core/radius';
 import { spacingMap } from '../core/spacing';
 
@@ -19,7 +16,7 @@ import {
  * Theme override type - allows partial configuration for theming.
  * This type enables customization of the default theme by overriding existing values
  * and adding new custom tokens.
- * 
+ *
  * @typedef {Object} ThemeOverride
  * @property {Partial<FontConfig>} [fonts] - Font family configurations that can override default fonts
  *   or add new font definitions
@@ -55,9 +52,7 @@ export type ThemeOverride = {
  */
 export type BaseThemeConfig = {
   fonts?: FontConfig;
-  fontSizes?: FontSizeMap & {
-    [key: string]: number;
-  };
+  fontSizes?: FontSizeMap;
   colors?: ColorConfig;
   spacing?: SpacingConfig;
   typography?: TypographyConfig;

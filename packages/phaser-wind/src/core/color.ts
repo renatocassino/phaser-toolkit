@@ -6,9 +6,13 @@ import { isValidColor } from '../utils';
 
 import { palette } from './palette';
 
+/** Regular expression to match RGB color format */
 const RGB_REGEX = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
 
+/** Available color keys from the palette */
 export type ColorKey = keyof typeof palette;
+
+/** Available shade values for colors */
 export type ShadeKey =
   | '50'
   | '100'
@@ -33,6 +37,7 @@ export type ShadeKey =
   | 900
   | 950;
 
+/** Color token format combining color and shade, or special colors */
 export type ColorToken = `${ColorKey}-${ShadeKey}` | 'black' | 'white';
 
 /**
@@ -55,6 +60,7 @@ const convertHexToNumber = (hexValue: string): number => {
  * Convert RGB color value to number
  * @param rgbValue - RGB color value (e.g., 'rgb(255, 0, 0)')
  * @returns Number representation of RGB color
+ * @throws {Error} If RGB format is invalid
  */
 const convertRgbToNumber = (rgbValue: string): number => {
   const matches = rgbValue.match(RGB_REGEX);
@@ -81,63 +87,120 @@ const convertColorValueToNumber = (colorValue: string): number => {
   return convertRgbToNumber(colorValue);
 };
 
+/**
+ * Color utility API interface
+ * Provides methods to work with colors in different formats
+ */
 export type Color<T = BaseThemeConfig['colors']> = {
+  /** Get RGB string representation of a color */
   rgb(color: ColorToken | keyof T | string): string;
+  /** Get hex number representation of a color */
   hex(color: ColorToken | keyof T | string): number;
 
+  /** Get RGB string for slate color with specified shade */
   slate(shade: ShadeKey): string;
+  /** Get RGB string for gray color with specified shade */
   gray(shade: ShadeKey): string;
+  /** Get RGB string for zinc color with specified shade */
   zinc(shade: ShadeKey): string;
+  /** Get RGB string for neutral color with specified shade */
   neutral(shade: ShadeKey): string;
+  /** Get RGB string for stone color with specified shade */
   stone(shade: ShadeKey): string;
+  /** Get RGB string for red color with specified shade */
   red(shade: ShadeKey): string;
+  /** Get RGB string for orange color with specified shade */
   orange(shade: ShadeKey): string;
+  /** Get RGB string for amber color with specified shade */
   amber(shade: ShadeKey): string;
+  /** Get RGB string for yellow color with specified shade */
   yellow(shade: ShadeKey): string;
+  /** Get RGB string for lime color with specified shade */
   lime(shade: ShadeKey): string;
+  /** Get RGB string for green color with specified shade */
   green(shade: ShadeKey): string;
+  /** Get RGB string for emerald color with specified shade */
   emerald(shade: ShadeKey): string;
+  /** Get RGB string for teal color with specified shade */
   teal(shade: ShadeKey): string;
+  /** Get RGB string for cyan color with specified shade */
   cyan(shade: ShadeKey): string;
+  /** Get RGB string for sky color with specified shade */
   sky(shade: ShadeKey): string;
+  /** Get RGB string for blue color with specified shade */
   blue(shade: ShadeKey): string;
+  /** Get RGB string for indigo color with specified shade */
   indigo(shade: ShadeKey): string;
+  /** Get RGB string for violet color with specified shade */
   violet(shade: ShadeKey): string;
+  /** Get RGB string for purple color with specified shade */
   purple(shade: ShadeKey): string;
+  /** Get RGB string for fuchsia color with specified shade */
   fuchsia(shade: ShadeKey): string;
+  /** Get RGB string for pink color with specified shade */
   pink(shade: ShadeKey): string;
+  /** Get RGB string for rose color with specified shade */
   rose(shade: ShadeKey): string;
 
+  /** Get hex number for slate color with specified shade */
   slateHex(shade: ShadeKey): number;
+  /** Get hex number for gray color with specified shade */
   grayHex(shade: ShadeKey): number;
+  /** Get hex number for zinc color with specified shade */
   zincHex(shade: ShadeKey): number;
+  /** Get hex number for neutral color with specified shade */
   neutralHex(shade: ShadeKey): number;
+  /** Get hex number for stone color with specified shade */
   stoneHex(shade: ShadeKey): number;
+  /** Get hex number for red color with specified shade */
   redHex(shade: ShadeKey): number;
+  /** Get hex number for orange color with specified shade */
   orangeHex(shade: ShadeKey): number;
+  /** Get hex number for amber color with specified shade */
   amberHex(shade: ShadeKey): number;
+  /** Get hex number for yellow color with specified shade */
   yellowHex(shade: ShadeKey): number;
+  /** Get hex number for lime color with specified shade */
   limeHex(shade: ShadeKey): number;
+  /** Get hex number for green color with specified shade */
   greenHex(shade: ShadeKey): number;
+  /** Get hex number for emerald color with specified shade */
   emeraldHex(shade: ShadeKey): number;
+  /** Get hex number for teal color with specified shade */
   tealHex(shade: ShadeKey): number;
+  /** Get hex number for cyan color with specified shade */
   cyanHex(shade: ShadeKey): number;
+  /** Get hex number for sky color with specified shade */
   skyHex(shade: ShadeKey): number;
+  /** Get hex number for blue color with specified shade */
   blueHex(shade: ShadeKey): number;
+  /** Get hex number for indigo color with specified shade */
   indigoHex(shade: ShadeKey): number;
+  /** Get hex number for violet color with specified shade */
   violetHex(shade: ShadeKey): number;
+  /** Get hex number for purple color with specified shade */
   purpleHex(shade: ShadeKey): number;
+  /** Get hex number for fuchsia color with specified shade */
   fuchsiaHex(shade: ShadeKey): number;
+  /** Get hex number for pink color with specified shade */
   pinkHex(shade: ShadeKey): number;
+  /** Get hex number for rose color with specified shade */
   roseHex(shade: ShadeKey): number;
 };
 
 /**
  * Factory that creates a color utility API based on the provided theme colors
+ * @param themeColors - Theme colors configuration
+ * @returns Color utility API instance
  */
 export const createColor = <T = BaseThemeConfig['colors']>(
   themeColors: T
 ): Color<T> => {
+  /**
+   * Get color value from theme configuration
+   * @param key - Color token or theme color key
+   * @returns Color value from theme or null if not found
+   */
   const getValueFromTheme = (key: ColorToken | keyof T): T[keyof T] | null => {
     if (themeColors && key in (themeColors as Object)) {
       return themeColors[key as keyof T];
@@ -145,6 +208,12 @@ export const createColor = <T = BaseThemeConfig['colors']>(
     return null;
   };
 
+  /**
+   * Get RGB string representation of a color
+   * @param color - Color token, theme color key or valid color string
+   * @returns RGB color string
+   * @throws {Error} If color token is not found
+   */
   const rgb = (color: ColorToken | keyof T | string): string => {
     if (typeof color === 'string' && isValidColor(color)) {
       return color;
@@ -179,6 +248,12 @@ export const createColor = <T = BaseThemeConfig['colors']>(
     return colorValue;
   };
 
+  /**
+   * Get hex number representation of a color
+   * @param color - Color token, theme color key or valid color string
+   * @returns Hex color number
+   * @throws {Error} If color token is not found
+   */
   const hex = (color: ColorToken | keyof T | string): number => {
     if (typeof color === 'string' && isValidColor(color)) {
       return convertColorValueToNumber(color);

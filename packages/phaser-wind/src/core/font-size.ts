@@ -1,4 +1,4 @@
-import { ThemeManager } from '../theme';
+import { BaseThemeConfig } from '../theme';
 
 /**
  * Available font size keys matching Tailwind CSS font size scale
@@ -18,7 +18,7 @@ export type FontSizeKey =
   | '8xl'
   | '9xl';
 
-export type FontSizeMap = Record<FontSizeKey, number>;
+export type FontSizeMap = Record<FontSizeKey | string, number>;
 
 /**
  * Mapping of font size keys to their pixel values
@@ -39,57 +39,51 @@ export const fontSizeMap: FontSizeMap = {
   '9xl': 128,
 };
 
+export type FontSizeApi<T extends FontSizeMap> = {
+  px: (key: FontSizeKey | keyof T) => number | null;
+  rem: (key: FontSizeKey | keyof T) => number | null;
+  css: (key: FontSizeKey | keyof T) => string | null;
+};
+
+export const createFontSize = <
+  T extends FontSizeMap = NonNullable<BaseThemeConfig['fontSizes']>,
+>(
+  themeFontSizes: T = {} as T
+): FontSizeApi<T> => {
+  const fontmap = {
+    ...fontSizeMap,
+    ...themeFontSizes,
+  };
+
+  return {
+    px: (key: FontSizeKey | keyof T): number | null => {
+      const value = fontmap[key as FontSizeKey];
+      if (typeof value === 'number') {
+        return value;
+      }
+
+      return null;
+    },
+    rem: (key: FontSizeKey | keyof T): number | null => {
+      const value = fontmap[key as FontSizeKey];
+      if (typeof value === 'number') {
+        return value / 16;
+      }
+
+      return null;
+    },
+    css: (key: FontSizeKey | keyof T): string | null => {
+      const value = fontmap[key as FontSizeKey];
+      if (typeof value === 'number') {
+        return `${value}px`;
+      }
+
+      return null;
+    },
+  };
+};
+
 /**
  * Utility functions for working with font sizes
  */
-export const FontSize = {
-  getValueByKey: (key: FontSizeKey | string): number => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return value;
-    }
-
-    return fontSizeMap[key as FontSizeKey] ?? 0;
-  },
-  /**
-   * Get font size in pixels
-   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
-   * @returns Font size in pixels
-   */
-  px: (key: FontSizeKey | string): number => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return value;
-    }
-
-    return fontSizeMap[key as FontSizeKey] ?? 0;
-  },
-
-  /**
-   * Get font size in rem units (relative to 16px base)
-   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
-   * @returns Font size in rem units
-   */
-  rem: (key: FontSizeKey | string): number => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return value / 16;
-    }
-
-    return (fontSizeMap[key as FontSizeKey] ?? 0) / 16;
-  },
-
-  /**
-   * Get font size as CSS pixel string
-   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
-   * @returns Font size as CSS string (e.g., '14px')
-   */
-  css: (key: FontSizeKey | string): string => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return `${value}px`;
-    }
-
-    return `${fontSizeMap[key as FontSizeKey] ?? 0}px`;
-  },
-};
+// Removed legacy global FontSize object in favor of the factory API

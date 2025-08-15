@@ -1,7 +1,12 @@
 /* eslint-disable no-magic-numbers */
+import type { BaseThemeConfig } from '../theme';
 import { ThemeManager } from '../theme/theme-manager';
 
-import { FontSize, type FontSizeKey } from './font-size';
+import {
+  createFontSize,
+  type FontSizeKey,
+  type FontSizeMap,
+} from './font-size';
 
 /**
  * Font picker for accessing theme fonts and font families
@@ -13,7 +18,11 @@ export const Font = {
    * @returns Font size in pixels
    */
   size: (key: FontSizeKey): number => {
-    return FontSize.px(key);
+    const currentTheme = (ThemeManager.getCurrentTheme() ??
+      {}) as BaseThemeConfig;
+    const themeFontSizes: FontSizeMap | undefined = currentTheme.fontSizes;
+    const fontSize = createFontSize(themeFontSizes ?? ({} as FontSizeMap));
+    return fontSize.px(key) ?? 0;
   },
 
   /**
@@ -23,7 +32,11 @@ export const Font = {
    * @returns Font string in format "16px 'Arial'"
    */
   format: ({ size, family }: { size: FontSizeKey; family: string }): string => {
-    return `${FontSize.px(size)}px '${Font.family(family)}'`;
+    const currentTheme = (ThemeManager.getCurrentTheme() ??
+      {}) as BaseThemeConfig;
+    const themeFontSizes: FontSizeMap | undefined = currentTheme.fontSizes;
+    const fontSize = createFontSize(themeFontSizes ?? ({} as FontSizeMap));
+    return `${fontSize.px(size) ?? 0}px '${Font.family(family)}'`;
   },
 
   /**

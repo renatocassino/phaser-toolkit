@@ -42,7 +42,7 @@ export class DemoScene extends Phaser.Scene {
     const g = this.add.graphics();
     g.fillStyle(color, 1);
     const x = centerX - cardWidth / 2;
-    const y = centerY - cardHeight / 2 + 20;
+    const y = centerY - cardHeight / 2 + pw.spacing.px('4');
     const radius = 16;
 
     g.fillRoundedRect(x, y, cardWidth, cardHeight, radius);

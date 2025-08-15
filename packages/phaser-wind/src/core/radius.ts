@@ -1,4 +1,4 @@
-import { ThemeManager } from '../theme';
+import type { BaseThemeConfig } from '../theme';
 
 /**
  * Available border radius keys matching Tailwind CSS radius scale
@@ -14,7 +14,7 @@ export type RadiusKey =
   | '3xl'
   | 'full';
 
-export type RadiusMap = Record<RadiusKey, number>;
+export type RadiusMap = Record<RadiusKey | string, number>;
 
 /**
  * Mapping of radius keys to their pixel values
@@ -34,33 +34,32 @@ export const radiusMap: RadiusMap = {
 /**
  * Utility functions for working with border radius values
  */
-export const Radius = {
-  getValueByKey: (key: RadiusKey | string): number => {
-    const value = ThemeManager.getToken(`radius.${key}`);
-    if (typeof value === 'number') {
-      return value;
-    }
+export type RadiusApi<T extends RadiusMap | undefined> = {
+  px: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => number;
+  rem: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => number;
+  css: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => string;
+};
 
-    return radiusMap[key as RadiusKey] ?? 0;
-  },
-  /**
-   * Get border radius in pixels
-   * @param key - Radius key (e.g., 'sm', 'lg', 'full')
-   * @returns Border radius value in pixels
-   */
-  px: (key: RadiusKey): number => radiusMap[key],
+export const createRadius = <
+  T extends RadiusMap | undefined = BaseThemeConfig['radius'],
+>(
+  themeRadius?: T
+): RadiusApi<T> => {
+  const map: RadiusMap = {
+    ...radiusMap,
+    ...(themeRadius as RadiusMap | undefined),
+  } as RadiusMap;
 
-  /**
-   * Get border radius in rem units (relative to 16px base)
-   * @param key - Radius key (e.g., 'sm', 'lg', 'full')
-   * @returns Border radius value in rem units
-   */
-  rem: (key: RadiusKey): number => radiusMap[key] / 16,
+  const get = (key: string): number => {
+    return typeof map[key] === 'number' ? (map[key] as number) : 0;
+  };
 
-  /**
-   * Get border radius as CSS pixel string
-   * @param key - Radius key (e.g., 'sm', 'lg', 'full')
-   * @returns Border radius value as CSS string (e.g., '4px')
-   */
-  css: (key: RadiusKey): string => `${radiusMap[key]}px`,
+  return {
+    px: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)): number =>
+      get(key as string),
+    rem: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)): number =>
+      get(key as string) / 16,
+    css: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)): string =>
+      `${get(key as string)}px`,
+  };
 };

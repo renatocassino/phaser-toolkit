@@ -7,6 +7,7 @@ import {
   type SpacingApi,
 } from '../core';
 import { createColor, type Color } from '../core/color';
+import { createRadius, type RadiusApi } from '../core/radius';
 import {
   BaseThemeConfig,
   defaultDarkTheme,
@@ -39,6 +40,7 @@ export class PhaserWindPlugin<
   private colorInstance: Color<T['colors']> | null = null;
   private fontSizeInstance: FontSizeApi<T['fontSizes']> | null = null;
   private spacingInstance: SpacingApi<T['spacing']> | null = null;
+  private radiusInstance: RadiusApi<T['radius']> | null = null;
 
   /** Current theme configuration */
   private theme: T & BaseThemeConfig;
@@ -92,6 +94,9 @@ export class PhaserWindPlugin<
     this.spacingInstance = createSpacing<T['spacing']>(
       this.theme.spacing as T['spacing']
     );
+    this.radiusInstance = createRadius<T['radius']>(
+      this.theme.radius as T['radius']
+    );
   }
 
   /**
@@ -112,5 +117,9 @@ export class PhaserWindPlugin<
 
   public get spacing(): SpacingApi<T['spacing']> {
     return this.spacingInstance as SpacingApi<T['spacing']>;
+  }
+
+  public get radius(): RadiusApi<T['radius']> {
+    return this.radiusInstance as RadiusApi<T['radius']>;
   }
 }

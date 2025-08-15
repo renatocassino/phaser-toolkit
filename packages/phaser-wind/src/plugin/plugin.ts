@@ -1,7 +1,12 @@
 import { Plugins } from 'phaser';
 
 import { createColor, type Color } from '../core/color';
-import { BaseThemeConfig, defaultDarkTheme, defaultLightTheme } from '../theme';
+import {
+  BaseThemeConfig,
+  defaultDarkTheme,
+  defaultLightTheme,
+  ThemeOverride,
+} from '../theme';
 
 export const PHASER_WIND_KEY: string = 'pw';
 
@@ -14,7 +19,7 @@ export const PHASER_WIND_KEY: string = 'pw';
  * @property {boolean} [darkMode=false] - When true, uses the default dark theme. Only takes effect
  *   if no custom theme is provided
  */
-export type PhaserWindPluginData<T extends BaseThemeConfig> = {
+export type PhaserWindPluginData<T = ThemeOverride> = {
   theme?: T;
   darkMode?: boolean;
 };

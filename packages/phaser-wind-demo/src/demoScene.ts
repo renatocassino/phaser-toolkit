@@ -8,6 +8,8 @@ export class DemoScene extends Phaser.Scene {
   preload() {}
 
   create() {
+    const { pw } = this; // Get PhaserWind theme instance
+
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
@@ -35,7 +37,6 @@ export class DemoScene extends Phaser.Scene {
     const cardWidth = 520;
     const cardHeight = 260;
 
-    const { pw } = this;
     const color = pw.color.hex('primary');
     const g = this.add.graphics();
     g.fillStyle(color, 1);

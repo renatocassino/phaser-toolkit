@@ -1,4 +1,4 @@
-import { createTheme } from '../../phaser-wind/src';
+import { createTheme } from '../../phaser-wind';
 
 export const theme = createTheme({
   colors: {

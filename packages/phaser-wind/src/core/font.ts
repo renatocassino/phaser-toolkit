@@ -1,82 +1,93 @@
 /* eslint-disable no-magic-numbers */
 import type { BaseThemeConfig } from '../theme';
-import { ThemeManager } from '../theme/theme-manager';
 
 import {
   createFontSize,
+  type FontSizeApi,
   type FontSizeKey,
   type FontSizeMap,
 } from './font-size';
 
-/**
- * Font picker for accessing theme fonts and font families
- */
-export const Font = {
-  /**
-   * Get font size in pixels
-   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
-   * @returns Font size in pixels
-   */
-  size: (key: FontSizeKey): number => {
-    const currentTheme = (ThemeManager.getCurrentTheme() ??
-      {}) as BaseThemeConfig;
-    const themeFontSizes: FontSizeMap | undefined = currentTheme.fontSizes;
-    const fontSize = createFontSize(themeFontSizes ?? ({} as FontSizeMap));
-    return fontSize.px(key) ?? 0;
-  },
+// Default font family map (matches defaultLightTheme)
+export const fontMap = {
+  primary: 'Inter, system-ui, sans-serif',
+  secondary: 'Roboto, Arial, sans-serif',
+  monospace: 'Fira Code, Consolas, monospace',
+  display: 'Poppins, Inter, sans-serif',
+} as const;
 
-  /**
-   * Get font size and family combined in CSS format
-   * @param size - Font size key (e.g., 'sm', 'lg', '2xl')
-   * @param family - Font family key (e.g., 'primary', 'display') or full path
-   * @returns Font string in format "16px 'Arial'"
-   */
-  format: ({ size, family }: { size: FontSizeKey; family: string }): string => {
-    const currentTheme = (ThemeManager.getCurrentTheme() ??
-      {}) as BaseThemeConfig;
-    const themeFontSizes: FontSizeMap | undefined = currentTheme.fontSizes;
-    const fontSize = createFontSize(themeFontSizes ?? ({} as FontSizeMap));
-    return `${fontSize.px(size) ?? 0}px '${Font.family(family)}'`;
-  },
+export type FontKey = keyof typeof fontMap;
+export type FontMap = Record<FontKey | string, string>;
 
-  /**
-   * Get font family from theme
-   * @param key - Font key (e.g., 'primary', 'display') or full path (e.g., 'fonts.primary')
-   * @returns Font family string
-   */
-  family: (key: string): string => {
-    // Check if it's a theme token (with or without fonts. prefix)
-    const fontPath = key.includes('.') ? key : `fonts.${key}`;
+export type FontApi<
+  TFonts extends FontMap | undefined,
+  TFontSizes extends FontSizeMap | undefined,
+> = {
+  size: (
+    key:
+      | FontSizeKey
+      | (TFontSizes extends FontSizeMap ? keyof TFontSizes : never)
+  ) => number;
+  format: (args: {
+    size:
+      | FontSizeKey
+      | (TFontSizes extends FontSizeMap ? keyof TFontSizes : never);
+    family: FontKey | (TFonts extends FontMap ? keyof TFonts : never);
+  }) => string;
+  family: (
+    key: FontKey | (TFonts extends FontMap ? keyof TFonts : never)
+  ) => string;
+  getAvailableFonts: () => string[];
+};
 
-    const themeValue = ThemeManager.getToken(fontPath);
-    if (themeValue && typeof themeValue === 'string') {
-      return themeValue;
-    }
+export const createFont = <
+  TFonts extends FontMap | undefined = BaseThemeConfig['fonts'],
+  TFontSizes extends FontSizeMap | undefined = BaseThemeConfig['fontSizes'],
+>(
+  fonts?: TFonts,
+  fontSizes?: TFontSizes
+): FontApi<TFonts, TFontSizes> => {
+  const map: FontMap = {
+    ...fontMap,
+    ...(fonts as FontMap | undefined),
+  } as FontMap;
 
-    // Fallback: check if it's a direct theme token (backwards compatibility)
-    if (ThemeManager.hasToken(key)) {
-      const themeValue = ThemeManager.getToken(key);
-      if (themeValue && typeof themeValue === 'string') {
-        return themeValue;
+  const fontSizeApi: FontSizeApi<TFontSizes> = createFontSize<TFontSizes>(
+    fontSizes as TFontSizes
+  );
+
+  const getFamily = (key: string): string => {
+    if (key.includes('.')) {
+      const [, short] = key.split('.');
+      if (short && typeof map[short] === 'string') {
+        return map[short] as string;
       }
     }
+    return typeof map[key] === 'string' ? (map[key] as string) : key;
+  };
 
-    // Fallback to the key itself if not found in theme
-    return key;
-  },
-
-  /**
-   * Get all available font tokens from current theme
-   * @returns Array of font token keys
-   */
-  getAvailableFonts: (): string[] => {
-    const theme = ThemeManager.getCurrentTheme();
-    if (theme.fonts && typeof theme.fonts === 'object') {
-      return Object.keys(theme.fonts);
-    }
-    return [];
-  },
-} as const;
+  return {
+    size: (
+      key:
+        | FontSizeKey
+        | (TFontSizes extends FontSizeMap ? keyof TFontSizes : never)
+    ): number => {
+      return fontSizeApi.px(key) ?? 0;
+    },
+    format: ({ size, family }): string => {
+      const sizePx = fontSizeApi.px(size) ?? 0;
+      return `${sizePx}px '${getFamily(family as string)}'`;
+    },
+    family: (
+      key: FontKey | (TFonts extends FontMap ? keyof TFonts : never)
+    ): string => getFamily(key as string),
+    getAvailableFonts: (): string[] => {
+      return Array.from(
+        new Set([...(Object.keys(fontMap) as string[]), ...Object.keys(map)])
+      );
+    },
+  };
+};
 
 /**
  * Typography picker for accessing complete typography styles from theme
@@ -87,39 +98,15 @@ export class TypographyPicker {
    * @param key - Typography key (e.g., 'heading', 'body') or full path
    * @returns Typography style object
    */
-  static style(key: string): {
+  static style(): {
     fontSize?: string;
     fontFamily?: string;
     fontWeight?: number | string;
     lineHeight?: number | string;
     letterSpacing?: number | string;
   } {
-    // Check if it's a theme token (with or without typography. prefix)
-    const typographyPath = key.includes('.') ? key : `typography.${key}`;
-
-    if (ThemeManager.hasToken(typographyPath)) {
-      const themeValue = ThemeManager.getToken(typographyPath);
-      if (themeValue && typeof themeValue === 'object') {
-        // Resolve any theme references in the typography object
-        const resolved = this.resolveTypographyReferences(
-          themeValue as Record<string, unknown>
-        );
-        return resolved;
-      }
-    }
-
-    // Fallback: check if it's a direct theme token
-    if (ThemeManager.hasToken(key)) {
-      const themeValue = ThemeManager.getToken(key);
-      if (themeValue && typeof themeValue === 'object') {
-        const resolved = this.resolveTypographyReferences(
-          themeValue as Record<string, unknown>
-        );
-        return resolved;
-      }
-    }
-
-    // Return empty object if not found
+    // Deprecated: previously resolved via ThemeManager.
+    // This class remains for backwards-compat in type surface but does no resolution now.
     return {};
   }
 
@@ -159,41 +146,11 @@ export class TypographyPicker {
    * @returns Array of typography token keys
    */
   static getAvailableTypography(): string[] {
-    const theme = ThemeManager.getCurrentTheme();
-    if (theme.typography && typeof theme.typography === 'object') {
-      return Object.keys(theme.typography);
-    }
+    // Deprecated: no-op placeholder without ThemeManager
     return [];
   }
 
-  /**
-   * Resolve theme references in typography objects
-   * @param typographyObject - Typography style object
-   * @returns Resolved typography object
-   */
-  private static resolveTypographyReferences(
-    typographyObject: Record<string, unknown>
-  ): Record<string, unknown> {
-    const resolved = { ...typographyObject };
-
-    // Resolve fontSize if it's a theme reference
-    if (resolved['fontSize'] && typeof resolved['fontSize'] === 'string') {
-      if (resolved['fontSize'].includes('.')) {
-        resolved['fontSize'] = ThemeManager.resolveToken(resolved['fontSize']);
-      }
-    }
-
-    // Resolve fontFamily if it's a theme reference
-    if (resolved['fontFamily'] && typeof resolved['fontFamily'] === 'string') {
-      if (resolved['fontFamily'].includes('.')) {
-        resolved['fontFamily'] = ThemeManager.resolveToken(
-          resolved['fontFamily']
-        );
-      }
-    }
-
-    return resolved;
-  }
+  // Removed resolver implementation; kept for binary compatibility in d.ts
 }
 
 /**
@@ -205,7 +162,7 @@ export class EffectPicker {
    * @param key - Effect key (e.g., 'shadow-md') or full path
    * @returns Effect configuration object
    */
-  static config(key: string): {
+  static config(): {
     blur?: number;
     offsetX?: number;
     offsetY?: number;
@@ -213,20 +170,7 @@ export class EffectPicker {
     alpha?: number;
   } {
     // Check if it's a theme token (with or without effects. prefix)
-    const effectPath = key.includes('.') ? key : `effects.${key}`;
-
-    if (ThemeManager.hasToken(effectPath)) {
-      const themeValue = ThemeManager.getToken(effectPath);
-      if (themeValue && typeof themeValue === 'object') {
-        // Resolve color references
-        const resolved = { ...themeValue };
-        if ('color' in resolved && typeof resolved.color === 'string') {
-          resolved.color = ThemeManager.resolveToken(resolved.color);
-        }
-        return resolved;
-      }
-    }
-
+    // Deprecated: no-op placeholder without ThemeManager
     return {};
   }
 
@@ -235,10 +179,7 @@ export class EffectPicker {
    * @returns Array of effect token keys
    */
   static getAvailableEffects(): string[] {
-    const theme = ThemeManager.getCurrentTheme();
-    if (theme.effects && typeof theme.effects === 'object') {
-      return Object.keys(theme.effects);
-    }
+    // Deprecated: no-op placeholder without ThemeManager
     return [];
   }
 }

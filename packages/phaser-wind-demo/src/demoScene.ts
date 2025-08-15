@@ -20,7 +20,7 @@ export class DemoScene extends Phaser.Scene {
         ...titleStyle,
         color: pw.color.rgb('slate-200'),
         align: 'center',
-        fontSize: pw.fontSize.px('2xl'),
+        fontSize: pw.fontSize.px('6xl'),
       })
       .setOrigin(0.5, 0.5);
 

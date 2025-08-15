@@ -18,10 +18,13 @@ export type FontSizeKey =
   | '8xl'
   | '9xl';
 
+/**
+ * Maps font size keys to their pixel values
+ */
 export type FontSizeMap = Record<FontSizeKey | string, number>;
 
 /**
- * Mapping of font size keys to their pixel values
+ * Default mapping of font size keys to their pixel values in pixels
  */
 export const fontSizeMap: FontSizeMap = {
   xs: 12,
@@ -39,12 +42,39 @@ export const fontSizeMap: FontSizeMap = {
   '9xl': 128,
 };
 
+/**
+ * API for converting font sizes between different units
+ * @template T - Optional custom font size map type
+ */
 export type FontSizeApi<T extends FontSizeMap | undefined> = {
+  /**
+   * Convert font size key to pixels
+   * @param key - Font size key from default or custom map
+   * @returns Font size in pixels
+   */
   px: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => number;
+
+  /**
+   * Convert font size key to rem units
+   * @param key - Font size key from default or custom map
+   * @returns Font size in rem units
+   */
   rem: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => number;
+
+  /**
+   * Convert font size key to CSS string with px unit
+   * @param key - Font size key from default or custom map
+   * @returns Font size as CSS string (e.g. "16px")
+   */
   css: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => string;
 };
 
+/**
+ * Creates a font size conversion API with optional custom font sizes
+ * @template T - Optional custom font size map type
+ * @param themeFontSizes - Optional custom font size mappings to extend defaults
+ * @returns Font size conversion API
+ */
 export const createFontSize = <
   T extends FontSizeMap | undefined = BaseThemeConfig['fontSizes'],
 >(
@@ -88,8 +118,3 @@ export const createFontSize = <
     },
   };
 };
-
-/**
- * Utility functions for working with font sizes
- */
-// Removed legacy global FontSize object in favor of the factory API

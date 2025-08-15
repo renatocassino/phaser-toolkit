@@ -1,6 +1,11 @@
 import { Plugins } from 'phaser';
 
-import { createFontSize, FontSizeApi } from '../core';
+import {
+  createFontSize,
+  FontSizeApi,
+  createSpacing,
+  type SpacingApi,
+} from '../core';
 import { createColor, type Color } from '../core/color';
 import {
   BaseThemeConfig,
@@ -33,6 +38,7 @@ export class PhaserWindPlugin<
 > extends Plugins.BasePlugin {
   private colorInstance: Color<T['colors']> | null = null;
   private fontSizeInstance: FontSizeApi<T['fontSizes']> | null = null;
+  private spacingInstance: SpacingApi<T['spacing']> | null = null;
 
   /** Current theme configuration */
   private theme: T & BaseThemeConfig;
@@ -83,6 +89,9 @@ export class PhaserWindPlugin<
     this.fontSizeInstance = createFontSize<T['fontSizes']>(
       this.theme.fontSizes as T['fontSizes']
     );
+    this.spacingInstance = createSpacing<T['spacing']>(
+      this.theme.spacing as T['spacing']
+    );
   }
 
   /**
@@ -99,5 +108,9 @@ export class PhaserWindPlugin<
 
   public get fontSize(): FontSizeApi<T['fontSizes']> {
     return this.fontSizeInstance as FontSizeApi<T['fontSizes']>;
+  }
+
+  public get spacing(): SpacingApi<T['spacing']> {
+    return this.spacingInstance as SpacingApi<T['spacing']>;
   }
 }

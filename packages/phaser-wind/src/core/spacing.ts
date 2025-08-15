@@ -1,4 +1,4 @@
-import { ThemeManager } from '../theme/theme-manager';
+import type { BaseThemeConfig } from '../theme';
 
 /**
  * Valid spacing scale keys following Tailwind's spacing scale
@@ -44,7 +44,7 @@ export type SpacingKey =
 /**
  * Maps spacing scale keys to their pixel values
  */
-export type SpacingMap = Record<SpacingKey, number>;
+export type SpacingMap = Record<SpacingKey | string, number>;
 
 /**
  * Spacing scale mapping following Tailwind's spacing scale
@@ -88,46 +88,41 @@ export const spacingMap: SpacingMap = {
   '96': 384,
 };
 
-/**
- * Utility functions for working with spacing values
- */
-export const Spacing = {
-  getValueByKey: (key: SpacingKey | string): number => {
-    const value = ThemeManager.getToken(`spacing.${key}`);
-    if (typeof value === 'number') {
-      return value;
-    }
+export type SpacingApi<T extends SpacingMap | undefined> = {
+  px: (key: SpacingKey | (T extends SpacingMap ? keyof T : never)) => number;
+  rem: (key: SpacingKey | (T extends SpacingMap ? keyof T : never)) => number;
+  css: (key: SpacingKey | (T extends SpacingMap ? keyof T : never)) => string;
+};
 
-    return spacingMap[key as SpacingKey] ?? 0;
-  },
+export const createSpacing = <
+  T extends SpacingMap | undefined = BaseThemeConfig['spacing'],
+>(
+  themeSpacing?: T
+): SpacingApi<T> => {
+  const map: SpacingMap = {
+    ...spacingMap,
+    ...(themeSpacing as SpacingMap | undefined),
+  } as SpacingMap;
 
-  /**
-   * Get spacing value in pixels
-   * @param key - Spacing scale key
-   * @returns Pixel value
-   */
-  px: (key: SpacingKey | string): number => {
-    const value = Spacing.getValueByKey(key);
-    return value;
-  },
+  const get = (key: string): number => {
+    return typeof map[key] === 'number' ? (map[key] as number) : 0;
+  };
 
-  /**
-   * Get spacing value in rem units (divided by 16)
-   * @param key - Spacing scale key
-   * @returns Rem value
-   */
-  rem: (key: SpacingKey | string): number => {
-    const value = Spacing.getValueByKey(key);
-    return value / 16;
-  },
-
-  /**
-   * Get spacing value as CSS pixel string
-   * @param key - Spacing scale key
-   * @returns CSS pixel value string (e.g. "16px")
-   */
-  css: (key: SpacingKey | string): string => {
-    const value = Spacing.getValueByKey(key);
-    return `${value}px`;
-  },
+  return {
+    px: (
+      key: SpacingKey | (T extends SpacingMap ? keyof T : never)
+    ): number => {
+      return get(key as string);
+    },
+    rem: (
+      key: SpacingKey | (T extends SpacingMap ? keyof T : never)
+    ): number => {
+      return get(key as string) / 16;
+    },
+    css: (
+      key: SpacingKey | (T extends SpacingMap ? keyof T : never)
+    ): string => {
+      return `${get(key as string)}px`;
+    },
+  };
 };

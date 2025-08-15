@@ -86,8 +86,14 @@ export class Color<T = BaseThemeConfig['colors']> {
    * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
    * @returns RGB string format 'rgb(r, g, b)'
    */
-  rgb(color: ColorToken | keyof T): string {
-    const colorFromTheme = this.getValueFromTheme(color);
+  rgb(color: ColorToken | keyof T | string): string {
+    if (typeof color === 'string' && isValidColor(color)) {
+      return color;
+    }
+
+    const colorFromTheme = this.getValueFromTheme(
+      color as ColorToken | keyof T
+    );
     if (colorFromTheme) {
       return this.rgb(colorFromTheme as ColorToken);
     }
@@ -124,8 +130,14 @@ export class Color<T = BaseThemeConfig['colors']> {
    * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
    * @returns Hex number format 0xRRGGBB
    */
-  hex(color: ColorToken | keyof T): number {
-    const colorFromTheme = this.getValueFromTheme(color);
+  hex(color: ColorToken | keyof T | string): number {
+    if (typeof color === 'string' && isValidColor(color)) {
+      return convertColorValueToNumber(color);
+    }
+
+    const colorFromTheme = this.getValueFromTheme(
+      color as ColorToken | keyof T
+    );
     if (colorFromTheme) {
       // Recursively call hex with the resolved color token
       return this.hex(colorFromTheme as ColorToken);

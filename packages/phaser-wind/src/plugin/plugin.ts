@@ -14,8 +14,8 @@ export const PHASER_WIND_KEY: string = 'pw';
  * @property {boolean} [darkMode=false] - When true, uses the default dark theme. Only takes effect
  *   if no custom theme is provided
  */
-export type PhaserWindPluginData = {
-  theme?: BaseThemeConfig;
+export type PhaserWindPluginData<T extends BaseThemeConfig> = {
+  theme?: T;
   darkMode?: boolean;
 };
 /**
@@ -44,12 +44,26 @@ export class PhaserWindPlugin<
    * Initializes the plugin with theme configuration
    * @param theme - Custom theme configuration
    * @param darkMode - Whether to use dark mode theme when no custom theme provided
+   * @example
+   * ```typescript
+   * const game = new Phaser.Game({
+   *   plugins: {
+   *     global: [
+   *       {
+   *         key: PHASER_WIND_KEY,
+   *         plugin: PhaserWindPlugin,
+   *         mapping: PHASER_WIND_KEY,
+   *         data: { theme: defaultLightTheme }
+   *       },
+   *     ],
+   *   },
+   * });
+   * ```
    */
-  override init({ theme, darkMode = false }: PhaserWindPluginData): void {
+  override init({ theme, darkMode = false }: PhaserWindPluginData<T>): void {
     if (!theme) {
-      // @ts-ignore
       this.theme = darkMode
-        ? defaultDarkTheme
+        ? (defaultDarkTheme as T & BaseThemeConfig)
         : (defaultLightTheme as T & BaseThemeConfig);
       return;
     }
@@ -73,29 +87,5 @@ export class PhaserWindPlugin<
     }
 
     return this.colorInstance;
-  }
-
-  /**
-   * Get a nested token using dot notation (e.g., 'colors.primary', 'fonts.display')
-   * @param path - The path to the token (e.g., 'colors.primary')
-   * @returns The resolved token value
-   */
-  // @ts-ignore
-  private getToken(path: string): unknown {
-    return this.getNestedValue(this.theme, path);
-  }
-
-  /**
-   * Helper method to get nested values using dot notation
-   * @param obj - The object to search in
-   * @param path - The dot notation path (e.g., 'colors.primary')
-   * @returns The value at the path or undefined
-   */
-  private getNestedValue(obj: unknown, path: string): unknown {
-    return path.split('.').reduce((current, key) => {
-      return current && typeof current === 'object'
-        ? (current as Record<string, unknown>)[key]
-        : undefined;
-    }, obj);
   }
 }

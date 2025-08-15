@@ -64,7 +64,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "phaser": "^3.70.0"
+    "phaser": "*"
   },
   "publishConfig": {
     "access": "public"

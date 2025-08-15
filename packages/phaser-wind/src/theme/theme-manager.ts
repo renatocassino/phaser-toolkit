@@ -8,6 +8,7 @@ import {
 } from './theme-config';
 
 /**
+ * @deprecated Use the plugin instead
  * Global theme manager for Phaser Wind
  * Handles theme registration, switching, and token resolution with nested object support
  */

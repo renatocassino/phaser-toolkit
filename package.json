@@ -40,8 +40,8 @@
   "homepage": "https://github.com/cassinodev/phaser-toolkit#readme",
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
-    "@types/node": "^24.2.1",
     "@types/lodash": "^4.17.20",
+    "@types/node": "^24.2.1",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.55.0",
@@ -61,5 +61,10 @@
   "packageManager": "pnpm@8.15.0",
   "dependencies": {
     "lodash": "^4.17.21"
+  },
+  "pnpm": {
+    "overrides": {
+      "phaser": "3.90.0"
+    }
   }
 }

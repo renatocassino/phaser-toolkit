@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "types": ["vite/client"]
+  },
+  "include": [
+    "src/**/*",
+    "vite.config.ts",
+    "index.html"
+  ]
+}

@@ -122,7 +122,7 @@ export const Color = {
    * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
    * @returns Hex number format 0xRRGGBB
    */
-  hex: (color: ColorToken): number => {
+  hex: (color: ColorToken | string): number => {
     const colorFromTheme = Color.getValueFromTheme(color);
     if (colorFromTheme) {
       return Color.hex(colorFromTheme as ColorToken);

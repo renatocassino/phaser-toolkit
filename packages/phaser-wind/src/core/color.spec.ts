@@ -1,10 +1,10 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable max-lines-per-function */
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { createTheme, ThemeManager } from '../theme';
+import { createTheme } from '../theme';
 
-import { Color, type ColorToken } from './color';
+import { createColor, type Color, type ColorToken } from './color';
 
 const RED_500_RGB = 'rgb(239, 68, 68)';
 const SLATE_50_RGB = 'rgb(248, 250, 252)';
@@ -19,7 +19,6 @@ describe('ColorPicker', () => {
   }>;
 
   beforeEach(() => {
-    ThemeManager.clear();
     const fakeTheme = createTheme({
       colors: {
         primary: 'red-500',
@@ -27,11 +26,7 @@ describe('ColorPicker', () => {
         another: '#ff9887',
       },
     });
-    color = new Color(fakeTheme);
-  });
-
-  afterAll(() => {
-    ThemeManager.clear();
+    color = createColor(fakeTheme);
   });
 
   describe('rgb method', () => {
@@ -153,7 +148,7 @@ describe('ColorPicker', () => {
     });
 
     it('should return the theme color when pass a token', () => {
-      const color = new Color({
+      const color = createColor({
         primary: 'red-500',
         secondary: 'slate-50',
       });
@@ -280,7 +275,7 @@ describe('ColorPicker', () => {
       },
     });
 
-    const color = new Color(fakeTheme.colors);
+    const color = createColor(fakeTheme.colors);
 
     it('should resolve theme token with colors. prefix', () => {
       expect(color.rgb('primary')).toBe(RED_500_RGB);

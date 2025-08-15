@@ -1,6 +1,6 @@
 import { Plugins } from 'phaser';
 
-import { Color } from '../core/color';
+import { createColor, type Color } from '../core/color';
 import { BaseThemeConfig, defaultDarkTheme, defaultLightTheme } from '../theme';
 
 export const PHASER_WIND_KEY: string = 'pw';
@@ -81,7 +81,7 @@ export class PhaserWindPlugin<
 
   public get color(): Color<T['colors']> {
     if (!this.colorInstance) {
-      this.colorInstance = new Color<T['colors']>(
+      this.colorInstance = createColor<T['colors']>(
         this.theme.colors as T['colors']
       );
     }

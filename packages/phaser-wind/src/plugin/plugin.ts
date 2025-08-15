@@ -6,6 +6,9 @@ import {
   createSpacing,
   type SpacingApi,
   createFont,
+  createShadow,
+  type FontApi,
+  type ShadowApi,
 } from '../core';
 import { createColor, type Color } from '../core/color';
 import { createRadius, type RadiusApi } from '../core/radius';
@@ -42,12 +45,8 @@ export class PhaserWindPlugin<
   private fontSizeInstance: FontSizeApi<T['fontSizes']> | null = null;
   private spacingInstance: SpacingApi<T['spacing']> | null = null;
   private radiusInstance: RadiusApi<T['radius']> | null = null;
-  private fontInstance:
-    | import('../core/font').FontApi<T['fonts'], T['fontSizes']>
-    | null = null;
-  private shadowInstance:
-    | import('../core/shadow').ShadowApi<T['effects']>
-    | null = null;
+  private fontInstance: FontApi<T['fonts'], T['fontSizes']> | null = null;
+  private shadowInstance: ShadowApi<T['effects']> | null = null;
 
   /** Current theme configuration */
   private theme: T & BaseThemeConfig;
@@ -82,18 +81,15 @@ export class PhaserWindPlugin<
    * });
    * ```
    */
-  override async init({
-    theme,
-    darkMode = false,
-  }: PhaserWindPluginData<T>): Promise<void> {
+  override init({ theme, darkMode = false }: PhaserWindPluginData<T>): void {
     if (!theme) {
       this.theme = darkMode
         ? (defaultDarkTheme as T & BaseThemeConfig)
         : (defaultLightTheme as T & BaseThemeConfig);
       return;
+    } else {
+      this.theme = theme as T & BaseThemeConfig;
     }
-
-    this.theme = theme as T & BaseThemeConfig;
 
     this.colorInstance = createColor<T['colors']>(
       this.theme.colors as T['colors']
@@ -111,8 +107,6 @@ export class PhaserWindPlugin<
       this.theme.fonts as T['fonts'],
       this.theme.fontSizes as T['fontSizes']
     );
-    // shadow api tied to effects map
-    const { createShadow } = await import('../core/shadow');
     this.shadowInstance = createShadow(this.theme.effects as T['effects']);
   }
 
@@ -140,19 +134,11 @@ export class PhaserWindPlugin<
     return this.radiusInstance as RadiusApi<T['radius']>;
   }
 
-  public get font(): import('../core/font').FontApi<
-    T['fonts'],
-    T['fontSizes']
-  > {
-    return this.fontInstance as import('../core/font').FontApi<
-      T['fonts'],
-      T['fontSizes']
-    >;
+  public get font(): FontApi<T['fonts'], T['fontSizes']> {
+    return this.fontInstance as FontApi<T['fonts'], T['fontSizes']>;
   }
 
-  public get shadow(): import('../core/shadow').ShadowApi<T['effects']> {
-    return this.shadowInstance as import('../core/shadow').ShadowApi<
-      T['effects']
-    >;
+  public get shadow(): ShadowApi<T['effects']> {
+    return this.shadowInstance as ShadowApi<T['effects']>;
   }
 }

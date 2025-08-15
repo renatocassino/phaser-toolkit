@@ -1,5 +1,3 @@
-import { TypographyPicker } from '../../phaser-wind';
-
 export class DemoScene extends Phaser.Scene {
   constructor() {
     super('DemoScene');
@@ -13,11 +11,8 @@ export class DemoScene extends Phaser.Scene {
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
-    // Título usando TypographyPicker
-    const titleStyle = TypographyPicker.phaserStyle('heading-large');
     this.add
       .text(centerX, centerY - 180, 'Phaser Wind', {
-        ...titleStyle,
         color: pw.color.rgb('slate-200'),
         align: 'center',
         fontSize: pw.fontSize.px('6xl'),
@@ -25,10 +20,8 @@ export class DemoScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
 
     // Subtítulo
-    const subtitleStyle = TypographyPicker.phaserStyle('body');
     this.add
       .text(centerX, centerY - 130, 'Design tokens e utilitários', {
-        ...subtitleStyle,
         color: '#cbd5e1',
         align: 'center',
       })
@@ -50,7 +43,6 @@ export class DemoScene extends Phaser.Scene {
     // Texto dentro do card
     this.add
       .text(centerX, centerY + 10, 'Exemplo básico importando phaser-wind', {
-        ...TypographyPicker.phaserStyle('body'),
         color: '#ffffff',
         align: 'center',
         wordWrap: { width: cardWidth - 40 },

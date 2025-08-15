@@ -118,3 +118,7 @@ export const createFontSize = <
     },
   };
 };
+
+// Convenience instance using default font sizes (no theme)
+export const FontSize: FontSizeApi<undefined> =
+  createFontSize<undefined>(undefined);

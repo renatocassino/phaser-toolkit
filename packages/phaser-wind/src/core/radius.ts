@@ -63,3 +63,6 @@ export const createRadius = <
       `${get(key as string)}px`,
   };
 };
+
+// Convenience instance using default radius map (no theme)
+export const Radius: RadiusApi<undefined> = createRadius<undefined>(undefined);

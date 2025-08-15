@@ -126,3 +126,7 @@ export const createSpacing = <
     },
   };
 };
+
+// Convenience instance using default spacing map (no theme)
+export const Spacing: SpacingApi<undefined> =
+  createSpacing<undefined>(undefined);

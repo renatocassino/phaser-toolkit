@@ -6,7 +6,7 @@ import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { ThemeManager, defaultLightTheme } from '../theme';
 
-import { createRadius, radiusMap } from './radius';
+import { createRadius, radiusMap, Radius } from './radius';
 
 describe('Radius', () => {
   afterAll(() => {
@@ -41,6 +41,12 @@ describe('Radius', () => {
       expect(radius.css('sm')).toBe('2px');
       expect(radius.css('lg')).toBe('8px');
       expect(radius.css('full')).toBe('9999px');
+    });
+
+    it('should work with default Radius constant', () => {
+      expect(Radius.px('sm')).toBe(2);
+      expect(Radius.css('lg')).toBe('8px');
+      expect(Radius.rem('full')).toBe(9999 / 16);
     });
   });
 

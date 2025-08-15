@@ -4,10 +4,18 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { createTheme } from '../theme';
 
-import { createColor, type Color, type ColorToken } from './color';
+import {
+  createColor,
+  Color as ColorDefault,
+  type Color,
+  type ColorToken,
+} from './color';
 
 const RED_500_RGB = 'rgb(239, 68, 68)';
 const SLATE_50_RGB = 'rgb(248, 250, 252)';
+const RED_500_TOKEN = 'red-500' as const;
+const SLATE_50_TOKEN = '50' as const;
+const BLUE_500_TOKEN = '500' as const;
 
 describe('ColorPicker', () => {
   let color: Color<{
@@ -127,6 +135,19 @@ describe('ColorPicker', () => {
 
       expect(color.rgb('primary')).toBe('rgb(239, 68, 68)');
       expect(color.rgb('secondary')).toBe('rgb(248, 250, 252)');
+    });
+  });
+
+  describe('default Color constant (no theme)', () => {
+    it('should resolve palette tokens via Color constant', () => {
+      expect(ColorDefault.rgb(RED_500_TOKEN)).toBe(RED_500_RGB);
+      expect(ColorDefault.slate(SLATE_50_TOKEN)).toBe(SLATE_50_RGB);
+      expect(ColorDefault.blueHex(BLUE_500_TOKEN)).toBe(0x3b82f6);
+    });
+
+    it('should throw for unknown tokens', () => {
+      // @ts-expect-error
+      expect(() => ColorDefault.rgb('unknown-123')).toThrow();
     });
   });
 

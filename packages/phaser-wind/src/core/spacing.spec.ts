@@ -6,7 +6,7 @@ import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { ThemeManager } from '../theme/theme-manager';
 
-import { createSpacing } from './spacing';
+import { createSpacing, Spacing } from './spacing';
 
 describe('Spacing', () => {
   beforeEach(() => {
@@ -56,6 +56,12 @@ describe('Spacing', () => {
       const spacing2 = createSpacing(ThemeManager.getCurrentTheme().spacing);
       expect(spacing2.css('custom')).toBe('42px');
       expect(spacing2.css('11')).toBe('100px');
+    });
+
+    it('should work with default Spacing constant', () => {
+      expect(Spacing.px('2')).toBe(8);
+      expect(Spacing.css('4')).toBe('16px');
+      expect(Spacing.rem('8')).toBe(2);
     });
   });
 });

@@ -51,3 +51,6 @@ export const createShadow = <
     ): ShadowConfig => getConfig(key as string),
   };
 };
+
+// Convenience instance using default shadows (no theme)
+export const Shadow: ShadowApi<undefined> = createShadow<undefined>(undefined);

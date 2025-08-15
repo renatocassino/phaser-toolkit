@@ -341,3 +341,9 @@ export const createColor = <T = BaseThemeConfig['colors']>(
 
   return api;
 };
+
+// Convenience instance using only default palette tokens (no theme)
+// eslint-disable-next-line no-redeclare
+export const Color: Color<Record<string, never>> = createColor<
+  Record<string, never>
+>({} as Record<string, never>);

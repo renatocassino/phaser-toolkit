@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ThemeManager } from '../theme/theme-manager';
+import { BaseThemeConfig } from '../theme';
 import { isValidColor } from '../utils';
 
 import { pallete } from './pallete';
@@ -70,35 +70,37 @@ const convertColorValueToNumber = (colorValue: string): number => {
 /**
  * Color utility functions
  */
-export const Color = {
-  getValueFromTheme: (key: ColorToken | string): string | null => {
-    const value = ThemeManager.getToken(`colors.${key}`);
-    if (value === undefined) {
-      return null;
+export class Color<T = BaseThemeConfig['colors']> {
+  constructor(private readonly themeColors: T) {}
+
+  getValueFromTheme(key: ColorToken | keyof T): T[keyof T] | null {
+    if (this.themeColors && key in (this.themeColors as Object)) {
+      return this.themeColors[key as keyof T];
     }
 
-    return value as string;
-  },
+    return null;
+  }
+
   /**
    * Get RGB string for a color token or theme token
    * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
    * @returns RGB string format 'rgb(r, g, b)'
    */
-  rgb: (color: ColorToken | string): string => {
-    const colorFromTheme = Color.getValueFromTheme(color);
+  rgb(color: ColorToken | keyof T): string {
+    const colorFromTheme = this.getValueFromTheme(color);
     if (colorFromTheme) {
-      return Color.rgb(colorFromTheme);
+      return this.rgb(colorFromTheme as ColorToken);
     }
 
     // If the color is not a theme token, it must be a color token
-    const parts = color.split('-');
+    const parts = (color as string).split('-');
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
       const colorValue = pallete[colorKey]?.[shade];
       if (!colorValue) {
-        if (isValidColor(color)) {
-          return color;
+        if (isValidColor(color as string)) {
+          return color as string;
         }
 
         throw new Error(`Color token "${colorKey}-${shade}" not found`);
@@ -108,35 +110,36 @@ export const Color = {
 
     const colorValue = pallete[color as 'black' | 'white'];
     if (!colorValue) {
-      if (isValidColor(color)) {
-        return color;
+      if (isValidColor(color as string)) {
+        return color as string;
       }
 
-      throw new Error(`Color token "${color}" not found`);
+      throw new Error(`Color token "${color as string}" not found`);
     }
     return colorValue;
-  },
+  }
 
   /**
    * Get hex number for a color token or theme token
    * @param color - Color token (e.g., 'blue-500') or theme token (e.g., 'primary', 'colors.primary')
    * @returns Hex number format 0xRRGGBB
    */
-  hex: (color: ColorToken | string): number => {
-    const colorFromTheme = Color.getValueFromTheme(color);
+  hex(color: ColorToken | keyof T): number {
+    const colorFromTheme = this.getValueFromTheme(color);
     if (colorFromTheme) {
-      return Color.hex(colorFromTheme as ColorToken);
+      // Recursively call hex with the resolved color token
+      return this.hex(colorFromTheme as ColorToken);
     }
 
     // If the color is not a theme token, it must be a color token
-    const parts = color.split('-');
+    const parts = (color as string).split('-');
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
       const colorValue = pallete[colorKey]?.[shade];
       if (!colorValue) {
-        if (isValidColor(color)) {
-          return convertColorValueToNumber(color);
+        if (isValidColor(color as string)) {
+          return convertColorValueToNumber(color as string);
         }
 
         throw new Error(`Color token "${colorKey}-${shade}" not found`);
@@ -149,314 +152,402 @@ export const Color = {
       return convertColorValueToNumber(colorToConvert);
     }
 
-    throw new Error(`Color token "${color}" not found`);
-  },
+    throw new Error(`Color token "${color as string}" not found`);
+  }
 
   /**
    * Get RGB color value for slate color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  slate: (shade: ShadeKey) => Color.rgb(`slate-${shade}`),
+  slate(shade: ShadeKey): string {
+    return this.rgb(`slate-${shade}`);
+  }
 
   /**
    * Get RGB color value for gray color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  gray: (shade: ShadeKey) => Color.rgb(`gray-${shade}`),
+  gray(shade: ShadeKey): string {
+    return this.rgb(`gray-${shade}`);
+  }
 
   /**
    * Get RGB color value for zinc color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  zinc: (shade: ShadeKey) => Color.rgb(`zinc-${shade}`),
+  zinc(shade: ShadeKey): string {
+    return this.rgb(`zinc-${shade}`);
+  }
 
   /**
    * Get RGB color value for neutral color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  neutral: (shade: ShadeKey) => Color.rgb(`neutral-${shade}`),
+  neutral(shade: ShadeKey): string {
+    return this.rgb(`neutral-${shade}`);
+  }
 
   /**
    * Get hex number for slate color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  slateHex: (shade: ShadeKey) => Color.hex(`slate-${shade}`),
+  slateHex(shade: ShadeKey): number {
+    return this.hex(`slate-${shade}`);
+  }
 
   /**
    * Get hex number for gray color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  grayHex: (shade: ShadeKey) => Color.hex(`gray-${shade}`),
+  grayHex(shade: ShadeKey): number {
+    return this.hex(`gray-${shade}`);
+  }
 
   /**
    * Get hex number for zinc color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  zincHex: (shade: ShadeKey) => Color.hex(`zinc-${shade}`),
+  zincHex(shade: ShadeKey): number {
+    return this.hex(`zinc-${shade}`);
+  }
 
   /**
    * Get hex number for neutral color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  neutralHex: (shade: ShadeKey) => Color.hex(`neutral-${shade}`),
+  neutralHex(shade: ShadeKey): number {
+    return this.hex(`neutral-${shade}`);
+  }
 
   /**
    * Get RGB color value for stone color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  stone: (shade: ShadeKey) => Color.rgb(`stone-${shade}`),
+  stone(shade: ShadeKey): string {
+    return this.rgb(`stone-${shade}`);
+  }
 
   /**
    * Get RGB color value for red color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  red: (shade: ShadeKey) => Color.rgb(`red-${shade}`),
+  red(shade: ShadeKey): string {
+    return this.rgb(`red-${shade}`);
+  }
 
   /**
    * Get RGB color value for orange color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  orange: (shade: ShadeKey) => Color.rgb(`orange-${shade}`),
+  orange(shade: ShadeKey): string {
+    return this.rgb(`orange-${shade}`);
+  }
 
   /**
    * Get RGB color value for amber color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  amber: (shade: ShadeKey) => Color.rgb(`amber-${shade}`),
+  amber(shade: ShadeKey): string {
+    return this.rgb(`amber-${shade}`);
+  }
 
   /**
    * Get RGB color value for yellow color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  yellow: (shade: ShadeKey) => Color.rgb(`yellow-${shade}`),
+  yellow(shade: ShadeKey): string {
+    return this.rgb(`yellow-${shade}`);
+  }
 
   /**
    * Get RGB color value for lime color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  lime: (shade: ShadeKey) => Color.rgb(`lime-${shade}`),
+  lime(shade: ShadeKey): string {
+    return this.rgb(`lime-${shade}`);
+  }
 
   /**
    * Get RGB color value for green color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  green: (shade: ShadeKey) => Color.rgb(`green-${shade}`),
+  green(shade: ShadeKey): string {
+    return this.rgb(`green-${shade}`);
+  }
 
   /**
    * Get RGB color value for emerald color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  emerald: (shade: ShadeKey) => Color.rgb(`emerald-${shade}`),
+  emerald(shade: ShadeKey): string {
+    return this.rgb(`emerald-${shade}`);
+  }
 
   /**
    * Get RGB color value for teal color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  teal: (shade: ShadeKey) => Color.rgb(`teal-${shade}`),
+  teal(shade: ShadeKey): string {
+    return this.rgb(`teal-${shade}`);
+  }
 
   /**
    * Get RGB color value for cyan color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  cyan: (shade: ShadeKey) => Color.rgb(`cyan-${shade}`),
+  cyan(shade: ShadeKey): string {
+    return this.rgb(`cyan-${shade}`);
+  }
 
   /**
    * Get RGB color value for sky color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  sky: (shade: ShadeKey) => Color.rgb(`sky-${shade}`),
+  sky(shade: ShadeKey): string {
+    return this.rgb(`sky-${shade}`);
+  }
 
   /**
    * Get RGB color value for blue color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  blue: (shade: ShadeKey) => Color.rgb(`blue-${shade}`),
+  blue(shade: ShadeKey): string {
+    return this.rgb(`blue-${shade}`);
+  }
 
   /**
    * Get RGB color value for indigo color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  indigo: (shade: ShadeKey) => Color.rgb(`indigo-${shade}`),
+  indigo(shade: ShadeKey): string {
+    return this.rgb(`indigo-${shade}`);
+  }
 
   /**
    * Get RGB color value for violet color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  violet: (shade: ShadeKey) => Color.rgb(`violet-${shade}`),
+  violet(shade: ShadeKey): string {
+    return this.rgb(`violet-${shade}`);
+  }
 
   /**
    * Get RGB color value for purple color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  purple: (shade: ShadeKey) => Color.rgb(`purple-${shade}`),
+  purple(shade: ShadeKey): string {
+    return this.rgb(`purple-${shade}`);
+  }
 
   /**
    * Get RGB color value for fuchsia color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  fuchsia: (shade: ShadeKey) => Color.rgb(`fuchsia-${shade}`),
+  fuchsia(shade: ShadeKey): string {
+    return this.rgb(`fuchsia-${shade}`);
+  }
 
   /**
    * Get RGB color value for pink color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  pink: (shade: ShadeKey) => Color.rgb(`pink-${shade}`),
+  pink(shade: ShadeKey): string {
+    return this.rgb(`pink-${shade}`);
+  }
 
   /**
    * Get RGB color value for rose color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns RGB color value in format 'rgb(R, G, B)'
    */
-  rose: (shade: ShadeKey) => Color.rgb(`rose-${shade}`),
+  rose(shade: ShadeKey): string {
+    return this.rgb(`rose-${shade}`);
+  }
 
   /**
    * Get hex number for stone color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  stoneHex: (shade: ShadeKey) => Color.hex(`stone-${shade}`),
+  stoneHex(shade: ShadeKey): number {
+    return this.hex(`stone-${shade}`);
+  }
 
   /**
    * Get hex number for red color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  redHex: (shade: ShadeKey) => Color.hex(`red-${shade}`),
+  redHex(shade: ShadeKey): number {
+    return this.hex(`red-${shade}`);
+  }
 
   /**
    * Get hex number for orange color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  orangeHex: (shade: ShadeKey) => Color.hex(`orange-${shade}`),
+  orangeHex(shade: ShadeKey): number {
+    return this.hex(`orange-${shade}`);
+  }
 
   /**
    * Get hex number for amber color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  amberHex: (shade: ShadeKey) => Color.hex(`amber-${shade}`),
+  amberHex(shade: ShadeKey): number {
+    return this.hex(`amber-${shade}`);
+  }
 
   /**
    * Get hex number for yellow color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  yellowHex: (shade: ShadeKey) => Color.hex(`yellow-${shade}`),
+  yellowHex(shade: ShadeKey): number {
+    return this.hex(`yellow-${shade}`);
+  }
 
   /**
    * Get hex number for lime color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  limeHex: (shade: ShadeKey) => Color.hex(`lime-${shade}`),
+  limeHex(shade: ShadeKey): number {
+    return this.hex(`lime-${shade}`);
+  }
 
   /**
    * Get hex number for green color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  greenHex: (shade: ShadeKey) => Color.hex(`green-${shade}`),
+  greenHex(shade: ShadeKey): number {
+    return this.hex(`green-${shade}`);
+  }
 
   /**
    * Get hex number for emerald color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  emeraldHex: (shade: ShadeKey) => Color.hex(`emerald-${shade}`),
+  emeraldHex(shade: ShadeKey): number {
+    return this.hex(`emerald-${shade}`);
+  }
 
   /**
    * Get hex number for teal color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  tealHex: (shade: ShadeKey) => Color.hex(`teal-${shade}`),
+  tealHex(shade: ShadeKey): number {
+    return this.hex(`teal-${shade}`);
+  }
 
   /**
    * Get hex number for cyan color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  cyanHex: (shade: ShadeKey) => Color.hex(`cyan-${shade}`),
+  cyanHex(shade: ShadeKey): number {
+    return this.hex(`cyan-${shade}`);
+  }
 
   /**
    * Get hex number for sky color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  skyHex: (shade: ShadeKey) => Color.hex(`sky-${shade}`),
+  skyHex(shade: ShadeKey): number {
+    return this.hex(`sky-${shade}`);
+  }
 
   /**
    * Get hex number for blue color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  blueHex: (shade: ShadeKey) => Color.hex(`blue-${shade}`),
+  blueHex(shade: ShadeKey): number {
+    return this.hex(`blue-${shade}`);
+  }
 
   /**
    * Get hex number for indigo color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  indigoHex: (shade: ShadeKey) => Color.hex(`indigo-${shade}`),
+  indigoHex(shade: ShadeKey): number {
+    return this.hex(`indigo-${shade}`);
+  }
 
   /**
    * Get hex number for violet color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  violetHex: (shade: ShadeKey) => Color.hex(`violet-${shade}`),
+  violetHex(shade: ShadeKey): number {
+    return this.hex(`violet-${shade}`);
+  }
 
   /**
    * Get hex number for purple color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  purpleHex: (shade: ShadeKey) => Color.hex(`purple-${shade}`),
+  purpleHex(shade: ShadeKey): number {
+    return this.hex(`purple-${shade}`);
+  }
 
   /**
    * Get hex number for fuchsia color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  fuchsiaHex: (shade: ShadeKey) => Color.hex(`fuchsia-${shade}`),
+  fuchsiaHex(shade: ShadeKey): number {
+    return this.hex(`fuchsia-${shade}`);
+  }
 
   /**
    * Get hex number for pink color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  pinkHex: (shade: ShadeKey) => Color.hex(`pink-${shade}`),
+  pinkHex(shade: ShadeKey): number {
+    return this.hex(`pink-${shade}`);
+  }
 
   /**
    * Get hex number for rose color with specified shade
    * @param shade - Shade key (e.g., '50', '100', '200', etc.)
    * @returns Hex number format 0xRRGGBB
    */
-  roseHex: (shade: ShadeKey) => Color.hex(`rose-${shade}`),
-} as const;
+  roseHex(shade: ShadeKey): number {
+    return this.hex(`rose-${shade}`);
+  }
+}

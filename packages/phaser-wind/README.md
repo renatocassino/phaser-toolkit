@@ -8,7 +8,7 @@
 >
 > **Love Tailwind CSS but stuck with Phaser?**
 >
-> **Welcome to Phaser Wind** - bringing the joy and simplicity of Tailwind CSS design tokens to Phaser games! 🎮✨
+> **Welcome to Phaser Wind** - bring the joy and simplicity of Tailwind-like design tokens to Phaser games! 🎮✨
 
 [![NPM Version](https://img.shields.io/npm/v/phaser-wind)](https://www.npmjs.com/package/phaser-wind)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -37,6 +37,7 @@ const title = this.add.text(200, 100, 'Game Title', {
 ### The Solution 🌟
 
 ```typescript
+// No theme needed. Just import and go!
 import { Color, FontSize } from 'phaser-wind';
 
 // Clean, semantic, consistent!
@@ -56,15 +57,14 @@ const title = this.add.text(200, 100, 'Game Title', {
 
 ## 🚀 Features
 
-- 🎨 **Complete Tailwind Color Palette** - All 22 color families with 11 shades each
-- 📐 **Semantic Font Sizes** - From `xs` to `6xl`, just like Tailwind
-- 🎨 **Structured Theme System** - Nested design tokens for colors, fonts, spacing, typography, and effects
-- 🔄 **Dynamic Theme Switching** - Change themes at runtime with full type safety
-- 🎯 **Smart Token Resolution** - Themes can reference other theme tokens automatically
+- 🎨 **Complete Tailwind-like Color Palette** - 22 families × 11 shades
+- 📐 **Semantic Font Sizes** - From `xs` to `6xl`
+- 🧩 **Default constants ready-to-use** - `Color`, `FontSize`, `Spacing`, `Radius`, `Shadow`
+- 🧭 **Optional theme system (typed)** - Add your own tokens with strong typing
 - 🔧 **TypeScript First** - Full type safety and IntelliSense
-- 🎮 **Phaser Ready** - Designed specifically for Phaser 3 games
+- 🎮 **Phaser Ready** - Global plugin for easy access in scenes
 - 🌈 **Consistent Design** - No more guessing colors and sizes
-- 📦 **Tiny Bundle** - Zero runtime overhead, just better DX
+- 📦 **Tiny Bundle** - Great DX, minimal overhead
 
 ---
 
@@ -80,9 +80,9 @@ pnpm add phaser-wind
 
 ---
 
-## 🎨 Color System
+## 🎨 Color System (no theme)
 
-### Complete Tailwind Palette
+### Complete Palette
 
 Access all Tailwind colors with semantic naming:
 
@@ -110,7 +110,7 @@ const whiteBackground = Color.hex('white'); // 0xFFFFFF
 
 ---
 
-## 📏 Font Size System
+## 📏 Font Size System (no theme)
 
 ### Semantic Sizing
 
@@ -149,115 +149,154 @@ const responsiveText = FontSize.rem('xl'); // 1.25
 
 ---
 
-## 🎨 Theme System
+## 🧪 Strong typing (no theme)
 
-Phaser Wind includes a powerful **structured theme system** that lets you organize your design tokens into logical categories and create consistent, reusable designs.
+All APIs are strongly typed. Invalid tokens break at compile time:
 
-### 🏗️ **Theme Structure**
+```ts
+import { Color, FontSize, Spacing, Radius, Shadow } from 'phaser-wind';
 
-```typescript
-import { createTheme, ThemeManager } from 'phaser-wind';
+// ✅ OK
+Color.rgb('blue-500');
+FontSize.css('lg');
+Spacing.px('16');
+Radius.css('sm');
+Shadow.get('md');
 
-const gameTheme = createTheme({
+// ❌ Compile-time errors
+// Color.rgb('blue-501');
+// FontSize.css('huge');
+// Spacing.px('97');
+// Radius.css('xxl');
+// Shadow.get('mega');
+```
+
+---
+
+## 🧱 Token Reference
+
+### Colors
+
+- Families: `slate`, `gray`, `zinc`, `neutral`, `stone`, `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`
+- Shades: `50`, `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`, `950`
+- Special: `black`, `white`
+
+### Font Size
+
+- Keys: `xs`, `sm`, `base`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `5xl`, `6xl`
+
+### Spacing
+
+- Keys (px scale ×4): `0`, `px(=1)`, `0.5`, `1`, `1.5`, `2`, `2.5`, `3`, `3.5`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `14`, `16`, `20`, `24`, `28`, `32`, `36`, `40`, `44`, `48`, `52`, `56`, `60`, `64`, `72`, `80`, `96`
+
+### Radius
+
+- Keys: `none`, `sm`, `default`, `md`, `lg`, `xl`, `2xl`, `3xl`, `full`
+
+### Shadow
+
+- Default keys: `sm`, `md`, `lg`, `xl`, `2xl`, `inner`
+
+---
+
+## 🎨 Theming (optional, typed)
+
+Phaser Wind also provides a typed theme system via a Phaser plugin. You get the same API surface (`color`, `fontSize`, `spacing`, `radius`, `font`, `shadow`) but narrowed to your custom tokens.
+
+### 1) Create a theme
+
+```ts
+import { createTheme, type CreateTheme } from 'phaser-wind';
+
+export const theme = createTheme({
   fonts: {
     primary: 'Inter, system-ui, sans-serif',
-    display: 'Orbitron, monospace', // Sci-fi font for headers
-    ui: 'Roboto, Arial, sans-serif',
+    display: 'Orbitron, monospace',
+  },
+  fontSizes: {
+    // optional overrides
   },
   colors: {
-    primary: 'purple-600',
-    secondary: 'cyan-500',
-    'ui-background': 'slate-900',
-    'player-health': 'green-500',
-    'enemy-health': 'red-600',
+    primary: 'blue-600',
+    background: 'slate-900',
+    danger: 'red-500',
   },
   spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
+    gutter: 24,
   },
-  typography: {
-    heading: {
-      fontSize: '2xl',
-      fontFamily: 'fonts.display', // 🔗 References fonts.display!
-      fontWeight: 600,
-      lineHeight: 1.2,
-    },
-    body: {
-      fontSize: 'md',
-      fontFamily: 'fonts.primary',
-      fontWeight: 400,
-      lineHeight: 1.5,
-    },
+  radius: {
+    card: 12,
   },
   effects: {
-    'glow-primary': {
-      blur: 8,
-      color: 'colors.primary', // 🔗 References colors.primary!
-      alpha: 0.6,
-    },
+    glow: { blur: 8, offsetX: 0, offsetY: 0, alpha: 0.6 },
   },
-  // Custom categories work too!
-  animations: {
-    duration: 300,
-    easing: 'ease-out',
+} satisfies CreateTheme<any>);
+
+export type ThemeType = typeof theme;
+```
+
+### 2) Install the plugin in Phaser
+
+```ts
+import {
+  PhaserWindPlugin,
+  PHASER_WIND_KEY,
+  defaultLightTheme,
+} from 'phaser-wind';
+import { theme } from './theme';
+
+new Phaser.Game({
+  plugins: {
+    global: [
+      {
+        key: PHASER_WIND_KEY,
+        plugin: PhaserWindPlugin,
+        mapping: PHASER_WIND_KEY, // scene.pw
+        data: { theme }, // or { theme: defaultLightTheme }
+      },
+    ],
   },
 });
-
-// Initialize your theme
-ThemeManager.init(gameTheme);
 ```
 
-### 🎯 **Using Theme Tokens**
+### 3) (Optional) Module augmentation for better typing in scenes
 
-```typescript
-import { Color, Font, FontSize, Spacing, ThemeManager } from 'phaser-wind';
+```ts
+// types/phaser-wind.d.ts
+import 'phaser';
+import type { PhaserWindPlugin } from 'phaser-wind';
+import type { ThemeType } from './theme';
 
-// Colors - automatically looks in colors.*
-const primaryColor = Color.rgb('primary'); // Gets colors.primary
-const uiBackground = Color.hex('ui-background'); // Gets colors.ui-background
-
-// Fonts
-const displayFont = Font.family('display'); // Gets fonts.display
-const primaryFont = Font.family('primary'); // Gets fonts.primary
-
-// Spacing
-const mediumSpace = Spacing.px('md'); // Gets spacing.md (16px)
-const largeSpace = Spacing.px('lg'); // Gets spacing.lg (24px)
-
-// Complete typography styles - using basic components for now
-const headingStyle = {
-  fontSize: FontSize.css('2xl'),
-  fontFamily: Font.family('display'),
-  fontWeight: 'bold',
-};
-
-// Custom tokens
-const animDuration = ThemeManager.getToken('animations.duration'); // 300
+declare module 'phaser' {
+  interface Scene {
+    pw: PhaserWindPlugin<ThemeType>;
+  }
+}
 ```
 
-### 🔄 **Dynamic Theme Switching**
+### 4) Typed usage in scenes
 
-```typescript
-// Register multiple themes
-ThemeManager.registerTheme('light', lightTheme);
-ThemeManager.registerTheme('dark', darkTheme);
-ThemeManager.registerTheme('cyberpunk', cyberpunkTheme);
+```ts
+export class GameScene extends Phaser.Scene {
+  create() {
+    const { color, fontSize, spacing, radius, font, shadow } = this.pw;
 
-// Switch themes instantly
-ThemeManager.setTheme('dark');
+    // ✅ Type-narrowed to your theme
+    color.rgb('primary');
+    fontSize.css('lg');
+    spacing.px('gutter');
+    radius.css('card');
+    font.family('display');
+    shadow.get('glow');
 
-// Listen for theme changes
-ThemeManager.onThemeChange(newTheme => {
-  console.log('Theme changed!', newTheme);
-  // Update your game UI here
-});
-
-// Get available themes
-const themes = ThemeManager.getRegisteredThemes(); // ['light', 'dark', 'cyberpunk']
+    // ❌ Compile-time errors
+    // color.rgb('blue-501');
+    // spacing.px('unknown');
+  }
+}
 ```
+
+> Note: The old `ThemeManager` API is deprecated and has been removed from the docs.
 
 ### 🎮 **Real Game Example**
 
@@ -494,7 +533,7 @@ this.add.particles(player.x, player.y, 'sparkle', {
 
 ---
 
-## 🎮 Integration with Phaser
+## 🎮 Integration with Phaser (no theme)
 
 ### Scene Setup
 

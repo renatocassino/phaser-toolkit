@@ -18,7 +18,7 @@ export class DemoScene extends Phaser.Scene {
     this.add
       .text(centerX, centerY - 180, 'Phaser Wind', {
         ...titleStyle,
-        color: pw.color.rgb('white'),
+        color: pw.color.rgb('slate-200'),
         align: 'center',
         fontSize: pw.fontSize.px('2xl'),
       })

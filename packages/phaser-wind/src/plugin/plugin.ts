@@ -1,6 +1,6 @@
 import { Plugins } from 'phaser';
 
-import { createFontSize, FontSizeApi, FontSizeMap } from '../core';
+import { createFontSize, FontSizeApi } from '../core';
 import { createColor, type Color } from '../core/color';
 import {
   BaseThemeConfig,
@@ -32,7 +32,7 @@ export class PhaserWindPlugin<
   T extends BaseThemeConfig,
 > extends Plugins.BasePlugin {
   private colorInstance: Color<T['colors']> | null = null;
-  private fontSizeInstance: FontSizeApi<FontSizeMap> | null = null;
+  private fontSizeInstance: FontSizeApi<T['fontSizes']> | null = null;
 
   /** Current theme configuration */
   private theme: T & BaseThemeConfig;
@@ -80,8 +80,8 @@ export class PhaserWindPlugin<
     this.colorInstance = createColor<T['colors']>(
       this.theme.colors as T['colors']
     );
-    this.fontSizeInstance = createFontSize<FontSizeMap>(
-      (this.theme.fontSizes ?? ({} as FontSizeMap)) as FontSizeMap
+    this.fontSizeInstance = createFontSize<T['fontSizes']>(
+      this.theme.fontSizes as T['fontSizes']
     );
   }
 
@@ -97,7 +97,7 @@ export class PhaserWindPlugin<
     return this.colorInstance as Color<T['colors']>;
   }
 
-  public get fontSize(): FontSizeApi<FontSizeMap> {
-    return this.fontSizeInstance as FontSizeApi<FontSizeMap>;
+  public get fontSize(): FontSizeApi<T['fontSizes']> {
+    return this.fontSizeInstance as FontSizeApi<T['fontSizes']>;
   }
 }

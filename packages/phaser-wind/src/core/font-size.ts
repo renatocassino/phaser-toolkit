@@ -39,24 +39,26 @@ export const fontSizeMap: FontSizeMap = {
   '9xl': 128,
 };
 
-export type FontSizeApi<T extends FontSizeMap> = {
-  px: (key: FontSizeKey | keyof T) => number;
-  rem: (key: FontSizeKey | keyof T) => number;
-  css: (key: FontSizeKey | keyof T) => string;
+export type FontSizeApi<T extends FontSizeMap | undefined> = {
+  px: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => number;
+  rem: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => number;
+  css: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => string;
 };
 
 export const createFontSize = <
-  T extends FontSizeMap = NonNullable<BaseThemeConfig['fontSizes']>,
+  T extends FontSizeMap | undefined = BaseThemeConfig['fontSizes'],
 >(
-  themeFontSizes: T = {} as T
+  themeFontSizes?: T
 ): FontSizeApi<T> => {
-  const fontmap = {
+  const fontmap: FontSizeMap = {
     ...fontSizeMap,
-    ...themeFontSizes,
-  };
+    ...(themeFontSizes as FontSizeMap | undefined),
+  } as FontSizeMap;
 
   return {
-    px: (key: FontSizeKey | keyof T): number => {
+    px: (
+      key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)
+    ): number => {
       const value = fontmap[key as FontSizeKey];
       if (typeof value === 'number') {
         return value;
@@ -64,7 +66,9 @@ export const createFontSize = <
 
       return 0;
     },
-    rem: (key: FontSizeKey | keyof T): number => {
+    rem: (
+      key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)
+    ): number => {
       const value = fontmap[key as FontSizeKey];
       if (typeof value === 'number') {
         return value / 16;
@@ -72,7 +76,9 @@ export const createFontSize = <
 
       return 0;
     },
-    css: (key: FontSizeKey | keyof T): string => {
+    css: (
+      key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)
+    ): string => {
       const value = fontmap[key as FontSizeKey];
       if (typeof value === 'number') {
         return `${value}px`;

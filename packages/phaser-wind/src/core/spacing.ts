@@ -1,8 +1,8 @@
 import type { BaseThemeConfig } from '../theme';
 
 /**
- * Valid spacing scale keys following Tailwind's spacing scale
- * Values range from '0' to '96', including fractional values
+ * Valid spacing scale keys following Tailwind's spacing scale.
+ * Values range from '0' to '96', including fractional values and `px` (1px).
  */
 export type SpacingKey =
   | '0'
@@ -41,14 +41,12 @@ export type SpacingKey =
   | '80'
   | '96';
 
-/**
- * Maps spacing scale keys to their pixel values
- */
+/** Maps spacing scale keys to their pixel values. */
 export type SpacingMap = Record<SpacingKey | string, number>;
 
 /**
- * Spacing scale mapping following Tailwind's spacing scale
- * Values are in pixels, with a base unit of 4px (1 = 4px)
+ * Spacing scale mapping following Tailwind's spacing scale.
+ * Values are in pixels, with a base unit of 4px (1 = 4px).
  */
 export const spacingMap: SpacingMap = {
   '0': 0,
@@ -88,12 +86,22 @@ export const spacingMap: SpacingMap = {
   '96': 384,
 };
 
+/**
+ * API for resolving spacing tokens to px/rem/css.
+ * The accepted keys are narrowed to default tokens plus theme keys.
+ */
 export type SpacingApi<T extends SpacingMap | undefined> = {
   px: (key: SpacingKey | (T extends SpacingMap ? keyof T : never)) => number;
   rem: (key: SpacingKey | (T extends SpacingMap ? keyof T : never)) => number;
   css: (key: SpacingKey | (T extends SpacingMap ? keyof T : never)) => string;
 };
 
+/**
+ * Create a spacing API bound to an optional theme spacing map.
+ * @example
+ * const s = createSpacing({ gutter: 24 });
+ * s.px('gutter'); // 24
+ */
 export const createSpacing = <
   T extends SpacingMap | undefined = BaseThemeConfig['spacing'],
 >(
@@ -127,6 +135,6 @@ export const createSpacing = <
   };
 };
 
-// Convenience instance using default spacing map (no theme)
+/** Convenience instance using default spacing map (no theme). */
 export const Spacing: SpacingApi<undefined> =
   createSpacing<undefined>(undefined);

@@ -1,10 +1,12 @@
 import type { BaseThemeConfig } from '../theme';
 
+/** Default shadow keys. */
 export type ShadowKey = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'inner';
 
 /**
  * Shadow configuration type defining blur, offset and alpha values
  */
+/** Shadow configuration shape (compatible with Phaser effects). */
 export type ShadowConfig = {
   blur: number;
   offsetX: number;
@@ -12,6 +14,7 @@ export type ShadowConfig = {
   alpha: number;
 };
 
+/** Default shadow presets. */
 export const defaultShadowMap: Record<ShadowKey, ShadowConfig> = {
   sm: { blur: 2, offsetX: 1, offsetY: 1, alpha: 0.15 },
   md: { blur: 4, offsetX: 2, offsetY: 2, alpha: 0.2 },
@@ -21,14 +24,22 @@ export const defaultShadowMap: Record<ShadowKey, ShadowConfig> = {
   inner: { blur: 4, offsetX: -2, offsetY: -2, alpha: 0.2 },
 };
 
+/** Map of shadow keys to shadow configs. */
 export type ShadowMap = Record<ShadowKey | string, ShadowConfig>;
 
+/** API for resolving shadow tokens to configs. */
 export type ShadowApi<T extends Record<string, unknown> | undefined> = {
   get: (
     key: ShadowKey | (T extends Record<string, unknown> ? keyof T : never)
   ) => ShadowConfig;
 };
 
+/**
+ * Create a shadow API bound to an optional effects map.
+ * @example
+ * const sh = createShadow({ glow: { blur: 8, offsetX: 0, offsetY: 0, alpha: .6 } });
+ * sh.get('glow');
+ */
 export const createShadow = <
   T extends BaseThemeConfig['effects'] = BaseThemeConfig['effects'],
 >(
@@ -52,5 +63,5 @@ export const createShadow = <
   };
 };
 
-// Convenience instance using default shadows (no theme)
+/** Convenience instance using default shadows (no theme). */
 export const Shadow: ShadowApi<undefined> = createShadow<undefined>(undefined);

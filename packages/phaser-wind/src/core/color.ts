@@ -9,10 +9,16 @@ import { palette } from './palette';
 /** Regular expression to match RGB color format */
 const RGB_REGEX = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
 
-/** Available color keys from the palette */
+/**
+ * Available color families from the built-in palette.
+ * Matches Tailwind CSS color families.
+ */
 export type ColorKey = keyof typeof palette;
 
-/** Available shade values for colors */
+/**
+ * Available shade values for the color palette.
+ * Accepts string or numeric literal shades for convenience.
+ */
 export type ShadeKey =
   | '50'
   | '100'
@@ -37,7 +43,14 @@ export type ShadeKey =
   | 900
   | 950;
 
-/** Color token format combining color and shade, or special colors */
+/**
+ * Color token combining a color family and a shade.
+ * Also accepts special tokens `black` and `white`.
+ *
+ * @example
+ * Color.rgb('blue-500') // => 'rgb(59, 130, 246)'
+ * Color.hex('black') // => 0x000000
+ */
 export type ColorToken = `${ColorKey}-${ShadeKey}` | 'black' | 'white';
 
 /**
@@ -90,6 +103,16 @@ const convertColorValueToNumber = (colorValue: string): number => {
 /**
  * Color utility API interface
  * Provides methods to work with colors in different formats
+ */
+/**
+ * API for resolving colors to RGB strings or Hex numbers.
+ * When parameterized with a theme type `T`, accepts either palette tokens or `keyof T`.
+ *
+ * @typeParam T - Theme colors map (e.g. `{ primary: 'blue-500' }`)
+ * @example
+ * const c = createColor();
+ * c.rgb('red-500');
+ * c.hex('white');
  */
 export type Color<T = BaseThemeConfig['colors']> = {
   /** Get RGB string representation of a color */
@@ -192,6 +215,16 @@ export type Color<T = BaseThemeConfig['colors']> = {
  * Factory that creates a color utility API based on the provided theme colors
  * @param themeColors - Theme colors configuration
  * @returns Color utility API instance
+ */
+/**
+ * Create a color API bound to an optional theme colors map.
+ * If a key exists in `themeColors`, it will be resolved to a palette token and then to RGB/Hex.
+ *
+ * @typeParam T - Theme colors map
+ * @param themeColors - Optional map of theme color tokens
+ * @example
+ * const c = createColor({ primary: 'blue-500' });
+ * c.rgb('primary'); // rgb(59, 130, 246)
  */
 export const createColor = <T = BaseThemeConfig['colors']>(
   themeColors: T
@@ -342,7 +375,13 @@ export const createColor = <T = BaseThemeConfig['colors']>(
   return api;
 };
 
-// Convenience instance using only default palette tokens (no theme)
+/**
+ * Convenience instance using only the default palette tokens (no theme).
+ *
+ * @example
+ * Color.rgb('emerald-400')
+ * Color.hex('black')
+ */
 // eslint-disable-next-line no-redeclare
 export const Color: Color<Record<string, never>> = createColor<
   Record<string, never>

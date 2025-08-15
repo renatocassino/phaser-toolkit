@@ -21,11 +21,13 @@ export type FontSizeKey =
 /**
  * Maps font size keys to their pixel values
  */
+/** Map of font-size tokens to pixel values. */
 export type FontSizeMap = Record<FontSizeKey | string, number>;
 
 /**
  * Default mapping of font size keys to their pixel values in pixels
  */
+/** Default font-size scale mapping (in pixels). */
 export const fontSizeMap: FontSizeMap = {
   xs: 12,
   sm: 14,
@@ -46,6 +48,7 @@ export const fontSizeMap: FontSizeMap = {
  * API for converting font sizes between different units
  * @template T - Optional custom font size map type
  */
+/** API for resolving font sizes to px/rem/css. */
 export type FontSizeApi<T extends FontSizeMap | undefined> = {
   /**
    * Convert font size key to pixels
@@ -74,6 +77,12 @@ export type FontSizeApi<T extends FontSizeMap | undefined> = {
  * @template T - Optional custom font size map type
  * @param themeFontSizes - Optional custom font size mappings to extend defaults
  * @returns Font size conversion API
+ */
+/**
+ * Create a font-size API bound to an optional custom map.
+ * @example
+ * const f = createFontSize({ xxl: 28 });
+ * f.css('xxl'); // '28px'
  */
 export const createFontSize = <
   T extends FontSizeMap | undefined = BaseThemeConfig['fontSizes'],

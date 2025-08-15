@@ -1,8 +1,6 @@
 import type { BaseThemeConfig } from '../theme';
 
-/**
- * Available border radius keys matching Tailwind CSS radius scale
- */
+/** Available border radius keys matching Tailwind CSS radius scale. */
 export type RadiusKey =
   | 'none'
   | 'sm'
@@ -14,11 +12,13 @@ export type RadiusKey =
   | '3xl'
   | 'full';
 
+/** Map of radius tokens to pixel values. */
 export type RadiusMap = Record<RadiusKey | string, number>;
 
 /**
  * Mapping of radius keys to their pixel values
  */
+/** Default radius scale mapping (in pixels). */
 export const radiusMap: RadiusMap = {
   none: 0,
   sm: 2,
@@ -34,12 +34,19 @@ export const radiusMap: RadiusMap = {
 /**
  * Utility functions for working with border radius values
  */
+/** API for resolving radius tokens to px/rem/css. */
 export type RadiusApi<T extends RadiusMap | undefined> = {
   px: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => number;
   rem: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => number;
   css: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => string;
 };
 
+/**
+ * Create a radius API bound to an optional theme radius map.
+ * @example
+ * const r = createRadius({ card: 12 });
+ * r.css('card'); // '12px'
+ */
 export const createRadius = <
   T extends RadiusMap | undefined = BaseThemeConfig['radius'],
 >(
@@ -64,5 +71,5 @@ export const createRadius = <
   };
 };
 
-// Convenience instance using default radius map (no theme)
+/** Convenience instance using default radius map (no theme). */
 export const Radius: RadiusApi<undefined> = createRadius<undefined>(undefined);

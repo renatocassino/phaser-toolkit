@@ -45,6 +45,9 @@ export class PhaserWindPlugin<
   private fontInstance:
     | import('../core/font').FontApi<T['fonts'], T['fontSizes']>
     | null = null;
+  private shadowInstance:
+    | import('../core/shadow').ShadowApi<T['effects']>
+    | null = null;
 
   /** Current theme configuration */
   private theme: T & BaseThemeConfig;
@@ -79,7 +82,10 @@ export class PhaserWindPlugin<
    * });
    * ```
    */
-  override init({ theme, darkMode = false }: PhaserWindPluginData<T>): void {
+  override async init({
+    theme,
+    darkMode = false,
+  }: PhaserWindPluginData<T>): Promise<void> {
     if (!theme) {
       this.theme = darkMode
         ? (defaultDarkTheme as T & BaseThemeConfig)
@@ -105,6 +111,9 @@ export class PhaserWindPlugin<
       this.theme.fonts as T['fonts'],
       this.theme.fontSizes as T['fontSizes']
     );
+    // shadow api tied to effects map
+    const { createShadow } = await import('../core/shadow');
+    this.shadowInstance = createShadow(this.theme.effects as T['effects']);
   }
 
   /**
@@ -138,6 +147,12 @@ export class PhaserWindPlugin<
     return this.fontInstance as import('../core/font').FontApi<
       T['fonts'],
       T['fontSizes']
+    >;
+  }
+
+  public get shadow(): import('../core/shadow').ShadowApi<T['effects']> {
+    return this.shadowInstance as import('../core/shadow').ShadowApi<
+      T['effects']
     >;
   }
 }

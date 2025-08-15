@@ -8,7 +8,6 @@ import {
   type FontSizeMap,
 } from './font-size';
 
-// Default font family map (matches defaultLightTheme)
 export const fontMap = {
   primary: 'Inter, system-ui, sans-serif',
   secondary: 'Roboto, Arial, sans-serif',
@@ -88,98 +87,3 @@ export const createFont = <
     },
   };
 };
-
-/**
- * Typography picker for accessing complete typography styles from theme
- */
-export class TypographyPicker {
-  /**
-   * Get complete typography style from theme
-   * @param key - Typography key (e.g., 'heading', 'body') or full path
-   * @returns Typography style object
-   */
-  static style(): {
-    fontSize?: string;
-    fontFamily?: string;
-    fontWeight?: number | string;
-    lineHeight?: number | string;
-    letterSpacing?: number | string;
-  } {
-    // Deprecated: previously resolved via ThemeManager.
-    // This class remains for backwards-compat in type surface but does no resolution now.
-    return {};
-  }
-
-  /**
-   * Get Phaser-compatible text style from typography token
-   * @param key - Typography key
-   * @returns Object compatible with Phaser text styles
-   */
-  static phaserStyle(key: string): {
-    fontSize?: string;
-    fontFamily?: string;
-    fontStyle: string;
-  } {
-    const style = this.style(key);
-
-    const result: {
-      fontSize?: string;
-      fontFamily?: string;
-      fontStyle: string;
-    } = {
-      fontStyle:
-        style.fontWeight && Number(style.fontWeight) >= 600 ? 'bold' : 'normal',
-    };
-
-    if (style.fontSize) {
-      result.fontSize = style.fontSize;
-    }
-    if (style.fontFamily) {
-      result.fontFamily = style.fontFamily;
-    }
-
-    return result;
-  }
-
-  /**
-   * Get all available typography tokens from current theme
-   * @returns Array of typography token keys
-   */
-  static getAvailableTypography(): string[] {
-    // Deprecated: no-op placeholder without ThemeManager
-    return [];
-  }
-
-  // Removed resolver implementation; kept for binary compatibility in d.ts
-}
-
-/**
- * Effect picker for accessing theme effects like shadows
- */
-export class EffectPicker {
-  /**
-   * Get effect configuration from theme
-   * @param key - Effect key (e.g., 'shadow-md') or full path
-   * @returns Effect configuration object
-   */
-  static config(): {
-    blur?: number;
-    offsetX?: number;
-    offsetY?: number;
-    color?: string;
-    alpha?: number;
-  } {
-    // Check if it's a theme token (with or without effects. prefix)
-    // Deprecated: no-op placeholder without ThemeManager
-    return {};
-  }
-
-  /**
-   * Get all available effect tokens from current theme
-   * @returns Array of effect token keys
-   */
-  static getAvailableEffects(): string[] {
-    // Deprecated: no-op placeholder without ThemeManager
-    return [];
-  }
-}

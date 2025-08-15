@@ -74,8 +74,8 @@ describe('FontSize', () => {
   describe('with theme', () => {
     it('should return value from theme', () => {
       const fontSize = createFontSize();
-      expect(fontSize.px('sm')).toBe(fontSizeMap.sm);
-      expect(fontSize.px('lg')).toBe(fontSizeMap.lg);
+      expect(fontSize.px('sm')).toBe(fontSizeMap['sm']);
+      expect(fontSize.px('lg')).toBe(fontSizeMap['lg']);
       expect(fontSize.px('2xl')).toBe(fontSizeMap['2xl']);
 
       const fontSize2 = createFontSize({

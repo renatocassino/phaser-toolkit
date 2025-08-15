@@ -146,7 +146,6 @@ describe('ColorPicker', () => {
     });
 
     it('should throw for unknown tokens', () => {
-      // @ts-expect-error
       expect(() => ColorDefault.rgb('unknown-123')).toThrow();
     });
   });

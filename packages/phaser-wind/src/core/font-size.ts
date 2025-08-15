@@ -40,9 +40,9 @@ export const fontSizeMap: FontSizeMap = {
 };
 
 export type FontSizeApi<T extends FontSizeMap> = {
-  px: (key: FontSizeKey | keyof T) => number | null;
-  rem: (key: FontSizeKey | keyof T) => number | null;
-  css: (key: FontSizeKey | keyof T) => string | null;
+  px: (key: FontSizeKey | keyof T) => number;
+  rem: (key: FontSizeKey | keyof T) => number;
+  css: (key: FontSizeKey | keyof T) => string;
 };
 
 export const createFontSize = <
@@ -56,29 +56,29 @@ export const createFontSize = <
   };
 
   return {
-    px: (key: FontSizeKey | keyof T): number | null => {
+    px: (key: FontSizeKey | keyof T): number => {
       const value = fontmap[key as FontSizeKey];
       if (typeof value === 'number') {
         return value;
       }
 
-      return null;
+      return 0;
     },
-    rem: (key: FontSizeKey | keyof T): number | null => {
+    rem: (key: FontSizeKey | keyof T): number => {
       const value = fontmap[key as FontSizeKey];
       if (typeof value === 'number') {
         return value / 16;
       }
 
-      return null;
+      return 0;
     },
-    css: (key: FontSizeKey | keyof T): string | null => {
+    css: (key: FontSizeKey | keyof T): string => {
       const value = fontmap[key as FontSizeKey];
       if (typeof value === 'number') {
         return `${value}px`;
       }
 
-      return null;
+      return '0px';
     },
   };
 };

@@ -18,8 +18,9 @@ export class DemoScene extends Phaser.Scene {
     this.add
       .text(centerX, centerY - 180, 'Phaser Wind', {
         ...titleStyle,
-        color: '#ffffff',
+        color: pw.color.rgb('white'),
         align: 'center',
+        fontSize: pw.fontSize.px('2xl'),
       })
       .setOrigin(0.5, 0.5);
 

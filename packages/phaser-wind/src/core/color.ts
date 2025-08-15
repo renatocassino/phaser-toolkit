@@ -93,9 +93,9 @@ const convertColorValueToNumber = (colorValue: string): number => {
  */
 export type Color<T = BaseThemeConfig['colors']> = {
   /** Get RGB string representation of a color */
-  rgb(color: ColorToken | keyof T | string): string;
+  rgb(color: ColorToken | keyof T): string;
   /** Get hex number representation of a color */
-  hex(color: ColorToken | keyof T | string): number;
+  hex(color: ColorToken | keyof T): number;
 
   /** Get RGB string for slate color with specified shade */
   slate(shade: ShadeKey): string;
@@ -214,7 +214,9 @@ export const createColor = <T = BaseThemeConfig['colors']>(
    * @returns RGB color string
    * @throws {Error} If color token is not found
    */
-  const rgb = (color: ColorToken | keyof T | string): string => {
+  const rgb = (color: ColorToken | keyof T): string => {
+    // Runtime supports direct CSS strings for flexibility, but
+    // the public type restricts to palette tokens or theme keys.
     if (typeof color === 'string' && isValidColor(color)) {
       return color;
     }
@@ -254,7 +256,8 @@ export const createColor = <T = BaseThemeConfig['colors']>(
    * @returns Hex color number
    * @throws {Error} If color token is not found
    */
-  const hex = (color: ColorToken | keyof T | string): number => {
+  const hex = (color: ColorToken | keyof T): number => {
+    // See note in rgb()
     if (typeof color === 'string' && isValidColor(color)) {
       return convertColorValueToNumber(color);
     }

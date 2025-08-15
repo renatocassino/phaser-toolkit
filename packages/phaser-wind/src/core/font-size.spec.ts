@@ -58,7 +58,7 @@ describe('FontSize', () => {
     it('should return 0 for invalid keys', () => {
       const fontSize = createFontSize();
       // @ts-ignore
-      expect(fontSize.rem('invalid')).toBe(null);
+      expect(fontSize.rem('invalid')).toBe(0);
     });
   });
 

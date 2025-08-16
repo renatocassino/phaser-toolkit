@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.5.0
+
+### Minor Changes
+
+- 6eed2d9: add styles solid, regular, outline to font-awesome-for-phaser
+
 ## 0.4.0
 
 ### Minor Changes

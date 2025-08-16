@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.4.0
+
+### Minor Changes
+
+- df26269: add new contract to theme phaser-wind
+
 ## 0.3.0
 
 ### Minor Changes

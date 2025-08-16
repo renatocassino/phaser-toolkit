@@ -22,4 +22,7 @@ Add any other context or screenshots about the feature request here.
 Which package would this feature affect?
 
 - [ ] font-awesome-for-phaser
+- [ ] phaser-wind
+- [ ] phaser-hooks
+- [ ] phaser-toolkit-demo
 - [ ] Other (please specify)

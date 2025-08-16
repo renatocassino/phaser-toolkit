@@ -1,11 +1,13 @@
+/* eslint-disable no-magic-numbers */
+/* eslint-disable max-lines-per-function */
 export class DemoScene extends Phaser.Scene {
   constructor() {
     super('DemoScene');
   }
 
-  preload() {}
+  preload(): void {}
 
-  create() {
+  create(): void {
     const { pw } = this; // Get PhaserWind theme instance
 
     const centerX = this.cameras.main.centerX;

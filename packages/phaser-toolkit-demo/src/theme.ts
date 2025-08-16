@@ -1,4 +1,4 @@
-import { createTheme, PhaserWindPlugin } from '../../phaser-wind';
+import { createTheme, PhaserWindPlugin } from 'phaser-wind';
 
 export const theme = createTheme({
   colors: {
@@ -10,7 +10,7 @@ export const theme = createTheme({
 export type ThemeType = typeof theme;
 
 declare module 'phaser' {
-  interface Scene {
+  type Scene = {
     pw: PhaserWindPlugin<ThemeType>;
-  }
+  };
 }

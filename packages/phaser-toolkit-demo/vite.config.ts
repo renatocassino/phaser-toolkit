@@ -6,6 +6,6 @@ export default defineConfig({
     open: false,
   },
   build: {
-    target: 'esnext'
-  }
+    target: 'esnext',
+  },
 });

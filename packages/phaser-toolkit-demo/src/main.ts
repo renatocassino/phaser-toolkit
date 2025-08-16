@@ -3,8 +3,9 @@ import {
   PhaserWindPlugin,
   PHASER_WIND_KEY,
   PhaserWindPluginData,
-} from '../../phaser-wind';
-import { DemoScene } from './demoScene';
+} from 'phaser-wind';
+
+import { DemoScene } from './demo-scene';
 import { theme } from './theme';
 
 const config: Phaser.Types.Core.GameConfig = {

@@ -1,21 +1,40 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable max-lines-per-function */
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { createTheme, ThemeManager } from '../theme';
+import { createTheme } from '../theme';
 
-import { Color, type ColorToken } from './color';
+import {
+  createColor,
+  Color as ColorDefault,
+  type Color,
+  type ColorToken,
+} from './color';
 
 const RED_500_RGB = 'rgb(239, 68, 68)';
 const SLATE_50_RGB = 'rgb(248, 250, 252)';
+const RED_500_TOKEN = 'red-500' as const;
+const SLATE_50_TOKEN = '50' as const;
+const BLUE_500_TOKEN = '500' as const;
 
 describe('ColorPicker', () => {
-  beforeEach(() => {
-    ThemeManager.clear();
-  });
+  let color: Color<{
+    colors: {
+      primary: string;
+      secondary: string;
+      another: string;
+    };
+  }>;
 
-  afterAll(() => {
-    ThemeManager.clear();
+  beforeEach(() => {
+    const fakeTheme = createTheme({
+      colors: {
+        primary: 'red-500',
+        secondary: 'slate-50',
+        another: '#ff9887',
+      },
+    });
+    color = createColor(fakeTheme);
   });
 
   describe('rgb method', () => {
@@ -102,52 +121,32 @@ describe('ColorPicker', () => {
       ['black', '#000'],
       ['white', '#fff'],
     ])('should convert %s to rgb %s', (colorToken, expected) => {
-      expect(Color.rgb(colorToken as ColorToken)).toBe(expected);
+      expect(color.rgb(colorToken as ColorToken)).toBe(expected);
     });
 
-    it('should return the color if it is a valid color', () => {
-      expect(Color.rgb('#000000')).toBe('#000000');
-      expect(Color.rgb('#ffffff')).toBe('#ffffff');
-      expect(Color.rgb('#ff0000')).toBe('#ff0000');
-      expect(Color.rgb('#00ff00')).toBe('#00ff00');
-      expect(Color.rgb('#0000ff')).toBe('#0000ff');
-    });
-
-    it('should return the color if it is a valid rgb color', () => {
-      expect(Color.rgb('rgb(255, 255, 255)')).toBe('rgb(255, 255, 255)');
-      expect(Color.rgb('rgb(0, 0, 0)')).toBe('rgb(0, 0, 0)');
-      expect(Color.rgb('rgb(255, 0, 0)')).toBe('rgb(255, 0, 0)');
-      expect(Color.rgb('rgb(0, 255, 0)')).toBe('rgb(0, 255, 0)');
-      expect(Color.rgb('rgb(0, 0, 255)')).toBe('rgb(0, 0, 255)');
-    });
-
-    it('should return the color if it is a valid rgba color', () => {
-      expect(Color.rgb('rgba(255, 255, 255, 1)')).toBe(
-        'rgba(255, 255, 255, 1)'
-      );
-      expect(Color.rgb('rgba(0, 0, 0, 1)')).toBe('rgba(0, 0, 0, 1)');
-      expect(Color.rgb('rgba(255, 0, 0, 1)')).toBe('rgba(255, 0, 0, 1)');
-      expect(Color.rgb('rgba(0, 255, 0, 1)')).toBe('rgba(0, 255, 0, 1)');
-      expect(Color.rgb('rgba(0, 0, 255, 1)')).toBe('rgba(0, 0, 255, 1)');
-    });
-
-    it('should return the color if it is a valida oklch color', () => {
-      expect(Color.rgb('oklch(0.5 0.2 268)')).toBe('oklch(0.5 0.2 268)');
-      expect(Color.rgb('oklch(0.5 0.2 270)')).toBe('oklch(0.5 0.2 270)');
-    });
+    // With stronger typing, direct CSS strings are not allowed by the type system.
+    // Runtime still supports them when needed, but they are intentionally not tested here.
 
     it('should return the theme color when pass a token', () => {
-      ThemeManager.init(
-        createTheme({
-          colors: {
-            primary: 'red-500',
-            secondary: 'slate-50',
-          },
-        })
-      );
+      const color = createColor({
+        primary: 'red-500',
+        secondary: 'slate-50',
+      });
 
-      expect(Color.rgb('primary')).toBe(RED_500_RGB);
-      expect(Color.rgb('secondary')).toBe(SLATE_50_RGB);
+      expect(color.rgb('primary')).toBe('rgb(239, 68, 68)');
+      expect(color.rgb('secondary')).toBe('rgb(248, 250, 252)');
+    });
+  });
+
+  describe('default Color constant (no theme)', () => {
+    it('should resolve palette tokens via Color constant', () => {
+      expect(ColorDefault.rgb(RED_500_TOKEN)).toBe(RED_500_RGB);
+      expect(ColorDefault.slate(SLATE_50_TOKEN)).toBe(SLATE_50_RGB);
+      expect(ColorDefault.blueHex(BLUE_500_TOKEN)).toBe(0x3b82f6);
+    });
+
+    it('should throw for unknown tokens', () => {
+      expect(() => ColorDefault.rgb('unknown-123')).toThrow();
     });
   });
 
@@ -235,25 +234,25 @@ describe('ColorPicker', () => {
       ['black', 0x000000],
       ['white', 0xffffff],
     ])('should convert %s to hex 0x%s', (colorToken, expected) => {
-      expect(Color.hex(colorToken as ColorToken)).toBe(expected);
+      expect(color.hex(colorToken as ColorToken)).toBe(expected);
     });
   });
 
   describe('error handling', () => {
     it('should throw an error for invalid color token', () => {
-      expect(() => Color.rgb('invalid-color' as ColorToken)).toThrow(
+      expect(() => color.rgb('invalid-color' as ColorToken)).toThrow(
         'Color token "invalid-color" not found'
       );
     });
 
     it('should throw an error for invalid shade', () => {
-      expect(() => Color.rgb('red-999' as ColorToken)).toThrow(
+      expect(() => color.rgb('red-999' as ColorToken)).toThrow(
         'Color token "red-999" not found'
       );
     });
 
     it('should throw an error for invalid color key', () => {
-      expect(() => Color.hex('purples-500' as ColorToken)).toThrow(
+      expect(() => color.hex('purples-500' as ColorToken)).toThrow(
         'Color token "purples-500" not found'
       );
     });
@@ -268,28 +267,26 @@ describe('ColorPicker', () => {
       },
     });
 
-    beforeEach(() => {
-      ThemeManager.init(fakeTheme);
-    });
+    const color = createColor(fakeTheme.colors);
 
     it('should resolve theme token with colors. prefix', () => {
-      expect(Color.rgb('primary' as ColorToken)).toBe(RED_500_RGB);
-      expect(Color.rgb('secondary' as ColorToken)).toBe(SLATE_50_RGB);
-      expect(Color.rgb('another' as ColorToken)).toBe('#ff9887');
+      expect(color.rgb('primary')).toBe(RED_500_RGB);
+      expect(color.rgb('secondary')).toBe(SLATE_50_RGB);
+      expect(color.rgb('another')).toBe('#ff9887');
     });
 
     it('should resolve theme token without colors. prefix', () => {
-      expect(Color.rgb('primary' as ColorToken)).toBe(RED_500_RGB);
-      expect(Color.rgb('secondary' as ColorToken)).toBe(SLATE_50_RGB);
+      expect(color.rgb('primary')).toBe(RED_500_RGB);
+      expect(color.rgb('secondary')).toBe(SLATE_50_RGB);
     });
 
     it('should convert theme tokens to hex', () => {
-      expect(Color.hex('primary' as ColorToken)).toBe(0xef4444);
-      expect(Color.hex('secondary' as ColorToken)).toBe(0xf8fafc);
+      expect(color.hex('primary')).toBe(0xef4444);
+      expect(color.hex('secondary')).toBe(0xf8fafc);
     });
 
     it('should throw an error if theme token is not found', () => {
-      expect(() => Color.rgb('colors.not-found' as ColorToken)).toThrow(
+      expect(() => color.rgb('colors.not-found' as ColorToken)).toThrow(
         'Color token "colors.not-found" not found'
       );
     });

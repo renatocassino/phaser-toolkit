@@ -1,8 +1,6 @@
-import { ThemeManager } from '../theme';
+import type { BaseThemeConfig } from '../theme';
 
-/**
- * Available border radius keys matching Tailwind CSS radius scale
- */
+/** Available border radius keys matching Tailwind CSS radius scale. */
 export type RadiusKey =
   | 'none'
   | 'sm'
@@ -14,11 +12,13 @@ export type RadiusKey =
   | '3xl'
   | 'full';
 
-export type RadiusMap = Record<RadiusKey, number>;
+/** Map of radius tokens to pixel values. */
+export type RadiusMap = Record<RadiusKey | string, number>;
 
 /**
  * Mapping of radius keys to their pixel values
  */
+/** Default radius scale mapping (in pixels). */
 export const radiusMap: RadiusMap = {
   none: 0,
   sm: 2,
@@ -34,33 +34,42 @@ export const radiusMap: RadiusMap = {
 /**
  * Utility functions for working with border radius values
  */
-export const Radius = {
-  getValueByKey: (key: RadiusKey | string): number => {
-    const value = ThemeManager.getToken(`radius.${key}`);
-    if (typeof value === 'number') {
-      return value;
-    }
-
-    return radiusMap[key as RadiusKey] ?? 0;
-  },
-  /**
-   * Get border radius in pixels
-   * @param key - Radius key (e.g., 'sm', 'lg', 'full')
-   * @returns Border radius value in pixels
-   */
-  px: (key: RadiusKey): number => radiusMap[key],
-
-  /**
-   * Get border radius in rem units (relative to 16px base)
-   * @param key - Radius key (e.g., 'sm', 'lg', 'full')
-   * @returns Border radius value in rem units
-   */
-  rem: (key: RadiusKey): number => radiusMap[key] / 16,
-
-  /**
-   * Get border radius as CSS pixel string
-   * @param key - Radius key (e.g., 'sm', 'lg', 'full')
-   * @returns Border radius value as CSS string (e.g., '4px')
-   */
-  css: (key: RadiusKey): string => `${radiusMap[key]}px`,
+/** API for resolving radius tokens to px/rem/css. */
+export type RadiusApi<T extends RadiusMap | undefined> = {
+  px: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => number;
+  rem: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => number;
+  css: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)) => string;
 };
+
+/**
+ * Create a radius API bound to an optional theme radius map.
+ * @example
+ * const r = createRadius({ card: 12 });
+ * r.css('card'); // '12px'
+ */
+export const createRadius = <
+  T extends RadiusMap | undefined = BaseThemeConfig['radius'],
+>(
+  themeRadius?: T
+): RadiusApi<T> => {
+  const map: RadiusMap = {
+    ...radiusMap,
+    ...(themeRadius as RadiusMap | undefined),
+  } as RadiusMap;
+
+  const get = (key: string): number => {
+    return typeof map[key] === 'number' ? (map[key] as number) : 0;
+  };
+
+  return {
+    px: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)): number =>
+      get(key as string),
+    rem: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)): number =>
+      get(key as string) / 16,
+    css: (key: RadiusKey | (T extends RadiusMap ? keyof T : never)): string =>
+      `${get(key as string)}px`,
+  };
+};
+
+/** Convenience instance using default radius map (no theme). */
+export const Radius: RadiusApi<undefined> = createRadius<undefined>(undefined);

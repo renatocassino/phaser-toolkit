@@ -2,89 +2,92 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable sonarjs/no-duplicate-string */
 
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { ThemeManager } from '../theme';
-
-import { Font } from './font';
+import { createFont, fontMap } from './font';
 
 describe('Font', () => {
-  beforeEach(() => {
-    ThemeManager.clear;
-  });
-
-  afterAll(() => {
-    ThemeManager.clear();
-  });
-
   describe('size', () => {
     it('should return correct font size in pixels', () => {
-      expect(Font.size('xs')).toBe(12);
-      expect(Font.size('sm')).toBe(14);
-      expect(Font.size('base')).toBe(16);
-      expect(Font.size('lg')).toBe(18);
-      expect(Font.size('xl')).toBe(20);
+      const font = createFont();
+      expect(font.size('xs')).toBe(12);
+      expect(font.size('sm')).toBe(14);
+      expect(font.size('base')).toBe(16);
+      expect(font.size('lg')).toBe(18);
+      expect(font.size('xl')).toBe(20);
     });
   });
 
   describe('format', () => {
-    beforeEach(() => {
-      ThemeManager.setThemeObject({
-        fonts: {
-          primary: 'Arial',
-          secondary: 'Helvetica',
-        },
-      });
-    });
-
     it('should return font string with size and family', () => {
-      expect(Font.format({ size: 'base', family: 'primary' })).toBe(
-        "16px 'Arial'"
+      const font = createFont();
+      expect(font.format({ size: 'base', family: 'primary' })).toBe(
+        "16px 'Inter, system-ui, sans-serif'"
       );
-      expect(Font.format({ size: 'lg', family: 'secondary' })).toBe(
-        "18px 'Helvetica'"
+      expect(font.format({ size: 'lg', family: 'secondary' })).toBe(
+        "18px 'Roboto, Arial, sans-serif'"
       );
     });
   });
 
   describe('family', () => {
-    beforeEach(() => {
-      ThemeManager.setThemeObject({
-        fonts: {
+    it('should return font family from theme using short key', () => {
+      const font = createFont(
+        {
           primary: 'Arial',
           display: 'Helvetica',
         },
-      });
-    });
-
-    it('should return font family from theme using short key', () => {
-      expect(Font.family('primary')).toBe('Arial');
-      expect(Font.family('display')).toBe('Helvetica');
+        {
+          base: 16,
+        }
+      );
+      expect(font.family('primary')).toBe('Arial');
+      expect(font.family('display')).toBe('Helvetica');
     });
 
     it('should return font family from theme using full path', () => {
-      expect(Font.family('fonts.primary')).toBe('Arial');
-      expect(Font.family('fonts.display')).toBe('Helvetica');
+      const font = createFont(
+        {
+          primary: 'Arial',
+          display: 'Helvetica',
+        },
+        {
+          base: 16,
+        }
+      );
+      expect(font.family('primary')).toBe('Arial');
+      expect(font.family('display')).toBe('Helvetica');
     });
 
     it('should return key itself if font not found in theme', () => {
-      expect(Font.family('Times New Roman')).toBe('Times New Roman');
+      const font = createFont(
+        {
+          primary: 'Arial',
+          display: 'Helvetica',
+        },
+        {
+          base: 16,
+        }
+      );
+      expect(font.family('primary')).toBe('Arial');
     });
   });
 
   describe('getAvailableFonts', () => {
     it('should return array of available font tokens', () => {
-      ThemeManager.setThemeObject({
-        fonts: {
+      const font = createFont(
+        {
           primary: 'Arial',
           secondary: 'Helvetica',
-          display: 'Roboto',
           monospace: 'Courier New',
+          display: 'Roboto',
           anotherCrazyFont: 'Comic Sans MS',
         },
-      });
-
-      expect(Font.getAvailableFonts()).toEqual(
+        {
+          base: 16,
+        }
+      );
+      expect(font.getAvailableFonts()).toEqual(
         expect.arrayContaining([
           'primary',
           'secondary',
@@ -96,9 +99,8 @@ describe('Font', () => {
     });
 
     it('should return empty array if no fonts in theme', () => {
-      const fonts = ThemeManager.getCurrentTheme().fonts ?? {};
-      ThemeManager.setThemeObject({ fonts: {} });
-      expect(Font.getAvailableFonts()).toEqual(Object.keys(fonts));
+      const font = createFont();
+      expect(font.getAvailableFonts()).toEqual(Object.keys(fontMap));
     });
   });
 });

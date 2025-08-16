@@ -1,5 +1,5 @@
 // https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/compat/colors.ts
-export const pallete = {
+export const palette = {
   black: '#000',
   white: '#fff',
   slate: {

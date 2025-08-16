@@ -1,63 +1,39 @@
 /* eslint-disable max-lines */
 /* eslint-disable sonarjs/no-duplicate-string */
-import type { ColorToken } from '../core/color';
-import {
-  fontSizeMap,
-  type FontSizeKey,
-  type FontSizeMap,
-} from '../core/font-size';
+import { fontSizeMap, type FontSizeMap } from '../core/font-size';
 import { radiusMap, type RadiusMap } from '../core/radius';
 import { spacingMap } from '../core/spacing';
 
-/**
- * Font configuration structure
- */
-export type FontConfig = {
-  [key: string]: string;
-};
+import {
+  type ColorConfig,
+  type EffectConfig,
+  type FontConfig,
+  type SpacingConfig,
+  type TypographyConfig,
+} from './type';
 
 /**
- * Color configuration structure
- */
-export type ColorConfig = {
-  [key: string]: ColorToken | string;
-};
-
-/**
- * Spacing configuration structure (following Tailwind spacing scale)
- */
-export type SpacingConfig = {
-  [key: string]: number;
-};
-
-/**
- * Typography configuration structure
- */
-export type TypographyConfig = {
-  [key: string]: {
-    fontSize: FontSizeKey | string;
-    fontFamily?: string;
-    fontWeight?: number | string;
-    lineHeight?: number | string;
-    letterSpacing?: number | string;
-  };
-};
-
-/**
- * Shadow/Effect configuration structure
- */
-export type EffectConfig = {
-  [key: string]: {
-    blur?: number;
-    offsetX?: number;
-    offsetY?: number;
-    color?: ColorToken | string;
-    alpha?: number;
-  };
-};
-
-/**
- * Theme override type - allows partial configuration for theming
+ * Theme override type - allows partial configuration for theming.
+ * This type enables customization of the default theme by overriding existing values
+ * and adding new custom tokens.
+ *
+ * @typedef {Object} ThemeOverride
+ * @property {Partial<FontConfig>} [fonts] - Font family configurations that can override default fonts
+ *   or add new font definitions
+ * @property {Partial<FontSizeMap> & Record<string,number>} [fontSizes] - Font size tokens that can override
+ *   default sizes or add new custom sizes
+ * @property {Partial<ColorConfig>} [colors] - Color tokens that can override default colors or add new
+ *   color definitions using color tokens or hex values
+ * @property {Partial<SpacingConfig>} [spacing] - Spacing scale tokens that can override default spacing
+ *   values or add new spacing definitions
+ * @property {Partial<TypographyConfig>} [typography] - Typography style tokens that can override default
+ *   text styles or add new typography variants
+ * @property {Partial<EffectConfig>} [effects] - Visual effect tokens like shadows that can override
+ *   defaults or add new effects
+ * @property {Partial<RadiusMap> & Record<string,number>} [radius] - Border radius tokens that can override
+ *   default radius values or add new radius sizes
+ * @property {Record<string,unknown>} [custom] - Additional custom theme tokens that can be used for
+ *   specific needs
  */
 export type ThemeOverride = {
   fonts?: Partial<FontConfig>;
@@ -76,9 +52,7 @@ export type ThemeOverride = {
  */
 export type BaseThemeConfig = {
   fonts?: FontConfig;
-  fontSizes?: FontSizeMap & {
-    [key: string]: number;
-  };
+  fontSizes?: FontSizeMap;
   colors?: ColorConfig;
   spacing?: SpacingConfig;
   typography?: TypographyConfig;
@@ -150,6 +124,7 @@ export const defaultLightTheme: BaseThemeConfig = {
       lineHeight: 1.4,
     },
   },
+  // TODO: Check this implementation
   effects: {
     'shadow-sm': {
       blur: 2,

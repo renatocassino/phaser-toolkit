@@ -1,4 +1,4 @@
-import { ThemeManager } from '../theme';
+import { BaseThemeConfig } from '../theme';
 
 /**
  * Available font size keys matching Tailwind CSS font size scale
@@ -18,11 +18,16 @@ export type FontSizeKey =
   | '8xl'
   | '9xl';
 
-export type FontSizeMap = Record<FontSizeKey, number>;
+/**
+ * Maps font size keys to their pixel values
+ */
+/** Map of font-size tokens to pixel values. */
+export type FontSizeMap = Record<FontSizeKey | string, number>;
 
 /**
- * Mapping of font size keys to their pixel values
+ * Default mapping of font size keys to their pixel values in pixels
  */
+/** Default font-size scale mapping (in pixels). */
 export const fontSizeMap: FontSizeMap = {
   xs: 12,
   sm: 14,
@@ -40,56 +45,89 @@ export const fontSizeMap: FontSizeMap = {
 };
 
 /**
- * Utility functions for working with font sizes
+ * API for converting font sizes between different units
+ * @template T - Optional custom font size map type
  */
-export const FontSize = {
-  getValueByKey: (key: FontSizeKey | string): number => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return value;
-    }
-
-    return fontSizeMap[key as FontSizeKey] ?? 0;
-  },
+/** API for resolving font sizes to px/rem/css. */
+export type FontSizeApi<T extends FontSizeMap | undefined> = {
   /**
-   * Get font size in pixels
-   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
+   * Convert font size key to pixels
+   * @param key - Font size key from default or custom map
    * @returns Font size in pixels
    */
-  px: (key: FontSizeKey | string): number => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return value;
-    }
-
-    return fontSizeMap[key as FontSizeKey] ?? 0;
-  },
+  px: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => number;
 
   /**
-   * Get font size in rem units (relative to 16px base)
-   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
+   * Convert font size key to rem units
+   * @param key - Font size key from default or custom map
    * @returns Font size in rem units
    */
-  rem: (key: FontSizeKey | string): number => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return value / 16;
-    }
-
-    return (fontSizeMap[key as FontSizeKey] ?? 0) / 16;
-  },
+  rem: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => number;
 
   /**
-   * Get font size as CSS pixel string
-   * @param key - Font size key (e.g., 'sm', 'lg', '2xl')
-   * @returns Font size as CSS string (e.g., '14px')
+   * Convert font size key to CSS string with px unit
+   * @param key - Font size key from default or custom map
+   * @returns Font size as CSS string (e.g. "16px")
    */
-  css: (key: FontSizeKey | string): string => {
-    const value = ThemeManager.getToken(`fontSizes.${key}`);
-    if (typeof value === 'number') {
-      return `${value}px`;
-    }
-
-    return `${fontSizeMap[key as FontSizeKey] ?? 0}px`;
-  },
+  css: (key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)) => string;
 };
+
+/**
+ * Creates a font size conversion API with optional custom font sizes
+ * @template T - Optional custom font size map type
+ * @param themeFontSizes - Optional custom font size mappings to extend defaults
+ * @returns Font size conversion API
+ */
+/**
+ * Create a font-size API bound to an optional custom map.
+ * @example
+ * const f = createFontSize({ xxl: 28 });
+ * f.css('xxl'); // '28px'
+ */
+export const createFontSize = <
+  T extends FontSizeMap | undefined = BaseThemeConfig['fontSizes'],
+>(
+  themeFontSizes?: T
+): FontSizeApi<T> => {
+  const fontmap: FontSizeMap = {
+    ...fontSizeMap,
+    ...(themeFontSizes as FontSizeMap | undefined),
+  } as FontSizeMap;
+
+  return {
+    px: (
+      key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)
+    ): number => {
+      const value = fontmap[key as FontSizeKey];
+      if (typeof value === 'number') {
+        return value;
+      }
+
+      return 0;
+    },
+    rem: (
+      key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)
+    ): number => {
+      const value = fontmap[key as FontSizeKey];
+      if (typeof value === 'number') {
+        return value / 16;
+      }
+
+      return 0;
+    },
+    css: (
+      key: FontSizeKey | (T extends FontSizeMap ? keyof T : never)
+    ): string => {
+      const value = fontmap[key as FontSizeKey];
+      if (typeof value === 'number') {
+        return `${value}px`;
+      }
+
+      return '0px';
+    },
+  };
+};
+
+// Convenience instance using default font sizes (no theme)
+export const FontSize: FontSizeApi<undefined> =
+  createFontSize<undefined>(undefined);

@@ -6,7 +6,7 @@ const config: StorybookConfig = {
     options: {},
   },
   stories: ['../src/**/*.stories.@(ts|js)'],
-  addons: [],
+  addons: ['@storybook/addon-essentials'],
   core: {},
   docs: {
     autodocs: true,

@@ -1,29 +1,29 @@
-import { c as ln } from './_commonjsHelpers-Cpj98o6Y.js';
-var fe = { exports: {} };
+import { c as cn } from './_commonjsHelpers-Cpj98o6Y.js';
+var me = { exports: {} };
 (function (r, o) {
-  (function (s, l) {
-    l(o);
-  })(ln, function (s) {
-    function l(e) {
+  (function (s, p) {
+    p(o);
+  })(cn, function (s) {
+    function p(e) {
       return e.text !== void 0 && e.text !== ''
         ? `'${e.type}' with value '${e.text}'`
         : `'${e.type}'`;
     }
-    class u extends Error {
+    class d extends Error {
       constructor(t) {
-        (super(`No parslet found for token: ${l(t)}`),
+        (super(`No parslet found for token: ${p(t)}`),
           (this.token = t),
-          Object.setPrototypeOf(this, u.prototype));
+          Object.setPrototypeOf(this, d.prototype));
       }
       getToken() {
         return this.token;
       }
     }
-    class y extends Error {
+    class u extends Error {
       constructor(t) {
-        (super(`The parsing ended early. The next token was: ${l(t)}`),
+        (super(`The parsing ended early. The next token was: ${p(t)}`),
           (this.token = t),
-          Object.setPrototypeOf(this, y.prototype));
+          Object.setPrototypeOf(this, u.prototype));
       }
       getToken() {
         return this.token;
@@ -56,13 +56,13 @@ var fe = { exports: {} };
       if (n !== a) throw new Error('Unterminated String');
       return e.slice(0, t);
     }
-    const x =
+    const O =
         /[$_\p{ID_Start}]|\\u\p{Hex_Digit}{4}|\\u\{0*(?:\p{Hex_Digit}{1,5}|10\p{Hex_Digit}{4})\}/u,
       b =
         /[$\-\p{ID_Continue}\u200C\u200D]|\\u\p{Hex_Digit}{4}|\\u\{0*(?:\p{Hex_Digit}{1,5}|10\p{Hex_Digit}{4})\}/u;
-    function te(e) {
+    function ee(e) {
       let t = e[0];
-      if (!x.test(t)) return null;
+      if (!O.test(t)) return null;
       let n = 1;
       do {
         if (((t = e[n]), !b.test(t))) break;
@@ -79,7 +79,7 @@ var fe = { exports: {} };
         : null;
     }
     const C = e => {
-      const t = te(e);
+      const t = ee(e);
       return t == null ? null : { type: 'Identifier', text: t };
     };
     function N(e) {
@@ -89,17 +89,17 @@ var fe = { exports: {} };
         return n !== void 0 && b.test(n) ? null : { type: e, text: e };
       };
     }
-    const ne = e => {
+    const te = e => {
         const t = J(e);
         return t == null ? null : { type: 'StringValue', text: t };
       },
-      wt = e => (e.length > 0 ? null : { type: 'EOF', text: '' }),
-      Pt = e => {
+      gt = e => (e.length > 0 ? null : { type: 'EOF', text: '' }),
+      wt = e => {
         const t = q(e);
         return t === null ? null : { type: 'Number', text: t };
       },
-      Nt = [
-        wt,
+      Pt = [
+        gt,
         T('=>'),
         T('('),
         T(')'),
@@ -141,17 +141,17 @@ var fe = { exports: {} };
         N('is'),
         N('in'),
         N('asserts'),
-        Pt,
+        wt,
         C,
-        ne,
+        te,
       ],
-      Et = /^\s*\n\s*/;
-    class D {
+      Nt = /^\s*\n\s*/;
+    class K {
       static create(t) {
         const n = this.read(t);
         t = n.text;
         const a = this.read(t);
-        return ((t = a.text), new D(t, void 0, n.token, a.token));
+        return ((t = a.text), new K(t, void 0, n.token, a.token));
       }
       constructor(t, n, a, i) {
         ((this.text = ''),
@@ -161,19 +161,19 @@ var fe = { exports: {} };
           (this.next = i));
       }
       static read(t, n = !1) {
-        ((n = n || Et.test(t)), (t = t.trim()));
-        for (const a of Nt) {
+        ((n = n || Nt.test(t)), (t = t.trim()));
+        for (const a of Pt) {
           const i = a(t);
           if (i !== null) {
-            const p = Object.assign(Object.assign({}, i), { startOfLine: n });
-            return ((t = t.slice(p.text.length)), { text: t, token: p });
+            const l = Object.assign(Object.assign({}, i), { startOfLine: n });
+            return ((t = t.slice(l.text.length)), { text: t, token: l });
           }
         }
         throw new Error('Unexpected Token ' + t);
       }
       advance() {
-        const t = D.read(this.text);
-        return new D(t.text, this.current, this.next, t.token);
+        const t = K.read(this.text);
+        return new K(t.text, this.current, this.next, t.token);
       }
     }
     function P(e) {
@@ -192,17 +192,17 @@ var fe = { exports: {} };
         throw new m(e);
       return e;
     }
-    function re(e) {
+    function ne(e) {
       return e.type === 'JsdocTypeKeyValue' ? Y(e) : P(e);
     }
-    function bt(e) {
+    function Et(e) {
       return e.type === 'JsdocTypeName' ? e : Y(e);
     }
     function Y(e) {
       if (e.type !== 'JsdocTypeKeyValue') throw new m(e);
       return e;
     }
-    function kt(e) {
+    function bt(e) {
       var t;
       if (e.type === 'JsdocTypeVariadic') {
         if (
@@ -216,7 +216,7 @@ var fe = { exports: {} };
         throw new m(e);
       return e;
     }
-    function Ot(e) {
+    function xt(e) {
       if (
         e.type === 'JsdocTypeTuple' ||
         (e.type === 'JsdocTypeGeneric' && e.meta.brackets === 'square')
@@ -224,12 +224,12 @@ var fe = { exports: {} };
         return e;
       throw new m(e);
     }
-    function oe(e) {
+    function re(e) {
       return (
         e.type === 'JsdocTypeIndexSignature' || e.type === 'JsdocTypeMappedType'
       );
     }
-    var d;
+    var y;
     (function (e) {
       ((e[(e.ALL = 0)] = 'ALL'),
         (e[(e.PARAMETER_LIST = 1)] = 'PARAMETER_LIST'),
@@ -252,12 +252,12 @@ var fe = { exports: {} };
         (e[(e.NAME_PATH = 18)] = 'NAME_PATH'),
         (e[(e.PARENTHESIS = 19)] = 'PARENTHESIS'),
         (e[(e.SPECIAL_TYPES = 20)] = 'SPECIAL_TYPES'));
-    })(d || (d = {}));
-    class U {
+    })(y || (y = {}));
+    class j {
       constructor(t, n, a) {
         ((this.grammar = t),
           typeof n == 'string'
-            ? (this._lexer = D.create(n))
+            ? (this._lexer = K.create(n))
             : (this._lexer = n),
           (this.baseParser = a));
       }
@@ -265,8 +265,8 @@ var fe = { exports: {} };
         return this._lexer;
       }
       parse() {
-        const t = this.parseType(d.ALL);
-        if (this.lexer.current.type !== 'EOF') throw new y(this.lexer.current);
+        const t = this.parseType(y.ALL);
+        if (this.lexer.current.type !== 'EOF') throw new u(this.lexer.current);
         return t;
       }
       parseType(t) {
@@ -274,7 +274,7 @@ var fe = { exports: {} };
       }
       parseIntermediateType(t) {
         const n = this.tryParslets(null, t);
-        if (n === null) throw new u(this.lexer.current);
+        if (n === null) throw new d(this.lexer.current);
         return this.parseInfixIntermediateType(n, t);
       }
       parseInfixIntermediateType(t, n) {
@@ -301,7 +301,7 @@ var fe = { exports: {} };
         this._lexer = t.lexer;
       }
     }
-    function ke(e) {
+    function be(e) {
       return (
         e === '}' ||
         e === 'EOF' ||
@@ -311,15 +311,15 @@ var fe = { exports: {} };
         e === '>'
       );
     }
-    const ae = (e, t, n) => {
+    const oe = (e, t, n) => {
       const a = e.lexer.current.type,
         i = e.lexer.next.type;
-      return (n == null && a === '?' && !ke(i)) || (n != null && a === '?')
+      return (n == null && a === '?' && !be(i)) || (n != null && a === '?')
         ? (e.consume('?'),
           n == null
             ? {
                 type: 'JsdocTypeNullable',
-                element: e.parseType(d.NULLABLE),
+                element: e.parseType(y.NULLABLE),
                 meta: { position: 'prefix' },
               }
             : {
@@ -331,11 +331,11 @@ var fe = { exports: {} };
     };
     function h(e) {
       const t = (n, a, i) => {
-        const p = n.lexer.current.type,
+        const l = n.lexer.current.type,
           f = n.lexer.next.type;
         if (i === null) {
-          if ('parsePrefix' in e && e.accept(p, f)) return e.parsePrefix(n);
-        } else if ('parseInfix' in e && e.precedence > a && e.accept(p, f))
+          if ('parsePrefix' in e && e.accept(l, f)) return e.parsePrefix(n);
+        } else if ('parseInfix' in e && e.precedence > a && e.accept(l, f))
           return e.parseInfix(n, i);
         return null;
       };
@@ -344,12 +344,12 @@ var fe = { exports: {} };
     const G = h({
         name: 'optionalParslet',
         accept: e => e === '=',
-        precedence: d.OPTIONAL,
+        precedence: y.OPTIONAL,
         parsePrefix: e => (
           e.consume('='),
           {
             type: 'JsdocTypeOptional',
-            element: e.parseType(d.OPTIONAL),
+            element: e.parseType(y.OPTIONAL),
             meta: { position: 'prefix' },
           }
         ),
@@ -370,13 +370,13 @@ var fe = { exports: {} };
           return (e.consume('Number'), { type: 'JsdocTypeNumber', value: t });
         },
       }),
-      xt = h({
+      kt = h({
         name: 'parenthesisParslet',
         accept: e => e === '(',
         parsePrefix: e => {
           if ((e.consume('('), e.consume(')')))
             return { type: 'JsdocTypeParameterList', elements: [] };
-          const t = e.parseIntermediateType(d.ALL);
+          const t = e.parseIntermediateType(y.ALL);
           if (!e.consume(')')) throw new Error('Unterminated parenthesis');
           return t.type === 'JsdocTypeParameterList'
             ? t
@@ -385,10 +385,10 @@ var fe = { exports: {} };
               : { type: 'JsdocTypeParenthesis', element: P(t) };
         },
       }),
-      St = h({
+      Ot = h({
         name: 'specialTypesParslet',
         accept: (e, t) =>
-          (e === '?' && ke(t)) ||
+          (e === '?' && be(t)) ||
           e === 'null' ||
           e === 'undefined' ||
           e === '*',
@@ -400,15 +400,15 @@ var fe = { exports: {} };
           throw new Error('Unacceptable token: ' + e.lexer.current.text);
         },
       }),
-      It = h({
+      St = h({
         name: 'notNullableParslet',
         accept: e => e === '!',
-        precedence: d.NULLABLE,
+        precedence: y.NULLABLE,
         parsePrefix: e => (
           e.consume('!'),
           {
             type: 'JsdocTypeNotNullable',
-            element: e.parseType(d.NULLABLE),
+            element: e.parseType(y.NULLABLE),
             meta: { position: 'prefix' },
           }
         ),
@@ -421,20 +421,20 @@ var fe = { exports: {} };
           }
         ),
       });
-    function At({ allowTrailingComma: e }) {
+    function It({ allowTrailingComma: e }) {
       return h({
         name: 'parameterListParslet',
         accept: t => t === ',',
-        precedence: d.PARAMETER_LIST,
+        precedence: y.PARAMETER_LIST,
         parseInfix: (t, n) => {
-          const a = [re(n)];
+          const a = [ne(n)];
           t.consume(',');
           do
             try {
-              const i = t.parseIntermediateType(d.PARAMETER_LIST);
-              a.push(re(i));
+              const i = t.parseIntermediateType(y.PARAMETER_LIST);
+              a.push(ne(i));
             } catch (i) {
-              if (i instanceof u) break;
+              if (i instanceof d) break;
               throw i;
             }
           while (t.consume(','));
@@ -447,10 +447,10 @@ var fe = { exports: {} };
         },
       });
     }
-    const vt = h({
+    const At = h({
         name: 'genericParslet',
         accept: (e, t) => e === '<' || (e === '.' && t === '<'),
-        precedence: d.GENERIC,
+        precedence: y.GENERIC,
         parseInfix: (e, t) => {
           const n = e.consume('.');
           e.consume('<');
@@ -458,15 +458,15 @@ var fe = { exports: {} };
           let i = !1;
           if (e.consume('infer')) {
             i = !0;
-            const p = e.parseIntermediateType(d.SYMBOL);
-            if (p.type !== 'JsdocTypeName')
+            const l = e.parseIntermediateType(y.SYMBOL);
+            if (l.type !== 'JsdocTypeName')
               throw new m(
-                p,
+                l,
                 'A typescript asserts always has to have a name on the left side.'
               );
-            a.push(p);
+            a.push(l);
           } else
-            do a.push(e.parseType(d.PARAMETER_LIST));
+            do a.push(e.parseType(y.PARAMETER_LIST));
             while (e.consume(','));
           if (!e.consume('>'))
             throw new Error('Unterminated generic parameter list');
@@ -479,31 +479,31 @@ var fe = { exports: {} };
           );
         },
       }),
-      Rt = h({
+      vt = h({
         name: 'unionParslet',
         accept: e => e === '|',
-        precedence: d.UNION,
+        precedence: y.UNION,
         parseInfix: (e, t) => {
           e.consume('|');
           const n = [];
-          do n.push(e.parseType(d.UNION));
+          do n.push(e.parseType(y.UNION));
           while (e.consume('|'));
           return { type: 'JsdocTypeUnion', elements: [P(t), ...n] };
         },
       }),
-      se = [ae, G, X, xt, St, It, At({ allowTrailingComma: !0 }), vt, Rt, G];
+      ae = [oe, G, X, kt, Ot, St, It({ allowTrailingComma: !0 }), At, vt, G];
     function W({
       allowSquareBracketsOnAnyType: e,
       allowJsdocNamePaths: t,
       pathGrammar: n,
     }) {
-      return function (i, p, f) {
-        if (f == null || p >= d.NAME_PATH) return null;
+      return function (i, l, f) {
+        if (f == null || l >= y.NAME_PATH) return null;
         const g = i.lexer.current.type,
-          O = i.lexer.next.type;
+          k = i.lexer.next.type;
         if (
           !(
-            (g === '.' && O !== '<') ||
+            (g === '.' && k !== '<') ||
             (g === '[' && (e || f.type === 'JsdocTypeName')) ||
             (t && (g === '~' || g === '#'))
           )
@@ -518,9 +518,9 @@ var fe = { exports: {} };
             : i.consume('~')
               ? (S = 'inner')
               : (i.consume('#'), (S = 'instance'));
-        const Fe = n !== null ? new U(n, i.lexer, i) : i,
-          I = Fe.parseIntermediateType(d.NAME_PATH);
-        i.acceptLexerState(Fe);
+        const Le = n !== null ? new j(n, i.lexer, i) : i,
+          I = Le.parseIntermediateType(y.NAME_PATH);
+        i.acceptLexerState(Le);
         let B;
         switch (I.type) {
           case 'JsdocTypeName':
@@ -559,9 +559,9 @@ var fe = { exports: {} };
             );
         }
         if (z && !i.consume(']')) {
-          const Ve = i.lexer.current;
+          const Fe = i.lexer.current;
           throw new Error(
-            `Unterminated square brackets. Next token is '${Ve.type}' with text '${Ve.text}'`
+            `Unterminated square brackets. Next token is '${Fe.type}' with text '${Fe.text}'`
           );
         }
         return { type: 'JsdocTypeNamePath', left: P(f), right: B, pathType: S };
@@ -578,7 +578,7 @@ var fe = { exports: {} };
         },
       });
     }
-    const K = h({
+    const D = h({
       name: 'stringValueParslet',
       accept: e => e === 'StringValue',
       parsePrefix: e => {
@@ -593,7 +593,7 @@ var fe = { exports: {} };
         );
       },
     });
-    function H({ pathGrammar: e, allowedTypes: t }) {
+    function Q({ pathGrammar: e, allowedTypes: t }) {
       return h({
         name: 'specialNamePathParslet',
         accept: n => t.includes(n),
@@ -602,35 +602,35 @@ var fe = { exports: {} };
           if ((n.consume(a), !n.consume(':')))
             return { type: 'JsdocTypeName', value: a };
           let i,
-            p = n.lexer.current;
+            l = n.lexer.current;
           if (n.consume('StringValue'))
             i = {
               type: 'JsdocTypeSpecialNamePath',
-              value: p.text.slice(1, -1),
+              value: l.text.slice(1, -1),
               specialType: a,
-              meta: { quote: p.text[0] === "'" ? 'single' : 'double' },
+              meta: { quote: l.text[0] === "'" ? 'single' : 'double' },
             };
           else {
-            let O = '';
-            const k = ['Identifier', '@', '/'];
-            for (; k.some(S => n.consume(S)); )
-              ((O += p.text), (p = n.lexer.current));
+            let k = '';
+            const x = ['Identifier', '@', '/'];
+            for (; x.some(S => n.consume(S)); )
+              ((k += l.text), (l = n.lexer.current));
             i = {
               type: 'JsdocTypeSpecialNamePath',
-              value: O,
+              value: k,
               specialType: a,
               meta: { quote: void 0 },
             };
           }
-          const f = new U(e, n.lexer, n),
-            g = f.parseInfixIntermediateType(i, d.ALL);
+          const f = new j(e, n.lexer, n),
+            g = f.parseInfixIntermediateType(i, y.ALL);
           return (n.acceptLexerState(f), P(g));
         },
       });
     }
-    const Oe = [
+    const xe = [
         A({ allowedAdditionalTokens: ['external', 'module'] }),
-        K,
+        D,
         X,
         W({
           allowSquareBracketsOnAnyType: !1,
@@ -638,21 +638,21 @@ var fe = { exports: {} };
           pathGrammar: null,
         }),
       ],
-      j = [...Oe, H({ allowedTypes: ['event'], pathGrammar: Oe })];
-    function ie(e) {
+      U = [...xe, Q({ allowedTypes: ['event'], pathGrammar: xe })];
+    function se(e) {
       let t;
       if (e.type === 'JsdocTypeParameterList') t = e.elements;
       else if (e.type === 'JsdocTypeParenthesis') t = [e.element];
       else throw new m(e);
-      return t.map(n => re(n));
+      return t.map(n => ne(n));
     }
-    function _t(e) {
-      const t = ie(e);
+    function Rt(e) {
+      const t = se(e);
       if (t.some(n => n.type === 'JsdocTypeKeyValue'))
         throw new Error('No parameter should be named');
       return t;
     }
-    function ce({
+    function ie({
       allowNamedParameters: e,
       allowNoReturnType: t,
       allowWithoutParenthesis: n,
@@ -660,9 +660,9 @@ var fe = { exports: {} };
     }) {
       return h({
         name: 'functionParslet',
-        accept: (i, p) => i === 'function' || (a && i === 'new' && p === '('),
+        accept: (i, l) => i === 'function' || (a && i === 'new' && l === '('),
         parsePrefix: i => {
-          const p = i.consume('new');
+          const l = i.consume('new');
           i.consume('function');
           const f = i.lexer.current.type === '(';
           if (!f) {
@@ -673,37 +673,37 @@ var fe = { exports: {} };
             type: 'JsdocTypeFunction',
             parameters: [],
             arrow: !1,
-            constructor: p,
+            constructor: l,
             parenthesis: f,
           };
-          const O = i.parseIntermediateType(d.FUNCTION);
-          if (e === void 0) g.parameters = _t(O);
+          const k = i.parseIntermediateType(y.FUNCTION);
+          if (e === void 0) g.parameters = Rt(k);
           else {
-            if (p && O.type === 'JsdocTypeFunction' && O.arrow)
-              return ((g = O), (g.constructor = !0), g);
-            g.parameters = ie(O);
-            for (const k of g.parameters)
-              if (k.type === 'JsdocTypeKeyValue' && !e.includes(k.key))
+            if (l && k.type === 'JsdocTypeFunction' && k.arrow)
+              return ((g = k), (g.constructor = !0), g);
+            g.parameters = se(k);
+            for (const x of g.parameters)
+              if (x.type === 'JsdocTypeKeyValue' && !e.includes(x.key))
                 throw new Error(
-                  `only allowed named parameters are ${e.join(', ')} but got ${k.type}`
+                  `only allowed named parameters are ${e.join(', ')} but got ${x.type}`
                 );
           }
-          if (i.consume(':')) g.returnType = i.parseType(d.PREFIX);
+          if (i.consume(':')) g.returnType = i.parseType(y.PREFIX);
           else if (!t) throw new Error('function is missing return type');
           return g;
         },
       });
     }
-    function le({ allowPostfix: e, allowEnclosingBrackets: t }) {
+    function ce({ allowPostfix: e, allowEnclosingBrackets: t }) {
       return h({
         name: 'variadicParslet',
         accept: n => n === '...',
-        precedence: d.PREFIX,
+        precedence: y.PREFIX,
         parsePrefix: n => {
           n.consume('...');
           const a = t && n.consume('[');
           try {
-            const i = n.parseType(d.PREFIX);
+            const i = n.parseType(y.PREFIX);
             if (a && !n.consume(']'))
               throw new Error("Unterminated variadic type. Missing ']'");
             return {
@@ -712,7 +712,7 @@ var fe = { exports: {} };
               meta: { position: 'prefix', squareBrackets: a },
             };
           } catch (i) {
-            if (i instanceof u) {
+            if (i instanceof d) {
               if (a)
                 throw new Error(
                   'Empty square brackets for variadic are not allowed.'
@@ -736,10 +736,10 @@ var fe = { exports: {} };
           : void 0,
       });
     }
-    const xe = h({
+    const ke = h({
         name: 'symbolParslet',
         accept: e => e === '(',
-        precedence: d.SYMBOL,
+        precedence: y.SYMBOL,
         parseInfix: (e, t) => {
           if (t.type !== 'JsdocTypeName')
             throw new Error(
@@ -748,16 +748,16 @@ var fe = { exports: {} };
           e.consume('(');
           const n = { type: 'JsdocTypeSymbol', value: t.value };
           if (!e.consume(')')) {
-            const a = e.parseIntermediateType(d.SYMBOL);
-            if (((n.element = kt(a)), !e.consume(')')))
+            const a = e.parseIntermediateType(y.SYMBOL);
+            if (((n.element = bt(a)), !e.consume(')')))
               throw new Error('Symbol does not end after value');
           }
           return n;
         },
       }),
-      Se = h({
+      Oe = h({
         name: 'arrayBracketsParslet',
-        precedence: d.ARRAY_BRACKETS,
+        precedence: y.ARRAY_BRACKETS,
         accept: (e, t) => e === '[' && t === ']',
         parseInfix: (e, t) => (
           e.consume('['),
@@ -770,7 +770,7 @@ var fe = { exports: {} };
           }
         ),
       });
-    function pe({ objectFieldGrammar: e, allowKeyTypes: t }) {
+    function le({ objectFieldGrammar: e, allowKeyTypes: t }) {
       return h({
         name: 'objectParslet',
         accept: n => n === '{',
@@ -783,12 +783,12 @@ var fe = { exports: {} };
           };
           if (!n.consume('}')) {
             let i;
-            const p = new U(e, n.lexer, n);
+            const l = new j(e, n.lexer, n);
             for (;;) {
-              p.acceptLexerState(n);
-              let f = p.parseIntermediateType(d.OBJECT);
-              (n.acceptLexerState(p),
-                f === void 0 && t && (f = n.parseIntermediateType(d.OBJECT)));
+              l.acceptLexerState(n);
+              let f = l.parseIntermediateType(y.OBJECT);
+              (n.acceptLexerState(l),
+                f === void 0 && t && (f = n.parseIntermediateType(y.OBJECT)));
               let g = !1;
               if (
                 (f.type === 'JsdocTypeNullable' && ((g = !0), (f = f.element)),
@@ -796,15 +796,15 @@ var fe = { exports: {} };
                   f.type === 'JsdocTypeName' ||
                   f.type === 'JsdocTypeStringValue')
               ) {
-                let k;
-                (f.type === 'JsdocTypeStringValue' && (k = f.meta.quote),
+                let x;
+                (f.type === 'JsdocTypeStringValue' && (x = f.meta.quote),
                   a.elements.push({
                     type: 'JsdocTypeObjectField',
                     key: f.value.toString(),
                     right: void 0,
                     optional: g,
                     readonly: !1,
-                    meta: { quote: k },
+                    meta: { quote: x },
                   }));
               } else if (
                 f.type === 'JsdocTypeObjectField' ||
@@ -830,7 +830,7 @@ var fe = { exports: {} };
         },
       });
     }
-    function ue({
+    function pe({
       allowSquaredProperties: e,
       allowKeyTypes: t,
       allowReadonly: n,
@@ -838,127 +838,127 @@ var fe = { exports: {} };
     }) {
       return h({
         name: 'objectFieldParslet',
-        precedence: d.KEY_VALUE,
+        precedence: y.KEY_VALUE,
         accept: i => i === ':',
-        parseInfix: (i, p) => {
+        parseInfix: (i, l) => {
           var f;
           let g = !1,
-            O = !1;
-          (a && p.type === 'JsdocTypeNullable' && ((g = !0), (p = p.element)),
+            k = !1;
+          (a && l.type === 'JsdocTypeNullable' && ((g = !0), (l = l.element)),
             n &&
-              p.type === 'JsdocTypeReadonlyProperty' &&
-              ((O = !0), (p = p.element)));
-          const k = (f = i.baseParser) !== null && f !== void 0 ? f : i;
+              l.type === 'JsdocTypeReadonlyProperty' &&
+              ((k = !0), (l = l.element)));
+          const x = (f = i.baseParser) !== null && f !== void 0 ? f : i;
           if (
-            (k.acceptLexerState(i),
-            p.type === 'JsdocTypeNumber' ||
-              p.type === 'JsdocTypeName' ||
-              p.type === 'JsdocTypeStringValue' ||
-              oe(p))
+            (x.acceptLexerState(i),
+            l.type === 'JsdocTypeNumber' ||
+              l.type === 'JsdocTypeName' ||
+              l.type === 'JsdocTypeStringValue' ||
+              re(l))
           ) {
-            if (oe(p) && !e) throw new m(p);
-            k.consume(':');
+            if (re(l) && !e) throw new m(l);
+            x.consume(':');
             let S;
-            p.type === 'JsdocTypeStringValue' && (S = p.meta.quote);
-            const z = k.parseType(d.KEY_VALUE);
+            l.type === 'JsdocTypeStringValue' && (S = l.meta.quote);
+            const z = x.parseType(y.KEY_VALUE);
             return (
-              i.acceptLexerState(k),
+              i.acceptLexerState(x),
               {
                 type: 'JsdocTypeObjectField',
-                key: oe(p) ? p : p.value.toString(),
+                key: re(l) ? l : l.value.toString(),
                 right: z,
                 optional: g,
-                readonly: O,
+                readonly: k,
                 meta: { quote: S },
               }
             );
           } else {
-            if (!t) throw new m(p);
-            k.consume(':');
-            const S = k.parseType(d.KEY_VALUE);
+            if (!t) throw new m(l);
+            x.consume(':');
+            const S = x.parseType(y.KEY_VALUE);
             return (
-              i.acceptLexerState(k),
-              { type: 'JsdocTypeJsdocObjectField', left: P(p), right: S }
+              i.acceptLexerState(x),
+              { type: 'JsdocTypeJsdocObjectField', left: P(l), right: S }
             );
           }
         },
       });
     }
-    function ye({ allowOptional: e, allowVariadic: t }) {
+    function ue({ allowOptional: e, allowVariadic: t }) {
       return h({
         name: 'keyValueParslet',
-        precedence: d.KEY_VALUE,
+        precedence: y.KEY_VALUE,
         accept: n => n === ':',
         parseInfix: (n, a) => {
           let i = !1,
-            p = !1;
+            l = !1;
           if (
             (e && a.type === 'JsdocTypeNullable' && ((i = !0), (a = a.element)),
             t &&
               a.type === 'JsdocTypeVariadic' &&
               a.element !== void 0 &&
-              ((p = !0), (a = a.element)),
+              ((l = !0), (a = a.element)),
             a.type !== 'JsdocTypeName')
           )
             throw new m(a);
           n.consume(':');
-          const f = n.parseType(d.KEY_VALUE);
+          const f = n.parseType(y.KEY_VALUE);
           return {
             type: 'JsdocTypeKeyValue',
             key: a.value,
             right: f,
             optional: i,
-            variadic: p,
+            variadic: l,
           };
         },
       });
     }
-    const Ie = [
-        ...se,
-        ce({
+    const Se = [
+        ...ae,
+        ie({
           allowWithoutParenthesis: !0,
           allowNamedParameters: ['this', 'new'],
           allowNoReturnType: !0,
           allowNewAsFunctionKeyword: !1,
         }),
-        K,
-        H({ allowedTypes: ['module', 'external', 'event'], pathGrammar: j }),
-        le({ allowEnclosingBrackets: !0, allowPostfix: !0 }),
+        D,
+        Q({ allowedTypes: ['module', 'external', 'event'], pathGrammar: U }),
+        ce({ allowEnclosingBrackets: !0, allowPostfix: !0 }),
         A({ allowedAdditionalTokens: ['keyof'] }),
-        xe,
-        Se,
+        ke,
+        Oe,
         W({
           allowSquareBracketsOnAnyType: !1,
           allowJsdocNamePaths: !0,
-          pathGrammar: j,
+          pathGrammar: U,
         }),
       ],
-      Lt = [
-        ...Ie,
-        pe({
+      _t = [
+        ...Se,
+        le({
           objectFieldGrammar: [
             A({ allowedAdditionalTokens: ['typeof', 'module', 'in'] }),
-            ue({
+            pe({
               allowSquaredProperties: !1,
               allowKeyTypes: !0,
               allowOptional: !1,
               allowReadonly: !1,
             }),
-            ...Ie,
+            ...Se,
           ],
           allowKeyTypes: !0,
         }),
-        ye({ allowOptional: !0, allowVariadic: !0 }),
+        ue({ allowOptional: !0, allowVariadic: !0 }),
       ],
-      Ae = h({
+      Ie = h({
         name: 'typeOfParslet',
         accept: e => e === 'typeof',
         parsePrefix: e => (
           e.consume('typeof'),
-          { type: 'JsdocTypeTypeof', element: e.parseType(d.KEY_OF_TYPE_OF) }
+          { type: 'JsdocTypeTypeof', element: e.parseType(y.KEY_OF_TYPE_OF) }
         ),
       }),
-      Ft = [
+      Lt = [
         A({
           allowedAdditionalTokens: [
             'typeof',
@@ -969,45 +969,45 @@ var fe = { exports: {} };
             'in',
           ],
         }),
-        ae,
+        oe,
         G,
-        K,
+        D,
         X,
-        ue({
+        pe({
           allowSquaredProperties: !1,
           allowKeyTypes: !1,
           allowOptional: !1,
           allowReadonly: !1,
         }),
       ],
-      Vt = [
-        ...se,
-        pe({ allowKeyTypes: !1, objectFieldGrammar: Ft }),
+      Ft = [
+        ...ae,
+        le({ allowKeyTypes: !1, objectFieldGrammar: Lt }),
         A({ allowedAdditionalTokens: ['event', 'external', 'in'] }),
-        Ae,
-        ce({
+        Ie,
+        ie({
           allowWithoutParenthesis: !1,
           allowNamedParameters: ['this', 'new'],
           allowNoReturnType: !0,
           allowNewAsFunctionKeyword: !1,
         }),
-        le({ allowEnclosingBrackets: !1, allowPostfix: !1 }),
+        ce({ allowEnclosingBrackets: !1, allowPostfix: !1 }),
         A({ allowedAdditionalTokens: ['keyof'] }),
-        H({ allowedTypes: ['module'], pathGrammar: j }),
+        Q({ allowedTypes: ['module'], pathGrammar: U }),
         W({
           allowSquareBracketsOnAnyType: !1,
           allowJsdocNamePaths: !0,
-          pathGrammar: j,
+          pathGrammar: U,
         }),
-        ye({ allowOptional: !1, allowVariadic: !1 }),
-        xe,
+        ue({ allowOptional: !1, allowVariadic: !1 }),
+        ke,
       ],
-      Ut = h({
+      Vt = h({
         name: 'assertsParslet',
         accept: e => e === 'asserts',
         parsePrefix: e => {
           e.consume('asserts');
-          const t = e.parseIntermediateType(d.SYMBOL);
+          const t = e.parseIntermediateType(y.SYMBOL);
           if (t.type !== 'JsdocTypeName')
             throw new m(
               t,
@@ -1017,7 +1017,7 @@ var fe = { exports: {} };
             ? {
                 type: 'JsdocTypeAsserts',
                 left: t,
-                right: P(e.parseIntermediateType(d.INFIX)),
+                right: P(e.parseIntermediateType(y.INFIX)),
               }
             : { type: 'JsdocTypeAssertsPlain', element: t };
         },
@@ -1030,7 +1030,7 @@ var fe = { exports: {} };
           t.consume('[');
           const n = { type: 'JsdocTypeTuple', elements: [] };
           if (t.consume(']')) return n;
-          const a = t.parseIntermediateType(d.ALL);
+          const a = t.parseIntermediateType(y.ALL);
           if (
             (a.type === 'JsdocTypeParameterList'
               ? a.elements[0].type === 'JsdocTypeKeyValue'
@@ -1048,21 +1048,21 @@ var fe = { exports: {} };
         },
       });
     }
-    const $t = h({
+    const Ut = h({
         name: 'keyOfParslet',
         accept: e => e === 'keyof',
         parsePrefix: e => (
           e.consume('keyof'),
-          { type: 'JsdocTypeKeyof', element: P(e.parseType(d.KEY_OF_TYPE_OF)) }
+          { type: 'JsdocTypeKeyof', element: P(e.parseType(y.KEY_OF_TYPE_OF)) }
         ),
       }),
-      Dt = h({
+      $t = h({
         name: 'importParslet',
         accept: e => e === 'import',
         parsePrefix: e => {
           if ((e.consume('import'), !e.consume('(')))
             throw new Error('Missing parenthesis after import keyword');
-          const t = e.parseType(d.PREFIX);
+          const t = e.parseType(y.PREFIX);
           if (t.type !== 'JsdocTypeStringValue')
             throw new Error(
               'Only string values are allowed as paths for imports'
@@ -1079,27 +1079,27 @@ var fe = { exports: {} };
           e.consume('readonly'),
           {
             type: 'JsdocTypeReadonlyProperty',
-            element: e.parseIntermediateType(d.KEY_VALUE),
+            element: e.parseIntermediateType(y.KEY_VALUE),
           }
         ),
       }),
-      Mt = h({
+      Dt = h({
         name: 'arrowFunctionParslet',
-        precedence: d.ARROW,
+        precedence: y.ARROW,
         accept: e => e === '=>',
         parseInfix: (e, t) => (
           e.consume('=>'),
           {
             type: 'JsdocTypeFunction',
-            parameters: ie(t).map(bt),
+            parameters: se(t).map(Et),
             arrow: !0,
             constructor: !1,
             parenthesis: !0,
-            returnType: e.parseType(d.OBJECT),
+            returnType: e.parseType(y.OBJECT),
           }
         ),
       }),
-      Bt = h({
+      Mt = h({
         name: 'genericArrowFunctionParslet',
         accept: e => e === '<',
         parsePrefix: e => {
@@ -1107,46 +1107,46 @@ var fe = { exports: {} };
           e.consume('<');
           do {
             let a,
-              i = e.parseIntermediateType(d.SYMBOL);
+              i = e.parseIntermediateType(y.SYMBOL);
             if (
               (i.type === 'JsdocTypeOptional' &&
-                ((i = i.element), (a = e.parseType(d.SYMBOL))),
+                ((i = i.element), (a = e.parseType(y.SYMBOL))),
               i.type !== 'JsdocTypeName')
             )
               throw new m(i);
-            let p;
+            let l;
             e.consume('extends') &&
-              ((p = e.parseType(d.SYMBOL)),
-              p.type === 'JsdocTypeOptional' &&
-                ((p = p.element), (a = e.parseType(d.SYMBOL))));
+              ((l = e.parseType(y.SYMBOL)),
+              l.type === 'JsdocTypeOptional' &&
+                ((l = l.element), (a = e.parseType(y.SYMBOL))));
             const f = { type: 'JsdocTypeTypeParameter', name: i };
             if (
-              (p !== void 0 && (f.constraint = p),
+              (l !== void 0 && (f.constraint = l),
               a !== void 0 && (f.defaultValue = a),
               t.push(f),
               e.consume('>'))
             )
               break;
           } while (e.consume(','));
-          const n = e.parseIntermediateType(d.SYMBOL);
+          const n = e.parseIntermediateType(y.SYMBOL);
           return ((n.typeParameters = t), n);
         },
       }),
-      qt = h({
+      Bt = h({
         name: 'intersectionParslet',
         accept: e => e === '&',
-        precedence: d.INTERSECTION,
+        precedence: y.INTERSECTION,
         parseInfix: (e, t) => {
           e.consume('&');
           const n = [];
-          do n.push(e.parseType(d.INTERSECTION));
+          do n.push(e.parseType(y.INTERSECTION));
           while (e.consume('&'));
           return { type: 'JsdocTypeIntersection', elements: [P(t), ...n] };
         },
       }),
-      Ct = h({
+      qt = h({
         name: 'predicateParslet',
-        precedence: d.INFIX,
+        precedence: y.INFIX,
         accept: e => e === 'is',
         parseInfix: (e, t) => {
           if (t.type !== 'JsdocTypeName')
@@ -1159,12 +1159,12 @@ var fe = { exports: {} };
             {
               type: 'JsdocTypePredicate',
               left: t,
-              right: P(e.parseIntermediateType(d.INFIX)),
+              right: P(e.parseIntermediateType(y.INFIX)),
             }
           );
         },
       }),
-      Yt = h({
+      Ct = h({
         name: 'objectSquareBracketPropertyParslet',
         accept: e => e === '[',
         parsePrefix: e => {
@@ -1180,7 +1180,7 @@ var fe = { exports: {} };
               (n = {
                 type: 'JsdocTypeIndexSignature',
                 key: t,
-                right: a.parseType(d.INDEX_BRACKETS),
+                right: a.parseType(y.INDEX_BRACKETS),
               }),
               e.acceptLexerState(a));
           } else if (e.consume('in')) {
@@ -1189,7 +1189,7 @@ var fe = { exports: {} };
               (n = {
                 type: 'JsdocTypeMappedType',
                 key: t,
-                right: a.parseType(d.ARRAY_BRACKETS),
+                right: a.parseType(y.ARRAY_BRACKETS),
               }),
               e.acceptLexerState(a));
           } else
@@ -1200,25 +1200,25 @@ var fe = { exports: {} };
           return n;
         },
       }),
-      Gt = h({
+      Yt = h({
         name: 'readonlyArrayParslet',
         accept: e => e === 'readonly',
         parsePrefix: e => (
           e.consume('readonly'),
           {
             type: 'JsdocTypeReadonlyArray',
-            element: Ot(e.parseIntermediateType(d.ALL)),
+            element: xt(e.parseIntermediateType(y.ALL)),
           }
         ),
       }),
-      Xt = h({
+      Gt = h({
         name: 'conditionalParslet',
-        precedence: d.INFIX,
+        precedence: y.INFIX,
         accept: e => e === 'extends',
         parseInfix: (e, t) => {
           e.consume('extends');
-          const n = e.parseType(d.KEY_OF_TYPE_OF).element,
-            a = e.parseType(d.INFIX);
+          const n = e.parseType(y.KEY_OF_TYPE_OF).element,
+            a = e.parseType(y.INFIX);
           return (
             e.consume(':'),
             {
@@ -1226,12 +1226,12 @@ var fe = { exports: {} };
               checksType: P(t),
               extendsType: n,
               trueType: a,
-              falseType: e.parseType(d.INFIX),
+              falseType: e.parseType(y.INFIX),
             }
           );
         },
       }),
-      Wt = [
+      Xt = [
         Kt,
         A({
           allowedAdditionalTokens: [
@@ -1243,65 +1243,65 @@ var fe = { exports: {} };
             'in',
           ],
         }),
-        ae,
+        oe,
         G,
-        K,
+        D,
         X,
-        ue({
+        pe({
           allowSquaredProperties: !0,
           allowKeyTypes: !1,
           allowOptional: !0,
           allowReadonly: !0,
         }),
-        Yt,
+        Ct,
       ],
-      Ht = [
-        ...se,
-        pe({ allowKeyTypes: !1, objectFieldGrammar: Wt }),
-        Gt,
-        Ae,
+      Wt = [
+        ...ae,
+        le({ allowKeyTypes: !1, objectFieldGrammar: Xt }),
+        Yt,
+        Ie,
+        Ut,
         $t,
-        Dt,
-        K,
-        ce({
+        D,
+        ie({
           allowWithoutParenthesis: !0,
           allowNoReturnType: !1,
           allowNamedParameters: ['this', 'new', 'args'],
           allowNewAsFunctionKeyword: !0,
         }),
         jt({ allowQuestionMark: !1 }),
-        le({ allowEnclosingBrackets: !1, allowPostfix: !1 }),
-        Ut,
-        Xt,
+        ce({ allowEnclosingBrackets: !1, allowPostfix: !1 }),
+        Vt,
+        Gt,
         A({ allowedAdditionalTokens: ['event', 'external', 'in'] }),
-        H({ allowedTypes: ['module'], pathGrammar: j }),
-        Se,
+        Q({ allowedTypes: ['module'], pathGrammar: U }),
+        Oe,
+        Dt,
         Mt,
-        Bt,
         W({
           allowSquareBracketsOnAnyType: !0,
           allowJsdocNamePaths: !1,
-          pathGrammar: j,
+          pathGrammar: U,
         }),
+        Bt,
         qt,
-        Ct,
-        ye({ allowVariadic: !0, allowOptional: !0 }),
+        ue({ allowVariadic: !0, allowOptional: !0 }),
       ];
-    function ve(e, t) {
+    function Ae(e, t) {
       switch (t) {
         case 'closure':
-          return new U(Vt, e).parse();
+          return new j(Ft, e).parse();
         case 'jsdoc':
-          return new U(Lt, e).parse();
+          return new j(_t, e).parse();
         case 'typescript':
-          return new U(Ht, e).parse();
+          return new j(Wt, e).parse();
       }
     }
     function Qt(e, t = ['typescript', 'closure', 'jsdoc']) {
       let n;
       for (const a of t)
         try {
-          return ve(e, a);
+          return Ae(e, a);
         } catch (i) {
           n = i;
         }
@@ -1320,7 +1320,7 @@ var fe = { exports: {} };
         'This transform is not available. Are you trying the correct parsing mode?'
       );
     }
-    function Re(e) {
+    function ve(e) {
       const t = { params: [] };
       for (const n of e.parameters)
         n.type === 'JsdocTypeKeyValue'
@@ -1332,7 +1332,7 @@ var fe = { exports: {} };
           : t.params.push(n);
       return t;
     }
-    function Q(e, t, n) {
+    function H(e, t, n) {
       return e === 'prefix' ? n + t : t + n;
     }
     function v(e, t) {
@@ -1345,7 +1345,7 @@ var fe = { exports: {} };
           return e;
       }
     }
-    function _e() {
+    function Re() {
       return {
         JsdocTypeParenthesis: (e, t) =>
           `(${e.element !== void 0 ? t(e.element) : ''})`,
@@ -1372,7 +1372,7 @@ var fe = { exports: {} };
         JsdocTypeVariadic: (e, t) =>
           e.meta.position === void 0
             ? '...'
-            : Q(e.meta.position, t(e.element), '...'),
+            : H(e.meta.position, t(e.element), '...'),
         JsdocTypeNamePath: (e, t) => {
           const n = t(e.left),
             a = t(e.right);
@@ -1423,9 +1423,9 @@ var fe = { exports: {} };
         },
         JsdocTypeSpecialNamePath: e =>
           `${e.specialType}:${v(e.value, e.meta.quote)}`,
-        JsdocTypeNotNullable: (e, t) => Q(e.meta.position, t(e.element), '!'),
+        JsdocTypeNotNullable: (e, t) => H(e.meta.position, t(e.element), '!'),
         JsdocTypeNull: () => 'null',
-        JsdocTypeNullable: (e, t) => Q(e.meta.position, t(e.element), '?'),
+        JsdocTypeNullable: (e, t) => H(e.meta.position, t(e.element), '?'),
         JsdocTypeNumber: e => e.value.toString(),
         JsdocTypeObject: (e, t) => {
           var n, a;
@@ -1448,7 +1448,7 @@ var fe = { exports: {} };
               : '')
           }}`;
         },
-        JsdocTypeOptional: (e, t) => Q(e.meta.position, t(e.element), '='),
+        JsdocTypeOptional: (e, t) => H(e.meta.position, t(e.element), '='),
         JsdocTypeSymbol: (e, t) =>
           `${e.value}(${e.element !== void 0 ? t(e.element) : ''})`,
         JsdocTypeTypeof: (e, t) => `typeof ${t(e.element)}`,
@@ -1469,11 +1469,11 @@ var fe = { exports: {} };
           `${t(e.name)}${e.constraint !== void 0 ? ` extends ${t(e.constraint)}` : ''}${e.defaultValue !== void 0 ? ` = ${t(e.defaultValue)}` : ''}`,
       };
     }
-    const zt = _e();
-    function Zt(e) {
-      return M(zt, e);
+    const Ht = Re();
+    function zt(e) {
+      return M(Ht, e);
     }
-    const en = [
+    const Zt = [
       'null',
       'true',
       'false',
@@ -1513,9 +1513,9 @@ var fe = { exports: {} };
     ];
     function R(e) {
       const t = { type: 'NameExpression', name: e };
-      return (en.includes(e) && (t.reservedWord = !0), t);
+      return (Zt.includes(e) && (t.reservedWord = !0), t);
     }
-    const tn = {
+    const en = {
       JsdocTypeOptional: (e, t) => {
         const n = t(e.element);
         return ((n.optional = !0), n);
@@ -1542,7 +1542,7 @@ var fe = { exports: {} };
       JsdocTypeUndefined: () => ({ type: 'UndefinedLiteral' }),
       JsdocTypeUnknown: () => ({ type: 'UnknownLiteral' }),
       JsdocTypeFunction: (e, t) => {
-        const n = Re(e),
+        const n = ve(e),
           a = { type: 'FunctionType', params: n.params.map(t) };
         return (
           n.this !== void 0 && (a.this = t(n.this)),
@@ -1638,8 +1638,8 @@ var fe = { exports: {} };
       JsdocTypeConditional: w,
       JsdocTypeTypeParameter: w,
     };
-    function nn(e) {
-      return M(tn, e);
+    function tn(e) {
+      return M(en, e);
     }
     function F(e) {
       switch (e) {
@@ -1651,7 +1651,7 @@ var fe = { exports: {} };
           return 'double';
       }
     }
-    function rn(e) {
+    function nn(e) {
       switch (e) {
         case 'inner':
           return 'INNER_MEMBER';
@@ -1663,12 +1663,12 @@ var fe = { exports: {} };
           return 'MEMBER';
       }
     }
-    function de(e, t) {
+    function ye(e, t) {
       return t.length === 2
         ? { type: e, left: t[0], right: t[1] }
-        : { type: e, left: t[0], right: de(e, t.slice(1)) };
+        : { type: e, left: t[0], right: ye(e, t.slice(1)) };
     }
-    const on = {
+    const rn = {
       JsdocTypeOptional: (e, t) => ({
         type: 'OPTIONAL',
         value: t(e.element),
@@ -1725,7 +1725,7 @@ var fe = { exports: {} };
       JsdocTypeUndefined: () => ({ type: 'NAME', name: 'undefined' }),
       JsdocTypeAny: () => ({ type: 'ANY' }),
       JsdocTypeFunction: (e, t) => {
-        const n = Re(e),
+        const n = ve(e),
           a = {
             type: e.arrow ? 'ARROW' : 'FUNCTION',
             params: n.params.map(i => {
@@ -1862,19 +1862,19 @@ var fe = { exports: {} };
         e.right.specialType === 'event'
           ? ((n = !0), (a = e.right.value), (i = F(e.right.meta.quote)))
           : ((a = e.right.value), (i = F(e.right.meta.quote)));
-        const p = {
-          type: rn(e.pathType),
+        const l = {
+          type: nn(e.pathType),
           owner: t(e.left),
           name: a,
           quoteStyle: i,
           hasEventPrefix: n,
         };
-        if (p.owner.type === 'MODULE') {
-          const f = p.owner;
-          return ((p.owner = p.owner.value), (f.value = p), f);
-        } else return p;
+        if (l.owner.type === 'MODULE') {
+          const f = l.owner;
+          return ((l.owner = l.owner.value), (f.value = l), f);
+        } else return l;
       },
-      JsdocTypeUnion: (e, t) => de('UNION', e.elements.map(t)),
+      JsdocTypeUnion: (e, t) => ye('UNION', e.elements.map(t)),
       JsdocTypeParenthesis: (e, t) => ({
         type: 'PARENTHESIS',
         value: t(P(e.element)),
@@ -1886,7 +1886,7 @@ var fe = { exports: {} };
         quoteStyle: F(e.meta.quote),
         string: e.value,
       }),
-      JsdocTypeIntersection: (e, t) => de('INTERSECTION', e.elements.map(t)),
+      JsdocTypeIntersection: (e, t) => ye('INTERSECTION', e.elements.map(t)),
       JsdocTypeNumber: e => ({
         type: 'NUMBER_VALUE',
         number: e.value.toString(),
@@ -1902,10 +1902,10 @@ var fe = { exports: {} };
       JsdocTypeConditional: w,
       JsdocTypeTypeParameter: w,
     };
-    function an(e) {
-      return M(on, e);
+    function on(e) {
+      return M(rn, e);
     }
-    function sn() {
+    function an() {
       return {
         JsdocTypeIntersection: (e, t) => ({
           type: 'JsdocTypeIntersection',
@@ -2057,7 +2057,7 @@ var fe = { exports: {} };
         }),
       };
     }
-    const Le = {
+    const _e = {
       JsdocTypeAny: [],
       JsdocTypeFunction: ['parameters', 'returnType'],
       JsdocTypeGeneric: ['left', 'elements'],
@@ -2100,76 +2100,76 @@ var fe = { exports: {} };
       ],
       JsdocTypeTypeParameter: ['name', 'constraint', 'defaultValue'],
     };
-    function me(e, t, n, a, i) {
+    function de(e, t, n, a, i) {
       a?.(e, t, n);
-      const p = Le[e.type];
-      for (const f of p) {
+      const l = _e[e.type];
+      for (const f of l) {
         const g = e[f];
         if (g !== void 0)
-          if (Array.isArray(g)) for (const O of g) me(O, e, f, a, i);
-          else me(g, e, f, a, i);
+          if (Array.isArray(g)) for (const k of g) de(k, e, f, a, i);
+          else de(g, e, f, a, i);
       }
       i?.(e, t, n);
     }
-    function cn(e, t, n) {
-      me(e, void 0, void 0, t, n);
+    function sn(e, t, n) {
+      de(e, void 0, void 0, t, n);
     }
-    ((s.catharsisTransform = nn),
-      (s.identityTransformRules = sn),
-      (s.jtpTransform = an),
-      (s.parse = ve),
-      (s.stringify = Zt),
-      (s.stringifyRules = _e),
+    ((s.catharsisTransform = tn),
+      (s.identityTransformRules = an),
+      (s.jtpTransform = on),
+      (s.parse = Ae),
+      (s.stringify = zt),
+      (s.stringifyRules = Re),
       (s.transform = M),
-      (s.traverse = cn),
+      (s.traverse = sn),
       (s.tryParse = Qt),
-      (s.visitorKeys = Le));
+      (s.visitorKeys = _e));
   });
-})(fe, fe.exports);
-var Te = fe.exports,
-  pn = Object.defineProperty,
-  c = (r, o) => pn(r, 'name', { value: o, configurable: !0 });
-const { UnknownArgTypesError: Mn } =
+})(me, me.exports);
+var fe = me.exports,
+  ln = Object.defineProperty,
+  c = (r, o) => ln(r, 'name', { value: o, configurable: !0 });
+const { UnknownArgTypesError: Vn } =
   __STORYBOOK_MODULE_CORE_EVENTS_PREVIEW_ERRORS__;
-function un(r, o) {
+function pn(r, o) {
   let s = {},
-    l = Object.keys(r);
-  for (let u = 0; u < l.length; u++) {
-    let y = l[u],
-      m = r[y];
-    s[y] = o(m, y, r);
+    p = Object.keys(r);
+  for (let d = 0; d < p.length; d++) {
+    let u = p[d],
+      m = r[u];
+    s[u] = o(m, u, r);
   }
   return s;
 }
-c(un, 'mapValues');
-const { UnknownArgTypesError: Bn } =
+c(pn, 'mapValues');
+const { UnknownArgTypesError: jn } =
   __STORYBOOK_MODULE_CORE_EVENTS_PREVIEW_ERRORS__;
-var yn = ['null', 'undefined'];
-function ee(r) {
-  return yn.some(o => o === r);
+var un = ['null', 'undefined'];
+function Z(r) {
+  return un.some(o => o === r);
 }
-c(ee, 'isDefaultValueBlacklisted');
-var dn = c(r => {
+c(Z, 'isDefaultValueBlacklisted');
+var yn = c(r => {
   if (!r) return '';
   if (typeof r == 'string') return r;
   throw new Error(`Description: expected string, got: ${JSON.stringify(r)}`);
 }, 'str');
-function he(r) {
+function Te(r) {
   return !!r.__docgenInfo;
 }
-c(he, 'hasDocgen');
-function mn(r) {
+c(Te, 'hasDocgen');
+function dn(r) {
   return r != null && Object.keys(r).length > 0;
 }
-c(mn, 'isValidDocgenSection');
-function fn(r, o) {
-  return he(r) ? r.__docgenInfo[o] : null;
+c(dn, 'isValidDocgenSection');
+function mn(r, o) {
+  return Te(r) ? r.__docgenInfo[o] : null;
 }
-c(fn, 'getDocgenSection');
-function Ue(r) {
-  return he(r) ? dn(r.__docgenInfo.description) : '';
+c(mn, 'getDocgenSection');
+function Ve(r) {
+  return Te(r) ? yn(r.__docgenInfo.description) : '';
 }
-c(Ue, 'getDocgenDescription');
+c(Ve, 'getDocgenDescription');
 var _;
 (function (r) {
   ((r.start = '/**'), (r.nostart = '/***'), (r.delim = '*'), (r.end = '*/'));
@@ -2178,22 +2178,22 @@ function je(r) {
   return /^\s+$/.test(r);
 }
 c(je, 'isSpace');
-function $e(r) {
+function Ue(r) {
   let o = r.match(/\r+$/);
   return o == null
     ? ['', r]
     : [r.slice(-o[0].length), r.slice(0, -o[0].length)];
 }
-c($e, 'splitCR');
+c(Ue, 'splitCR');
 function V(r) {
   let o = r.match(/^\s+/);
   return o == null ? ['', r] : [r.slice(0, o[0].length), r.slice(o[0].length)];
 }
 c(V, 'splitSpace');
-function De(r) {
+function $e(r) {
   return r.split(/\n/);
 }
-c(De, 'splitLines');
+c($e, 'splitLines');
 function Ke(r = {}) {
   return Object.assign(
     {
@@ -2209,7 +2209,7 @@ function Ke(r = {}) {
   );
 }
 c(Ke, 'seedSpec');
-function Me(r = {}) {
+function De(r = {}) {
   return Object.assign(
     {
       start: '',
@@ -2228,62 +2228,62 @@ function Me(r = {}) {
     r
   );
 }
-c(Me, 'seedTokens');
-var Tn = /^@\S+/;
-function Be({ fence: r = '```' } = {}) {
-  let o = qe(r),
-    s = c((l, u) => (o(l) ? !u : u), 'toggleFence');
-  return c(function (l) {
-    let u = [[]],
-      y = !1;
-    for (let m of l)
-      (Tn.test(m.tokens.description) && !y
-        ? u.push([m])
-        : u[u.length - 1].push(m),
-        (y = s(m.tokens.description, y)));
-    return u;
+c(De, 'seedTokens');
+var fn = /^@\S+/;
+function Me({ fence: r = '```' } = {}) {
+  let o = Be(r),
+    s = c((p, d) => (o(p) ? !d : d), 'toggleFence');
+  return c(function (p) {
+    let d = [[]],
+      u = !1;
+    for (let m of p)
+      (fn.test(m.tokens.description) && !u
+        ? d.push([m])
+        : d[d.length - 1].push(m),
+        (u = s(m.tokens.description, u)));
+    return d;
   }, 'parseBlock');
 }
-c(Be, 'getParser');
-function qe(r) {
+c(Me, 'getParser');
+function Be(r) {
   return typeof r == 'string' ? o => o.split(r).length % 2 === 0 : r;
 }
-c(qe, 'getFencer');
-function Ce({ startLine: r = 0, markers: o = _ } = {}) {
+c(Be, 'getFencer');
+function qe({ startLine: r = 0, markers: o = _ } = {}) {
   let s = null,
-    l = r;
-  return c(function (u) {
-    let y = u,
-      m = Me();
+    p = r;
+  return c(function (d) {
+    let u = d,
+      m = De();
     if (
-      (([m.lineEnd, y] = $e(y)),
-      ([m.start, y] = V(y)),
+      (([m.lineEnd, u] = Ue(u)),
+      ([m.start, u] = V(u)),
       s === null &&
-        y.startsWith(o.start) &&
-        !y.startsWith(o.nostart) &&
+        u.startsWith(o.start) &&
+        !u.startsWith(o.nostart) &&
         ((s = []),
-        (m.delimiter = y.slice(0, o.start.length)),
-        (y = y.slice(o.start.length)),
-        ([m.postDelimiter, y] = V(y))),
+        (m.delimiter = u.slice(0, o.start.length)),
+        (u = u.slice(o.start.length)),
+        ([m.postDelimiter, u] = V(u))),
       s === null)
     )
-      return (l++, null);
-    let T = y.trimRight().endsWith(o.end);
+      return (p++, null);
+    let T = u.trimRight().endsWith(o.end);
     if (
       (m.delimiter === '' &&
-        y.startsWith(o.delim) &&
-        !y.startsWith(o.end) &&
+        u.startsWith(o.delim) &&
+        !u.startsWith(o.end) &&
         ((m.delimiter = o.delim),
-        (y = y.slice(o.delim.length)),
-        ([m.postDelimiter, y] = V(y))),
+        (u = u.slice(o.delim.length)),
+        ([m.postDelimiter, u] = V(u))),
       T)
     ) {
-      let J = y.trimRight();
-      ((m.end = y.slice(J.length - o.end.length)),
-        (y = J.slice(0, -o.end.length)));
+      let J = u.trimRight();
+      ((m.end = u.slice(J.length - o.end.length)),
+        (u = J.slice(0, -o.end.length)));
     }
     if (
-      ((m.description = y), s.push({ number: l, source: u, tokens: m }), l++, T)
+      ((m.description = u), s.push({ number: p, source: d, tokens: m }), p++, T)
     ) {
       let J = s.slice();
       return ((s = null), J);
@@ -2291,23 +2291,23 @@ function Ce({ startLine: r = 0, markers: o = _ } = {}) {
     return null;
   }, 'parseSource');
 }
-c(Ce, 'getParser');
-function Ye({ tokenizers: r }) {
+c(qe, 'getParser');
+function Ce({ tokenizers: r }) {
   return c(function (o) {
     var s;
-    let l = Ke({ source: o });
-    for (let u of r)
+    let p = Ke({ source: o });
+    for (let d of r)
       if (
-        ((l = u(l)),
-        !((s = l.problems[l.problems.length - 1]) === null || s === void 0) &&
+        ((p = d(p)),
+        !((s = p.problems[p.problems.length - 1]) === null || s === void 0) &&
           s.critical)
       )
         break;
-    return l;
+    return p;
   }, 'parseSpec');
 }
-c(Ye, 'getParser');
-function Ge() {
+c(Ce, 'getParser');
+function Ye() {
   return r => {
     let { tokens: o } = r.source[0],
       s = o.description.match(/\s*(@(\S+))(\s*)/);
@@ -2326,20 +2326,20 @@ function Ge() {
         r);
   };
 }
-c(Ge, 'tagTokenizer');
-function Xe(r = 'compact') {
-  let o = We(r);
+c(Ye, 'tagTokenizer');
+function Ge(r = 'compact') {
+  let o = Xe(r);
   return s => {
-    let l = 0,
-      u = [];
+    let p = 0,
+      d = [];
     for (let [T, { tokens: J }] of s.source.entries()) {
-      let x = '';
+      let O = '';
       if (T === 0 && J.description[0] !== '{') return s;
       for (let b of J.description)
-        if ((b === '{' && l++, b === '}' && l--, (x += b), l === 0)) break;
-      if ((u.push([J, x]), l === 0)) break;
+        if ((b === '{' && p++, b === '}' && p--, (O += b), p === 0)) break;
+      if ((d.push([J, O]), p === 0)) break;
     }
-    if (l !== 0)
+    if (p !== 0)
       return (
         s.problems.push({
           code: 'spec:type:unpaired-curlies',
@@ -2349,58 +2349,58 @@ function Xe(r = 'compact') {
         }),
         s
       );
-    let y = [],
-      m = u[0][0].postDelimiter.length;
-    for (let [T, [J, x]] of u.entries())
-      ((J.type = x),
+    let u = [],
+      m = d[0][0].postDelimiter.length;
+    for (let [T, [J, O]] of d.entries())
+      ((J.type = O),
         T > 0 &&
-          ((J.type = J.postDelimiter.slice(m) + x),
+          ((J.type = J.postDelimiter.slice(m) + O),
           (J.postDelimiter = J.postDelimiter.slice(0, m))),
-        ([J.postType, J.description] = V(J.description.slice(x.length))),
-        y.push(J.type));
+        ([J.postType, J.description] = V(J.description.slice(O.length))),
+        u.push(J.type));
     return (
-      (y[0] = y[0].slice(1)),
-      (y[y.length - 1] = y[y.length - 1].slice(0, -1)),
-      (s.type = o(y)),
+      (u[0] = u[0].slice(1)),
+      (u[u.length - 1] = u[u.length - 1].slice(0, -1)),
+      (s.type = o(u)),
       s
     );
   };
 }
-c(Xe, 'typeTokenizer');
-var hn = c(r => r.trim(), 'trim');
-function We(r) {
+c(Ge, 'typeTokenizer');
+var Tn = c(r => r.trim(), 'trim');
+function Xe(r) {
   return r === 'compact'
-    ? o => o.map(hn).join('')
+    ? o => o.map(Tn).join('')
     : r === 'preserve'
       ? o =>
           o.join(`
 `)
       : r;
 }
-c(We, 'getJoiner');
-var Jn = c(r => r && r.startsWith('"') && r.endsWith('"'), 'isQuoted');
-function He() {
-  let r = c((o, { tokens: s }, l) => (s.type === '' ? o : l), 'typeEnd');
+c(Xe, 'getJoiner');
+var hn = c(r => r && r.startsWith('"') && r.endsWith('"'), 'isQuoted');
+function We() {
+  let r = c((o, { tokens: s }, p) => (s.type === '' ? o : p), 'typeEnd');
   return o => {
     let { tokens: s } = o.source[o.source.reduce(r, 0)],
-      l = s.description.trimLeft(),
-      u = l.split('"');
-    if (u.length > 1 && u[0] === '' && u.length % 2 === 1)
+      p = s.description.trimLeft(),
+      d = p.split('"');
+    if (d.length > 1 && d[0] === '' && d.length % 2 === 1)
       return (
-        (o.name = u[1]),
-        (s.name = `"${u[1]}"`),
-        ([s.postName, s.description] = V(l.slice(s.name.length))),
+        (o.name = d[1]),
+        (s.name = `"${d[1]}"`),
+        ([s.postName, s.description] = V(p.slice(s.name.length))),
         o
       );
-    let y = 0,
+    let u = 0,
       m = '',
       T = !1,
       J;
-    for (let b of l) {
-      if (y === 0 && je(b)) break;
-      (b === '[' && y++, b === ']' && y--, (m += b));
+    for (let b of p) {
+      if (u === 0 && je(b)) break;
+      (b === '[' && u++, b === ']' && u--, (m += b));
     }
-    if (y !== 0)
+    if (u !== 0)
       return (
         o.problems.push({
           code: 'spec:name:unpaired-brackets',
@@ -2410,7 +2410,7 @@ function He() {
         }),
         o
       );
-    let x = m;
+    let O = m;
     if (m[0] === '[' && m[m.length - 1] === ']') {
       ((T = !0), (m = m.slice(1, -1)));
       let b = m.split('=');
@@ -2438,7 +2438,7 @@ function He() {
           }),
           o
         );
-      if (!Jn(J) && /=(?!>)/.test(J))
+      if (!hn(J) && /=(?!>)/.test(J))
         return (
           o.problems.push({
             code: 'spec:name:invalid-default',
@@ -2452,37 +2452,37 @@ function He() {
     return (
       (o.optional = T),
       (o.name = m),
-      (s.name = x),
+      (s.name = O),
       J !== void 0 && (o.default = J),
-      ([s.postName, s.description] = V(l.slice(s.name.length))),
+      ([s.postName, s.description] = V(p.slice(s.name.length))),
       o
     );
   };
 }
-c(He, 'nameTokenizer');
+c(We, 'nameTokenizer');
 function Qe(r = 'compact', o = _) {
-  let s = Je(r);
-  return l => ((l.description = s(l.source, o)), l);
+  let s = he(r);
+  return p => ((p.description = s(p.source, o)), p);
 }
 c(Qe, 'descriptionTokenizer');
-function Je(r) {
-  return r === 'compact' ? ze : r === 'preserve' ? Ze : r;
+function he(r) {
+  return r === 'compact' ? He : r === 'preserve' ? ze : r;
 }
-c(Je, 'getJoiner');
-function ze(r, o = _) {
+c(he, 'getJoiner');
+function He(r, o = _) {
   return r
     .map(({ tokens: { description: s } }) => s.trim())
     .filter(s => s !== '')
     .join(' ');
 }
-c(ze, 'compactJoiner');
-var gn = c((r, { tokens: o }, s) => (o.type === '' ? r : s), 'lineNo'),
-  wn = c(
+c(He, 'compactJoiner');
+var Jn = c((r, { tokens: o }, s) => (o.type === '' ? r : s), 'lineNo'),
+  gn = c(
     ({ tokens: r }) =>
       (r.delimiter === '' ? r.start : r.postDelimiter.slice(1)) + r.description,
     'getDescription'
   );
-function Ze(r, o = _) {
+function ze(r, o = _) {
   if (r.length === 0) return '';
   r[0].tokens.description === '' &&
     r[0].tokens.delimiter === o.start &&
@@ -2493,43 +2493,43 @@ function Ze(r, o = _) {
       s.tokens.description === '' &&
       s.tokens.end.endsWith(o.end) &&
       (r = r.slice(0, -1)),
-    (r = r.slice(r.reduce(gn, 0))),
-    r.map(wn).join(`
+    (r = r.slice(r.reduce(Jn, 0))),
+    r.map(gn).join(`
 `)
   );
 }
-c(Ze, 'preserveJoiner');
-function et({
+c(ze, 'preserveJoiner');
+function Ze({
   startLine: r = 0,
   fence: o = '```',
   spacing: s = 'compact',
-  markers: l = _,
-  tokenizers: u = [Ge(), Xe(s), He(), Qe(s)],
+  markers: p = _,
+  tokenizers: d = [Ye(), Ge(s), We(), Qe(s)],
 } = {}) {
   if (r < 0 || r % 1 > 0) throw new Error('Invalid startLine');
-  let y = Ce({ startLine: r, markers: l }),
-    m = Be({ fence: o }),
-    T = Ye({ tokenizers: u }),
-    J = Je(s);
-  return function (x) {
+  let u = qe({ startLine: r, markers: p }),
+    m = Me({ fence: o }),
+    T = Ce({ tokenizers: d }),
+    J = he(s);
+  return function (O) {
     let b = [];
-    for (let te of De(x)) {
-      let $ = y(te);
+    for (let ee of $e(O)) {
+      let $ = u(ee);
       if ($ === null) continue;
       let q = m($),
         C = q.slice(1).map(T);
       b.push({
-        description: J(q[0], l),
+        description: J(q[0], p),
         tags: C,
         source: $,
-        problems: C.reduce((N, ne) => N.concat(ne.problems), []),
+        problems: C.reduce((N, te) => N.concat(te.problems), []),
       });
     }
     return b;
   };
 }
-c(et, 'getParser');
-function tt(r) {
+c(Ze, 'getParser');
+function et(r) {
   return (
     r.start +
     r.delimiter +
@@ -2545,22 +2545,22 @@ function tt(r) {
     r.lineEnd
   );
 }
-c(tt, 'join');
-function Pn() {
+c(et, 'join');
+function wn() {
   return r =>
-    r.source.map(({ tokens: o }) => tt(o)).join(`
+    r.source.map(({ tokens: o }) => et(o)).join(`
 `);
 }
-c(Pn, 'getStringifier');
-function nt(r, o = {}) {
-  return et(o)(r);
+c(wn, 'getStringifier');
+function tt(r, o = {}) {
+  return Ze(o)(r);
 }
-c(nt, 'parse');
-function rt(r) {
+c(tt, 'parse');
+function nt(r) {
   return r != null && r.includes('@');
 }
-c(rt, 'containsJsDoc');
-function ot(r) {
+c(nt, 'containsJsDoc');
+function rt(r) {
   let o =
       `/**
 ` +
@@ -2569,193 +2569,193 @@ function ot(r) {
           `
 `
         )
-        .map(l => ` * ${l}`).join(`
+        .map(p => ` * ${p}`).join(`
 `) +
       `
 */`,
-    s = nt(o, { spacing: 'preserve' });
+    s = tt(o, { spacing: 'preserve' });
   if (!s || s.length === 0) throw new Error('Cannot parse JSDoc tags.');
   return s[0];
 }
-c(ot, 'parse');
-var Nn = {
+c(rt, 'parse');
+var Pn = {
     tags: ['param', 'arg', 'argument', 'returns', 'ignore', 'deprecated'],
   },
-  En = c((r, o = Nn) => {
-    if (!rt(r)) return { includesJsDoc: !1, ignore: !1 };
-    let s = ot(r),
-      l = at(s, o.tags);
-    return l.ignore
+  Nn = c((r, o = Pn) => {
+    if (!nt(r)) return { includesJsDoc: !1, ignore: !1 };
+    let s = rt(r),
+      p = ot(s, o.tags);
+    return p.ignore
       ? { includesJsDoc: !0, ignore: !0 }
       : {
           includesJsDoc: !0,
           ignore: !1,
           description: s.description.trim(),
-          extractedTags: l,
+          extractedTags: p,
         };
   }, 'parseJsDoc');
-function at(r, o) {
+function ot(r, o) {
   let s = { params: null, deprecated: null, returns: null, ignore: !1 };
-  for (let l of r.tags)
-    if (!(o !== void 0 && !o.includes(l.tag)))
-      if (l.tag === 'ignore') {
+  for (let p of r.tags)
+    if (!(o !== void 0 && !o.includes(p.tag)))
+      if (p.tag === 'ignore') {
         s.ignore = !0;
         break;
       } else
-        switch (l.tag) {
+        switch (p.tag) {
           case 'param':
           case 'arg':
           case 'argument': {
-            let u = it(l);
-            u != null &&
-              (s.params == null && (s.params = []), s.params.push(u));
+            let d = st(p);
+            d != null &&
+              (s.params == null && (s.params = []), s.params.push(d));
             break;
           }
           case 'deprecated': {
-            let u = ct(l);
-            u != null && (s.deprecated = u);
+            let d = it(p);
+            d != null && (s.deprecated = d);
             break;
           }
           case 'returns': {
-            let u = lt(l);
-            u != null && (s.returns = u);
+            let d = ct(p);
+            d != null && (s.returns = d);
             break;
           }
         }
   return s;
 }
-c(at, 'extractJsDocTags');
-function st(r) {
+c(ot, 'extractJsDocTags');
+function at(r) {
   return r.replace(/[\.-]$/, '');
 }
-c(st, 'normaliseParamName');
-function it(r) {
+c(at, 'normaliseParamName');
+function st(r) {
   if (!r.name || r.name === '-') return null;
-  let o = Pe(r.type);
+  let o = we(r.type);
   return {
     name: r.name,
     type: o,
-    description: we(r.description),
-    getPrettyName: c(() => st(r.name), 'getPrettyName'),
-    getTypeName: c(() => (o ? Ne(o) : null), 'getTypeName'),
+    description: ge(r.description),
+    getPrettyName: c(() => at(r.name), 'getPrettyName'),
+    getTypeName: c(() => (o ? Pe(o) : null), 'getTypeName'),
   };
 }
-c(it, 'extractParam');
-function ct(r) {
-  return r.name ? ge(r.name, r.description) : null;
+c(st, 'extractParam');
+function it(r) {
+  return r.name ? Je(r.name, r.description) : null;
 }
-c(ct, 'extractDeprecated');
-function ge(r, o) {
+c(it, 'extractDeprecated');
+function Je(r, o) {
   let s = r === '' ? o : `${r} ${o}`;
-  return we(s);
+  return ge(s);
 }
-c(ge, 'joinNameAndDescription');
-function we(r) {
+c(Je, 'joinNameAndDescription');
+function ge(r) {
   let o = r.replace(/^- /g, '').trim();
   return o === '' ? null : o;
 }
-c(we, 'normaliseDescription');
-function lt(r) {
-  let o = Pe(r.type);
+c(ge, 'normaliseDescription');
+function ct(r) {
+  let o = we(r.type);
   return o
     ? {
         type: o,
-        description: ge(r.name, r.description),
-        getTypeName: c(() => Ne(o), 'getTypeName'),
+        description: Je(r.name, r.description),
+        getTypeName: c(() => Pe(o), 'getTypeName'),
       }
     : null;
 }
-c(lt, 'extractReturns');
-var L = Te.stringifyRules(),
-  bn = L.JsdocTypeObject;
+c(ct, 'extractReturns');
+var L = fe.stringifyRules(),
+  En = L.JsdocTypeObject;
 L.JsdocTypeAny = () => 'any';
-L.JsdocTypeObject = (r, o) => `(${bn(r, o)})`;
+L.JsdocTypeObject = (r, o) => `(${En(r, o)})`;
 L.JsdocTypeOptional = (r, o) => o(r.element);
 L.JsdocTypeNullable = (r, o) => o(r.element);
 L.JsdocTypeNotNullable = (r, o) => o(r.element);
 L.JsdocTypeUnion = (r, o) => r.elements.map(o).join('|');
-function Pe(r) {
+function we(r) {
   try {
-    return Te.parse(r, 'typescript');
+    return fe.parse(r, 'typescript');
   } catch {
     return null;
   }
 }
-c(Pe, 'extractType');
-function Ne(r) {
-  return Te.transform(L, r);
+c(we, 'extractType');
+function Pe(r) {
+  return fe.transform(L, r);
 }
-c(Ne, 'extractTypeName');
-function Ee(r) {
+c(Pe, 'extractTypeName');
+function Ne(r) {
   return r.length > 90;
 }
-c(Ee, 'isTooLongForTypeSummary');
-function pt(r) {
+c(Ne, 'isTooLongForTypeSummary');
+function lt(r) {
   return r.length > 50;
 }
-c(pt, 'isTooLongForDefaultValueSummary');
+c(lt, 'isTooLongForDefaultValueSummary');
 function E(r, o) {
   return r === o ? { summary: r } : { summary: r, detail: o };
 }
 c(E, 'createSummaryValue');
-function kn(r, o) {
+function bn(r, o) {
   if (r != null) {
     let { value: s } = r;
-    if (!ee(s)) return pt(s) ? E(o?.name, s) : E(s);
+    if (!Z(s)) return lt(s) ? E(o?.name, s) : E(s);
   }
   return null;
 }
-c(kn, 'createDefaultValue');
-function be({ name: r, value: o, elements: s, raw: l }) {
-  return o ?? (s != null ? s.map(be).join(' | ') : (l ?? r));
+c(bn, 'createDefaultValue');
+function Ee({ name: r, value: o, elements: s, raw: p }) {
+  return o ?? (s != null ? s.map(Ee).join(' | ') : (p ?? r));
 }
-c(be, 'generateUnionElement');
-function ut({ name: r, raw: o, elements: s }) {
+c(Ee, 'generateUnionElement');
+function pt({ name: r, raw: o, elements: s }) {
   return s != null
-    ? E(s.map(be).join(' | '))
+    ? E(s.map(Ee).join(' | '))
     : o != null
       ? E(o.replace(/^\|\s*/, ''))
       : E(r);
 }
-c(ut, 'generateUnion');
-function yt({ type: r, raw: o }) {
+c(pt, 'generateUnion');
+function ut({ type: r, raw: o }) {
   return o != null ? E(o) : E(r);
 }
-c(yt, 'generateFuncSignature');
-function dt({ type: r, raw: o }) {
-  return o != null ? (Ee(o) ? E(r, o) : E(o)) : E(r);
+c(ut, 'generateFuncSignature');
+function yt({ type: r, raw: o }) {
+  return o != null ? (Ne(o) ? E(r, o) : E(o)) : E(r);
 }
-c(dt, 'generateObjectSignature');
-function mt(r) {
+c(yt, 'generateObjectSignature');
+function dt(r) {
   let { type: o } = r;
-  return o === 'object' ? dt(r) : yt(r);
+  return o === 'object' ? yt(r) : ut(r);
 }
-c(mt, 'generateSignature');
-function ft({ name: r, raw: o }) {
-  return o != null ? (Ee(o) ? E(r, o) : E(o)) : E(r);
+c(dt, 'generateSignature');
+function mt({ name: r, raw: o }) {
+  return o != null ? (Ne(o) ? E(r, o) : E(o)) : E(r);
 }
-c(ft, 'generateDefault');
-function On(r) {
+c(mt, 'generateDefault');
+function xn(r) {
   if (r == null) return null;
   switch (r.name) {
     case 'union':
-      return ut(r);
+      return pt(r);
     case 'signature':
-      return mt(r);
+      return dt(r);
     default:
-      return ft(r);
+      return mt(r);
   }
 }
-c(On, 'createType');
-function xn({ defaultValue: r }) {
+c(xn, 'createType');
+function kn({ defaultValue: r }) {
   if (r != null) {
     let { value: o } = r;
-    if (!ee(o)) return E(o);
+    if (!Z(o)) return E(o);
   }
   return null;
 }
-c(xn, 'createDefaultValue');
-function Sn({ tsType: r, required: o }) {
+c(kn, 'createDefaultValue');
+function On({ tsType: r, required: o }) {
   if (r == null) return null;
   let s = r.name;
   return (
@@ -2763,17 +2763,17 @@ function Sn({ tsType: r, required: o }) {
     E(['Array', 'Record', 'signature'].includes(r.name) ? r.raw : s)
   );
 }
-c(Sn, 'createType');
-function Tt(r) {
+c(On, 'createType');
+function ft(r) {
   return r != null ? E(r.name) : null;
 }
-c(Tt, 'createType');
-function ht(r) {
+c(ft, 'createType');
+function Tt(r) {
   let { computed: o, func: s } = r;
   return typeof o > 'u' && typeof s > 'u';
 }
-c(ht, 'isReactDocgenTypescript');
-function Jt(r) {
+c(Tt, 'isReactDocgenTypescript');
+function ht(r) {
   return r
     ? r.name === 'string'
       ? !0
@@ -2786,109 +2786,75 @@ function Jt(r) {
         : !1
     : !1;
 }
-c(Jt, 'isStringValued');
-function gt(r, o) {
+c(ht, 'isStringValued');
+function Jt(r, o) {
   if (r != null) {
     let { value: s } = r;
-    if (!ee(s)) return ht(r) && Jt(o) ? E(JSON.stringify(s)) : E(s);
+    if (!Z(s)) return Tt(r) && ht(o) ? E(JSON.stringify(s)) : E(s);
   }
   return null;
 }
-c(gt, 'createDefaultValue');
-function In(r, o, s) {
-  let { description: l, required: u, defaultValue: y } = s;
+c(Jt, 'createDefaultValue');
+function Sn(r, o, s) {
+  let { description: p, required: d, defaultValue: u } = s;
   return {
     name: r,
-    type: Tt(o),
-    required: u,
-    description: l,
-    defaultValue: gt(y, o),
+    type: ft(o),
+    required: d,
+    description: p,
+    defaultValue: Jt(u, o),
   };
 }
-c(In, 'createBasicPropDef');
-function An(r, o) {
+c(Sn, 'createBasicPropDef');
+function In(r, o) {
   if (o?.includesJsDoc) {
-    let { description: s, extractedTags: l } = o;
+    let { description: s, extractedTags: p } = o;
     s != null && (r.description = o.description);
-    let u = {
-      ...l,
-      params: l?.params?.map(y => ({
-        name: y.getPrettyName(),
-        description: y.description,
+    let d = {
+      ...p,
+      params: p?.params?.map(u => ({
+        name: u.getPrettyName(),
+        description: u.description,
       })),
     };
-    Object.values(u).filter(Boolean).length > 0 && (r.jsDocTags = u);
+    Object.values(d).filter(Boolean).length > 0 && (r.jsDocTags = d);
   }
   return r;
 }
-c(An, 'applyJsDocResult');
-function vn(r, o, s, l) {
-  let u = En(o.description);
-  return u.includesJsDoc && u.ignore
+c(In, 'applyJsDocResult');
+function An(r, o, s, p) {
+  let d = Nn(o.description);
+  return d.includesJsDoc && d.ignore
     ? null
     : {
-        propDef: l(r, o, u),
-        jsDocTags: u.extractedTags,
+        propDef: p(r, o, d),
+        jsDocTags: d.extractedTags,
         docgenInfo: o,
         typeSystem: s,
       };
 }
-c(vn, 'extractProp');
-function Rn(r) {
-  return r != null ? Ue(r) : '';
+c(An, 'extractProp');
+function vn(r) {
+  return r != null ? Ve(r) : '';
 }
-c(Rn, 'extractComponentDescription');
-const { combineParameters: _n } = __STORYBOOK_MODULE_PREVIEW_API__;
-var Ln = c(r => {
+c(vn, 'extractComponentDescription');
+const { combineParameters: Rn } = __STORYBOOK_MODULE_PREVIEW_API__;
+var Un = c(r => {
     let {
         component: o,
         argTypes: s,
-        parameters: { docs: l = {} },
+        parameters: { docs: p = {} },
       } = r,
-      { extractArgTypes: u } = l,
-      y = u && o ? u(o) : {};
-    return y ? _n(y, s) : s;
+      { extractArgTypes: d } = p,
+      u = d && o ? d(o) : {};
+    return u ? Rn(u, s) : s;
   }, 'enhanceArgTypes'),
-  Fn = 'storybook/docs',
-  Vn = `${Fn}/snippet-rendered`,
-  Z = (r => ((r.AUTO = 'auto'), (r.CODE = 'code'), (r.DYNAMIC = 'dynamic'), r))(
-    Z || {}
-  );
-const { useEffect: Un, addons: jn } = __STORYBOOK_MODULE_PREVIEW_API__;
-function $n(r) {
-  let o = r?.parameters.docs?.source,
-    s = r?.parameters.__isArgsStory;
-  return o?.type === Z.DYNAMIC ? !1 : !s || o?.code || o?.type === Z.CODE;
-}
-var Dn = (r, o) => {
-    let s = r(),
-      l = o?.parameters.docs?.source?.excludeDecorators
-        ? o.originalStoryFn(o.args, o)
-        : s,
-      u;
-    return (
-      $n(o) ||
-        (typeof l == 'string'
-          ? (u = l)
-          : l instanceof Element && (u = l.outerHTML)),
-      Un(() => {
-        let { id: y, unmappedArgs: m } = o;
-        u && jn.getChannel().emit(Vn, { id: y, args: m, source: u });
-      }),
-      s
-    );
-  },
-  qn = [Dn],
-  Cn = {
-    docs: {
-      story: { inline: !0 },
-      source: {
-        type: Z.DYNAMIC,
-        language: 'html',
-        code: void 0,
-        excludeDecorators: void 0,
-      },
-    },
-  },
-  Yn = [Ln];
-export { Yn as argTypesEnhancers, qn as decorators, Cn as parameters };
+  _n = 'storybook/docs',
+  $n = `${_n}/snippet-rendered`,
+  Ln = (r => (
+    (r.AUTO = 'auto'),
+    (r.CODE = 'code'),
+    (r.DYNAMIC = 'dynamic'),
+    r
+  ))(Ln || {});
+export { Un as c, Ln as g, $n as y };

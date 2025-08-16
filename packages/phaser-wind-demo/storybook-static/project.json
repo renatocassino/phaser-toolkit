@@ -1,5 +1,5 @@
 {
-  "generatedAt": 1755317711296,
+  "generatedAt": 1755359419944,
   "userSince": 1755311279582,
   "hasCustomBabel": false,
   "hasCustomWebpack": false,
@@ -23,5 +23,5 @@
     "@storybook/html": { "version": "8.6.14" },
     "@storybook/html-vite": { "version": "8.6.14" }
   },
-  "addons": {}
+  "addons": { "@storybook/addon-essentials": { "version": "8.6.14" } }
 }

@@ -1,20 +1,32 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-magic-numbers */
-import type { Meta, StoryObj } from '@storybook/html';
+import type { Meta, StoryObj, Args } from '@storybook/html';
 import {
   IconKey,
   IconStyle,
   IconText,
   loadFont,
+  fontIcons,
 } from 'font-awesome-for-phaser';
 import Phaser from 'phaser';
 import { Color, FontSize } from 'phaser-wind';
+
+type WindowWithGame = Window & {
+  game: Phaser.Game;
+};
 
 const meta: Meta = {
   title: 'Phaser/IconText',
 };
 
 export default meta;
+
+const removeContainer = (): void => {
+  const container = document.getElementById('phaser-story');
+  if (container) {
+    container.remove();
+  }
+};
 
 const createContainer = (): HTMLDivElement => {
   const container = document.createElement('div');
@@ -28,6 +40,7 @@ const createContainer = (): HTMLDivElement => {
 
 const disposeGame = (game?: Phaser.Game): void => {
   if (game) {
+    console.log('destroying game');
     game.destroy(true);
   }
 };
@@ -54,27 +67,59 @@ const bootstrap = (
   return game;
 };
 
-export const Basic: StoryObj = {
-  render: () => {
+export const Basic: StoryObj<{
+  icon: IconKey;
+  iconStyle: IconStyle;
+  size: number;
+  color: string;
+}> = {
+  args: {
+    icon: 'house',
+    iconStyle: 'regular',
+    size: 64,
+    color: '#ffffff',
+  },
+  argTypes: {
+    icon: {
+      control: 'select',
+      options: Object.keys(fontIcons) as IconKey[],
+    },
+    iconStyle: {
+      control: 'radio',
+      options: ['solid', 'regular', 'brands'],
+    },
+    size: {
+      control: {
+        type: 'number',
+        min: 8,
+        max: 256,
+        step: 1,
+      },
+    },
+    color: {
+      control: { type: 'color' },
+    },
+  },
+  render: (args: Args): HTMLElement => {
+    const { icon, iconStyle, size, color } = args as {
+      icon: IconKey;
+      iconStyle: IconStyle;
+      size: number;
+      color: string;
+    };
+    removeContainer();
     const root = createContainer();
 
-    const icon = document.createElement('i');
-    icon.className = 'fa-solid fa-house';
-    icon.style.fontSize = '32px';
-    icon.style.color = 'white';
-    root.appendChild(icon);
+    if ((window as unknown as WindowWithGame).game) {
+      console.log('destroying game');
+      disposeGame((window as unknown as WindowWithGame).game);
+    }
 
-    const iconRegular = document.createElement('i');
-    iconRegular.className = 'fa-regular fa-house';
-    iconRegular.style.fontSize = '32px';
-    iconRegular.style.color = 'white';
-    root.appendChild(iconRegular);
-
-    const iconBrands = document.createElement('i');
-    iconBrands.className = 'fa-brands fa-github';
-    iconBrands.style.fontSize = '32px';
-    iconBrands.style.color = 'white';
-    root.appendChild(iconBrands);
+    const iconElement = document.createElement('i');
+    iconElement.className = `fa-${iconStyle} fa-${icon}`;
+    iconElement.style.fontSize = '32px';
+    iconElement.style.color = 'white';
+    root.appendChild(iconElement);
 
     let game: Phaser.Game | undefined;
     void loadFont().then(() => {
@@ -85,22 +130,18 @@ export const Basic: StoryObj = {
         });
         txt.setOrigin(0.5);
 
-        const icons: Array<{ icon: IconKey; iconStyle: IconStyle }> = [
-          { icon: 'house', iconStyle: 'solid' },
-          { icon: 'house', iconStyle: 'regular' },
-          { icon: 'github', iconStyle: 'brands' },
-        ];
-
-        icons.forEach(({ icon, iconStyle }, index) => {
-          const i = new IconText({
-            scene,
-            x: 300,
-            y: 200 + index * 40,
-            icon,
-            iconStyle,
-          });
-          scene.add.existing(i);
+        const i = new IconText({
+          scene,
+          x: 300,
+          y: 200,
+          icon: icon,
+          iconStyle: iconStyle,
+          size: size,
+          style: { color: color },
         });
+        scene.add.existing(i);
+
+        (window as unknown as WindowWithGame).game = game as Phaser.Game;
       });
     });
 

@@ -9,9 +9,6 @@
     "outDir": "./dist",
     "types": ["vite/client"]
   },
-  "include": [
-    "src/**/*",
-    "vite.config.ts",
-    "index.html"
-  ]
+  "include": ["src/**/*", "vite.config.ts", "index.html"],
+  "exclude": ["node_modules", "dist", "storybook-static", "**/sb-manager/**"]
 }

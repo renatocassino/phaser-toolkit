@@ -1,9 +1,19 @@
-import { Scene } from 'phaser';
+import Phaser from 'phaser';
 
 import { type IconKey } from '../constants/icons';
 import { getIconChar } from '../utils';
 
 export type IconStyle = 'solid' | 'regular' | 'brands';
+
+export type IconTextParams = {
+  scene: Phaser.Scene;
+  x: number;
+  y: number;
+  icon: IconKey;
+  size?: number;
+  style?: Phaser.Types.GameObjects.Text.TextStyle;
+  iconStyle?: IconStyle;
+};
 
 /**
  * IconText is a Phaser Text GameObject that displays Font Awesome icons
@@ -19,32 +29,29 @@ export type IconStyle = 'solid' | 'regular' | 'brands';
 export class IconText extends Phaser.GameObjects.Text {
   private currentIconStyle: IconStyle = 'solid';
 
-  // Backward compatible constructor with optional IconStyle
-  constructor(
-    scene: Scene,
-    x: number,
-    y: number,
-    icon: IconKey,
-    arg4?: number | IconStyle | Phaser.Types.GameObjects.Text.TextStyle,
-    arg5?: number | Phaser.Types.GameObjects.Text.TextStyle
-  ) {
-    const { resolvedStyle, resolvedSize, resolvedTextStyle } =
-      IconText.resolveArgs(arg4, arg5);
-
+  constructor({
+    scene,
+    x,
+    y,
+    icon,
+    size = 16,
+    style = {},
+    iconStyle = 'solid',
+  }: IconTextParams) {
     super(scene, x, y, getIconChar(icon), {
-      fontSize: `${resolvedSize}px`,
-      ...resolvedTextStyle,
+      fontSize: `${size}px`,
+      ...style,
     });
 
-    this.currentIconStyle = resolvedStyle;
+    this.currentIconStyle = iconStyle;
     this.applyIconStyle(this.currentIconStyle);
     this.setOrigin(0.5, 0.5);
   }
 
-  public setIcon(icon: IconKey, iconStyle?: IconStyle): void {
+  public setIcon(icon: IconKey, opts?: { iconStyle?: IconStyle }): void {
     this.setText(getIconChar(icon));
-    if (iconStyle) {
-      this.applyIconStyle(iconStyle);
+    if (opts?.iconStyle) {
+      this.applyIconStyle(opts.iconStyle);
     }
   }
 
@@ -61,43 +68,14 @@ export class IconText extends Phaser.GameObjects.Text {
     // - Free Regular (400) and Free Solid (900) share family "Font Awesome 6 Free"
     // - Brands (400) uses family "Font Awesome 6 Brands"
     if (iconStyle === 'brands') {
-      this.setFontFamily("'Font Awesome 6 Brands'");
+      this.setFontFamily("'Font Awesome 7 Brands'");
       this.setFontStyle('normal');
     } else {
-      this.setFontFamily("'Font Awesome 6 Free'");
+      this.setFontFamily("'Font Awesome 7 Free'");
       // Use bold for solid, normal for regular. Bold maps to the closest available weight (900 for solid)
       this.setFontStyle(iconStyle === 'solid' ? 'bold' : 'normal');
     }
 
     this.currentIconStyle = iconStyle;
-  }
-
-  private static resolveArgs(
-    arg4?: number | IconStyle | Phaser.Types.GameObjects.Text.TextStyle,
-    arg5?: number | Phaser.Types.GameObjects.Text.TextStyle
-  ): {
-    resolvedStyle: IconStyle;
-    resolvedSize: number;
-    resolvedTextStyle: Phaser.Types.GameObjects.Text.TextStyle;
-  } {
-    let resolvedStyle: IconStyle = 'solid';
-    let resolvedSize = 16;
-    let resolvedTextStyle: Phaser.Types.GameObjects.Text.TextStyle = {};
-
-    if (typeof arg4 === 'string') {
-      resolvedStyle = arg4;
-    } else if (typeof arg4 === 'number') {
-      resolvedSize = arg4;
-    } else if (typeof arg4 === 'object' && arg4 !== null) {
-      resolvedTextStyle = arg4;
-    }
-
-    if (typeof arg5 === 'number') {
-      resolvedSize = arg5;
-    } else if (typeof arg5 === 'object' && arg5 !== null) {
-      resolvedTextStyle = arg5;
-    }
-
-    return { resolvedStyle, resolvedSize, resolvedTextStyle };
   }
 }

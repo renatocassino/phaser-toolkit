@@ -1,0 +1,11 @@
+storybook-static/
+node_modules/
+dist/
+build/
+.storybook/
+.storybook-out/
+.out/
+.cache/
+.parcel-cache/
+.rpt2_cache/
+.rts2_cache_cjs/

@@ -1,0 +1,145 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "browser": true,
+    "es2022": true
+  },
+  "globals": {
+    "Phaser": "readonly"
+  },
+  "extends": ["eslint:recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "prefer-arrow",
+    "promise",
+    "security",
+    "sonarjs",
+    "unicorn"
+  ],
+  "rules": {
+    // Basic ESLint rules
+    "no-console": "warn",
+    "no-debugger": "error",
+    "no-duplicate-imports": "error",
+    "no-magic-numbers": ["error", { "ignore": [-1, 0, 1, 2, 16, 0.5] }],
+    "no-var": "error",
+    "prefer-template": "error",
+    "complexity": ["error", 10],
+    "max-depth": ["error", 4],
+    "max-lines": [
+      "error",
+      { "max": 300, "skipComments": true, "skipBlankLines": true }
+    ],
+    "max-lines-per-function": ["error", 50],
+    "max-nested-callbacks": ["error", 5],
+    "max-params": ["error", 6],
+
+    // TypeScript rules
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ],
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-non-null-assertion": "error",
+    "@typescript-eslint/prefer-for-of": "error",
+    "@typescript-eslint/prefer-includes": "error",
+    "@typescript-eslint/prefer-optional-chain": "error",
+    "@typescript-eslint/prefer-nullish-coalescing": "error",
+    "@typescript-eslint/prefer-string-starts-ends-with": "error",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
+    "@typescript-eslint/consistent-type-assertions": [
+      "error",
+      { "assertionStyle": "as" }
+    ],
+
+    // Import rules
+    "import/no-unresolved": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+
+    // Prefer Arrow Functions
+    "prefer-arrow/prefer-arrow-functions": [
+      "error",
+      {
+        "disallowPrototype": true,
+        "singleReturnOnly": false,
+        "classPropertiesAllowed": false
+      }
+    ],
+
+    // Security
+    "security/detect-non-literal-regexp": "error",
+    "security/detect-unsafe-regex": "error",
+
+    // SonarJS
+    "sonarjs/cognitive-complexity": ["error", 15],
+    "sonarjs/no-duplicate-string": ["error", { "threshold": 3 }],
+    "sonarjs/no-identical-functions": "error",
+    "sonarjs/no-small-switch": "error",
+
+    // Unicorn (modern practices)
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "kebabCase",
+        "ignore": ["index.ts", "\\.test\\.ts$", "\\.spec\\.ts$"]
+      }
+    ],
+    "unicorn/no-array-reduce": "off",
+    "unicorn/no-null": "off",
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/prefer-module": "error",
+    "unicorn/prefer-node-protocol": "error"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
+  },
+  "ignorePatterns": [
+    "dist/",
+    "storybook-static/",
+    "**/sb-manager/**",
+    "**/*.stories.@(js|ts)",
+    "**/*.stories.*.js",
+    "build/",
+    "node_modules/",
+    "*.config.js",
+    "*.config.mjs",
+    "*.config.ts",
+    "scripts/",
+    "src/constants/icons.ts"
+  ]
+}

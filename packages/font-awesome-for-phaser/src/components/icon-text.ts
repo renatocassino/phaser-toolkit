@@ -64,7 +64,7 @@ export class IconText extends Phaser.GameObjects.Text {
   }
 
   private applyIconStyle(iconStyle: IconStyle): void {
-    // Font Awesome v6:
+    // Font Awesome v7:
     // - Free Regular (400) and Free Solid (900) share family "Font Awesome 6 Free"
     // - Brands (400) uses family "Font Awesome 6 Brands"
     if (iconStyle === 'brands') {

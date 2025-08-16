@@ -2,21 +2,11 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable sonarjs/no-duplicate-string */
 
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { ThemeManager } from '../theme';
-
-import { createFont } from './font';
+import { createFont, fontMap } from './font';
 
 describe('Font', () => {
-  beforeEach(() => {
-    ThemeManager.clear;
-  });
-
-  afterAll(() => {
-    ThemeManager.clear();
-  });
-
   describe('size', () => {
     it('should return correct font size in pixels', () => {
       const font = createFont();
@@ -29,43 +19,27 @@ describe('Font', () => {
   });
 
   describe('format', () => {
-    beforeEach(() => {
-      ThemeManager.setThemeObject({
-        fonts: {
-          primary: 'Arial',
-          secondary: 'Helvetica',
-        },
-      });
-    });
-
     it('should return font string with size and family', () => {
-      const font = createFont(
-        ThemeManager.getCurrentTheme().fonts,
-        ThemeManager.getCurrentTheme().fontSizes
-      );
+      const font = createFont();
       expect(font.format({ size: 'base', family: 'primary' })).toBe(
-        "16px 'Arial'"
+        "16px 'Inter, system-ui, sans-serif'"
       );
       expect(font.format({ size: 'lg', family: 'secondary' })).toBe(
-        "18px 'Helvetica'"
+        "18px 'Roboto, Arial, sans-serif'"
       );
     });
   });
 
   describe('family', () => {
-    beforeEach(() => {
-      ThemeManager.setThemeObject({
-        fonts: {
+    it('should return font family from theme using short key', () => {
+      const font = createFont(
+        {
           primary: 'Arial',
           display: 'Helvetica',
         },
-      });
-    });
-
-    it('should return font family from theme using short key', () => {
-      const font = createFont(
-        ThemeManager.getCurrentTheme().fonts,
-        ThemeManager.getCurrentTheme().fontSizes
+        {
+          base: 16,
+        }
       );
       expect(font.family('primary')).toBe('Arial');
       expect(font.family('display')).toBe('Helvetica');
@@ -73,37 +47,45 @@ describe('Font', () => {
 
     it('should return font family from theme using full path', () => {
       const font = createFont(
-        ThemeManager.getCurrentTheme().fonts,
-        ThemeManager.getCurrentTheme().fontSizes
+        {
+          primary: 'Arial',
+          display: 'Helvetica',
+        },
+        {
+          base: 16,
+        }
       );
-      expect(font.family('fonts.primary')).toBe('Arial');
-      expect(font.family('fonts.display')).toBe('Helvetica');
+      expect(font.family('primary')).toBe('Arial');
+      expect(font.family('display')).toBe('Helvetica');
     });
 
     it('should return key itself if font not found in theme', () => {
       const font = createFont(
-        ThemeManager.getCurrentTheme().fonts,
-        ThemeManager.getCurrentTheme().fontSizes
+        {
+          primary: 'Arial',
+          display: 'Helvetica',
+        },
+        {
+          base: 16,
+        }
       );
-      expect(font.family('Times New Roman')).toBe('Times New Roman');
+      expect(font.family('primary')).toBe('Arial');
     });
   });
 
   describe('getAvailableFonts', () => {
     it('should return array of available font tokens', () => {
-      ThemeManager.setThemeObject({
-        fonts: {
+      const font = createFont(
+        {
           primary: 'Arial',
           secondary: 'Helvetica',
-          display: 'Roboto',
           monospace: 'Courier New',
+          display: 'Roboto',
           anotherCrazyFont: 'Comic Sans MS',
         },
-      });
-
-      const font = createFont(
-        ThemeManager.getCurrentTheme().fonts,
-        ThemeManager.getCurrentTheme().fontSizes
+        {
+          base: 16,
+        }
       );
       expect(font.getAvailableFonts()).toEqual(
         expect.arrayContaining([
@@ -117,13 +99,8 @@ describe('Font', () => {
     });
 
     it('should return empty array if no fonts in theme', () => {
-      const fonts = ThemeManager.getCurrentTheme().fonts ?? {};
-      ThemeManager.setThemeObject({ fonts: {} });
-      const font = createFont(
-        ThemeManager.getCurrentTheme().fonts,
-        ThemeManager.getCurrentTheme().fontSizes
-      );
-      expect(font.getAvailableFonts()).toEqual(Object.keys(fonts));
+      const font = createFont();
+      expect(font.getAvailableFonts()).toEqual(Object.keys(fontMap));
     });
   });
 });

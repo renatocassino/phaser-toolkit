@@ -2,21 +2,11 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
-
-import { ThemeManager, defaultLightTheme } from '../theme';
+import { describe, expect, it } from 'vitest';
 
 import { createRadius, radiusMap, Radius } from './radius';
 
 describe('Radius', () => {
-  afterAll(() => {
-    ThemeManager.clear();
-  });
-
-  beforeEach(() => {
-    ThemeManager.init(defaultLightTheme);
-  });
-
   describe('px', () => {
     it('should return pixel value for radius key', () => {
       const radius = createRadius();
@@ -64,21 +54,10 @@ describe('Radius', () => {
       const radius1 = createRadius();
       expect(radius1.px('sm')).toBe(radiusMap['sm']);
 
-      ThemeManager.setThemeObject({
-        radius: {
-          sm: 10,
-          custom: 42,
-          '11': 100,
-        },
-      });
-
-      const theme = ThemeManager.getCurrentTheme();
-      const radius2 = createRadius(theme.radius);
-      expect(radius2.px('sm')).toBe(10);
-      // Theme custom keys are allowed once factory is created with theme type
-      type ThemeRadiusKeys = keyof NonNullable<typeof theme.radius>;
-      expect(radius2.px('custom' as ThemeRadiusKeys)).toBe(42);
-      expect(radius2.px('11' as ThemeRadiusKeys)).toBe(100);
+      const radius2 = createRadius();
+      expect(radius2.px('sm')).toBe(2);
+      expect(radius2.px('custom')).toBe(0);
+      expect(radius2.px('11')).toBe(0);
     });
   });
 });

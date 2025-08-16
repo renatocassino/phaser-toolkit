@@ -130,10 +130,6 @@
   },
   "ignorePatterns": [
     "dist/",
-    "storybook-static/",
-    "**/sb-manager/**",
-    "**/*.stories.@(js|ts)",
-    "**/*.stories.*.js",
     "build/",
     "node_modules/",
     "*.config.js",

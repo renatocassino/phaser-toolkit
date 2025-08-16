@@ -13,7 +13,8 @@
   "dependencies": {
     "phaser": "*",
     "phaser-wind": "link:../phaser-wind",
-    "font-awesome-for-phaser": "link:../font-awesome-for-phaser"
+    "font-awesome-for-phaser": "link:../font-awesome-for-phaser",
+    "phaser-hooks": "link:../phaser-hooks"
   },
   "devDependencies": {
     "@types/node": "^24.2.1",

@@ -17,6 +17,10 @@ Briefly describe the changes in this PR.
 ## Affected Packages
 
 - [ ] font-awesome-for-phaser
+- [ ] phaser-hooks
+- [ ] phaser-wind
+- [ ] hudini
+- [ ] phaser-toolkit-demo
 - [ ] Other (please specify): **\*\***\_\_\_**\*\***
 
 ## Changes

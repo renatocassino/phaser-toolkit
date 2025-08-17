@@ -2,13 +2,13 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
-import type { Meta, StoryObj, Args } from '@storybook/html';
+import type { Args, Meta, StoryObj } from '@storybook/html';
 import {
+  fontIcons,
   IconKey,
   IconStyle,
   IconText,
   loadFont,
-  fontIcons,
 } from 'font-awesome-for-phaser';
 import Phaser from 'phaser';
 import { Color, FontSize } from 'phaser-wind';
@@ -218,7 +218,6 @@ export const Basic: StoryObj<{
 
       if (w.__phaserScene) apply();
       else game.events.once(Phaser.Core.Events.READY, apply);
-
     })();
 
     // @ts-expect-error Storybook will call this on unmount if present

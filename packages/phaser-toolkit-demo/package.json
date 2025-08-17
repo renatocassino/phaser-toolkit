@@ -14,7 +14,8 @@
     "font-awesome-for-phaser": "link:../font-awesome-for-phaser",
     "phaser": "*",
     "phaser-hooks": "link:../phaser-hooks",
-    "phaser-wind": "link:../phaser-wind"
+    "phaser-wind": "link:../phaser-wind",
+    "hudini": "link:../hudini"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^8.2.9",

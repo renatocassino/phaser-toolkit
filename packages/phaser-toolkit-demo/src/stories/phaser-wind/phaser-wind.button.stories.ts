@@ -13,7 +13,7 @@ import {
   SceneWithPhaserWind,
 } from 'phaser-wind';
 
-import { createContainer } from './helpers/container';
+import { createContainer } from '../helpers/container';
 
 const meta: Meta = {
   title: 'PhaserWind/Button',
@@ -102,7 +102,12 @@ class PreviewScene extends SceneWithPhaserWind<Theme> {
     const { pw } = this;
     this.cameras.main.setBackgroundColor(Color.slate(900));
 
-    const createButton = (x: number, y: number, label: string, bgToken: ColorToken): Phaser.GameObjects.Container => {
+    const createButton = (
+      x: number,
+      y: number,
+      label: string,
+      bgToken: ColorToken
+    ): Phaser.GameObjects.Container => {
       const text = this.add.text(0, 0, label, {
         fontSize: pw.fontSize.css('lg'),
         color: pw.color.rgb('white'),
@@ -126,7 +131,10 @@ class PreviewScene extends SceneWithPhaserWind<Theme> {
       const lowColor = bgToken.replace('-500', '-700') as ColorToken;
 
       bg.on('pointerover', () => (bg.fillColor = pw.color.hex(highColor)));
-      bg.on('pointerout', () => (bg.fillColor = pw.color.hex(bgToken as ColorToken)));
+      bg.on(
+        'pointerout',
+        () => (bg.fillColor = pw.color.hex(bgToken as ColorToken))
+      );
       bg.on('pointerdown', () => (bg.fillColor = pw.color.hex(lowColor)));
       bg.on('pointerup', () => (bg.fillColor = pw.color.hex(highColor)));
 

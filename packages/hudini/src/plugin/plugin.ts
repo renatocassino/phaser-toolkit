@@ -1,7 +1,11 @@
 import { Plugins } from 'phaser';
 import {
-    BaseThemeConfig,
-    ThemeOverride
+  BaseThemeConfig,
+  defaultDarkTheme,
+  defaultLightTheme,
+  PHASER_WIND_KEY,
+  PhaserWindPlugin,
+  ThemeOverride,
 } from 'phaser-wind';
 
 export const HUDINI_KEY: string = 'hudini';
@@ -16,9 +20,9 @@ export const HUDINI_KEY: string = 'hudini';
  *   if no custom theme is provided
  */
 export type HudiniPluginData<T = ThemeOverride> = {
-    theme?: T;
-    darkMode?: boolean;
-    phaserWindMappingKey?: string; // default is 'pw'
+  theme?: T;
+  darkMode?: boolean;
+  phaserWindMappingKey?: string; // default is 'pw'
 };
 
 /**
@@ -26,78 +30,83 @@ export type HudiniPluginData<T = ThemeOverride> = {
  * @extends Plugins.BasePlugin
  */
 export class HudiniPlugin<
-    T extends BaseThemeConfig,
+  T extends BaseThemeConfig,
 > extends Plugins.BasePlugin {
-    // private themeInstance: T & BaseThemeConfig;
-    // private phaserWindMappingKey: string;
+  /**
+   * The mapping key for the PhaserWind plugin
+   * @internal
+   * @deprecated Do not modify this value unless you know what you're doing.
+   * Changing this value can break the plugin's functionality.
+   */
+  private phaserWindMappingKey: string = PHASER_WIND_KEY;
 
-    /** Current theme configuration */
-    // private theme: T & BaseThemeConfig;
+  /**
+   * Creates an instance of HudiniPlugin
+   * @param pluginManager - Phaser plugin manager instance
+   */
+  constructor(pluginManager: Plugins.PluginManager) {
+    super(pluginManager);
+  }
 
+  /**
+   * Initializes the plugin with theme configuration
+   * @param theme - Custom theme configuration
+   * @param darkMode - Whether to use dark mode theme when no custom theme provided
+   * @example
+   * ```typescript
+   * const game = new Phaser.Game({
+   *   plugins: {
+   *     global: [
+   *       {
+   *         key: HUDINI_KEY,
+   *         plugin: HudiniPlugin,
+   *         mapping: HUDINI_KEY,
+   *         data: { theme: defaultLightTheme,  }
+   *       },
+   *     ],
+   *   },
+   * });
+   * ```
+   */
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  override init({
+    theme,
+    darkMode = false,
     /**
-     * Creates an instance of HudiniPlugin
-     * @param pluginManager - Phaser plugin manager instance
+     * @internal
+     * @deprecated Do not modify this value unless you know what you're doing.
+     * Changing this value can break the plugin's functionality.
      */
-    constructor(pluginManager: Plugins.PluginManager) {
-        super(pluginManager);
+    phaserWindMappingKey = PHASER_WIND_KEY,
+  }: HudiniPluginData<T>): void {
+    this.phaserWindMappingKey = phaserWindMappingKey;
 
-        // this.themeInstance = defaultLightTheme as T & BaseThemeConfig;
-        // this.phaserWindMappingKey = 'pw';
+    // If the phaser-wind plugin is not installed, install it
+    if (!this.pluginManager.get(PHASER_WIND_KEY)) {
+      const chosenTheme =
+        theme ?? (darkMode ? defaultDarkTheme : defaultLightTheme);
+
+      this.pluginManager.install(
+        PHASER_WIND_KEY,
+        PhaserWindPlugin,
+        true,
+        phaserWindMappingKey,
+        {
+          theme: chosenTheme,
+          darkMode,
+        }
+      );
     }
+  }
 
-    /**
-     * Initializes the plugin with theme configuration
-     * @param theme - Custom theme configuration
-     * @param darkMode - Whether to use dark mode theme when no custom theme provided
-     * @example
-     * ```typescript
-     * const game = new Phaser.Game({
-     *   plugins: {
-     *     global: [
-     *       {
-     *         key: HUDINI_KEY,
-     *         plugin: HudiniPlugin,
-     *         mapping: HUDINI_KEY,
-     *         data: { theme: defaultLightTheme,  }
-     *       },
-     *     ],
-     *   },
-     * });
-     * ```
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // override init({
-    // theme,
-    // darkMode = false,
-    // phaserWindMappingKey = 'pw',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // }: HudiniPluginData<T>): void {
-    // if (!theme) {
-    //   this.theme = darkMode
-    //     ? (defaultDarkTheme as T & BaseThemeConfig)
-    //     : (defaultLightTheme as T & BaseThemeConfig);
-    //   return;
-    // } else {
-    //   this.theme = theme as T & BaseThemeConfig;
-    // }
-
-    // this.phaserWindMappingKey = phaserWindMappingKey;
-
-    // this.themeInstance = {
-    //   ...this.themeInstance,
-    //   ...this.theme,
-    // } as T & BaseThemeConfig;
+  /**
+   * Returns the PhaserWind plugin instance
+   * @returns PhaserWind plugin instance
+   */
+  public get pw(): PhaserWindPlugin<T> {
+    return this.pluginManager.get(
+      this.phaserWindMappingKey
+    ) as PhaserWindPlugin<T>;
+  }
 }
-
-/**
- * Returns the current theme configuration
- * @returns Current BaseThemeConfig
- */
-// publsic getTheme(): T & BaseThemeConfig {
-// return this.theme;
-// }
-
-// public get pw(): T & BaseThemeConfig {
-//   return this.themeInstance;
-// }
-// }

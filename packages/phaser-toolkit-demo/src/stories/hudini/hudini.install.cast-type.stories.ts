@@ -10,7 +10,6 @@ import {
   HudiniPlugin,
   SceneWithHudini,
 } from 'hudini';
-import Phaser from 'phaser';
 
 import { createContainer } from '../helpers/container';
 
@@ -40,13 +39,13 @@ const theme = createTheme({
 type Theme = typeof theme;
 
 
-class PreviewScene extends SceneWithHudini<Theme> { // Inherit from SceneWithHudini to get the pw property
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this.hudini; // Don't need to cast to SceneWithPhaserWind<Theme> because we're using the generic type
+        const { pw } = (this as unknown as SceneWithHudini<Theme>); // cast to get the pw property
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         let y = 90;
@@ -86,15 +85,11 @@ class PreviewScene extends SceneWithHudini<Theme> { // Inherit from SceneWithHud
 `;
 
 const meta: Meta = {
-  title: 'Hudini/Install/WithBaseScene',
+  title: 'Hudini/Install/WithCastType',
   parameters: {
     docs: {
       description: {
         component: 'Examples of how to install and use Hudini',
-      },
-      source: {
-        language: 'ts',
-        code: usageSnippet,
       },
     },
   },
@@ -110,34 +105,34 @@ const theme = createTheme({
 });
 type Theme = typeof theme;
 
-class PreviewScene extends SceneWithHudini<Theme> {
+class PreviewScene extends Phaser.Scene {
   constructor() {
     super('preview');
   }
 
   create(): void {
-    const { pw } = this.hudini;
-    this.cameras.main.setBackgroundColor(pw.color.slate(900));
+    const { hudini } = this as unknown as SceneWithHudini<Theme>;
+    this.cameras.main.setBackgroundColor(hudini.pw.color.slate(800));
 
     let y = 90;
     this.add
       .text(300, y, 'Primary color', {
-        fontSize: pw.fontSize.css('2xl'),
-        color: pw.color.rgb('primary'),
+        fontSize: hudini.pw.fontSize.css('2xl'),
+        color: hudini.pw.color.rgb('primary'),
       })
       .setOrigin(0.5);
     y += 100;
     this.add
       .text(300, y, 'Secondary color', {
-        fontSize: pw.fontSize.css('2xl'),
-        color: pw.color.rgb('secondary'),
+        fontSize: hudini.pw.fontSize.css('2xl'),
+        color: hudini.pw.color.rgb('secondary'),
       })
       .setOrigin(0.5);
     y += 100;
     this.add
       .text(300, y, 'Tertiary color', {
-        fontSize: pw.fontSize.css('2xl'),
-        color: pw.color.rgb('tertiary'),
+        fontSize: hudini.pw.fontSize.css('2xl'),
+        color: hudini.pw.color.rgb('tertiary'),
       })
       .setOrigin(0.5);
   }
@@ -177,7 +172,18 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
   return w.__phaserGame;
 };
 
-export const WithBaseScene: StoryObj = {
+export const WithCastType: StoryObj = {
+  parameters: {
+    docs: {
+      description: {
+        component: 'Examples of how to install and use Hudini',
+      },
+      source: {
+        language: 'ts',
+        code: usageSnippet,
+      },
+    },
+  },
   render: (): HTMLElement => {
     const root = createContainer();
 

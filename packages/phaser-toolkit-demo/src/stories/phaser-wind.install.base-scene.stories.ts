@@ -87,11 +87,15 @@ class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWit
 `;
 
 const meta: Meta = {
-    title: 'PhaserWind/Install',
+    title: 'PhaserWind/Install/WithBaseScene',
     parameters: {
         docs: {
             description: {
                 component: 'Examples of how to install and use PhaserWind',
+            },
+            source: {
+                language: 'ts',
+                code: usageSnippet,
             },
         },
     },
@@ -175,18 +179,7 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
     return w.__phaserGame;
 };
 
-export const WithCastType: StoryObj = {
-    parameters: {
-        docs: {
-            description: {
-                component: 'Examples of how to install and use PhaserWind',
-            },
-            source: {
-                language: 'ts',
-                code: usageSnippet,
-            },
-        },
-    },
+export const WithBaseScene: StoryObj = {
     render: (): HTMLElement => {
         const root = createContainer();
 

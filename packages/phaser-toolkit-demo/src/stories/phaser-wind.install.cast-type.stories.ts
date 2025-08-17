@@ -87,7 +87,7 @@ class PreviewScene extends Phaser.Scene {
 `;
 
 const meta: Meta = {
-    title: 'PhaserWind/Install',
+    title: 'PhaserWind/Install/WithCastType',
     parameters: {
         docs: {
             description: {
@@ -175,7 +175,7 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
     return w.__phaserGame;
 };
 
-export const WithBaseScene: StoryObj = {
+export const WithCastType: StoryObj = {
     parameters: {
         docs: {
             description: {

@@ -1,77 +1,94 @@
-# @cassinodev/phaser-toolkit
+# Phaser Toolkit
 
-A comprehensive collection of tools and utilities for game development with Phaser.
+A modern monorepo to supercharge Phaser game development. It bundles design tokens (Tailwind-inspired), a UI/HUD layer, utility helpers, Font Awesome integration, and a Storybook demo — all strongly typed and built with TypeScript.
 
-## 📦 Packages
+## Packages
 
-This monorepo contains various packages for different aspects of Phaser development:
+- phaser-wind: Tailwind-like design tokens (color, font size, spacing, radius, shadow) and a global plugin for Phaser scenes. Strong typing out of the box, optional theme system.
+  - Read more: packages/phaser-wind/README.md
+- hudini: HUD/UI building blocks for Phaser, designed to work seamlessly with phaser-wind tokens (WIP but already useful).
+  - Read more: packages/hudini/README.md
+- phaser-hooks: Practical utilities and lifecycle helpers to make Phaser code cleaner and more maintainable.
+  - Read more: packages/phaser-hooks/README.md
+- font-awesome-for-phaser: Use Font Awesome icons as text in Phaser with a tiny helper API and a ready-to-use IconText object.
+  - Read more: packages/font-awesome-for-phaser/README.md
+- phaser-toolkit-demo: Storybook HTML that demonstrates the packages with live, runnable examples.
+  - Run locally: pnpm -C packages/phaser-toolkit-demo storybook
 
-<!-- Lista será atualizada conforme os pacotes forem criados -->
+## Why this toolkit?
 
-## 🚀 Getting started
+- Strongly typed design tokens you can trust
+- Theme plugin that brings tokens directly into your scenes (scene.pw)
+- Reusable HUD/UI pieces and helpers to speed up common tasks
+- Docs and live examples via Storybook
+- TypeScript-first, Phaser-focused DX
 
-### Prerequisites
+## Getting started
 
-- Node.js >= 18.0.0
-- pnpm >= 8.0.0
+- Requirements
+  - Node.js >= 18
+  - pnpm >= 8
 
-### Instalação
+- Install dependencies
 
 ```bash
-# Clone o repositório
-git clone https://github.com/cassinodev/phaser-toolkit.git
-cd phaser-toolkit
-
-# Instale as dependências
 pnpm install
+```
 
-# Construa todos os pacotes
+- Build all packages
+
+```bash
 pnpm build
 ```
 
-### Scripts Disponíveis
+- Launch Storybook demo
 
-- `pnpm build` - Builds all packages
-- `pnpm test` - Runs tests across all packages
-- `pnpm dev` - Starts development mode
-- `pnpm lint` - Runs linting across all packages
-- `pnpm typecheck` - Checks TypeScript types
-- `pnpm clean` - Cleans previous builds
-- `pnpm changeset` - Creates a new changeset for versioning
-- `pnpm release` - Publishes new versions of packages
+```bash
+pnpm -C packages/phaser-toolkit-demo storybook
+```
 
-## 📋 Project Structure
+## Development flow
+
+- Validate all packages (lint, typecheck, tests)
+
+```bash
+pnpm validate
+```
+
+- Work on a specific package
+
+```bash
+pnpm -C packages/phaser-wind dev
+pnpm -C packages/hudini dev
+```
+
+- Typecheck / Test / Lint (per package)
+
+```bash
+pnpm -C packages/phaser-wind typecheck
+pnpm -C packages/phaser-wind test
+pnpm -C packages/phaser-wind lint
+```
+
+## Repository structure
 
 ```
 phaser-toolkit/
 ├── packages/
-├── apps/
+│   ├── phaser-wind/
+│   ├── hudini/
+│   ├── phaser-hooks/
+│   ├── font-awesome-for-phaser/
+│   └── phaser-toolkit-demo/
 ├── package.json
 ├── pnpm-workspace.yaml
 └── README.md
 ```
 
-## 🤝 Contribute
+## Contributing
 
-Contributions are always welcome! Please read our contribution guide before submitting a PR.
+Contributions are welcome! Please open an issue or a PR. For larger changes, feel free to start a discussion first.
 
-1. Fork the project
-2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## License
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-**CassinoDev**
-
-- Website: [games.cassino.dev](https://games.cassino.dev)
-- GitHub: [@cassinodev](https://github.com/cassinodev)
-
-## ⭐ Show your support
-
-If this project helped you, please give it a ⭐ in the repository!
+MIT — see LICENSE.

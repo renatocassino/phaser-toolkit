@@ -12,7 +12,7 @@ import {
     SceneWithPhaserWind
 } from 'phaser-wind';
 
-import { createContainer } from './helpers/container';
+import { createContainer } from '../helpers/container';
 
 type WindowWithPhaser = Window & {
     __phaserGame?: Phaser.Game;
@@ -41,13 +41,13 @@ const theme = createTheme({
 type Theme = typeof theme;
 
 
-class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWithPhaserWind to get the pw property
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this; // Don't need to cast to SceneWithPhaserWind<Theme> because we're using the generic type
+        const { pw } = (this as unknown as SceneWithPhaserWind<Theme>); // cast to get the pw property
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         let y = 90;
@@ -87,15 +87,11 @@ class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWit
 `;
 
 const meta: Meta = {
-    title: 'PhaserWind/Install/WithBaseScene',
+    title: 'PhaserWind/Install/WithCastType',
     parameters: {
         docs: {
             description: {
                 component: 'Examples of how to install and use PhaserWind',
-            },
-            source: {
-                language: 'ts',
-                code: usageSnippet,
             },
         },
     },
@@ -111,14 +107,14 @@ const theme = createTheme({
 });
 type Theme = typeof theme;
 
-class PreviewScene extends SceneWithPhaserWind<Theme> {
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this;
-        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+        const { pw } = (this as unknown as SceneWithPhaserWind<Theme>);
+        this.cameras.main.setBackgroundColor(pw.color.slate(800));
 
         let y = 90;
         this.add
@@ -179,7 +175,18 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
     return w.__phaserGame;
 };
 
-export const WithBaseScene: StoryObj = {
+export const WithCastType: StoryObj = {
+    parameters: {
+        docs: {
+            description: {
+                component: 'Examples of how to install and use PhaserWind',
+            },
+            source: {
+                language: 'ts',
+                code: usageSnippet,
+            },
+        },
+    },
     render: (): HTMLElement => {
         const root = createContainer();
 

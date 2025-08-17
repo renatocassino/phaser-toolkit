@@ -68,8 +68,8 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "phaser-wind": "*",
-    "font-awesome-for-phaser": "*"
+    "phaser-wind": "workspace:*",
+    "font-awesome-for-phaser": "workspace:*"
   },
   "peerDependencies": {
     "phaser": "*"

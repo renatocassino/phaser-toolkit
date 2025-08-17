@@ -118,13 +118,13 @@ importers:
   packages/hudini:
     dependencies:
       font-awesome-for-phaser:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../font-awesome-for-phaser
       phaser:
         specifier: 3.90.0
         version: 3.90.0
       phaser-wind:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../phaser-wind
     devDependencies:
       '@eslint-recommended/eslint-config':

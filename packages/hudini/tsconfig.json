@@ -9,8 +9,21 @@
     "noEmit": false,
     "composite": true,
     "allowImportingTsExtensions": false,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "baseUrl": "../../",
+    "paths": {
+      "phaser-wind": ["packages/phaser-wind/src/index.ts"],
+      "font-awesome-for-phaser": [
+        "packages/font-awesome-for-phaser/src/index.ts"
+      ],
+      "phaser-hooks": ["packages/phaser-hooks/src/index.ts"]
+    }
   },
+  "references": [
+    { "path": "../phaser-wind" },
+    { "path": "../font-awesome-for-phaser" }
+  ],
   "include": ["src/**/*", "scripts", "src/*"],
+  "typeAcquisition": { "include": ["phaser-wind"] },
   "exclude": ["dist", "node_modules"]
 }

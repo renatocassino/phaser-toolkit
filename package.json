@@ -65,6 +65,7 @@
   "pnpm": {
     "overrides": {
       "phaser": "3.90.0"
-    }
+    },
+    "prefer-workspace-packages": true
   }
 }

@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.5.0
+
+### Minor Changes
+
+- 54141ee: Add instalation in hudini lib
+
 ## 0.4.0
 
 ### Minor Changes

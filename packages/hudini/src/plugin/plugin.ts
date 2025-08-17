@@ -1,9 +1,8 @@
 import { Plugins } from 'phaser';
 import {
   BaseThemeConfig,
-  defaultDarkTheme,
   defaultLightTheme,
-  ThemeOverride,
+  ThemeOverride
 } from 'phaser-wind';
 
 export const HUDINI_KEY: string = 'hudini';
@@ -31,10 +30,10 @@ export class HudiniPlugin<
   T extends BaseThemeConfig,
 > extends Plugins.BasePlugin {
   private themeInstance: T & BaseThemeConfig;
-  private phaserWindMappingKey: string;
+  // private phaserWindMappingKey: string;
 
   /** Current theme configuration */
-  private theme: T & BaseThemeConfig;
+  // private theme: T & BaseThemeConfig;
 
   /**
    * Creates an instance of HudiniPlugin
@@ -44,7 +43,7 @@ export class HudiniPlugin<
     super(pluginManager);
 
     this.themeInstance = defaultLightTheme as T & BaseThemeConfig;
-    this.phaserWindMappingKey = 'pw';
+    // this.phaserWindMappingKey = 'pw';
   }
 
   /**
@@ -67,37 +66,39 @@ export class HudiniPlugin<
    * });
    * ```
    */
-  override init({
-    theme,
-    darkMode = false,
-    phaserWindMappingKey = 'pw',
-  }: HudiniPluginData<T>): void {
-    if (!theme) {
-      this.theme = darkMode
-        ? (defaultDarkTheme as T & BaseThemeConfig)
-        : (defaultLightTheme as T & BaseThemeConfig);
-      return;
-    } else {
-      this.theme = theme as T & BaseThemeConfig;
-    }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // override init({
+  // theme,
+  // darkMode = false,
+  // phaserWindMappingKey = 'pw',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // }: HudiniPluginData<T>): void {
+  // if (!theme) {
+  //   this.theme = darkMode
+  //     ? (defaultDarkTheme as T & BaseThemeConfig)
+  //     : (defaultLightTheme as T & BaseThemeConfig);
+  //   return;
+  // } else {
+  //   this.theme = theme as T & BaseThemeConfig;
+  // }
 
-    this.phaserWindMappingKey = phaserWindMappingKey;
+  // this.phaserWindMappingKey = phaserWindMappingKey;
 
-    this.themeInstance = {
-      ...this.themeInstance,
-      ...this.theme,
-    } as T & BaseThemeConfig;
-  }
+  // this.themeInstance = {
+  //   ...this.themeInstance,
+  //   ...this.theme,
+  // } as T & BaseThemeConfig;
+}
 
   /**
    * Returns the current theme configuration
    * @returns Current BaseThemeConfig
    */
-  public getTheme(): T & BaseThemeConfig {
-    return this.theme;
-  }
+  // publsic getTheme(): T & BaseThemeConfig {
+  // return this.theme;
+  // }
 
-  public get pw(): T & BaseThemeConfig {
-    return this.themeInstance;
-  }
+  // public get pw(): T & BaseThemeConfig {
+  //   return this.themeInstance;
+  // }
 }

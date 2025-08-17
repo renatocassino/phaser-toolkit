@@ -1,0 +1,16 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="24" fill="#0B0F1A"/>
+  <!-- cantoneiras -->
+  <g stroke="#9B5CFF" stroke-width="12" fill="none" stroke-linecap="round">
+    <path d="M36 88 V56 H88" />
+    <path d="M220 88 V56 H168" />
+    <path d="M36 168 V200 H88" />
+    <path d="M220 168 V200 H168" />
+  </g>
+  <!-- chapéu minimal -->
+  <g fill="#9B5CFF">
+    <ellipse cx="128" cy="160" rx="70" ry="16"/>
+    <path d="M92 92c0-18 16-32 36-32s36 14 36 32l-8 40H100l-8-40z"/>
+    <rect x="96" y="128" width="64" height="10" fill="#FF3D9A"/>
+  </g>
+</svg>

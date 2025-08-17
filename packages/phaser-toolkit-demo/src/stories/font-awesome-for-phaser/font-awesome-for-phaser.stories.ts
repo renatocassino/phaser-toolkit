@@ -2,13 +2,13 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
-import type { Meta, StoryObj, Args } from '@storybook/html';
+import type { Args, Meta, StoryObj } from '@storybook/html';
 import {
+  fontIcons,
   IconKey,
   IconStyle,
   IconText,
   loadFont,
-  fontIcons,
 } from 'font-awesome-for-phaser';
 import Phaser from 'phaser';
 import { Color, FontSize } from 'phaser-wind';
@@ -19,13 +19,37 @@ type WindowWithPhaser = Window & {
   __faLoaded?: boolean;
 };
 
+const usageSnippet = `import { IconText, loadFont } from 'font-awesome-for-phaser';
+
+await loadFont();
+
+class MyScene extends Phaser.Scene {
+  create() {
+    const icon = new IconText({
+      scene: this,
+      x: 300,
+      y: 200,
+      icon: 'house',
+      iconStyle: 'regular', // 'solid' | 'regular' | 'brands'
+      size: 64,
+      style: { color: '#ffffff' },
+    });
+    this.add.existing(icon);
+  }
+}`;
+
 const meta: Meta = {
   title: 'Font Awesome For Phaser/IconText',
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
         component:
-          'Render Font Awesome icons in Phaser via font. Load the fonts with `loadFont()` and use `IconText`. See the example below.',
+          'Render Font Awesome icons in Phaser via font. Load the fonts with `loadFont()` and use `IconText`.',
+      },
+      source: {
+        language: 'ts',
+        code: usageSnippet,
       },
     },
   },
@@ -103,88 +127,7 @@ const createContainer = (): HTMLDivElement => {
   return container;
 };
 
-const createDocWrapper = (): HTMLDivElement => {
-  const docId = 'phaser-story-doc';
-  let docWrap = document.getElementById(docId) as HTMLDivElement | null;
-  if (!docWrap) {
-    docWrap = document.createElement('div');
-    docWrap.id = docId;
-    docWrap.style.padding = '12px';
-    docWrap.style.color = '#e5e7eb';
-    docWrap.style.fontFamily =
-      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
-    docWrap.style.background = '#0b1220';
-    docWrap.style.borderTop = '1px solid #1f2937';
-  }
-  return docWrap;
-};
-
-const createTitle = (docWrap: HTMLDivElement): HTMLDivElement => {
-  const titleId = 'phaser-story-doc-title';
-  let title = document.getElementById(titleId) as HTMLDivElement | null;
-  if (!title) {
-    title = document.createElement('div');
-    title.id = titleId;
-    title.style.fontWeight = '600';
-    title.style.marginBottom = '6px';
-    docWrap.appendChild(title);
-  }
-  title.textContent = 'Usage:';
-  return title;
-};
-
-const createCodeBlock = (docWrap: HTMLDivElement): HTMLElement => {
-  const preId = 'phaser-story-doc-pre';
-  let pre = document.getElementById(preId) as HTMLPreElement | null;
-  if (!pre) {
-    pre = document.createElement('pre');
-    pre.id = preId;
-    pre.style.margin = '0';
-    pre.style.whiteSpace = 'pre-wrap';
-    pre.style.overflowX = 'auto';
-    docWrap.appendChild(pre);
-  }
-
-  const codeId = 'phaser-story-doc-code';
-  let code = document.getElementById(codeId) as HTMLElement | null;
-  if (!code) {
-    code = document.createElement('code');
-    code.id = codeId;
-    code.className = 'language-typescript';
-    pre.appendChild(code);
-  }
-  return code;
-};
-
-const loadHighlightJS = (code: HTMLElement): void => {
-  const styleId = 'hljs-style';
-  if (!document.getElementById(styleId)) {
-    const link = document.createElement('link');
-    link.id = styleId;
-    link.rel = 'stylesheet';
-    link.href =
-      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
-    document.head.appendChild(link);
-  }
-
-  const scriptId = 'hljs-script';
-  const applyHighlight = (): void => {
-    // @ts-expect-error global from hljs
-    if (window.hljs && code) window.hljs.highlightElement(code);
-  };
-
-  if (!document.getElementById(scriptId)) {
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src =
-      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js';
-    script.onload = applyHighlight;
-    document.body.appendChild(script);
-    applyHighlight();
-  } else {
-    applyHighlight();
-  }
-};
+// Removed custom Docs HTML/highlight; using Storybook Docs source block
 
 const ensureFontOnce = async (): Promise<void> => {
   const w = window as unknown as WindowWithPhaser;
@@ -252,11 +195,6 @@ export const Basic: StoryObj<{
   render: (args: Args): HTMLElement => {
     const root = createContainer();
 
-    // Ensure a single docs block that can be updated across re-renders
-    const docWrap = createDocWrapper();
-    createTitle(docWrap);
-    const code = createCodeBlock(docWrap);
-
     const w = window as unknown as WindowWithPhaser;
 
     (async (): Promise<void> => {
@@ -280,36 +218,7 @@ export const Basic: StoryObj<{
 
       if (w.__phaserScene) apply();
       else game.events.once(Phaser.Core.Events.READY, apply);
-
-      // Append or move the docs block to be after the Phaser canvas
-      if (docWrap && docWrap.parentElement !== root) {
-        root.appendChild(docWrap);
-      } else if (docWrap && docWrap.parentElement === root) {
-        // Move to the end to ensure it's after canvas
-        root.appendChild(docWrap);
-      }
     })();
-
-    code.textContent = `import { IconText, loadFont } from 'font-awesome-for-phaser';
-
-await loadFont().then(() => {
-  new Phaser.Game({ /** parameters here */ });
-});
-
-// CustomScene.ts - inside your Scene
-const icon = new IconText({
-  scene: this,
-  x: 300,
-  y: 200,
-  icon: '${String(args['icon'] ?? 'gamepad')}',
-  iconStyle: '${String(args['iconStyle'] ?? 'solid')}', // 'solid' | 'regular' | 'brands'
-  size: ${Number.isFinite(Number(args['size'])) ? Number(args['size']) : 64},
-  style: { color: '${String(args['color'] ?? '#ffffff')}' },
-});
-this.add.existing(icon);`;
-
-    // Load highlight.js once and highlight this block
-    loadHighlightJS(code);
 
     // @ts-expect-error Storybook will call this on unmount if present
     root.destroy = (): void => {

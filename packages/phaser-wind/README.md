@@ -199,7 +199,7 @@ Shadow.get('md');
 
 ---
 
-## 🎨 Theming (optional, typed)
+## 🎨 Theming
 
 Phaser Wind also provides a typed theme system via a Phaser plugin. You get the same API surface (`color`, `fontSize`, `spacing`, `radius`, `font`, `shadow`) but narrowed to your custom tokens.
 
@@ -259,385 +259,111 @@ new Phaser.Game({
 });
 ```
 
-### 3) (Optional) Module augmentation for better typing in scenes
+### 3) How to get strong types in your scene
+
+#### 3.1 Lazy way. Define a module and all scenes should be have the "pw" instance
 
 ```ts
-// types/phaser-wind.d.ts
+// src/my-theme.ts
 import 'phaser';
 import type { PhaserWindPlugin } from 'phaser-wind';
 import type { ThemeType } from './theme';
+
+const theme = const theme = createTheme({
+  colors: {
+    brand: 'purple-600',
+    danger: 'red-500',
+  }
+});
+export type ThemeType = typeof theme;
 
 declare module 'phaser' {
   interface Scene {
     pw: PhaserWindPlugin<ThemeType>;
   }
 }
+
+// In your scene
+
+class MyCustomScene extends Phaser.Scene {
+    create(): void {
+      this.pw // <-- Valid instance in your ts file
 ```
 
-### 4) Typed usage in scenes
+#### 3.1 - Cast way
+
+The original `Phaser.Scene` does not know the `pw` from Phaser-wind. You can make a simple cast to solve this problem
 
 ```ts
-export class GameScene extends Phaser.Scene {
-  create() {
-    const { color, fontSize, spacing, radius, font, shadow } = this.pw;
+import Phaser from 'phaser';
+import { type ThemeType } from 'src/theme.ts' // In your project
 
-    // ✅ Type-narrowed to your theme
-    color.rgb('primary');
-    fontSize.css('lg');
-    spacing.px('gutter');
-    radius.css('card');
-    font.family('display');
-    shadow.get('glow');
+class MyCustomScene extends Phaser.Scene {
+    create(): void {
+        const { pw } = (this as unknown as SceneWithPhaserWind<Theme>); // cast to get the pw property
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
-    // ❌ Compile-time errors
-    // color.rgb('blue-501');
-    // spacing.px('unknown');
-  }
-}
+        this.add
+            .text(300, 100, 'Primary color', {
+                fontSize: pw.fontSize.css('2xl'), // use the pw property to get the font size
+                color: pw.color.rgb('primary'), // use the pw property to get the color with type safety
+            })
+            .setOrigin(0.5);
 ```
 
-> Note: The old `ThemeManager` API is deprecated and has been removed from the docs.
+#### 3.2 - Inheritance way
+
+Phaser-wind export an abstract class to type the `Phaser.Scene` and add the attribute `pw`.
+
+```ts
+import Phaser from 'phaser';
+import { type ThemeType } from 'src/theme.ts' // In your project
+
+class PreviewScene extends SceneWithPhaserWind<ThemeType> { // Inherit from SceneWithPhaserWind to get the pw property
+    create(): void {
+      const { color, fontSize, spacing, radius, font, shadow } = this.pw; // Don't need to cast because we're using the generic type
+
+      // ✅ Type-narrowed to your theme
+      color.rgb('primary');
+      fontSize.css('lg');
+      spacing.px('gutter');
+      radius.css('card');
+      font.family('display');
+      shadow.get('glow');
+
+      // ❌ Compile-time errors
+      // color.rgb('blue-501');
+      // spacing.px('unknown');
+```
 
 ### 🎮 **Real Game Example**
 
-```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    // Player health bar with theme colors
-    const healthWidth = Spacing.px('24'); // 96px
-    const healthHeight = Spacing.px('4'); // 16px
-
-    this.add.rectangle(
-      50,
-      50,
-      healthWidth,
-      healthHeight,
-      Color.hex('player-health')
-    ); // Green from theme
-
-    // Game title with theme typography
-    this.add
-      .text(400, 50, 'CYBER QUEST', {
-        fontSize: FontSize.css('4xl'),
-        fontFamily: Font.family('display'),
-        color: Color.rgb('primary'), // Purple from theme
-      })
-      .setOrigin(0.5);
-
-    // UI button with consistent spacing and colors
-    this.createButton(
-      400,
-      400,
-      'START GAME',
-      Spacing.px('16'), // 64px width
-      Spacing.px('6') // 24px height
-    );
-  }
-
-  createButton(
-    x: number,
-    y: number,
-    text: string,
-    width: number,
-    height: number
-  ) {
-    const button = this.add
-      .rectangle(x, y, width, height, Color.hex('ui-background'))
-      .setInteractive()
-      .on('pointerover', () => button.setFillStyle(Color.hex('secondary')))
-      .on('pointerout', () => button.setFillStyle(Color.hex('ui-background')));
-
-    this.add
-      .text(x, y, text, {
-        fontSize: FontSize.css('base'),
-        fontFamily: Font.family('primary'),
-        color: Color.rgb('primary'),
-      })
-      .setOrigin(0.5);
-  }
-}
-```
+You can check some examples in our [Storybook in this clicking here](https://renatocassino.github.io/phaser-toolkit).
 
 ### 🎨 **Pre-built Themes**
 
-```typescript
-import { defaultLightTheme, defaultDarkTheme } from 'phaser-wind';
+```ts
+import {
+  PhaserWindPlugin,
+  PHASER_WIND_KEY,
+  defaultLightTheme,
+  // or defaultDarkTheme
+} from 'phaser-wind';
+import { theme } from './theme';
 
-// Light theme with professional colors
-ThemeManager.init(defaultLightTheme);
-
-// Dark theme perfect for games
-ThemeManager.init(defaultDarkTheme);
-
-// Create variations
-const winterTheme = ThemeManager.extendCurrentTheme({
-  'colors.primary': 'blue-400',
-  'colors.secondary': 'cyan-300',
-  'colors.accent': 'white',
-});
-```
-
-### 🔗 **Smart Token References**
-
-Themes can reference other tokens using dot notation:
-
-```typescript
-const theme = createTheme({
-  colors: {
-    brand: 'purple-600',
-    danger: 'red-500',
-  },
-  typography: {
-    title: {
-      fontSize: '4xl',
-      fontFamily: 'fonts.display', // 🔗 Auto-resolves to fonts.display
-      color: 'colors.brand', // 🔗 Auto-resolves to purple-600
-    },
-  },
-  effects: {
-    'brand-glow': {
-      color: 'colors.brand', // 🔗 Auto-resolves to purple-600
-      blur: 8,
-    },
+new Phaser.Game({
+  plugins: {
+    global: [
+      {
+        key: PHASER_WIND_KEY,
+        plugin: PhaserWindPlugin,
+        mapping: PHASER_WIND_KEY, // scene.pw
+        data: { theme: defaultLighTheme }, // or { theme: defaultDarkTheme }
+      },
+    ],
   },
 });
 ```
-
----
-
-## 💡 Real-World Examples
-
-### Game UI Components
-
-```typescript
-import { Color, FontSize } from 'phaser-wind';
-
-export class GameScene extends Phaser.Scene {
-  create() {
-    // Main title
-    this.add
-      .text(400, 100, 'SPACE RAIDERS', {
-        fontSize: FontSize.css('5xl'),
-        fill: Color.rgb('yellow-400'),
-        stroke: Color.rgb('yellow-800'),
-        strokeThickness: 2,
-      })
-      .setOrigin(0.5);
-
-    // Score display
-    this.add.text(50, 50, 'Score: 12,500', {
-      fontSize: FontSize.css('xl'),
-      fill: Color.rgb('green-400'),
-    });
-
-    // Health bar background
-    const healthBg = this.add.graphics();
-    healthBg.fillStyle(Color.hex('red-900'));
-    healthBg.fillRect(50, 100, 200, 20);
-
-    // Health bar fill
-    const healthFill = this.add.graphics();
-    healthFill.fillStyle(Color.hex('red-500'));
-    healthFill.fillRect(52, 102, 156, 16); // 80% health
-
-    // Game over screen
-    this.add.rectangle(400, 300, 600, 400, Color.hex('slate-900'), 0.9);
-
-    this.add
-      .text(400, 250, 'GAME OVER', {
-        fontSize: FontSize.css('4xl'),
-        fill: Color.rgb('red-500'),
-      })
-      .setOrigin(0.5);
-
-    this.add
-      .text(400, 320, 'Final Score: 12,500', {
-        fontSize: FontSize.css('2xl'),
-        fill: Color.rgb('slate-300'),
-      })
-      .setOrigin(0.5);
-  }
-}
-```
-
-### Button System
-
-```typescript
-class GameButton {
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    text: string,
-    variant: 'primary' | 'secondary' | 'danger' = 'primary'
-  ) {
-    const colors = {
-      primary: {
-        bg: Color.hex('blue-600'),
-        bgHover: Color.hex('blue-700'),
-        text: Color.rgb('white'),
-      },
-      secondary: {
-        bg: Color.hex('slate-600'),
-        bgHover: Color.hex('slate-700'),
-        text: Color.rgb('slate-100'),
-      },
-      danger: {
-        bg: Color.hex('red-600'),
-        bgHover: Color.hex('red-700'),
-        text: Color.rgb('white'),
-      },
-    };
-
-    const style = colors[variant];
-
-    // Background
-    this.background = scene.add
-      .rectangle(x, y, 200, 50, style.bg)
-      .setInteractive()
-      .on('pointerover', () => this.background.setFillStyle(style.bgHover))
-      .on('pointerout', () => this.background.setFillStyle(style.bg));
-
-    // Text
-    this.text = scene.add
-      .text(x, y, text, {
-        fontSize: FontSize.css('lg'),
-        fill: style.text,
-      })
-      .setOrigin(0.5);
-  }
-}
-
-// Usage
-const playButton = new GameButton(this, 400, 200, 'PLAY', 'primary');
-const settingsButton = new GameButton(this, 400, 280, 'SETTINGS', 'secondary');
-const quitButton = new GameButton(this, 400, 360, 'QUIT', 'danger');
-```
-
-### Particle Effects with Color Harmony
-
-```typescript
-// Create harmonious particle effects
-this.add.particles(player.x, player.y, 'sparkle', {
-  speed: { min: 50, max: 100 },
-  tint: [
-    Color.hex('blue-400'),
-    Color.hex('blue-500'),
-    Color.hex('blue-600'),
-    Color.hex('cyan-400'),
-    Color.hex('cyan-500'),
-  ],
-  lifespan: 1000,
-});
-```
-
----
-
-## 🎮 Integration with Phaser (no theme)
-
-### Scene Setup
-
-```typescript
-import { Color, FontSize } from 'phaser-wind';
-
-export class MenuScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'MenuScene' });
-  }
-
-  create() {
-    // Background gradient effect
-    const bg = this.add.graphics();
-    bg.fillGradientStyle(
-      Color.hex('slate-900'), // top-left
-      Color.hex('slate-800'), // top-right
-      Color.hex('slate-800'), // bottom-left
-      Color.hex('slate-700') // bottom-right
-    );
-    bg.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
-
-    // Consistent UI elements
-    this.createTitle();
-    this.createMenu();
-  }
-
-  private createTitle() {
-    this.add
-      .text(this.cameras.main.centerX, 150, 'MY AWESOME GAME', {
-        fontSize: FontSize.css('4xl'),
-        fill: Color.rgb('yellow-400'),
-        stroke: Color.rgb('yellow-700'),
-        strokeThickness: 3,
-      })
-      .setOrigin(0.5);
-  }
-
-  private createMenu() {
-    const menuItems = ['Play', 'Options', 'Credits', 'Quit'];
-
-    menuItems.forEach((item, index) => {
-      this.add
-        .text(this.cameras.main.centerX, 250 + index * 60, item, {
-          fontSize: FontSize.css('xl'),
-          fill: Color.rgb('slate-300'),
-        })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerover', function () {
-          this.setTint(Color.hex('yellow-400'));
-        })
-        .on('pointerout', function () {
-          this.clearTint();
-        });
-    });
-  }
-}
-```
-
----
-
-## 🔧 Advanced Usage
-
-### Custom Color Schemes
-
-```typescript
-// Create consistent themes
-const darkTheme = {
-  background: Color.hex('slate-900'),
-  surface: Color.hex('slate-800'),
-  primary: Color.hex('blue-500'),
-  secondary: Color.hex('slate-600'),
-  text: Color.rgb('slate-100'),
-  textMuted: Color.rgb('slate-400'),
-};
-
-const lightTheme = {
-  background: Color.hex('slate-50'),
-  surface: Color.hex('white'),
-  primary: Color.hex('blue-600'),
-  secondary: Color.hex('slate-200'),
-  text: Color.rgb('slate-900'),
-  textMuted: Color.rgb('slate-600'),
-};
-```
-
-### Responsive Text Sizing
-
-```typescript
-// Scale text based on screen size
-const getResponsiveTextSize = (baseSize: FontSizeKey): string => {
-  const scale = this.cameras.main.width / 1920; // Base on 1920px width
-  const basePixels = FontSize.px(baseSize);
-  return `${Math.round(basePixels * scale)}px`;
-};
-
-this.add.text(x, y, 'Responsive Text', {
-  fontSize: getResponsiveTextSize('2xl'),
-  fill: Color.rgb('blue-500'),
-});
-```
-
----
 
 ## 🤝 Why "Wind" instead of "Tailwind"?
 
@@ -666,16 +392,6 @@ Plus, `phaser-wind` is way easier to type than `phaser-tailwind-css-design-token
 
 ---
 
-## 🔮 Coming Soon
-
-- 📐 **Layout Utilities** - Flexbox-inspired alignment helpers
-- 📱 **Responsive Utilities** - Breakpoint-based design tokens
-- ⚡ **Animation Presets** - Smooth, consistent transitions
-- 🎮 **Component Library** - Pre-built Phaser components with theme support
-- 🔧 **CLI Tool** - Generate themes and components from the command line
-
----
-
 ## 🤝 Contributing
 
 We'd love your help making Phaser Wind even better!
@@ -691,6 +407,8 @@ We'd love your help making Phaser Wind even better!
 ## 📄 License
 
 MIT © [CassinoDev](https://github.com/cassinodev)
+
+Do you want to play? Go to [games.cassino.dev](https://games.cassino.dev).
 
 ---
 

@@ -1,4 +1,4 @@
-import{S as i,c as n,C as a}from"./scene-with-phaser-wind-DKcG0Mp4.js";import{c,a as h}from"./container-staG4HwT.js";import{H as s,a as l}from"./plugin-DvF3cyMp.js";import"./_commonjsHelpers-Cpj98o6Y.js";class p extends i{constructor(e){super(e)}hudini}const d=`
+import{H as n,a as s}from"./plugin-C8tR5bAJ.js";import{C as a}from"./scene-with-phaser-wind-yYpAVwXm.js";import{c as i,a as c}from"./container-Dzvo6xvK.js";import"./webfontloader-C9e8wMC_.js";import"./_commonjsHelpers-Cpj98o6Y.js";const p=`
 import Phaser from 'phaser';
 import {
     Color,
@@ -18,13 +18,13 @@ const theme = createTheme({
 type Theme = typeof theme;
 
 
-class PreviewScene extends SceneWithHudini<Theme> { // Inherit from SceneWithHudini to get the pw property
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this.hudini; // Don't need to cast to SceneWithPhaserWind<Theme> because we're using the generic type
+        const { pw } = (this as unknown as SceneWithHudini<Theme>); // cast to get the pw property
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         let y = 90;
@@ -61,7 +61,18 @@ class PreviewScene extends SceneWithHudini<Theme> { // Inherit from SceneWithHud
         // ❌ pw.color.rgb('invalid-color')
     }
 }
-`,_={title:"Hudini/Install/WithBaseScene",parameters:{docs:{description:{component:"Examples of how to install and use Hudini"},source:{language:"ts",code:d}}}},m=h({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class u extends p{constructor(){super("preview")}create(){const{pw:e}=this.hudini;this.cameras.main.setBackgroundColor(e.color.slate(900));let t=90;this.add.text(300,t,"Primary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("primary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Secondary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("secondary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Tertiary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("tertiary")}).setOrigin(.5)}}const w=r=>{const e=window;return e.__phaserGame||(e.__phaserGame=new n.Game({type:n.AUTO,width:600,height:400,backgroundColor:a.slate(900),parent:r,scene:[u],plugins:{global:[{key:s,plugin:l,mapping:s,data:{theme:m}}]}}),e.__phaserGame.events.once(n.Core.Events.READY,()=>{e.__phaserScene=e.__phaserGame?.scene.getScene("preview")})),e.__phaserGame},o={render:()=>{const r=c();return(async()=>w(r))(),r.destroy=()=>{const e=window;e.__phaserGame&&(e.__phaserGame.destroy(!0),e.__phaserGame=void 0,e.__phaserScene=void 0)},r}};o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`{
+`,f={title:"Hudini/Install/WithCastType",parameters:{docs:{description:{component:"Examples of how to install and use Hudini"}}}},l=c({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class d extends Phaser.Scene{constructor(){super("preview")}create(){const{hudini:e}=this;this.cameras.main.setBackgroundColor(e.pw.color.slate(800));let o=90;this.add.text(300,o,"Primary color",{fontSize:e.pw.fontSize.css("2xl"),color:e.pw.color.rgb("primary")}).setOrigin(.5),o+=100,this.add.text(300,o,"Secondary color",{fontSize:e.pw.fontSize.css("2xl"),color:e.pw.color.rgb("secondary")}).setOrigin(.5),o+=100,this.add.text(300,o,"Tertiary color",{fontSize:e.pw.fontSize.css("2xl"),color:e.pw.color.rgb("tertiary")}).setOrigin(.5)}}const h=r=>{const e=window;return e.__phaserGame||(e.__phaserGame=new Phaser.Game({type:Phaser.AUTO,width:600,height:400,backgroundColor:a.slate(900),parent:r,scene:[d],plugins:{global:[{key:n,plugin:s,mapping:n,data:{theme:l}}]}}),e.__phaserGame.events.once(Phaser.Core.Events.READY,()=>{e.__phaserScene=e.__phaserGame?.scene.getScene("preview")})),e.__phaserGame},t={parameters:{docs:{description:{component:"Examples of how to install and use Hudini"},source:{language:"ts",code:p}}},render:()=>{const r=i();return(async()=>h(r))(),r.destroy=()=>{const e=window;e.__phaserGame&&(e.__phaserGame.destroy(!0),e.__phaserGame=void 0,e.__phaserScene=void 0)},r}};t.parameters={...t.parameters,docs:{...t.parameters?.docs,source:{originalSource:`{
+  parameters: {
+    docs: {
+      description: {
+        component: 'Examples of how to install and use Hudini'
+      },
+      source: {
+        language: 'ts',
+        code: usageSnippet
+      }
+    }
+  },
   render: (): HTMLElement => {
     const root = createContainer();
     (async (): Promise<void> => {
@@ -79,4 +90,4 @@ class PreviewScene extends SceneWithHudini<Theme> { // Inherit from SceneWithHud
     };
     return root;
   }
-}`,...o.parameters?.docs?.source}}};const x=["WithBaseScene"];export{o as WithBaseScene,x as __namedExportsOrder,_ as default};
+}`,...t.parameters?.docs?.source}}};const _=["WithCastType"];export{t as WithCastType,_ as __namedExportsOrder,f as default};

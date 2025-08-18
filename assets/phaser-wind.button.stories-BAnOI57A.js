@@ -1,4 +1,4 @@
-import{c as p,P as d,a as _,C as g,S as P}from"./scene-with-phaser-wind-DKcG0Mp4.js";import{c as f,a as S}from"./container-staG4HwT.js";import"./_commonjsHelpers-Cpj98o6Y.js";const B={title:"PhaserWind/Button",tags:["autodocs"],parameters:{docs:{description:{component:"Example of button using PhaserWind tokens."},source:{language:"ts",code:`import Phaser from 'phaser';
+import{P as p,a as d,b as _,C as g,S as P}from"./scene-with-phaser-wind-yYpAVwXm.js";import{c as f,a as S}from"./container-Dzvo6xvK.js";import"./_commonjsHelpers-Cpj98o6Y.js";const B={title:"PhaserWind/Button",tags:["autodocs"],parameters:{docs:{description:{component:"Example of button using PhaserWind tokens."},source:{language:"ts",code:`import Phaser from 'phaser';
 import {
   Color,
   ColorToken,

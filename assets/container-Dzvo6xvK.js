@@ -1,0 +1,1 @@
+import{m as o,d as s}from"./scene-with-phaser-wind-yYpAVwXm.js";const a=t=>o({},s,t),c=(t="phaser-story")=>{const r=document.getElementById(t);if(r)return r;const e=document.createElement("div");return e.id="phaser-story",e.style.width="600px",e.style.height="400px",e.style.border="1px solid #333",e.style.background="#111",e};export{a,c};

@@ -1,5 +1,5 @@
-export const createContainer = (): HTMLDivElement => {
-    const root = document.getElementById('phaser-story');
+export const createContainer = (id: string = 'phaser-story'): HTMLDivElement => {
+    const root = document.getElementById(id);
     if (root) {
         return root as HTMLDivElement;
     }

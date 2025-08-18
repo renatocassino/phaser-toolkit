@@ -25,7 +25,11 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@cassinodev/*": ["./packages/*/src"]
+      "@cassinodev/*": ["./packages/*/src"],
+      "phaser-wind": ["./packages/phaser-wind"],
+      "phaser-hooks": ["./packages/phaser-hooks"],
+      "font-awesome-for-phaser": ["./packages/font-awesome-for-phaser"],
+      "hudini": ["./packages/hudini"]
     }
   },
   "include": [

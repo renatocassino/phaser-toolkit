@@ -17,8 +17,7 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "release": "pnpm build && pnpm changeset:publish",
-    "prepare": "husky install || true"
+    "release": "pnpm build && pnpm changeset:publish"
   },
   "keywords": [
     "phaser",
@@ -45,7 +44,6 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.55.0",
-    "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
     "phaser-hooks": "link:packages/phaser-hooks",
     "phaser-wind": "link:packages/phaser-wind",
@@ -65,6 +63,7 @@
   "pnpm": {
     "overrides": {
       "phaser": "3.90.0"
-    }
+    },
+    "prefer-workspace-packages": true
   }
 }

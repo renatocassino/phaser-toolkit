@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc --build --force",
     "dev": "tsc --build --watch",
     "clean": "rm -rf dist",
     "test": "vitest run",
@@ -53,9 +53,10 @@
     "@eslint-recommended/eslint-config": "^28.0.0",
     "@types/node": "^24.2.1",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^6.15.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
@@ -68,8 +69,8 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "phaser-wind": "*",
-    "font-awesome-for-phaser": "*"
+    "phaser-wind": "workspace:*",
+    "font-awesome-for-phaser": "workspace:*"
   },
   "peerDependencies": {
     "phaser": "*"

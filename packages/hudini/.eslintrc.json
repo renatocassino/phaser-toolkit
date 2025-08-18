@@ -135,7 +135,6 @@
     "*.config.js",
     "*.config.mjs",
     "*.config.ts",
-    "scripts/",
-    "src/constants/icons.ts"
+    "scripts/"
   ]
 }

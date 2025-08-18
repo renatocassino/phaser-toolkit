@@ -1,5 +1,12 @@
 # phaser-wind
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [11ac58e]
+  - phaser-wind@0.5.1
+
 ## 0.1.0
 
 ### Minor Changes

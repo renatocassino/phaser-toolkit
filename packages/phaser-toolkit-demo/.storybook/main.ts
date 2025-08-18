@@ -1,4 +1,7 @@
 import type { StorybookConfig } from '@storybook/html-vite';
+import { fileURLToPath } from 'node:url';
+
+const r = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 
 const config: StorybookConfig = {
   framework: {
@@ -10,6 +13,17 @@ const config: StorybookConfig = {
   core: {},
   docs: {
     autodocs: true,
+  },
+  viteFinal: async (config) => {
+    config.resolve = config.resolve ?? {};
+    const existingAlias = (config.resolve as any).alias ?? {};
+    (config.resolve as any).alias = {
+      ...existingAlias,
+      'phaser-wind': r('../../phaser-wind/src/index.ts'),
+      'font-awesome-for-phaser': r('../../font-awesome-for-phaser/src/index.ts'),
+      hudini: r('../../hudini/src/index.ts'),
+    };
+    return config;
   },
 };
 

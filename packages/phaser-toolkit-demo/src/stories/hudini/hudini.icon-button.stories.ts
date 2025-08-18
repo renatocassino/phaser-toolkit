@@ -34,56 +34,40 @@ import {
 } from 'hudini';
 
 const theme = createTheme({
-    colors: {
-        primary: 'red-500',
-        secondary: 'blue-500',
-        tertiary: 'green-500',
-    }
+// ...
 });
 type Theme = typeof theme;
 
-
-class PreviewScene extends SceneWithHudini<Theme> { // Inherit from SceneWithHudini to get the pw property
+class PreviewScene extends SceneWithHudini<Theme> {
+    private buttons: IconButton[] = [];
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this.hudini; // Don't need to cast to SceneWithPhaserWind<Theme> because we're using the generic type
+        const { pw } = this.hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
+        const colors: ColorKey[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'gray'];
+
         let y = 90;
-        this.add
-            .text(300, y, 'Primary color', {
-                fontSize: pw.fontSize.css('2xl'), // use the pw property to get the font size
-                color: pw.color.rgb('primary'), // use the pw property to get the color with type safety
-            })
-            .setOrigin(0.5);
-        y += 100;
-        this.add
-            .text(300, y, 'Secondary color', {
-                fontSize: pw.fontSize.css('2xl'),
-                color: pw.color.rgb('secondary'),
-            })
-            .setOrigin(0.5);
-        y += 100;
-        this.add
-            .text(300, y, 'Tertiary color', {
-                fontSize: pw.fontSize.css('2xl'),
-                color: pw.color.rgb('tertiary'),
-            })
-            .setOrigin(0.5);
+        for (let i = 0; i < colors.length; i++) {
+            const color: ColorKey = colors[i] as ColorKey;
 
-        // if you try to use a color that is not in the theme, it will throw an error
-        // ❌ pw.color.rgb('invalid-color')
-        // ✅ pw.color.rgb('primary') -> Defined in the theme
-
-        // if you try to use a font size that is not in the theme, it will throw an error
-        // ❌ pw.fontSize.css('invalid-size')
-        // ✅ pw.fontSize.css('2xl')
-
-        // if you try to use a color that is not in the theme, it will throw an error
-        // ❌ pw.color.rgb('invalid-color')
+            const btn = new IconButton({
+                scene: this,
+                x: 50 + (i * 65),
+                y: y,
+                icon: 'plus',
+                size: 'xl',
+                color: color,
+                onClick: (): void => {
+                    console.log('clicked');
+                },
+            });
+            this.add.existing(btn);
+            this.buttons.push(btn);
+        }
     }
 }
 `;

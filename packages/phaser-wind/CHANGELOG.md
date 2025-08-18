@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.5.1
+
+### Patch Changes
+
+- 11ac58e: fix pw instance
+
 ## 0.5.0
 
 ### Minor Changes

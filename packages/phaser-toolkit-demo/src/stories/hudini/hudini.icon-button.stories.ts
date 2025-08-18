@@ -1,0 +1,255 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable no-magic-numbers */
+/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable complexity */
+import type { Args, Meta, StoryObj } from '@storybook/html';
+import { fontIcons, IconKey, IconStyle, loadFont } from 'font-awesome-for-phaser';
+import {
+    Color,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    IconButton,
+    SceneWithHudini,
+    type ColorKey
+} from 'hudini';
+import Phaser from 'phaser';
+
+import { createContainer } from '../helpers/container';
+
+type WindowWithPhaser = Window & {
+    __phaserGame?: Phaser.Game;
+    __phaserScene?: PreviewScene;
+};
+
+// Provide a simple, reusable snippet via Storybook Docs
+const usageSnippet = `
+import Phaser from 'phaser';
+import {
+    Color,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini
+} from 'hudini';
+
+const theme = createTheme({
+    colors: {
+        primary: 'red-500',
+        secondary: 'blue-500',
+        tertiary: 'green-500',
+    }
+});
+type Theme = typeof theme;
+
+
+class PreviewScene extends SceneWithHudini<Theme> { // Inherit from SceneWithHudini to get the pw property
+    constructor() {
+        super('preview');
+    }
+
+    create(): void {
+        const { pw } = this.hudini; // Don't need to cast to SceneWithPhaserWind<Theme> because we're using the generic type
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+        let y = 90;
+        this.add
+            .text(300, y, 'Primary color', {
+                fontSize: pw.fontSize.css('2xl'), // use the pw property to get the font size
+                color: pw.color.rgb('primary'), // use the pw property to get the color with type safety
+            })
+            .setOrigin(0.5);
+        y += 100;
+        this.add
+            .text(300, y, 'Secondary color', {
+                fontSize: pw.fontSize.css('2xl'),
+                color: pw.color.rgb('secondary'),
+            })
+            .setOrigin(0.5);
+        y += 100;
+        this.add
+            .text(300, y, 'Tertiary color', {
+                fontSize: pw.fontSize.css('2xl'),
+                color: pw.color.rgb('tertiary'),
+            })
+            .setOrigin(0.5);
+
+        // if you try to use a color that is not in the theme, it will throw an error
+        // ❌ pw.color.rgb('invalid-color')
+        // ✅ pw.color.rgb('primary') -> Defined in the theme
+
+        // if you try to use a font size that is not in the theme, it will throw an error
+        // ❌ pw.fontSize.css('invalid-size')
+        // ✅ pw.fontSize.css('2xl')
+
+        // if you try to use a color that is not in the theme, it will throw an error
+        // ❌ pw.color.rgb('invalid-color')
+    }
+}
+`;
+
+const meta: Meta = {
+    title: 'Hudini/Components/IconButton',
+    parameters: {
+        docs: {
+            description: {
+                component: 'Examples of how to install and use Hudini',
+            },
+            source: {
+                language: 'ts',
+                code: usageSnippet,
+            },
+        },
+    },
+};
+export default meta;
+
+const theme = createTheme({
+});
+type Theme = typeof theme;
+
+class PreviewScene extends SceneWithHudini<Theme> {
+    private buttons: IconButton[] = [];
+    constructor() {
+        super('preview');
+    }
+
+    create(): void {
+        const { pw } = this.hudini;
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+        const colors: ColorKey[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'gray'];
+
+        let y = 90;
+        for (let i = 0; i < colors.length; i++) {
+            const color: ColorKey = colors[i] as ColorKey;
+
+            const btn = new IconButton({
+                scene: this,
+                x: 50 + (i * 65),
+                y: y,
+                icon: 'plus',
+                size: 'xl',
+                color: color,
+                onClick: (): void => {
+                    console.log('clicked');
+                },
+            });
+            this.add.existing(btn);
+            this.buttons.push(btn);
+        }
+
+        this.events.on(
+            'props:update',
+            (p: { icon: IconKey; iconStyle: IconStyle; size: number | string }): void => this.applyProps(p)
+        );
+    }
+
+    private applyProps(p: { icon: IconKey; iconStyle: IconStyle; size: number | string }): void {
+        console.log(p);
+        for (const btn of this.buttons) {
+            btn.iconText.setIcon(p.icon, { iconStyle: p.iconStyle });
+            // setFontSize exists on Phaser.GameObjects.Text
+        }
+    }
+}
+
+const ensureFontOnce = async (): Promise<void> => {
+    const w = window as unknown as Record<string, unknown>;
+    if (!w['__fontLoaded']) {
+        await loadFont();
+        w['__fontLoaded'] = true;
+    }
+};
+
+const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
+    const w = window as unknown as WindowWithPhaser;
+    if (!w.__phaserGame) {
+        w.__phaserGame = new Phaser.Game({
+            type: Phaser.AUTO,
+            width: 600,
+            height: 400,
+            backgroundColor: Color.slate(900),
+            parent,
+            scene: [PreviewScene],
+            plugins: {
+                global: [
+                    {
+                        key: HUDINI_KEY,
+                        plugin: HudiniPlugin,
+                        mapping: HUDINI_KEY,
+                        data: {
+                            theme,
+                        },
+                    },
+                ],
+            },
+        });
+
+        w.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
+            w.__phaserScene = w.__phaserGame?.scene.getScene(
+                'preview'
+            ) as PreviewScene;
+        });
+
+    }
+
+    return w.__phaserGame;
+};
+
+export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; size: number | string; color: string }> = {
+    render: (args: Args): HTMLElement => {
+        const root = createContainer('hudini-icon-button');
+
+        (async (): Promise<void> => {
+            await ensureFontOnce();
+            const game = ensureGameOnce(root);
+
+            const w = window as unknown as WindowWithPhaser;
+            const apply = (): void => {
+                const scene = (w.__phaserScene ?? game.scene.getScene('preview')) as PreviewScene;
+                scene.events.emit('props:update', args as { icon: IconKey; iconStyle: IconStyle; size: number | string; color: string });
+            };
+
+            if (w.__phaserScene) apply();
+            else game.events.once(Phaser.Core.Events.READY, apply);
+        })();
+
+        // @ts-expect-error Storybook will call this on unmount if present
+        root.destroy = (): void => {
+            const w = window as unknown as WindowWithPhaser;
+            if (w.__phaserGame) {
+                w.__phaserGame.destroy(true);
+                w.__phaserGame = undefined as unknown as Phaser.Game;
+                w.__phaserScene = undefined as unknown as PreviewScene;
+            }
+        };
+
+        return root;
+    },
+    args: {
+        icon: 'house',
+        iconStyle: 'regular',
+        size: 64,
+        color: '#ffffff',
+    },
+    argTypes: {
+        icon: {
+            control: 'select',
+            options: Object.keys(fontIcons) as IconKey[],
+        },
+        iconStyle: {
+            control: 'radio',
+            options: ['solid', 'regular', 'brands'],
+        },
+        size: {
+            control: {
+                type: 'radio',
+                options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl', '10xl'],
+            },
+        },
+        color: {
+            control: { type: 'color' },
+        },
+    },
+};

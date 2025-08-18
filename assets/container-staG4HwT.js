@@ -1,0 +1,1 @@
+import{m as r,b as o}from"./scene-with-phaser-wind-DKcG0Mp4.js";const n=t=>r({},o,t),a=()=>{const t=document.getElementById("phaser-story");if(t)return t;const e=document.createElement("div");return e.id="phaser-story",e.style.width="600px",e.style.height="400px",e.style.border="1px solid #333",e.style.background="#111",e};export{n as a,a as c};

@@ -66,7 +66,7 @@ importers:
     devDependencies:
       '@eslint-recommended/eslint-config':
         specifier: ^28.0.0
-        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@0.23.0)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
+        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@3.0.4)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
       '@types/node':
         specifier: ^24.2.1
         version: 24.2.1
@@ -101,8 +101,8 @@ importers:
         specifier: ^1.7.1
         version: 1.7.1
       eslint-plugin-sonarjs:
-        specifier: ^0.23.0
-        version: 0.23.0(eslint@8.57.1)
+        specifier: ^3.0.4
+        version: 3.0.4(eslint@8.57.1)
       eslint-plugin-unicorn:
         specifier: ^50.0.1
         version: 50.0.1(eslint@8.57.1)
@@ -127,7 +127,7 @@ importers:
     devDependencies:
       '@eslint-recommended/eslint-config':
         specifier: ^28.0.0
-        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@0.23.0)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
+        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@3.0.4)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
       '@types/node':
         specifier: ^24.2.1
         version: 24.2.1
@@ -162,8 +162,8 @@ importers:
         specifier: ^1.7.1
         version: 1.7.1
       eslint-plugin-sonarjs:
-        specifier: ^0.23.0
-        version: 0.23.0(eslint@8.57.1)
+        specifier: ^3.0.4
+        version: 3.0.4(eslint@8.57.1)
       eslint-plugin-unicorn:
         specifier: ^50.0.1
         version: 50.0.1(eslint@8.57.1)
@@ -185,7 +185,7 @@ importers:
     devDependencies:
       '@eslint-recommended/eslint-config':
         specifier: ^28.0.0
-        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@0.23.0)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
+        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@3.0.4)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
       '@types/node':
         specifier: ^24.2.1
         version: 24.2.1
@@ -217,8 +217,8 @@ importers:
         specifier: ^1.7.1
         version: 1.7.1
       eslint-plugin-sonarjs:
-        specifier: ^0.23.0
-        version: 0.23.0(eslint@8.57.1)
+        specifier: ^3.0.4
+        version: 3.0.4(eslint@8.57.1)
       eslint-plugin-unicorn:
         specifier: ^50.0.1
         version: 50.0.1(eslint@8.57.1)
@@ -277,7 +277,7 @@ importers:
     devDependencies:
       '@eslint-recommended/eslint-config':
         specifier: ^28.0.0
-        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@0.23.0)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
+        version: 28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@3.0.4)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1)
       '@types/node':
         specifier: ^24.2.1
         version: 24.2.1
@@ -309,8 +309,8 @@ importers:
         specifier: ^1.7.1
         version: 1.7.1
       eslint-plugin-sonarjs:
-        specifier: ^0.23.0
-        version: 0.23.0(eslint@8.57.1)
+        specifier: ^3.0.4
+        version: 3.0.4(eslint@8.57.1)
       eslint-plugin-unicorn:
         specifier: ^50.0.1
         version: 50.0.1(eslint@8.57.1)
@@ -1027,7 +1027,7 @@ packages:
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
     dev: true
 
-  /@eslint-recommended/eslint-config@28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@0.23.0)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1):
+  /@eslint-recommended/eslint-config@28.0.0(@eslint-community/eslint-plugin-eslint-comments@4.5.0)(eslint-config-standard@17.1.0)(eslint-plugin-jsdoc@50.8.0)(eslint-plugin-regexp@2.10.0)(eslint-plugin-sonarjs@3.0.4)(eslint-plugin-unicorn@50.0.1)(eslint@8.57.1):
     resolution: {integrity: sha512-bLyALv5uF3TVE257VGDQSwSf+IHUn6Ncz87aPUTsiBjtkyryiSRSrFMl2/KTQgmEe3wrcMz+5miBXX2w52ytmg==}
     engines: {node: '>=20'}
     peerDependencies:
@@ -1044,7 +1044,7 @@ packages:
       eslint-config-standard: 17.1.0(eslint-plugin-import@2.32.0)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@7.2.1)(eslint@8.57.1)
       eslint-plugin-jsdoc: 50.8.0(eslint@8.57.1)
       eslint-plugin-regexp: 2.10.0(eslint@8.57.1)
-      eslint-plugin-sonarjs: 0.23.0(eslint@8.57.1)
+      eslint-plugin-sonarjs: 3.0.4(eslint@8.57.1)
       eslint-plugin-unicorn: 50.0.1(eslint@8.57.1)
     dev: true
 
@@ -2393,6 +2393,11 @@ packages:
       semver: 7.7.2
     dev: true
 
+  /bytes@3.1.2:
+    resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
+    engines: {node: '>= 0.8'}
+    dev: true
+
   /cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
@@ -3215,13 +3220,22 @@ packages:
       safe-regex: 2.1.1
     dev: true
 
-  /eslint-plugin-sonarjs@0.23.0(eslint@8.57.1):
-    resolution: {integrity: sha512-z44T3PBf9W7qQ/aR+NmofOTyg6HLhSEZOPD4zhStqBpLoMp8GYhFksuUBnCxbnf1nfISpKBVkQhiBLFI/F4Wlg==}
-    engines: {node: '>=14'}
+  /eslint-plugin-sonarjs@3.0.4(eslint@8.57.1):
+    resolution: {integrity: sha512-ftQcP811kRJNXapqpQXHErEoVOdTPfYPPYd7n3AExIPwv4qWKKHf4slFvXmodiOnfgy1Tl3waPZZLD7lcvJOtw==}
     peerDependencies:
-      eslint: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+      eslint: ^8.0.0 || ^9.0.0
     dependencies:
+      '@eslint-community/regexpp': 4.12.1
+      builtin-modules: 3.3.0
+      bytes: 3.1.2
       eslint: 8.57.1
+      functional-red-black-tree: 1.0.1
+      jsx-ast-utils: 3.3.5
+      lodash.merge: 4.6.2
+      minimatch: 9.0.5
+      scslre: 0.3.0
+      semver: 7.7.2
+      typescript: 5.9.2
     dev: true
 
   /eslint-plugin-unicorn@50.0.1(eslint@8.57.1):
@@ -3539,6 +3553,10 @@ packages:
       functions-have-names: 1.2.3
       hasown: 2.0.2
       is-callable: 1.2.7
+    dev: true
+
+  /functional-red-black-tree@1.0.1:
+    resolution: {integrity: sha512-dsKNQNdj6xA3T+QlADDA7mOSlX0qiMINjn0cgr+eGHGsbSHzTabcIogz2+p/iqP1Xs6EP/sS2SbqH+brGTbq0g==}
     dev: true
 
   /functions-have-names@1.2.3:
@@ -4090,6 +4108,16 @@ packages:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
       graceful-fs: 4.2.11
+    dev: true
+
+  /jsx-ast-utils@3.3.5:
+    resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
+    engines: {node: '>=4.0'}
+    dependencies:
+      array-includes: 3.1.9
+      array.prototype.flat: 1.3.3
+      object.assign: 4.1.7
+      object.values: 1.2.1
     dev: true
 
   /keyv@4.5.4:

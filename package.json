@@ -5,8 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "pnpm clear:tsbuildinfo && pnpm -r build",
     "build:packages": "node scripts/build-packages.js",
+    "clear:tsbuildinfo": "find . -name \"tsconfig.tsbuildinfo\" -type f",
     "test": "pnpm -r test",
     "dev": "pnpm -r dev",
     "lint": "pnpm -r lint",

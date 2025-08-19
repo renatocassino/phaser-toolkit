@@ -1,5 +1,14 @@
 # phaser-wind
 
+## 0.2.1
+
+### Patch Changes
+
+- a83b584: fix build libs
+- Updated dependencies [a83b584]
+  - font-awesome-for-phaser@0.5.1
+  - phaser-wind@0.5.2
+
 ## 0.2.0
 
 ### Minor Changes

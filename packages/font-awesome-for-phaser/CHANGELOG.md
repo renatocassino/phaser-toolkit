@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.5.1
+
+### Patch Changes
+
+- a83b584: fix build libs
+
 ## 0.5.0
 
 ### Minor Changes

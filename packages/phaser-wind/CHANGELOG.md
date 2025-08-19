@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.5.2
+
+### Patch Changes
+
+- a83b584: fix build libs
+
 ## 0.5.1
 
 ### Patch Changes

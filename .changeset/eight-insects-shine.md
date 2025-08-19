@@ -5,4 +5,4 @@
 'phaser-wind': patch
 ---
 
-fix build to add js files
+fix build libs

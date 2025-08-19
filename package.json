@@ -18,8 +18,7 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "release": "pnpm build && pnpm changeset:publish",
-    "prepare": "husky"
+    "release": "pnpm build && pnpm changeset:publish"
   },
   "keywords": [
     "phaser",

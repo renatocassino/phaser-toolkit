@@ -148,10 +148,9 @@ class PreviewScene extends SceneWithHudini<Theme> {
     }
 
     private applyProps(p: { icon: IconKey; iconStyle: IconStyle; size: number | string; borderRadius: string | number }): void {
-        console.log(p);
         for (const btn of this.buttons) {
             btn.iconText.setIcon(p.icon, { iconStyle: p.iconStyle });
-            btn.setBorderRadius(p.borderRadius);
+            btn.setBorderRadius(p.borderRadius as RadiusKey);
             // setFontSize exists on Phaser.GameObjects.Text
         }
     }

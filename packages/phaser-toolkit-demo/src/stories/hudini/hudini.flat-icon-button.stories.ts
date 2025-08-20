@@ -267,7 +267,6 @@ export const FlatIconButtonExample: StoryObj<{
       else game.events.once(Phaser.Core.Events.READY, apply);
     })();
 
-    // @ts-expect-error Storybook will call this on unmount if present
     (root as unknown as { destroy?: () => void }).destroy = (): void => {
       const w = window as unknown as WindowWithPhaser;
       if (w.__phaserGame) {
@@ -310,22 +309,12 @@ export const FlatIconButtonExample: StoryObj<{
     iconColor: {
       control: 'select',
       options: colorTokens,
-      description: 'Escolha um token de cor para o ícone',
-    },
-    borderRadius: {
-      control: 'select',
-      options: radiusTokens as unknown as string[],
-      description: 'Choose a color token (e.g., "gray-600")',
-    },
-    iconColor: {
-      control: 'select',
-      options: colorTokens,
       description: 'Choose a color token for the icon',
     },
     borderRadius: {
       control: 'select',
       options: radiusTokens as unknown as string[],
-      description: 'Choose a radius token',
+      description: 'Choose a color token (e.g., "gray-600")',
     },
     backgroundOpacity: {
       control: { type: 'range', min: 0, max: 1, step: 0.05 },

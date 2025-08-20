@@ -125,15 +125,15 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
         this.events.on(
             'props:update',
-            (p: { icon: IconKey; iconStyle: IconStyle; size: number | string; shape: 'circle' | 'square' }): void => this.applyProps(p)
+            (p: { icon: IconKey; iconStyle: IconStyle; size: number | string; borderRadius: string | number }): void => this.applyProps(p)
         );
     }
 
-    private applyProps(p: { icon: IconKey; iconStyle: IconStyle; size: number | string; shape: 'circle' | 'square' }): void {
+    private applyProps(p: { icon: IconKey; iconStyle: IconStyle; size: number | string; borderRadius: string | number }): void {
         console.log(p);
         for (const btn of this.buttons) {
             btn.iconText.setIcon(p.icon, { iconStyle: p.iconStyle });
-            btn.setShape(p.shape);
+            btn.setBorderRadius(p.borderRadius);
             // setFontSize exists on Phaser.GameObjects.Text
         }
     }
@@ -182,7 +182,7 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
     return w.__phaserGame;
 };
 
-export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; size: number | string; color: string; shape: 'circle' | 'square' }> = {
+export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; size: number | string; color: string; borderRadius: string | number }> = {
     render: (args: Args): HTMLElement => {
         const root = createContainer('hudini-icon-button');
 
@@ -193,7 +193,7 @@ export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; 
             const w = window as unknown as WindowWithPhaser;
             const apply = (): void => {
                 const scene = (w.__phaserScene ?? game.scene.getScene('preview')) as PreviewScene;
-                scene.events.emit('props:update', args as { icon: IconKey; iconStyle: IconStyle; size: number | string; color: string; shape: 'circle' | 'square' });
+                scene.events.emit('props:update', args as { icon: IconKey; iconStyle: IconStyle; size: number | string; color: string; borderRadius: string | number });
             };
 
             if (w.__phaserScene) apply();
@@ -217,7 +217,7 @@ export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; 
         iconStyle: 'regular',
         size: 64,
         color: '#ffffff',
-        shape: 'circle',
+        borderRadius: 'full',
     },
     argTypes: {
         icon: {
@@ -237,9 +237,9 @@ export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; 
         color: {
             control: { type: 'color' },
         },
-        shape: {
-            control: 'radio',
-            options: ['circle', 'square'],
+        borderRadius: {
+            control: 'text',
+            description: 'Phaser Wind radius token (e.g. "sm", "lg", "full") or a number (px).',
         },
     },
 };

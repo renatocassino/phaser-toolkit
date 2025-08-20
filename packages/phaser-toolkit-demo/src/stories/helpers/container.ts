@@ -5,7 +5,7 @@ export const createContainer = (id: string = 'phaser-story'): HTMLDivElement => 
     }
 
     const container = document.createElement('div');
-    container.id = 'phaser-story';
+    container.id = id;
     container.style.width = '600px';
     container.style.height = '400px';
     container.style.border = '1px solid #333';

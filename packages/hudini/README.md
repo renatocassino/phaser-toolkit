@@ -1,4 +1,4 @@
-<img src="data/hudini.png" alt="hudini" />
+<img src="data/hudini.png" style="max-width: 500px" alt="hudini" />
 
 # 🎩 Hudini
 
@@ -6,11 +6,12 @@
 
 **Hudini** is a collection of reusable, themeable UI components for Phaser games. Named after the famous magician Houdini and HUD (Head-Up Display), it provides a magical toolkit for building consistent game interfaces.
 
+> Important: Hudini is fully type‑safe. The entire library is written in TypeScript and uses strict, explicit types for all public APIs (components, layout options, and plugin configuration). You get compile‑time validation and rich IntelliSense everywhere—no runtime guessing.
+
 ## ✨ Features
 
 - 🎨 **Themeable** - Dark/light themes with full customization
-- 🔊 **Sound Integration** - Built-in sound effects for interactions
-- 📦 **Zero Dependencies** - Only requires Phaser as peer dependency
+- 📦 **Phaser-wind Dependency** - Only requires [Phaser-wind](https://github.com/renatocassino/phaser-toolkit/tree/main/packages/phaser-wind)
 - 🎯 **TypeScript First** - Full type safety and IntelliSense
 - 🧪 **Tested** - Comprehensive test coverage
 
@@ -23,3 +24,186 @@ yarn add hudini
 # or
 pnpm add hudini
 ```
+
+## 🔌 Installation (Plugin Setup)
+
+Hudini is built on top of `phaser-wind` for theming and UI primitives. The Hudini plugin will automatically install the `phaser-wind` plugin if it is not already registered. You only need to add Hudini to your Phaser game configuration.
+
+Basic setup with the default light theme:
+
+```ts
+import Phaser from 'phaser';
+import {
+  HudiniPlugin,
+  HUDINI_KEY,
+  HudiniPluginData,
+  createTheme,
+} from 'hudini';
+
+const theme = createTheme({
+  colors: {
+    primary: 'red-300',
+    secondary: 'blue-300',
+  },
+  // This theme is a phaser-wind theme conf. You can read more in https://github.com/renatocassino/phaser-toolkit/tree/main/packages/phaser-wind
+});
+
+type Theme = typeof theme;
+
+new Phaser.Game({
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  backgroundColor: '#1a1a1a',
+  plugins: {
+    global: [
+      {
+        key: HUDINI_KEY,
+        plugin: HudiniPlugin,
+        mapping: HUDINI_KEY,
+        data: {
+          theme,
+        } as HudiniPluginData<Theme>,
+        /**
+         * If you want to use a default theme, you can import "defaultLightTheme" from hudini
+         * data: {
+         *   theme: defaultLightTheme,
+         * } as HudiniPluginData<Theme>
+         */
+      },
+    ],
+  },
+});
+```
+
+Notes:
+
+- Hudini will ensure `phaser-wind` is available internally. If you prefer, you can also register `phaser-wind` explicitly before Hudini and pass a custom theme.
+- You can pass `darkMode: true` (when no custom theme is provided) to use the default dark theme.
+
+### Requirements
+
+- Phaser (peer dependency)
+
+```bash
+pnpm add phaser
+```
+
+### Import
+
+```ts
+import { Column, Row, IconButton } from 'hudini';
+```
+
+### Live examples
+
+Check the Storybook for live, interactive examples: [Hudini on Storybook](https://renatocassino.github.io/phaser-toolkit/?path=/story/hudini--index)
+
+## 🧩 Components
+
+### Column
+
+Stacks children vertically with spacing, horizontal alignment, and configurable vertical origin.
+
+```ts
+// inside a Phaser.Scene (e.g., in create())
+const spriteA = this.add.sprite(0, 0, 'player');
+const spriteB = this.add.sprite(0, 0, 'enemy');
+
+const column = new Column({
+  scene: this,
+  x: 400,
+  y: 300,
+  gap: 12, // default: 8
+  align: 'center', // 'left' | 'center' | 'right'
+  verticalOrigin: 'top', // 'top' | 'center' | 'bottom'
+  children: [spriteA, spriteB],
+});
+
+// Update layout options later
+column.setGap(20);
+column.setAlign('left');
+
+// Add items dynamically
+const spriteC = this.add.sprite(0, 0, 'coin');
+column.addChild(spriteC); // triggers relayout by default
+```
+
+Key points:
+
+- Horizontal alignment aligns each child's left/center/right edge correctly, respecting per-child origin.
+- `verticalOrigin` controls where the content starts from within the container.
+- The container's position `(x, y)` is the center of the overall content area.
+
+### Row
+
+Arranges children horizontally with spacing, vertical alignment, and configurable horizontal origin.
+
+```ts
+// inside a Phaser.Scene (e.g., in create())
+const heart = this.add.sprite(0, 0, 'heart');
+const gem = this.add.sprite(0, 0, 'gem');
+
+const row = new Row({
+  scene: this,
+  x: 400,
+  y: 80,
+  gap: 10, // default: 8
+  align: 'center', // 'top' | 'center' | 'bottom'
+  horizontalOrigin: 'center', // 'left' | 'center' | 'right'
+  children: [heart, gem],
+});
+
+row.setGap(16);
+row.setAlign('top');
+
+const star = this.add.sprite(0, 0, 'star');
+row.addChild(star);
+```
+
+Key points:
+
+- Vertical alignment aligns each child's top/center/bottom edge correctly, respecting per-child origin.
+- `horizontalOrigin` controls where the content starts from within the container.
+- The container's position `(x, y)` is the center of the overall content area.
+
+### IconButton
+
+An interactive circular icon button with hover and click animations, built on top of `phaser-wind` and `font-awesome-for-phaser`.
+
+```ts
+import { IconButton } from 'hudini';
+// inside a Phaser.Scene (e.g., in create())
+
+const btn = new IconButton({
+  scene: this,
+  x: 100,
+  y: 100,
+  icon: 'solid/heart', // any IconKey from font-awesome-for-phaser
+  size: 'lg', // FontSizeKey or a number (px)
+  color: 'red', // any base color from phaser-wind (except black/white)
+  onClick: () => {
+    // your click handler
+  },
+});
+
+this.add.existing(btn);
+```
+
+Notes:
+
+- Hover scales the icon subtly, click animates press/release.
+- Colors and sizes integrate with `phaser-wind` theme tokens.
+
+## 📦 API Surfaces
+
+- `Column` and `Row` are `Phaser.GameObjects.Container` subclasses. Useful methods:
+  - `setGap(gap: number): void`
+  - `setAlign(...)`: Column → `'left'|'center'|'right'`, Row → `'top'|'center'|'bottom'`
+  - `addChild(child, relayout = true): this`
+  - `addChildren(children, relayout = true): this`
+- `IconButton` constructor accepts `{ scene, x, y, icon, size?, color?, onClick? }`.
+
+## 🔗 Storybook
+
+Explore all components and props in Storybook: [Hudini on Storybook](https://renatocassino.github.io/phaser-toolkit/?path=/story/hudini--index)

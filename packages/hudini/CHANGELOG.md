@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.5.0
+
+### Minor Changes
+
+- c4b6bb9: add border radius in icon button
+
 ## 0.4.0
 
 ### Minor Changes

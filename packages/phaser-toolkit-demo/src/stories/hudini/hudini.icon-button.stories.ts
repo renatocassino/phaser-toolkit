@@ -16,6 +16,22 @@ import {
 import Phaser from 'phaser';
 
 import { createContainer } from '../helpers/container';
+const sizeTokens = [
+    'xs',
+    'sm',
+    'md',
+    'lg',
+    'xl',
+    '2xl',
+    '3xl',
+    '4xl',
+    '5xl',
+    '6xl',
+    '7xl',
+    '8xl',
+    '9xl',
+    '10xl',
+];
 
 type WindowWithPhaser = Window & {
     __phaserGame?: Phaser.Game;
@@ -214,7 +230,7 @@ export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; 
     args: {
         icon: 'house',
         iconStyle: 'regular',
-        size: 64,
+        size: 'xl',
         color: '#ffffff',
     },
     argTypes: {
@@ -227,10 +243,8 @@ export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; 
             options: ['solid', 'regular', 'brands'],
         },
         size: {
-            control: {
-                type: 'radio',
-                options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl', '10xl'],
-            },
+            control: 'select',
+            options: sizeTokens,
         },
         color: {
             control: { type: 'color' },

@@ -26,6 +26,22 @@ const colorTokens: string[] = [
 ];
 
 const radiusTokens = ['none', 'sm', 'default', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const;
+const sizeTokens = [
+  'xs',
+  'sm',
+  'md',
+  'lg',
+  'xl',
+  '2xl',
+  '3xl',
+  '4xl',
+  '5xl',
+  '6xl',
+  '7xl',
+  '8xl',
+  '9xl',
+  '10xl',
+] as const;
 
 type WindowWithPhaser = Window & {
   __phaserGame?: Phaser.Game;
@@ -266,7 +282,7 @@ export const FlatIconButtonExample: StoryObj<{
   args: {
     icon: 'house',
     iconStyle: 'regular',
-    size: 64,
+    size: 'xl',
     backgroundColor: 'gray-600',
     iconColor: 'white',
     borderRadius: 'md',
@@ -283,25 +299,8 @@ export const FlatIconButtonExample: StoryObj<{
       options: ['solid', 'regular', 'brands'],
     },
     size: {
-      control: {
-        type: 'radio',
-        options: [
-          'xs',
-          'sm',
-          'md',
-          'lg',
-          'xl',
-          '2xl',
-          '3xl',
-          '4xl',
-          '5xl',
-          '6xl',
-          '7xl',
-          '8xl',
-          '9xl',
-          '10xl',
-        ],
-      },
+      control: 'select',
+      options: sizeTokens as unknown as string[],
     },
     backgroundColor: {
       control: 'select',

@@ -1,16 +1,31 @@
+/* eslint-disable complexity */
 import { GameObjects, Scene } from 'phaser';
 
-const DEFAULT_GAP = 8;
+import {
+  DEFAULT_GAP,
+  getDisplayHeightOf,
+  getDisplayWidthOf,
+  getNormalizedOriginOf,
+} from '../layout/layout-utils';
 
+/** Horizontal alignment options for column items */
 export type HorizontalAlign = 'left' | 'center' | 'right';
 
+/** Parameters for creating a Column container */
 export type ColumnParams = {
+  /** The scene this column belongs to */
   scene: Scene;
+  /** X coordinate of the column */
   x: number;
+  /** Y coordinate of the column */
   y: number;
+  /** Gap between elements in pixels */
   gap?: number;
+  /** Horizontal alignment of elements */
   align?: HorizontalAlign;
+  /** Initial child elements */
   children?: GameObjects.GameObject[];
+  /** Vertical origin point of the column */
   verticalOrigin?: 'top' | 'center' | 'bottom';
 };
 
@@ -19,10 +34,17 @@ export type ColumnParams = {
  * The container position (x, y) represents the center of the whole column.
  */
 export class Column extends GameObjects.Container {
+  /** Gap between elements in pixels */
   private gap: number;
+  /** Horizontal alignment of elements */
   private align: HorizontalAlign;
+  /** Vertical origin point of the column */
   private verticalOrigin: 'top' | 'center' | 'bottom';
 
+  /**
+   * Creates a new Column container
+   * @param params Configuration parameters for the column
+   */
   constructor({
     scene,
     x,
@@ -44,33 +66,52 @@ export class Column extends GameObjects.Container {
     this.layout();
   }
 
-  /** Sets the spacing (in pixels) between children and relayouts */
+  /**
+   * Sets the spacing between children and relayouts
+   * @param gap Gap in pixels between elements
+   */
   public setGap(gap: number): void {
     this.gap = gap;
     this.layout();
   }
 
-  /** Sets the horizontal alignment and relayouts */
+  /**
+   * Sets the horizontal alignment and relayouts
+   * @param align New horizontal alignment
+   */
   public setAlign(align: HorizontalAlign): void {
     this.align = align;
     this.layout();
   }
 
-  /** Adds a child and optionally relayouts (default: true) */
+  /**
+   * Adds a child game object to the column
+   * @param child Game object to add
+   * @param relayout Whether to relayout after adding (default: true)
+   * @returns This column instance for chaining
+   */
   public addChild(child: GameObjects.GameObject, relayout: boolean = true): this {
     this.add(child);
     if (relayout) this.layout();
     return this;
   }
 
-  /** Adds multiple children and optionally relayouts (default: true) */
+  /**
+   * Adds multiple children to the column
+   * @param children Array of game objects to add
+   * @param relayout Whether to relayout after adding (default: true)
+   * @returns This column instance for chaining
+   */
   public addChildren(children: GameObjects.GameObject[], relayout: boolean = true): this {
     if (children.length > 0) this.add(children);
     if (relayout) this.layout();
     return this;
   }
 
-  /** Recomputes children's positions and updates this container size */
+  /**
+   * Recomputes children's positions and updates this container size
+   * Positions are calculated based on alignment, origins and gaps
+   */
   public layout(): void {
     const children = this.list as GameObjects.GameObject[];
     if (children.length === 0) {
@@ -121,39 +162,30 @@ export class Column extends GameObjects.Container {
     this.setSize(maxWidth, totalHeight);
   }
 
-  private getDisplayWidth(child: GameObjects.GameObject): number {
-    // Prefer displayWidth when available, fall back to width/bounds
-    const anyChild = child as unknown as { displayWidth?: number; width?: number; getBounds?: () => { width: number } };
-    if (typeof anyChild.displayWidth === 'number') return anyChild.displayWidth;
-    if (typeof anyChild.width === 'number') return anyChild.width as number;
-    const bounds = anyChild.getBounds?.();
-    return bounds ? bounds.width : 0;
+  /**
+   * Gets the display width of a game object
+   * @param child GameObject to measure
+   * @returns Display width in pixels
+   */
+  public getDisplayWidth(child: GameObjects.GameObject): number {
+    return getDisplayWidthOf(child);
   }
 
-  private getDisplayHeight(child: GameObjects.GameObject): number {
-    const anyChild = child as unknown as { displayHeight?: number; height?: number; getBounds?: () => { height: number } };
-    if (typeof anyChild.displayHeight === 'number') return anyChild.displayHeight;
-    if (typeof anyChild.height === 'number') return anyChild.height as number;
-    const bounds = anyChild.getBounds?.();
-    return bounds ? bounds.height : 0;
+  /**
+   * Gets the display height of a game object
+   * @param child GameObject to measure
+   * @returns Display height in pixels
+   */
+  public getDisplayHeight(child: GameObjects.GameObject): number {
+    return getDisplayHeightOf(child);
   }
 
-  private getNormalizedOrigin(child: GameObjects.GameObject): { x: number; y: number } {
-    const width = this.getDisplayWidth(child);
-    const height = this.getDisplayHeight(child);
-
-    const childTyped = child as unknown as { originX?: number; originY?: number; displayOriginX?: number; displayOriginY?: number };
-
-    let ox: number | undefined = childTyped.originX;
-    let oy: number | undefined = childTyped.originY;
-
-    if (ox === undefined && typeof childTyped.displayOriginX === 'number' && width > 0) {
-      ox = childTyped.displayOriginX / width;
-    }
-    if (oy === undefined && typeof childTyped.displayOriginY === 'number' && height > 0) {
-      oy = childTyped.displayOriginY / height;
-    }
-
-    return { x: ox ?? 0.5, y: oy ?? 0.5 };
+  /**
+   * Gets the normalized origin point of a game object
+   * @param child GameObject to get origin from
+   * @returns Object with normalized x,y coordinates of the origin point
+   */
+  public getNormalizedOrigin(child: GameObjects.GameObject): { x: number; y: number } {
+    return getNormalizedOriginOf(child);
   }
 }

@@ -1,4 +1,4 @@
-import{f as p}from"./webfontloader-C12iJez1.js";import{l as d}from"./load-font-CQ-OvxRm.js";import{H as l,a as u,I as m}from"./plugin-Bg5paU74.js";import{P as c,C as h}from"./scene-with-phaser-wind-CFjA4exm.js";import{c as w}from"./theme-manager-BXc8N_UD.js";import{S as g}from"./scene-with-hudini-8Sr3uDpY.js";import{c as y}from"./container-TfoZRbNG.js";import"./_commonjsHelpers-Cpj98o6Y.js";const _=`
+import{f as p}from"./webfontloader-C12iJez1.js";import{l as u}from"./load-font-CQ-OvxRm.js";import{H as l,a as d,I as h}from"./plugin-BHY3ubmx.js";import{P as c,C as m}from"./scene-with-phaser-wind-CFjA4exm.js";import{c as w}from"./theme-manager-BXc8N_UD.js";import{S as g}from"./scene-with-hudini-8Sr3uDpY.js";import{c as y}from"./container-TfoZRbNG.js";import"./_commonjsHelpers-Cpj98o6Y.js";const _=`
 import Phaser from 'phaser';
 import {
     Color,
@@ -45,7 +45,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
         }
     }
 }
-`,T={title:"Hudini/Components/IconButton",parameters:{docs:{description:{component:"Examples of how to install and use Hudini"},source:{language:"ts",code:_}}}},f=w({});class x extends g{buttons=[];constructor(){super("preview")}create(){const{pw:e}=this.hudini;this.cameras.main.setBackgroundColor(e.color.slate(900));const n=["red","blue","green","yellow","purple","orange","pink","gray"];let s=90;for(let o=0;o<n.length;o++){const i=n[o],a=new m({scene:this,x:50+o*65,y:s,icon:"plus",size:"xl",color:i,onClick:()=>{console.log("clicked")}});this.add.existing(a),this.buttons.push(a)}this.events.on("props:update",o=>this.applyProps(o))}applyProps(e){console.log(e);for(const n of this.buttons)n.iconText.setIcon(e.icon,{iconStyle:e.iconStyle})}}const S=async()=>{const t=window;t.__fontLoaded||(await d(),t.__fontLoaded=!0)},v=t=>{const e=window;return e.__phaserGame||(e.__phaserGame=new c.Game({type:c.AUTO,width:600,height:400,backgroundColor:h.slate(900),parent:t,scene:[x],plugins:{global:[{key:l,plugin:u,mapping:l,data:{theme:f}}]}}),e.__phaserGame.events.once(c.Core.Events.READY,()=>{e.__phaserScene=e.__phaserGame?.scene.getScene("preview")})),e.__phaserGame},r={render:t=>{const e=y("hudini-icon-button");return(async()=>{await S();const n=v(e),s=window,o=()=>{(s.__phaserScene??n.scene.getScene("preview")).events.emit("props:update",t)};s.__phaserScene?o():n.events.once(c.Core.Events.READY,o)})(),e.destroy=()=>{const n=window;n.__phaserGame&&(n.__phaserGame.destroy(!0),n.__phaserGame=void 0,n.__phaserScene=void 0)},e},args:{icon:"house",iconStyle:"regular",size:64,color:"#ffffff"},argTypes:{icon:{control:"select",options:Object.keys(p)},iconStyle:{control:"radio",options:["solid","regular","brands"]},size:{control:{type:"radio",options:["xs","sm","md","lg","xl","2xl","3xl","4xl","5xl","6xl","7xl","8xl","9xl","10xl"]}},color:{control:{type:"color"}}}};r.parameters={...r.parameters,docs:{...r.parameters?.docs,source:{originalSource:`{
+`,T={title:"Hudini/Components/IconButton",parameters:{docs:{description:{component:"Examples of how to install and use Hudini"},source:{language:"ts",code:_}}}},f=w({});class x extends g{buttons=[];constructor(){super("preview")}create(){const{pw:e}=this.hudini;this.cameras.main.setBackgroundColor(e.color.slate(900));const n=["red","blue","green","yellow","purple","orange","pink","gray"];let t=90;for(let o=0;o<n.length;o++){const i=n[o],a=new h({scene:this,x:50+o*65,y:t,icon:"plus",size:"xl",color:i,onClick:()=>{console.log("clicked")}});this.add.existing(a),this.buttons.push(a)}this.events.on("props:update",o=>this.applyProps(o))}applyProps(e){console.log(e);for(const n of this.buttons)n.iconText.setIcon(e.icon,{iconStyle:e.iconStyle}),n.setShape(e.shape)}}const S=async()=>{const s=window;s.__fontLoaded||(await u(),s.__fontLoaded=!0)},v=s=>{const e=window;return e.__phaserGame||(e.__phaserGame=new c.Game({type:c.AUTO,width:600,height:400,backgroundColor:m.slate(900),parent:s,scene:[x],plugins:{global:[{key:l,plugin:d,mapping:l,data:{theme:f}}]}}),e.__phaserGame.events.once(c.Core.Events.READY,()=>{e.__phaserScene=e.__phaserGame?.scene.getScene("preview")})),e.__phaserGame},r={render:s=>{const e=y("hudini-icon-button");return(async()=>{await S();const n=v(e),t=window,o=()=>{(t.__phaserScene??n.scene.getScene("preview")).events.emit("props:update",s)};t.__phaserScene?o():n.events.once(c.Core.Events.READY,o)})(),e.destroy=()=>{const n=window;n.__phaserGame&&(n.__phaserGame.destroy(!0),n.__phaserGame=void 0,n.__phaserScene=void 0)},e},args:{icon:"house",iconStyle:"regular",size:64,color:"#ffffff",shape:"circle"},argTypes:{icon:{control:"select",options:Object.keys(p)},iconStyle:{control:"radio",options:["solid","regular","brands"]},size:{control:{type:"radio",options:["xs","sm","md","lg","xl","2xl","3xl","4xl","5xl","6xl","7xl","8xl","9xl","10xl"]}},color:{control:{type:"color"}},shape:{control:"radio",options:["circle","square"]}}};r.parameters={...r.parameters,docs:{...r.parameters?.docs,source:{originalSource:`{
   render: (args: Args): HTMLElement => {
     const root = createContainer('hudini-icon-button');
     (async (): Promise<void> => {
@@ -59,6 +59,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
           iconStyle: IconStyle;
           size: number | string;
           color: string;
+          shape: 'circle' | 'square';
         });
       };
       if (w.__phaserScene) apply();else game.events.once(Phaser.Core.Events.READY, apply);
@@ -79,7 +80,8 @@ class PreviewScene extends SceneWithHudini<Theme> {
     icon: 'house',
     iconStyle: 'regular',
     size: 64,
-    color: '#ffffff'
+    color: '#ffffff',
+    shape: 'circle'
   },
   argTypes: {
     icon: {
@@ -100,6 +102,10 @@ class PreviewScene extends SceneWithHudini<Theme> {
       control: {
         type: 'color'
       }
+    },
+    shape: {
+      control: 'radio',
+      options: ['circle', 'square']
     }
   }
 }`,...r.parameters?.docs?.source}}};const B=["IconButtonExample"];export{r as IconButtonExample,B as __namedExportsOrder,T as default};

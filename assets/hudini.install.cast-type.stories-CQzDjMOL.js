@@ -1,4 +1,4 @@
-import{H as n,a as s}from"./plugin-Bg5paU74.js";import{C as a}from"./scene-with-phaser-wind-CFjA4exm.js";import{c as i}from"./theme-manager-BXc8N_UD.js";import{c}from"./container-TfoZRbNG.js";import"./webfontloader-C12iJez1.js";import"./_commonjsHelpers-Cpj98o6Y.js";const p=`
+import{H as n,a as s}from"./plugin-BHY3ubmx.js";import{C as a}from"./scene-with-phaser-wind-CFjA4exm.js";import{c as i}from"./theme-manager-BXc8N_UD.js";import{c}from"./container-TfoZRbNG.js";import"./webfontloader-C12iJez1.js";import"./_commonjsHelpers-Cpj98o6Y.js";const p=`
 import Phaser from 'phaser';
 import {
     Color,

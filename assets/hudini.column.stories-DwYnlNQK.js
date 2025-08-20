@@ -1,4 +1,4 @@
-import{H as s,a as l,C as a}from"./plugin-Bg5paU74.js";import{P as r,d as m,S as i}from"./scene-with-phaser-wind-CFjA4exm.js";import{S as h}from"./scene-with-hudini-8Sr3uDpY.js";import{c as p}from"./container-TfoZRbNG.js";import"./webfontloader-C12iJez1.js";import"./_commonjsHelpers-Cpj98o6Y.js";const g=`
+import{H as s,a as l,C as a}from"./plugin-BHY3ubmx.js";import{P as r,d as m,S as i}from"./scene-with-phaser-wind-CFjA4exm.js";import{S as h}from"./scene-with-hudini-8Sr3uDpY.js";import{c as p}from"./container-TfoZRbNG.js";import"./webfontloader-C12iJez1.js";import"./_commonjsHelpers-Cpj98o6Y.js";const g=`
 import { Column } from 'hudini';
 
 const column = new Column({

@@ -1,4 +1,4 @@
-import{P as p,a as d,b as _,C as g,S as P}from"./scene-with-phaser-wind-yYpAVwXm.js";import{c as f,a as S}from"./container-Dzvo6xvK.js";import"./_commonjsHelpers-Cpj98o6Y.js";const B={title:"PhaserWind/Button",tags:["autodocs"],parameters:{docs:{description:{component:"Example of button using PhaserWind tokens."},source:{language:"ts",code:`import Phaser from 'phaser';
+import{P as p,b as d,c as _,C as g,a as f}from"./scene-with-phaser-wind-CFjA4exm.js";import{c as P}from"./theme-manager-BXc8N_UD.js";import{c as y}from"./container-TfoZRbNG.js";import"./_commonjsHelpers-Cpj98o6Y.js";const E={title:"PhaserWind/Button",tags:["autodocs"],parameters:{docs:{description:{component:"Example of button using PhaserWind tokens."},source:{language:"ts",code:`import Phaser from 'phaser';
 import {
   Color,
   ColorToken,
@@ -56,7 +56,7 @@ class PreviewScene extends SceneWithPhaserWind<Theme> {
     createButton(300, 280, 'Danger', 'red-500');
   }
 }
-`}}}},y=S({});class G extends P{constructor(){super("preview")}create(){const{pw:e}=this;this.cameras.main.setBackgroundColor(g.slate(900));const s=(m,u,w,n)=>{const r=this.add.text(0,0,w,{fontSize:e.fontSize.css("lg"),color:e.color.rgb("white")}),x=e.spacing.px("6"),C=e.spacing.px("3"),i=r.width+x*2,c=r.height+C*2,o=this.add.rectangle(0,0,i,c,e.color.hex(n));o.setOrigin(.5);const h=this.add.container(m,u,[o,r]);r.setPosition(-r.width/2,-r.height/2),h.setSize(i,c),o.setInteractive();const l=n.replace("-500","-600"),b=n.replace("-500","-700");return o.on("pointerover",()=>o.fillColor=e.color.hex(l)),o.on("pointerout",()=>o.fillColor=e.color.hex(n)),o.on("pointerdown",()=>o.fillColor=e.color.hex(b)),o.on("pointerup",()=>o.fillColor=e.color.hex(l)),h};s(300,120,"Primary","green-500"),s(300,200,"Secondary","blue-500"),s(300,280,"Danger","red-500")}}const k=t=>{const e=window;return e.__phaserGame||(e.__phaserGame=new p.Game({type:p.AUTO,width:600,height:400,backgroundColor:g.slate(900),parent:t,scene:[G],plugins:{global:[{key:d,plugin:_,mapping:d,data:{theme:y}}]}})),e.__phaserGame},a={render:()=>{const t=f();return(async()=>k(t))(),t.destroy=()=>{const e=window;e.__phaserGame&&(e.__phaserGame.destroy(!0),e.__phaserGame=void 0)},t}};a.parameters={...a.parameters,docs:{...a.parameters?.docs,source:{originalSource:`{
+`}}}},S=P({});class G extends f{constructor(){super("preview")}create(){const{pw:e}=this;this.cameras.main.setBackgroundColor(g.slate(900));const s=(m,u,w,n)=>{const r=this.add.text(0,0,w,{fontSize:e.fontSize.css("lg"),color:e.color.rgb("white")}),x=e.spacing.px("6"),C=e.spacing.px("3"),i=r.width+x*2,c=r.height+C*2,o=this.add.rectangle(0,0,i,c,e.color.hex(n));o.setOrigin(.5);const h=this.add.container(m,u,[o,r]);r.setPosition(-r.width/2,-r.height/2),h.setSize(i,c),o.setInteractive();const l=n.replace("-500","-600"),b=n.replace("-500","-700");return o.on("pointerover",()=>o.fillColor=e.color.hex(l)),o.on("pointerout",()=>o.fillColor=e.color.hex(n)),o.on("pointerdown",()=>o.fillColor=e.color.hex(b)),o.on("pointerup",()=>o.fillColor=e.color.hex(l)),h};s(300,120,"Primary","green-500"),s(300,200,"Secondary","blue-500"),s(300,280,"Danger","red-500")}}const k=t=>{const e=window;return e.__phaserGame||(e.__phaserGame=new p.Game({type:p.AUTO,width:600,height:400,backgroundColor:g.slate(900),parent:t,scene:[G],plugins:{global:[{key:d,plugin:_,mapping:d,data:{theme:S}}]}})),e.__phaserGame},a={render:()=>{const t=y();return(async()=>k(t))(),t.destroy=()=>{const e=window;e.__phaserGame&&(e.__phaserGame.destroy(!0),e.__phaserGame=void 0)},t}};a.parameters={...a.parameters,docs:{...a.parameters?.docs,source:{originalSource:`{
   render: (): HTMLElement => {
     const root = createContainer();
     (async (): Promise<void> => {
@@ -75,4 +75,4 @@ class PreviewScene extends SceneWithPhaserWind<Theme> {
     };
     return root;
   }
-}`,...a.parameters?.docs?.source}}};const E=["Basic"];export{a as Basic,E as __namedExportsOrder,B as default};
+}`,...a.parameters?.docs?.source}}};const O=["Basic"];export{a as Basic,O as __namedExportsOrder,E as default};

@@ -1,4 +1,4 @@
-import{f as i,I as l}from"./webfontloader-C9e8wMC_.js";import{l as p}from"./load-font-Q94loGo2.js";import{P as s,C as r,F as d}from"./scene-with-phaser-wind-yYpAVwXm.js";import"./_commonjsHelpers-Cpj98o6Y.js";const h=`import { IconText, loadFont } from 'font-awesome-for-phaser';
+import{f as i,I as l}from"./webfontloader-C12iJez1.js";import{l as p}from"./load-font-CQ-OvxRm.js";import{P as s,C as r,F as d}from"./scene-with-phaser-wind-CFjA4exm.js";import"./_commonjsHelpers-Cpj98o6Y.js";const h=`import { IconText, loadFont } from 'font-awesome-for-phaser';
 
 await loadFont();
 

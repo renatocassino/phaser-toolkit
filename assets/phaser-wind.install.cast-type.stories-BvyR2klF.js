@@ -1,4 +1,4 @@
-import{P as n,a as s,b as a,C as i}from"./scene-with-phaser-wind-yYpAVwXm.js";import{c,a as p}from"./container-Dzvo6xvK.js";import"./_commonjsHelpers-Cpj98o6Y.js";const l=`
+import{P as n,b as s,c as a,C as i}from"./scene-with-phaser-wind-CFjA4exm.js";import{c}from"./theme-manager-BXc8N_UD.js";import{c as p}from"./container-TfoZRbNG.js";import"./_commonjsHelpers-Cpj98o6Y.js";const l=`
 import Phaser from 'phaser';
 import {
     Color,
@@ -61,7 +61,7 @@ class PreviewScene extends Phaser.Scene {
         // ❌ pw.color.rgb('invalid-color')
     }
 }
-`,g={title:"PhaserWind/Install/WithCastType",parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"}}}},h=p({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class d extends n.Scene{constructor(){super("preview")}create(){const{pw:e}=this;this.cameras.main.setBackgroundColor(e.color.slate(800));let o=90;this.add.text(300,o,"Primary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("primary")}).setOrigin(.5),o+=100,this.add.text(300,o,"Secondary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("secondary")}).setOrigin(.5),o+=100,this.add.text(300,o,"Tertiary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("tertiary")}).setOrigin(.5)}}const m=r=>{const e=window;return e.__phaserGame||(e.__phaserGame=new n.Game({type:n.AUTO,width:600,height:400,backgroundColor:i.slate(900),parent:r,scene:[d],plugins:{global:[{key:s,plugin:a,mapping:s,data:{theme:h}}]}}),e.__phaserGame.events.once(n.Core.Events.READY,()=>{e.__phaserScene=e.__phaserGame?.scene.getScene("preview")})),e.__phaserGame},t={parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"},source:{language:"ts",code:l}}},render:()=>{const r=c();return(async()=>m(r))(),r.destroy=()=>{const e=window;e.__phaserGame&&(e.__phaserGame.destroy(!0),e.__phaserGame=void 0,e.__phaserScene=void 0)},r}};t.parameters={...t.parameters,docs:{...t.parameters?.docs,source:{originalSource:`{
+`,f={title:"PhaserWind/Install/WithCastType",parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"}}}},h=c({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class d extends n.Scene{constructor(){super("preview")}create(){const{pw:e}=this;this.cameras.main.setBackgroundColor(e.color.slate(800));let o=90;this.add.text(300,o,"Primary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("primary")}).setOrigin(.5),o+=100,this.add.text(300,o,"Secondary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("secondary")}).setOrigin(.5),o+=100,this.add.text(300,o,"Tertiary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("tertiary")}).setOrigin(.5)}}const m=r=>{const e=window;return e.__phaserGame||(e.__phaserGame=new n.Game({type:n.AUTO,width:600,height:400,backgroundColor:i.slate(900),parent:r,scene:[d],plugins:{global:[{key:s,plugin:a,mapping:s,data:{theme:h}}]}}),e.__phaserGame.events.once(n.Core.Events.READY,()=>{e.__phaserScene=e.__phaserGame?.scene.getScene("preview")})),e.__phaserGame},t={parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"},source:{language:"ts",code:l}}},render:()=>{const r=p();return(async()=>m(r))(),r.destroy=()=>{const e=window;e.__phaserGame&&(e.__phaserGame.destroy(!0),e.__phaserGame=void 0,e.__phaserScene=void 0)},r}};t.parameters={...t.parameters,docs:{...t.parameters?.docs,source:{originalSource:`{
   parameters: {
     docs: {
       description: {
@@ -90,4 +90,4 @@ class PreviewScene extends Phaser.Scene {
     };
     return root;
   }
-}`,...t.parameters?.docs?.source}}};const f=["WithCastType"];export{t as WithCastType,f as __namedExportsOrder,g as default};
+}`,...t.parameters?.docs?.source}}};const _=["WithCastType"];export{t as WithCastType,_ as __namedExportsOrder,f as default};

@@ -87,7 +87,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
                 y: y,
                 icon: 'plus',
                 size: 'xl',
-                backgroundColor: \`${'\${color}'}-600\`,
+                backgroundColor: \`${'${color}'}-600\`,
                 iconColor: 'white',
                 borderRadius: 'md',
                 onClick: (): void => {

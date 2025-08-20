@@ -2,7 +2,7 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
-import type { Args, Meta, StoryObj } from '@storybook/html';
+import type { Meta, StoryObj } from '@storybook/html';
 import {
     Column,
     defaultLightTheme,
@@ -23,23 +23,27 @@ type WindowWithPhaser = Window & {
 const usageSnippet = `
 import { Column } from 'hudini';
 
-// Create a column with children
 const column = new Column({
     scene: this,
     x: 400,
     y: 300,
     gap: 16,
     align: 'center',
-    children: [/* game objects */]
+    children: [
+        this.add.text(0, 0, 'Center Aligned', { fontSize: '24px' }),
+        this.add.text(0, 0, 'Multiple', { fontSize: '20px' }),
+        this.add.text(0, 0, 'Text Items', { fontSize: '20px' }),
+        this.add.rectangle(0, 0, 100, 120, 0xff0000),
+        this.add.rectangle(0, 0, 120, 100, 0x0000ff),
+        this.add.rectangle(0, 0, 100, 80, 0x00ff00),
+    ]
 });
 
-// Add children later
-column.addChild(gameObject);
-column.addChildren([gameObject1, gameObject2]);
-
-// Adjust layout
-column.setGap(24);
-column.setAlign('left');
+// Other methods:
+// column.addChild(gameObject);
+// column.addChildren([gameObject1, gameObject2]);
+// column.setGap(24);
+// column.setAlign('left');
 `;
 
 class PreviewScene extends SceneWithHudini {
@@ -51,7 +55,6 @@ class PreviewScene extends SceneWithHudini {
         const { pw } = this.hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
-        // Center column with different alignments
         const centerColumn = new Column({
             scene: this,
             x: this.cameras.main.centerX,
@@ -84,7 +87,6 @@ class PreviewScene extends SceneWithHudini {
             ]
         });
 
-        // Right aligned column
         const rightColumn = new Column({
             scene: this,
             x: this.cameras.main.centerX + 300,
@@ -116,19 +118,6 @@ const meta: Meta = {
             },
         },
     },
-    argTypes: {
-        gap: {
-            control: { type: 'range', min: 0, max: 50, step: 2 },
-            description: 'Spacing between children in pixels',
-            defaultValue: 8
-        },
-        align: {
-            control: { type: 'select' },
-            options: ['left', 'center', 'right'],
-            description: 'Horizontal alignment of children',
-            defaultValue: 'center'
-        }
-    }
 };
 
 export default meta;
@@ -163,7 +152,7 @@ const createGame = (parent: HTMLElement): void => {
 };
 
 export const Default: Story = {
-    render: (args: Args): HTMLElement => {
+    render: (): HTMLElement => {
         const container = createContainer('phaser-column-example');
         createGame(container);
         return container;

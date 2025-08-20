@@ -305,7 +305,7 @@ export const FlatIconButtonExample: StoryObj<{
     backgroundColor: {
       control: 'select',
       options: colorTokens,
-      description: 'Escolha um token de cor (ex.: "gray-600")',
+      description: 'Choose a color token (e.g., "gray-600")',
     },
     iconColor: {
       control: 'select',

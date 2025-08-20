@@ -31,6 +31,8 @@ const durations = {
 };
 
 const CLICK_OFFSET = 2;
+const BUTTON_SCALE = 2.2;
+const CENTER_OFFSET = 1.1;
 
 export class FlatIconButton extends GameObjects.Container {
   public backgroundSprite!: GameObjects.Sprite;
@@ -141,9 +143,9 @@ export class FlatIconButton extends GameObjects.Container {
   private createBackgroundTexture(scene: Scene): string {
     const size = this.baseSizePx;
     const textureKey = `flatIconButton_${this.backgroundColorValue}_${this.borderRadiusPx}_${size}`;
-    const textureSize = size * 2.2; // match icon-button scale for consistency
-    const centerX = size * 1.1;
-    const centerY = size * 1.1;
+    const textureSize = size * BUTTON_SCALE; // match icon-button scale for consistency
+    const centerX = size * CENTER_OFFSET;
+    const centerY = size * CENTER_OFFSET;
 
     const graphics = scene.add.graphics();
     graphics.fillStyle(Color.hex(this.backgroundColorValue), 1);

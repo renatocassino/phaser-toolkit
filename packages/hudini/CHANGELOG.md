@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.3.0
+
+### Minor Changes
+
+- a82a81b: add components to column and row
+
 ## 0.2.1
 
 ### Patch Changes

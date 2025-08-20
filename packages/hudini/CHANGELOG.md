@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.4.0
+
+### Minor Changes
+
+- ac218fc: add parameter to use iconbutton as a square format
+
 ## 0.3.0
 
 ### Minor Changes

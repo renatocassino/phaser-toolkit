@@ -19,7 +19,7 @@ export type IconButtonParams = {
   color?: Omit<ColorKey, 'black' | 'white'>;
   onClick?: () => void;
   /** Border radius in px (number) or a Phaser Wind radius token (string). Defaults to 'full'. */
-  borderRadius?: string | number;
+  borderRadius?: RadiusKey | number;
 };
 
 const durations = {
@@ -71,7 +71,7 @@ export class IconButton extends GameObjects.Container {
     this.setupInteractivity(onClick);
   }
 
-  public setBorderRadius(borderRadius: string | number): this {
+  public setBorderRadius(borderRadius: RadiusKey | number): this {
     const newRadiusPx =
       typeof borderRadius === 'number'
         ? borderRadius

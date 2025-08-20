@@ -10,6 +10,8 @@ import {
     HUDINI_KEY,
     HudiniPlugin,
     IconButton,
+    RadiusKey,
+    radiusMap,
     SceneWithHudini,
     type ColorKey
 } from 'hudini';
@@ -235,11 +237,16 @@ export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; 
             },
         },
         color: {
-            control: { type: 'color' },
+            control: {
+                type: 'color',
+                description: 'Phaser-wind color token (e.g. "red", "blue", "green", "yellow", "purple", "orange", "pink", "gray") or rgb/hex string',
+            },
         },
         borderRadius: {
-            control: 'text',
-            description: 'Phaser Wind radius token (e.g. "sm", "lg", "full") or a number (px).',
+            control: 'select',
+            options: Object.keys(radiusMap) as RadiusKey[],
+            description: 'Phaser Wind radius token (e.g. "none", "sm", "lg", "full") or a number (px).',
+            defaultValue: 'full',
         },
     },
 };

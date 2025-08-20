@@ -20,7 +20,7 @@
   "devDependencies": {
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/html": "^9.1.2",
-    "@storybook/html-vite": "^8.2.9",
+    "@storybook/html-vite": "^9.1.2",
     "@types/node": "^24.3.0",
     "storybook": "^8.2.9",
     "typescript": "^5.3.0",

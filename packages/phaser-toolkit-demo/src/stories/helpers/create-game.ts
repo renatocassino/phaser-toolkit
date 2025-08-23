@@ -1,5 +1,7 @@
 import { Types } from "phaser";
 
+import { nextFrames } from "./next-tick";
+
 export type WindowWithPhaser = Window & {
     __phaserGames: Record<string, Phaser.Game>;
 }
@@ -20,7 +22,7 @@ export const getGame = (id: string): Phaser.Game | undefined => {
     return w.__phaserGames[id];
 }
 
-export const cleanGames = (): void => {
+export const cleanGames = async (): Promise<void> => {
     const w = window as unknown as WindowWithPhaser;
     w.__phaserGames = w.__phaserGames ?? {};
     Object.entries(w.__phaserGames).forEach(([key, game]) => {
@@ -28,4 +30,6 @@ export const cleanGames = (): void => {
         delete w.__phaserGames[key];
         document.getElementById(key)?.remove();
     });
+
+    await nextFrames(2);
 }

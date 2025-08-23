@@ -12,12 +12,10 @@ import {
 } from 'hudini';
 import Phaser from 'phaser';
 
-import { createContainer } from '../helpers/container';
+import { cleanGames, createGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
 
-type ElementWithPhaser = HTMLElement & {
-    __phaserGame?: Phaser.Game;
-    __phaserScene?: PreviewScene;
-};
+const ID = 'phaser-row-example';
 
 const usageSnippet = `
 import { Row } from 'hudini';
@@ -119,38 +117,34 @@ export default meta;
 
 type Story = StoryObj;
 
-const createGame = (parent: HTMLElement): void => {
-    const el = parent as ElementWithPhaser;
-    if (el.__phaserGame) {
-        el.__phaserGame.destroy(true);
-    }
-
-    el.__phaserGame = new Phaser.Game({
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        parent,
-        plugins: {
-            global: [
-                {
-                    key: HUDINI_KEY,
-                    plugin: HudiniPlugin,
-                    mapping: HUDINI_KEY,
-                    data: {
-                        theme: defaultLightTheme,
-                    },
-                }
-            ]
-        },
-        scene: [PreviewScene]
-    });
-};
-
 export const Default: Story = {
     render: (): HTMLElement => {
-        const container = createContainer('phaser-row-example');
-        createGame(container);
-        return container;
+        const root = document.getElementById(ID) ?? document.createElement('div');
+        root.id = ID;
+        return root;
+    },
+    play: async (): Promise<void> => {
+        await cleanGames();
+        await nextFrames(3);
+        createGame(ID, {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: document.getElementById(ID) as HTMLElement,
+            plugins: {
+                global: [
+                    {
+                        key: HUDINI_KEY,
+                        plugin: HudiniPlugin,
+                        mapping: HUDINI_KEY,
+                        data: {
+                            theme: defaultLightTheme,
+                        },
+                    }
+                ]
+            },
+            scene: [PreviewScene]
+        });
     }
 };
 

@@ -154,22 +154,6 @@ const ensureFontOnce = async (): Promise<void> => {
     }
 };
 
-const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-    const el = parent as ElementWithPhaser;
-    if (!el.__phaserGame) {
-        el.__phaserGame = new Phaser.Game();
-
-        el.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-            el.__phaserScene = el.__phaserGame?.scene.getScene(
-                'preview'
-            ) as PreviewScene;
-        });
-
-    }
-
-    return el.__phaserGame;
-};
-
 export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; size: number | string; color: string; borderRadius: string | number }> = {
     render: (args: Args): HTMLElement => {
         const root = document.getElementById(ID) ?? document.createElement('div');

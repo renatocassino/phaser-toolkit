@@ -64,4 +64,3 @@ jobs:
           name: dist-files
           path: packages/*/dist
           retention-days: 1
-pn

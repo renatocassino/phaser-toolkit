@@ -12,12 +12,10 @@ import {
 } from 'hudini';
 import Phaser from 'phaser';
 
-import { createContainer } from '../helpers/container';
+import { cleanGames, createGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
 
-type ElementWithPhaser = HTMLElement & {
-  __phaserGame?: Phaser.Game;
-  __phaserScene?: PreviewScene;
-};
+const ID = 'hudini-install-base-scene';
 
 // Provide a simple, reusable snippet via Storybook Docs
 const usageSnippet = `
@@ -143,15 +141,22 @@ class PreviewScene extends SceneWithHudini<Theme> {
   }
 }
 
-const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-  const el = parent as ElementWithPhaser;
-  if (!el.__phaserGame) {
-    el.__phaserGame = new Phaser.Game({
+export const WithBaseScene: StoryObj = {
+  render: (): HTMLElement => {
+    const root = document.getElementById(ID) ?? document.createElement('div');
+    root.id = ID;
+    return root;
+  },
+  play: async (): Promise<void> => {
+    await cleanGames();
+    await nextFrames(3);
+
+    createGame(ID, {
       type: Phaser.AUTO,
       width: 600,
       height: 400,
       backgroundColor: Color.slate(900),
-      parent,
+      parent: document.getElementById(ID) as HTMLElement,
       scene: [PreviewScene],
       plugins: {
         global: [
@@ -166,35 +171,5 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
         ],
       },
     });
-
-    el.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-      el.__phaserScene = el.__phaserGame?.scene.getScene(
-        'preview'
-      ) as PreviewScene;
-    });
-  }
-
-  return el.__phaserGame;
-};
-
-export const WithBaseScene: StoryObj = {
-  render: (): HTMLElement => {
-    const root = createContainer('hudini-install-base-scene');
-
-    (async (): Promise<void> => {
-      ensureGameOnce(root);
-    })();
-
-    // @ts-expect-error Storybook will call this on unmount if present
-    root.destroy = (): void => {
-      const el = root as ElementWithPhaser;
-      if (el.__phaserGame) {
-        el.__phaserGame.destroy(true);
-        el.__phaserGame = undefined as unknown as Phaser.Game;
-        el.__phaserScene = undefined as unknown as PreviewScene;
-      }
-    };
-
-    return root;
   },
 };

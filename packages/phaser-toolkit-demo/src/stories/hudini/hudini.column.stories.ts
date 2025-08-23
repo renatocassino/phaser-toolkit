@@ -123,41 +123,14 @@ export default meta;
 
 type Story = StoryObj;
 
-const ensureGameOnce = (root: HTMLElement): Phaser.Game => {
-    const g = new Phaser.Game({
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        parent: root,
-        plugins: {
-            global: [
-                {
-                    key: HUDINI_KEY,
-                    plugin: HudiniPlugin,
-                    mapping: HUDINI_KEY,
-                    data: {
-                        theme: defaultLightTheme,
-                    } as HudiniPluginData,
-                }
-            ]
-        },
-        scene: [PreviewScene]
-    });
-
-    // @ts-expect-error Storybook will call this on unmount if present
-    window.__GAME = g;
-
-    return g;
-}
-
 export const Default: Story = {
     render: () => {
-        cleanGames();
         const root = document.createElement('div');
         root.id = 'phaser-column-example';
         return root;
     },
     play: async (): Promise<void> => {
+        await cleanGames();
         await nextFrames(3);
         createGame(ID, {
             type: Phaser.AUTO,

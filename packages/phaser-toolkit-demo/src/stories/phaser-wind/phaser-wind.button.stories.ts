@@ -13,7 +13,10 @@ import {
   SceneWithPhaserWind,
 } from 'phaser-wind';
 
-import { createContainer } from '../helpers/container';
+import { cleanGames, createGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
+
+const ID = 'phaser-wind-button';
 
 const meta: Meta = {
   title: 'PhaserWind/Button',
@@ -147,15 +150,22 @@ class PreviewScene extends SceneWithPhaserWind<Theme> {
   }
 }
 
-const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-  const el = parent as HTMLElement & { __phaserGame?: Phaser.Game };
-  if (!el.__phaserGame) {
-    el.__phaserGame = new Phaser.Game({
+export const Basic: StoryObj = {
+  render: (): HTMLElement => {
+    const root = document.getElementById(ID) ?? document.createElement('div');
+    root.id = ID;
+    return root;
+  },
+  play: async (): Promise<void> => {
+    await cleanGames();
+    await nextFrames(3);
+
+    createGame(ID, {
       type: Phaser.AUTO,
       width: 600,
       height: 400,
       backgroundColor: Color.slate(900),
-      parent,
+      parent: document.getElementById(ID) as HTMLElement,
       scene: [PreviewScene],
       plugins: {
         global: [
@@ -170,28 +180,5 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
         ],
       },
     });
-  }
-
-  return el.__phaserGame;
-};
-
-export const Basic: StoryObj = {
-  render: (): HTMLElement => {
-    const root = createContainer('phaser-wind-button');
-
-    (async (): Promise<void> => {
-      ensureGameOnce(root);
-    })();
-
-    // @ts-expect-error Storybook chama no unmount
-    root.destroy = (): void => {
-      const el = root as HTMLElement & { __phaserGame?: Phaser.Game };
-      if (el.__phaserGame) {
-        el.__phaserGame.destroy(true);
-        el.__phaserGame = undefined as unknown as Phaser.Game;
-      }
-    };
-
-    return root;
   },
 };

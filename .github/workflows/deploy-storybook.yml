@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build libs
+        run: pnpm build
+
       - name: Build Storybook (packages/phaser-toolkit-demo)
         run: pnpm --filter "./packages/phaser-toolkit-demo" build-storybook
 

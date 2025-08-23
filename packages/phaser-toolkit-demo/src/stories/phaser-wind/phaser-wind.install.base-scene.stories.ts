@@ -12,13 +12,10 @@ import {
     SceneWithPhaserWind
 } from 'phaser-wind';
 
-import { createContainer } from '../helpers/container';
+import { cleanGames, createGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
 
-type WindowWithPhaser = Window & {
-    __phaserGame?: Phaser.Game;
-    __phaserScene?: PreviewScene;
-};
-
+const ID = 'phaser-wind-install-base-scene';
 
 // Provide a simple, reusable snippet via Storybook Docs
 const usageSnippet = `
@@ -144,16 +141,22 @@ class PreviewScene extends SceneWithPhaserWind<Theme> {
     }
 }
 
+export const WithBaseScene: StoryObj = {
+    render: (): HTMLElement => {
+        const root = document.getElementById(ID) ?? document.createElement('div');
+        root.id = ID;
+        return root;
+    },
+    play: async (): Promise<void> => {
+        await cleanGames();
+        await nextFrames(3);
 
-const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-    const w = window as unknown as WindowWithPhaser;
-    if (!w.__phaserGame) {
-        w.__phaserGame = new Phaser.Game({
+        createGame(ID, {
             type: Phaser.AUTO,
             width: 600,
             height: 400,
             backgroundColor: Color.slate(900),
-            parent,
+            parent: document.getElementById(ID) as HTMLElement,
             scene: [PreviewScene],
             plugins: {
                 global: [
@@ -166,37 +169,7 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
                         }
                     },
                 ],
-            }
+            },
         });
-
-        w.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-            w.__phaserScene = w.__phaserGame?.scene.getScene(
-                'preview'
-            ) as PreviewScene;
-        });
-    }
-
-    return w.__phaserGame;
-};
-
-export const WithBaseScene: StoryObj = {
-    render: (): HTMLElement => {
-        const root = createContainer();
-
-        (async (): Promise<void> => {
-            ensureGameOnce(root);
-        })();
-
-        // @ts-expect-error Storybook will call this on unmount if present
-        root.destroy = (): void => {
-            const w = window as unknown as WindowWithPhaser;
-            if (w.__phaserGame) {
-                w.__phaserGame.destroy(true);
-                w.__phaserGame = undefined as unknown as Phaser.Game;
-                w.__phaserScene = undefined as unknown as PreviewScene;
-            }
-        };
-
-        return root;
     },
 };

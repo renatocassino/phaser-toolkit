@@ -13,11 +13,11 @@ import {
 import Phaser from 'phaser';
 import { Color, FontSize } from 'phaser-wind';
 
-type WindowWithPhaser = Window & {
-  __phaserGame?: Phaser.Game;
-  __phaserScene?: PreviewScene;
-  __faLoaded?: boolean;
-};
+import { cleanGames, createGame, getGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
+
+const ID = 'font-awesome-for-phaser-basic';
+
 
 const usageSnippet = `import { IconText, loadFont } from 'font-awesome-for-phaser';
 
@@ -112,51 +112,8 @@ class PreviewScene extends Phaser.Scene {
   }
 }
 
-const createContainer = (): HTMLDivElement => {
-  const root = document.getElementById('phaser-story');
-  if (root) {
-    return root as HTMLDivElement;
-  }
-
-  const container = document.createElement('div');
-  container.id = 'phaser-story';
-  container.style.width = '600px';
-  container.style.height = '400px';
-  container.style.border = '1px solid #333';
-  container.style.background = '#111';
-  return container;
-};
-
-// Removed custom Docs HTML/highlight; using Storybook Docs source block
-
 const ensureFontOnce = async (): Promise<void> => {
-  const w = window as unknown as WindowWithPhaser;
-  if (!w.__faLoaded) {
-    await loadFont();
-    w.__faLoaded = true;
-  }
-};
-
-const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-  const w = window as unknown as WindowWithPhaser;
-  if (!w.__phaserGame) {
-    w.__phaserGame = new Phaser.Game({
-      type: Phaser.AUTO,
-      width: 600,
-      height: 400,
-      backgroundColor: Color.slate(900),
-      parent,
-      scene: [PreviewScene],
-    });
-
-    w.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-      w.__phaserScene = w.__phaserGame?.scene.getScene(
-        'preview'
-      ) as PreviewScene;
-    });
-  }
-
-  return w.__phaserGame;
+  await loadFont();
 };
 
 export const Basic: StoryObj<{
@@ -193,43 +150,45 @@ export const Basic: StoryObj<{
     },
   },
   render: (args: Args): HTMLElement => {
-    const root = createContainer();
+    const root = document.getElementById(ID) ?? document.createElement('div');
+    root.id = ID;
 
-    const w = window as unknown as WindowWithPhaser;
+    const apply = (): void => {
+      const game = getGame(ID);
+      if (!game) return;
+      const scene = game.scene.getScene('preview');
 
-    (async (): Promise<void> => {
-      await ensureFontOnce();
-      const game = ensureGameOnce(root);
-
-      const apply = (): void => {
-        const scene = (w.__phaserScene ??
-          game.scene.getScene('preview')) as PreviewScene;
-
-        scene.events.emit(
-          'props:update',
-          args as {
-            icon: IconKey;
-            iconStyle: IconStyle;
-            size: number;
-            color: string;
-          }
-        );
-      };
-
-      if (w.__phaserScene) apply();
-      else game.events.once(Phaser.Core.Events.READY, apply);
-    })();
-
-    // @ts-expect-error Storybook will call this on unmount if present
-    root.destroy = (): void => {
-      const w = window as unknown as WindowWithPhaser;
-      if (w.__phaserGame) {
-        w.__phaserGame.destroy(true);
-        w.__phaserGame = undefined as unknown as Phaser.Game;
-        w.__phaserScene = undefined as unknown as PreviewScene;
-      }
+      scene.events.emit(
+        'props:update',
+        args as {
+          icon: IconKey;
+          iconStyle: IconStyle;
+          size: number;
+          color: string;
+        }
+      );
     };
+
+    if (getGame(ID)) {
+      apply();
+    } else {
+      getGame(ID)?.events.once(Phaser.Core.Events.READY, apply);
+    }
 
     return root;
   },
+  play: async (): Promise<void> => {
+    await ensureFontOnce();
+    await cleanGames();
+    await nextFrames(3);
+
+    createGame(ID, {
+      type: Phaser.AUTO,
+      width: 600,
+      height: 400,
+      backgroundColor: Color.slate(900),
+      parent: document.getElementById(ID) as HTMLElement,
+      scene: [PreviewScene],
+    });
+  }
 };

@@ -23,6 +23,12 @@ const config: StorybookConfig = {
       'font-awesome-for-phaser': r('../../font-awesome-for-phaser/src/index.ts'),
       hudini: r('../../hudini/src/index.ts'),
     };
+    config.optimizeDeps = config.optimizeDeps || {};
+    config.optimizeDeps.include = [
+      ...(config.optimizeDeps.include || []),
+      'phaser',
+    ];
+
     return config;
   },
 };

@@ -8,17 +8,16 @@ import {
     defaultLightTheme,
     HUDINI_KEY,
     HudiniPlugin,
+    HudiniPluginData,
     SceneWithHudini,
     Spacing,
 } from 'hudini';
 import Phaser from 'phaser';
 
-import { createContainer } from '../helpers/container';
+import { cleanGames, createGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
 
-type WindowWithPhaser = Window & {
-    __phaserGame?: Phaser.Game;
-    __phaserScene?: PreviewScene;
-};
+const ID = 'phaser-column-example';
 
 const usageSnippet = `
 import { Column } from 'hudini';
@@ -124,43 +123,42 @@ export default meta;
 
 type Story = StoryObj;
 
-const createGame = (parent: HTMLElement): void => {
-    const win = window as WindowWithPhaser;
-    if (win.__phaserGame) {
-        win.__phaserGame.destroy(true);
-    }
-
-    win.__phaserGame = new Phaser.Game({
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        parent,
-        plugins: {
-            global: [
-                {
-                    key: HUDINI_KEY,
-                    plugin: HudiniPlugin,
-                    mapping: HUDINI_KEY,
-                    data: {
-                        theme: defaultLightTheme,
-                    },
-                }
-            ]
-        },
-        scene: [PreviewScene]
-    });
-};
-
 export const Default: Story = {
-    render: (): HTMLElement => {
-        const container = createContainer('phaser-column-example');
-        createGame(container);
-        return container;
+    render: () => {
+        const root = document.createElement('div');
+        root.id = 'phaser-column-example';
+        return root;
+    },
+    play: async (): Promise<void> => {
+        await cleanGames();
+        await nextFrames(3);
+        createGame(ID, {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: document.getElementById(ID) as HTMLElement,
+            plugins: {
+                global: [
+                    {
+                        key: HUDINI_KEY,
+                        plugin: HudiniPlugin,
+                        mapping: HUDINI_KEY,
+                        start: true,
+                        data: {
+                            theme: defaultLightTheme,
+                        } as HudiniPluginData,
+                    }
+                ]
+            },
+            scene: [PreviewScene]
+        });
     }
 };
 
 Default.parameters = {
     docs: {
+        autoplay: true,
+        story: { inline: false },
         source: {
             code: usageSnippet
         }

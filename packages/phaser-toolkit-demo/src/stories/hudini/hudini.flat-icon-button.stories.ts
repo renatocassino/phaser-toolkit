@@ -8,14 +8,18 @@ import {
   Color,
   createTheme,
   FlatIconButton,
+  FontSizeKey,
   HUDINI_KEY,
   HudiniPlugin,
   SceneWithHudini,
-  type ColorKey,
+  type ColorKey
 } from 'hudini';
 import Phaser from 'phaser';
 
-import { createContainer } from '../helpers/container';
+import { cleanGames, createGame, getGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
+
+const ID = 'hudini-flat-icon-button';
 
 const colorFamilies: ColorKey[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'gray'];
 const colorShades: Array<'400' | '500' | '600' | '700'> = ['400', '500', '600', '700'];
@@ -29,7 +33,7 @@ const radiusTokens = ['none', 'sm', 'default', 'md', 'lg', 'xl', '2xl', '3xl', '
 const sizeTokens = [
   'xs',
   'sm',
-  'md',
+  'base',
   'lg',
   'xl',
   '2xl',
@@ -39,14 +43,8 @@ const sizeTokens = [
   '6xl',
   '7xl',
   '8xl',
-  '9xl',
-  '10xl',
+  '9xl'
 ] as const;
-
-type WindowWithPhaser = Window & {
-  __phaserGame?: Phaser.Game;
-  __phaserScene?: PreviewScene;
-};
 
 // Provide a simple, reusable snippet via Storybook Docs
 const usageSnippet = `
@@ -121,7 +119,7 @@ const theme = createTheme({});
 type Theme = typeof theme;
 
 class PreviewScene extends SceneWithHudini<Theme> {
-  private buttons: FlatIconButton[] = [];
+  private button?: FlatIconButton;
   constructor() {
     super('preview');
   }
@@ -130,37 +128,30 @@ class PreviewScene extends SceneWithHudini<Theme> {
     const { pw } = this.hudini;
     this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
-    const colors: ColorKey[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'gray'];
-
-    let y = 90;
-    for (let i = 0; i < colors.length; i++) {
-      const color: ColorKey = colors[i] as ColorKey;
-
-      const btn = new FlatIconButton({
-        scene: this,
-        x: 50 + i * 65,
-        y: y,
-        icon: 'plus',
-        size: 'xl',
-        backgroundColor: `${color}-600`,
-        iconColor: 'white',
-        borderRadius: 'md',
-        backgroundOpacity: 1,
-        iconOpacity: 1,
-        onClick: (): void => {
-          console.log('clicked');
-        },
-      });
-      this.add.existing(btn);
-      this.buttons.push(btn);
-    }
+    const btn = new FlatIconButton({
+      scene: this,
+      x: this.cameras.main.centerX,
+      y: this.cameras.main.centerY,
+      icon: 'plus',
+      size: 'xl',
+      backgroundColor: 'gray-600',
+      iconColor: 'white',
+      borderRadius: 'md',
+      backgroundOpacity: 1,
+      iconOpacity: 1,
+      onClick: (): void => {
+        console.log('clicked');
+      },
+    });
+    this.add.existing(btn);
+    this.button = btn;
 
     this.events.on(
       'props:update',
       (p: {
         icon: IconKey;
         iconStyle: IconStyle;
-        size: number | string;
+        size: FontSizeKey;
         backgroundColor: string;
         iconColor: string;
         borderRadius: string | number;
@@ -173,21 +164,21 @@ class PreviewScene extends SceneWithHudini<Theme> {
   private applyProps(p: {
     icon: IconKey;
     iconStyle: IconStyle;
-    size: number | string;
+    size: FontSizeKey;
     backgroundColor: string;
     iconColor: string;
     borderRadius: string | number;
     backgroundOpacity: number;
     iconOpacity: number;
   }): void {
-    for (const btn of this.buttons) {
-      btn.setIcon(p.icon, { iconStyle: p.iconStyle });
-      btn.setBackgroundColor(p.backgroundColor);
-      btn.setIconColor(p.iconColor);
-      btn.setBorderRadius(p.borderRadius);
-      btn.setBackgroundOpacity(p.backgroundOpacity);
-      btn.setIconOpacity(p.iconOpacity);
-    }
+    if (!this.button) return;
+    this.button.setIcon(p.icon, { iconStyle: p.iconStyle });
+    this.button.setButtonSize(p.size);
+    this.button.setBackgroundColor(p.backgroundColor);
+    this.button.setIconColor(p.iconColor);
+    this.button.setBorderRadius(p.borderRadius);
+    this.button.setBackgroundOpacity(p.backgroundOpacity);
+    this.button.setIconOpacity(p.iconOpacity);
   }
 }
 
@@ -199,15 +190,57 @@ const ensureFontOnce = async (): Promise<void> => {
   }
 };
 
-const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-  const w = window as unknown as WindowWithPhaser;
-  if (!w.__phaserGame) {
-    w.__phaserGame = new Phaser.Game({
+
+export const FlatIconButtonExample: StoryObj<{
+  icon: IconKey;
+  iconStyle: IconStyle;
+  size: number | string;
+  backgroundColor: string;
+  iconColor: string;
+  borderRadius: string | number;
+  backgroundOpacity: number;
+  iconOpacity: number;
+}> = {
+  render: (args: Args): HTMLElement => {
+    const root = document.getElementById(ID) ?? document.createElement('div');
+    root.id = ID;
+
+    const apply = (): void => {
+      const game = getGame(ID);
+      if (!game) return;
+      const scene = (game.scene.getScene('preview') ?? game.scene.getScene('preview')) as PreviewScene;
+
+      scene.events.emit('props:update', args as {
+        icon: IconKey;
+        iconStyle: IconStyle;
+        size: number | string;
+        backgroundColor: string;
+        iconColor: string;
+        borderRadius: string | number;
+        backgroundOpacity: number;
+        iconOpacity: number;
+      });
+    };
+
+    if (getGame(ID)) {
+      apply();
+    } else {
+      getGame(ID)?.events.once(Phaser.Core.Events.READY, apply);
+    }
+
+    return root;
+  },
+  play: async (): Promise<void> => {
+    cleanGames();
+    await ensureFontOnce();
+    await nextFrames(3);
+
+    createGame(ID, {
       type: Phaser.AUTO,
       width: 600,
       height: 400,
       backgroundColor: Color.slate(900),
-      parent,
+      parent: document.getElementById(ID) as HTMLElement,
       scene: [PreviewScene],
       plugins: {
         global: [
@@ -222,61 +255,6 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
         ],
       },
     });
-
-    w.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-      w.__phaserScene = w.__phaserGame?.scene.getScene('preview') as PreviewScene;
-    });
-  }
-
-  return w.__phaserGame;
-};
-
-export const FlatIconButtonExample: StoryObj<{
-  icon: IconKey;
-  iconStyle: IconStyle;
-  size: number | string;
-  backgroundColor: string;
-  iconColor: string;
-  borderRadius: string | number;
-  backgroundOpacity: number;
-  iconOpacity: number;
-}> = {
-  render: (args: Args): HTMLElement => {
-    const root = createContainer('hudini-flat-icon-button');
-
-    (async (): Promise<void> => {
-      await ensureFontOnce();
-      const game = ensureGameOnce(root);
-
-      const w = window as unknown as WindowWithPhaser;
-      const apply = (): void => {
-        const scene = (w.__phaserScene ?? game.scene.getScene('preview')) as PreviewScene;
-        scene.events.emit('props:update', args as {
-          icon: IconKey;
-          iconStyle: IconStyle;
-          size: number | string;
-          backgroundColor: string;
-          iconColor: string;
-          borderRadius: string | number;
-          backgroundOpacity: number;
-          iconOpacity: number;
-        });
-      };
-
-      if (w.__phaserScene) apply();
-      else game.events.once(Phaser.Core.Events.READY, apply);
-    })();
-
-    (root as unknown as { destroy?: () => void }).destroy = (): void => {
-      const w = window as unknown as WindowWithPhaser;
-      if (w.__phaserGame) {
-        w.__phaserGame.destroy(true);
-        w.__phaserGame = undefined as unknown as Phaser.Game;
-        w.__phaserScene = undefined as unknown as PreviewScene;
-      }
-    };
-
-    return root;
   },
   args: {
     icon: 'house',

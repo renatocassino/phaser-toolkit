@@ -127,6 +127,14 @@ export class FlatIconButton extends GameObjects.Container {
     return this;
   }
 
+  public setButtonSize(size: FontSizeKey | number): this {
+    this.baseSizePx =
+      typeof size === 'number' ? size : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
+    this.iconText.setFontSize(`${this.baseSizePx}px`);
+    this.regenerateBackgroundTexture();
+    return this;
+  }
+
   private createBackgroundSprite(scene: Scene): void {
     const textureKey = this.createBackgroundTexture(scene);
     this.backgroundSprite = scene.add.sprite(0, 0, textureKey);

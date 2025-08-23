@@ -148,9 +148,9 @@ class PreviewScene extends SceneWithPhaserWind<Theme> {
 }
 
 const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-  const w = window as unknown as Window & { __phaserGame?: Phaser.Game };
-  if (!w.__phaserGame) {
-    w.__phaserGame = new Phaser.Game({
+  const el = parent as HTMLElement & { __phaserGame?: Phaser.Game };
+  if (!el.__phaserGame) {
+    el.__phaserGame = new Phaser.Game({
       type: Phaser.AUTO,
       width: 600,
       height: 400,
@@ -172,12 +172,12 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
     });
   }
 
-  return w.__phaserGame;
+  return el.__phaserGame;
 };
 
 export const Basic: StoryObj = {
   render: (): HTMLElement => {
-    const root = createContainer();
+    const root = createContainer('phaser-wind-button');
 
     (async (): Promise<void> => {
       ensureGameOnce(root);
@@ -185,10 +185,10 @@ export const Basic: StoryObj = {
 
     // @ts-expect-error Storybook chama no unmount
     root.destroy = (): void => {
-      const w = window as unknown as Window & { __phaserGame?: Phaser.Game };
-      if (w.__phaserGame) {
-        w.__phaserGame.destroy(true);
-        w.__phaserGame = undefined as unknown as Phaser.Game;
+      const el = root as HTMLElement & { __phaserGame?: Phaser.Game };
+      if (el.__phaserGame) {
+        el.__phaserGame.destroy(true);
+        el.__phaserGame = undefined as unknown as Phaser.Game;
       }
     };
 

@@ -43,9 +43,9 @@ const sizeTokens = [
   '10xl',
 ] as const;
 
-type WindowWithPhaser = Window & {
-  __phaserGame?: Phaser.Game;
-  __phaserScene?: PreviewScene;
+type ElementWithPhaser = HTMLElement & {
+  __phaserGame_flat_icon_button?: Phaser.Game;
+  __phaserScene_flat_icon_button?: PreviewScene;
 };
 
 // Provide a simple, reusable snippet via Storybook Docs
@@ -200,9 +200,9 @@ const ensureFontOnce = async (): Promise<void> => {
 };
 
 const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-  const w = window as unknown as WindowWithPhaser;
-  if (!w.__phaserGame) {
-    w.__phaserGame = new Phaser.Game({
+  const el = parent as ElementWithPhaser;
+  if (!el.__phaserGame_flat_icon_button) {
+    el.__phaserGame_flat_icon_button = new Phaser.Game({
       type: Phaser.AUTO,
       width: 600,
       height: 400,
@@ -223,12 +223,12 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
       },
     });
 
-    w.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-      w.__phaserScene = w.__phaserGame?.scene.getScene('preview') as PreviewScene;
+    el.__phaserGame_flat_icon_button.events.once(Phaser.Core.Events.READY, () => {
+      el.__phaserScene_flat_icon_button = el.__phaserGame_flat_icon_button?.scene.getScene('preview') as PreviewScene;
     });
   }
 
-  return w.__phaserGame;
+  return el.__phaserGame_flat_icon_button;
 };
 
 export const FlatIconButtonExample: StoryObj<{
@@ -248,9 +248,8 @@ export const FlatIconButtonExample: StoryObj<{
       await ensureFontOnce();
       const game = ensureGameOnce(root);
 
-      const w = window as unknown as WindowWithPhaser;
       const apply = (): void => {
-        const scene = (w.__phaserScene ?? game.scene.getScene('preview')) as PreviewScene;
+        const scene = ((root as ElementWithPhaser).__phaserScene_flat_icon_button ?? game.scene.getScene('preview')) as PreviewScene;
         scene.events.emit('props:update', args as {
           icon: IconKey;
           iconStyle: IconStyle;
@@ -263,16 +262,16 @@ export const FlatIconButtonExample: StoryObj<{
         });
       };
 
-      if (w.__phaserScene) apply();
+      if ((root as ElementWithPhaser).__phaserScene_flat_icon_button) apply();
       else game.events.once(Phaser.Core.Events.READY, apply);
     })();
 
     (root as unknown as { destroy?: () => void }).destroy = (): void => {
-      const w = window as unknown as WindowWithPhaser;
-      if (w.__phaserGame) {
-        w.__phaserGame.destroy(true);
-        w.__phaserGame = undefined as unknown as Phaser.Game;
-        w.__phaserScene = undefined as unknown as PreviewScene;
+      const el = root as ElementWithPhaser;
+      if (el.__phaserGame_flat_icon_button) {
+        el.__phaserGame_flat_icon_button.destroy(true);
+        el.__phaserGame_flat_icon_button = undefined as unknown as Phaser.Game;
+        el.__phaserScene_flat_icon_button = undefined as unknown as PreviewScene;
       }
     };
 

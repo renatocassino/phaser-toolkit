@@ -13,10 +13,9 @@ import {
 import Phaser from 'phaser';
 import { Color, FontSize } from 'phaser-wind';
 
-type WindowWithPhaser = Window & {
+type ElementWithPhaser = HTMLElement & {
   __phaserGame?: Phaser.Game;
   __phaserScene?: PreviewScene;
-  __faLoaded?: boolean;
 };
 
 const usageSnippet = `import { IconText, loadFont } from 'font-awesome-for-phaser';
@@ -112,14 +111,14 @@ class PreviewScene extends Phaser.Scene {
   }
 }
 
-const createContainer = (): HTMLDivElement => {
-  const root = document.getElementById('phaser-story');
+const createContainer = (id: string = 'phaser-story'): HTMLDivElement => {
+  const root = document.getElementById(id);
   if (root) {
     return root as HTMLDivElement;
   }
 
   const container = document.createElement('div');
-  container.id = 'phaser-story';
+  container.id = id;
   container.style.width = '600px';
   container.style.height = '400px';
   container.style.border = '1px solid #333';
@@ -130,17 +129,13 @@ const createContainer = (): HTMLDivElement => {
 // Removed custom Docs HTML/highlight; using Storybook Docs source block
 
 const ensureFontOnce = async (): Promise<void> => {
-  const w = window as unknown as WindowWithPhaser;
-  if (!w.__faLoaded) {
-    await loadFont();
-    w.__faLoaded = true;
-  }
+  await loadFont();
 };
 
 const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-  const w = window as unknown as WindowWithPhaser;
-  if (!w.__phaserGame) {
-    w.__phaserGame = new Phaser.Game({
+  const el = parent as ElementWithPhaser;
+  if (!el.__phaserGame) {
+    el.__phaserGame = new Phaser.Game({
       type: Phaser.AUTO,
       width: 600,
       height: 400,
@@ -149,14 +144,14 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
       scene: [PreviewScene],
     });
 
-    w.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-      w.__phaserScene = w.__phaserGame?.scene.getScene(
+    el.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
+      el.__phaserScene = el.__phaserGame?.scene.getScene(
         'preview'
       ) as PreviewScene;
     });
   }
 
-  return w.__phaserGame;
+  return el.__phaserGame;
 };
 
 export const Basic: StoryObj<{
@@ -193,16 +188,14 @@ export const Basic: StoryObj<{
     },
   },
   render: (args: Args): HTMLElement => {
-    const root = createContainer();
-
-    const w = window as unknown as WindowWithPhaser;
+    const root = createContainer('font-awesome-for-phaser-basic');
 
     (async (): Promise<void> => {
       await ensureFontOnce();
       const game = ensureGameOnce(root);
 
       const apply = (): void => {
-        const scene = (w.__phaserScene ??
+        const scene = ((root as ElementWithPhaser).__phaserScene ??
           game.scene.getScene('preview')) as PreviewScene;
 
         scene.events.emit(
@@ -216,17 +209,17 @@ export const Basic: StoryObj<{
         );
       };
 
-      if (w.__phaserScene) apply();
+      if ((root as ElementWithPhaser).__phaserScene) apply();
       else game.events.once(Phaser.Core.Events.READY, apply);
     })();
 
     // @ts-expect-error Storybook will call this on unmount if present
     root.destroy = (): void => {
-      const w = window as unknown as WindowWithPhaser;
-      if (w.__phaserGame) {
-        w.__phaserGame.destroy(true);
-        w.__phaserGame = undefined as unknown as Phaser.Game;
-        w.__phaserScene = undefined as unknown as PreviewScene;
+      const el = root as ElementWithPhaser;
+      if (el.__phaserGame) {
+        el.__phaserGame.destroy(true);
+        el.__phaserGame = undefined as unknown as Phaser.Game;
+        el.__phaserScene = undefined as unknown as PreviewScene;
       }
     };
 

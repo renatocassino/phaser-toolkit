@@ -14,7 +14,7 @@ import Phaser from 'phaser';
 
 import { createContainer } from '../helpers/container';
 
-type WindowWithPhaser = Window & {
+type ElementWithPhaser = HTMLElement & {
     __phaserGame?: Phaser.Game;
     __phaserScene?: PreviewScene;
 };
@@ -120,12 +120,12 @@ export default meta;
 type Story = StoryObj;
 
 const createGame = (parent: HTMLElement): void => {
-    const win = window as WindowWithPhaser;
-    if (win.__phaserGame) {
-        win.__phaserGame.destroy(true);
+    const el = parent as ElementWithPhaser;
+    if (el.__phaserGame) {
+        el.__phaserGame.destroy(true);
     }
 
-    win.__phaserGame = new Phaser.Game({
+    el.__phaserGame = new Phaser.Game({
         type: Phaser.AUTO,
         width: 800,
         height: 600,

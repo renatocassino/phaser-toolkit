@@ -35,7 +35,7 @@ const sizeTokens = [
     '10xl',
 ];
 
-type WindowWithPhaser = Window & {
+type ElementWithPhaser = HTMLElement & {
     __phaserGame?: Phaser.Game;
     __phaserScene?: PreviewScene;
 };
@@ -165,9 +165,9 @@ const ensureFontOnce = async (): Promise<void> => {
 };
 
 const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
-    const w = window as unknown as WindowWithPhaser;
-    if (!w.__phaserGame) {
-        w.__phaserGame = new Phaser.Game({
+    const el = parent as ElementWithPhaser;
+    if (!el.__phaserGame) {
+        el.__phaserGame = new Phaser.Game({
             type: Phaser.AUTO,
             width: 600,
             height: 400,
@@ -188,15 +188,15 @@ const ensureGameOnce = (parent: HTMLElement): Phaser.Game => {
             },
         });
 
-        w.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
-            w.__phaserScene = w.__phaserGame?.scene.getScene(
+        el.__phaserGame.events.once(Phaser.Core.Events.READY, () => {
+            el.__phaserScene = el.__phaserGame?.scene.getScene(
                 'preview'
             ) as PreviewScene;
         });
 
     }
 
-    return w.__phaserGame;
+    return el.__phaserGame;
 };
 
 export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; size: number | string; color: string; borderRadius: string | number }> = {
@@ -207,23 +207,22 @@ export const IconButtonExample: StoryObj<{ icon: IconKey; iconStyle: IconStyle; 
             await ensureFontOnce();
             const game = ensureGameOnce(root);
 
-            const w = window as unknown as WindowWithPhaser;
             const apply = (): void => {
-                const scene = (w.__phaserScene ?? game.scene.getScene('preview')) as PreviewScene;
+                const scene = ((root as ElementWithPhaser).__phaserScene ?? game.scene.getScene('preview')) as PreviewScene;
                 scene.events.emit('props:update', args as { icon: IconKey; iconStyle: IconStyle; size: number | string; color: string; borderRadius: string | number });
             };
 
-            if (w.__phaserScene) apply();
+            if ((root as ElementWithPhaser).__phaserScene) apply();
             else game.events.once(Phaser.Core.Events.READY, apply);
         })();
 
         // @ts-expect-error Storybook will call this on unmount if present
         root.destroy = (): void => {
-            const w = window as unknown as WindowWithPhaser;
-            if (w.__phaserGame) {
-                w.__phaserGame.destroy(true);
-                w.__phaserGame = undefined as unknown as Phaser.Game;
-                w.__phaserScene = undefined as unknown as PreviewScene;
+            const el = root as ElementWithPhaser;
+            if (el.__phaserGame) {
+                el.__phaserGame.destroy(true);
+                el.__phaserGame = undefined as unknown as Phaser.Game;
+                el.__phaserScene = undefined as unknown as PreviewScene;
             }
         };
 

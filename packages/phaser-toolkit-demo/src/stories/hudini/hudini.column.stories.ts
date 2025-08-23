@@ -14,7 +14,8 @@ import {
 } from 'hudini';
 import Phaser from 'phaser';
 
-import { createGame } from '../helpers/create-game';
+import { cleanGames, createGame } from '../helpers/create-game';
+import { nextFrames } from '../helpers/next-tick';
 
 const ID = 'phaser-column-example';
 
@@ -151,11 +152,13 @@ const ensureGameOnce = (root: HTMLElement): Phaser.Game => {
 
 export const Default: Story = {
     render: () => {
+        cleanGames();
         const root = document.createElement('div');
         root.id = 'phaser-column-example';
         return root;
     },
     play: async (): Promise<void> => {
+        await nextFrames(3);
         createGame(ID, {
             type: Phaser.AUTO,
             width: 800,
@@ -180,7 +183,6 @@ export const Default: Story = {
 };
 
 Default.parameters = {
-    forceRemount: true,
     docs: {
         autoplay: true,
         story: { inline: false },

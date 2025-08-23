@@ -43,6 +43,7 @@ export class IconButton extends GameObjects.Container {
   public backgroundSprite!: GameObjects.Sprite;
   public shadowSprite!: GameObjects.Sprite;
   public iconText!: IconText;
+
   private pw: PhaserWindPlugin<{}>;
   private baseColor!: Omit<ColorKey, 'black' | 'white'>;
   private sizePx!: number;
@@ -80,6 +81,27 @@ export class IconButton extends GameObjects.Container {
     this.borderRadiusPx = newRadiusPx;
 
     // Regenerate textures for background and shadow
+    const shadowTexture = this.createShadowTexture(
+      this.scene,
+      this.sizePx,
+      this.baseColor,
+      this.borderRadiusPx
+    );
+    const backgroundTexture = this.createBackgroundTexture(
+      this.scene,
+      this.sizePx,
+      this.baseColor,
+      this.borderRadiusPx
+    );
+    this.shadowSprite.setTexture(shadowTexture);
+    this.backgroundSprite.setTexture(backgroundTexture);
+    return this;
+  }
+
+  public setButtonSize(size: FontSizeKey | number): this {
+    this.sizePx =
+      typeof size === 'number' ? size : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
+    this.iconText.setFontSize(`${this.sizePx}px`);
     const shadowTexture = this.createShadowTexture(
       this.scene,
       this.sizePx,

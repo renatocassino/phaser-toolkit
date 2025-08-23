@@ -41,8 +41,8 @@ jobs:
       - name: Build libs
         run: pnpm build
 
-      - name: Build Storybook (packages/phaser-toolkit-demo)
-        run: pnpm --filter "./packages/phaser-toolkit-demo" build-storybook
+      - name: Build Storybook (demo)
+        run: pnpm -w -F phaser-toolkit-demo build-storybook
 
       - name: Deploy to GitHub Pages (gh-pages)
         uses: peaceiris/actions-gh-pages@v4

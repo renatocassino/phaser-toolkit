@@ -42,7 +42,7 @@ jobs:
         run: pnpm build
 
       - name: Build Storybook (demo)
-        run: pnpm -w -F phaser-toolkit-demo build-storybook
+        run: cd packages/phaser-toolkit-demo && pnpm build-storybook
 
       - name: Deploy to GitHub Pages (gh-pages)
         uses: peaceiris/actions-gh-pages@v4

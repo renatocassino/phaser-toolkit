@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable max-lines-per-function */
-import { Scene } from 'phaser';
+import { Scene, Tweens } from 'phaser';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock Phaser to avoid canvas dependency in runtime
@@ -12,6 +12,8 @@ vi.mock('phaser', () => {
         fillRoundedRect: vi.fn(),
         generateTexture: vi.fn(),
         destroy: vi.fn(),
+        setScale: vi.fn(),
+        setX: vi.fn(),
       }),
       sprite: vi.fn(() => ({
         setOrigin: vi.fn(),
@@ -190,10 +192,10 @@ describe('LinearProgress', () => {
       const tweenCall = vi.mocked(scene.tweens.add).mock.calls[0]?.[0] as unknown as { x: number };
 
       // The indeterminate bar should move within bounds
-      // Bar width is 30% of total width = 90px
-      // Max X should be (300/2) - (90/2) = 150 - 45 = 105
-      // Min X should be -(300/2) + (90/2) = -150 + 45 = -105
-      expect(tweenCall.x).toBe(105); // maxX position
+      // Bar width is 40% of total width = 120px
+      // Max X should be (300/2) - (120/2) = 150 - 60 = 90
+      // Min X should be -(300/2) + (120/2) = -150 + 60 = -90
+      expect(tweenCall.x).toBe(90); // maxX position
     });
   });
 
@@ -253,7 +255,7 @@ describe('LinearProgress', () => {
     it('should stop indeterminate animation when set to false', () => {
       linearProgress.setIndeterminate(true);
       const tweenMock = { destroy: vi.fn() };
-      vi.mocked(scene.tweens.add).mockReturnValue(tweenMock as any);
+      vi.mocked(scene.tweens.add).mockReturnValue(tweenMock as unknown as Tweens.Tween);
 
       linearProgress.setIndeterminate(false);
       // Animation should be stopped when switching back to determinate
@@ -309,12 +311,13 @@ describe('LinearProgress', () => {
         width: 200,
         height: 8,
         indeterminate: true,
+        indeterminateAnimationDuration: 1000,
       });
     });
 
     it('should clean up animations when destroyed', () => {
       const tweenMock = { destroy: vi.fn() };
-      vi.mocked(scene.tweens.add).mockReturnValue(tweenMock as any);
+      vi.mocked(scene.tweens.add).mockReturnValue(tweenMock as unknown as Tweens.Tween);
 
       linearProgress.destroy();
       // Should clean up any running animations

@@ -79,8 +79,6 @@ export class LinearProgress extends GameObjects.Container {
         ? borderRadius
         : this.pw.radius.px(borderRadius as RadiusKey);
 
-    // @ts-ignore
-    window.component = this;
     this.createBackgroundSprite();
     this.createProgressSprite();
     this.setupContainer();

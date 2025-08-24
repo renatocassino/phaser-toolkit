@@ -23,7 +23,8 @@ export type LinearProgressParams = {
   backgroundColor?: ColorToken;
   /** Color of the progress bar fill */
   progressColor?: ColorToken;
-  /** Border radius in px (number) or a Phaser Wind radius token (string). Defaults to 'default'. */
+  /** Border radius in px (number) or a Phaser Wind radius token (string). Defaults to 'default'. 
+   * Note: The effective radius is automatically limited to half of the smallest dimension to prevent visual artifacts. */
   borderRadius?: RadiusKey | number;
   /** Initial progress value (0-100) */
   progress?: number;
@@ -158,6 +159,7 @@ export class LinearProgress extends GameObjects.Container {
   /**
    * Sets the border radius of the progress bar
    * @param borderRadius Border radius in px (number) or a Phaser Wind radius token (string)
+   * Note: The effective radius is automatically limited to half of the smallest dimension to prevent visual artifacts.
    */
   public setBorderRadius(borderRadius: RadiusKey | number): this {
     const newRadiusPx =
@@ -218,7 +220,7 @@ export class LinearProgress extends GameObjects.Container {
       -this.progressHeight / 2,
       this.progressWidth,
       this.progressHeight,
-      this.borderRadiusPx
+      this.getEffectiveBorderRadius()
     );
 
     this.backgroundProgressBar = bgGraphic;
@@ -232,7 +234,7 @@ export class LinearProgress extends GameObjects.Container {
       -this.progressHeight / 2,
       this.progressWidth,
       this.progressHeight,
-      this.borderRadiusPx
+      this.getEffectiveBorderRadius()
     );
 
     this.progressBar = progressBar;
@@ -308,5 +310,15 @@ export class LinearProgress extends GameObjects.Container {
     } else {
       this.updateProgressBar();
     }
+  }
+
+  /**
+   * Calculates the effective border radius, ensuring it doesn't exceed
+   * half of the smallest dimension to prevent visual artifacts
+   * @returns Limited border radius in pixels
+   */
+  private getEffectiveBorderRadius(): number {
+    const maxRadius = Math.min(this.progressWidth, this.progressHeight) / 2;
+    return Math.min(this.borderRadiusPx, maxRadius);
   }
 }

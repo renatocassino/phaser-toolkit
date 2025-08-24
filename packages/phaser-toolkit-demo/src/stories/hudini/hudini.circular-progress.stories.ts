@@ -164,7 +164,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
     create(): void {
         const { pw } = this.hudini;
-        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+        this.cameras.main.setBackgroundColor(pw.color.slate(500));
 
         // Main interactive progress
         this.progress = new CircularProgress({
@@ -174,7 +174,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
             icon: 'spinner',
             color: 'blue',
             size: 'xl',
-            rotationsPerSecond: 2,
+            rotationsPerSecond: 0.3,
         });
         this.add.existing(this.progress);
 
@@ -195,11 +195,11 @@ class PreviewScene extends SceneWithHudini<Theme> {
     private createShowcaseExamples(): void {
         const examples = [
             { x: 120, y: 80, icon: 'spinner', color: 'blue', size: 'sm', speed: 2, label: 'Default Spinner' },
-            { x: 280, y: 80, icon: 'gear', color: 'red', size: 'md', speed: 1, label: 'Slow Gear' },
-            { x: 440, y: 80, icon: 'rotate', color: 'green', size: 'lg', speed: 3, label: 'Fast Rotate' },
+            { x: 280, y: 80, icon: 'gear', color: 'pink', size: 'lg', speed: 0.2, label: 'Slow Gear' },
+            { x: 440, y: 80, icon: 'rotate', color: 'green', size: 'lg', speed: 1.4, label: 'Fast Rotate' },
             { x: 120, y: 320, icon: 'arrows-rotate', color: 'purple', size: 'xl', speed: 0.5, label: 'Very Slow' },
-            { x: 280, y: 320, icon: 'spinner', color: 'yellow', size: '2xl', speed: 4, label: 'Very Fast' },
-            { x: 440, y: 320, icon: 'gear', color: 'pink', size: 'lg', speed: 1.5, label: 'Medium Speed' },
+            { x: 280, y: 320, icon: 'spinner', color: 'yellow', size: '2xl', speed: 1.8, label: 'Very Fast' },
+            { x: 440, y: 320, icon: 'gear', color: 'pink', size: 'lg', speed: 1, label: 'Medium Speed' },
         ];
 
         examples.forEach(({ x, y, icon, color, size, speed, label }) => {
@@ -311,7 +311,7 @@ export const CircularProgressExample: StoryObj<{
         icon: 'spinner',
         color: 'blue',
         size: 'xl',
-        rotationsPerSecond: 2,
+        rotationsPerSecond: 0.2,
         isSpinning: true,
     },
     argTypes: {

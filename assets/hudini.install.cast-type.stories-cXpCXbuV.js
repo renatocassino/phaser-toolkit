@@ -1,12 +1,12 @@
-import{c as s,n as i,a as c,C as l,P as d,e as a,f as h,b as p}from"./create-game-B21kOgm7.js";import{c as m}from"./theme-manager-Bub9VCPw.js";import"./_commonjsHelpers-Cpj98o6Y.js";const r="phaser-wind-install-base-scene",y=`
+import{H as i,a}from"./plugin-D_XOWmjq.js";import{c as s,n as c,a as l,C as p}from"./create-game-C3tE16Ml.js";import{c as d}from"./theme-manager-DiU4aH8F.js";import"./webfontloader-CriEp546.js";import"./_commonjsHelpers-Cpj98o6Y.js";const o="hudini-install-cast-type",m=`
 import Phaser from 'phaser';
 import {
     Color,
     createTheme,
-    PHASER_WIND_KEY,
-    PhaserWindPlugin,
-    SceneWithPhaserWind
-} from 'phaser-wind';
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini
+} from 'hudini';
 
 const theme = createTheme({
     colors: {
@@ -18,13 +18,13 @@ const theme = createTheme({
 type Theme = typeof theme;
 
 
-class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWithPhaserWind to get the pw property
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this; // Don't need to cast to SceneWithPhaserWind<Theme> because we're using the generic type
+        const { pw } = (this as unknown as SceneWithHudini<Theme>); // cast to get the pw property
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         let y = 90;
@@ -61,7 +61,18 @@ class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWit
         // ❌ pw.color.rgb('invalid-color')
     }
 }
-`,P={title:"PhaserWind/Install/WithBaseScene",parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"},source:{language:"ts",code:y}}}},g=m({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class u extends p{constructor(){super("preview")}create(){const{pw:e}=this;this.cameras.main.setBackgroundColor(e.color.slate(900));let t=90;this.add.text(300,t,"Primary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("primary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Secondary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("secondary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Tertiary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("tertiary")}).setOrigin(.5)}}const o={render:()=>{const n=document.getElementById(r)??document.createElement("div");return n.id=r,n},play:async()=>{await s(),await i(3),c(r,{type:d.AUTO,width:600,height:400,backgroundColor:l.slate(900),parent:document.getElementById(r),scene:[u],plugins:{global:[{key:a,plugin:h,mapping:a,data:{theme:g}}]}})}};o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`{
+`,x={title:"Hudini/Install/WithCastType",parameters:{docs:{description:{component:"Examples of how to install and use Hudini"}}}},h=d({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class u extends Phaser.Scene{constructor(){super("preview")}create(){const{hudini:e}=this;this.cameras.main.setBackgroundColor(e.pw.color.slate(800));let t=90;this.add.text(300,t,"Primary color",{fontSize:e.pw.fontSize.css("2xl"),color:e.pw.color.rgb("primary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Secondary color",{fontSize:e.pw.fontSize.css("2xl"),color:e.pw.color.rgb("secondary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Tertiary color",{fontSize:e.pw.fontSize.css("2xl"),color:e.pw.color.rgb("tertiary")}).setOrigin(.5)}}const r={parameters:{docs:{description:{component:"Examples of how to install and use Hudini"},source:{language:"ts",code:m}}},render:()=>{const n=document.getElementById(o)??document.createElement("div");return n.id=o,n},play:async()=>{await s(),await c(2),l(o,{type:Phaser.AUTO,width:600,height:400,backgroundColor:p.slate(900),parent:document.getElementById(o),scene:[u],plugins:{global:[{key:i,plugin:a,mapping:i,data:{theme:h}}]}})}};r.parameters={...r.parameters,docs:{...r.parameters?.docs,source:{originalSource:`{
+  parameters: {
+    docs: {
+      description: {
+        component: 'Examples of how to install and use Hudini'
+      },
+      source: {
+        language: 'ts',
+        code: usageSnippet
+      }
+    }
+  },
   render: (): HTMLElement => {
     const root = document.getElementById(ID) ?? document.createElement('div');
     root.id = ID;
@@ -69,7 +80,7 @@ class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWit
   },
   play: async (): Promise<void> => {
     await cleanGames();
-    await nextFrames(3);
+    await nextFrames(2);
     createGame(ID, {
       type: Phaser.AUTO,
       width: 600,
@@ -79,9 +90,9 @@ class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWit
       scene: [PreviewScene],
       plugins: {
         global: [{
-          key: PHASER_WIND_KEY,
-          plugin: PhaserWindPlugin,
-          mapping: PHASER_WIND_KEY,
+          key: HUDINI_KEY,
+          plugin: HudiniPlugin,
+          mapping: HUDINI_KEY,
           data: {
             theme
           }
@@ -89,4 +100,4 @@ class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWit
       }
     });
   }
-}`,...o.parameters?.docs?.source}}};const W=["WithBaseScene"];export{o as WithBaseScene,W as __namedExportsOrder,P as default};
+}`,...r.parameters?.docs?.source}}};const I=["WithCastType"];export{r as WithCastType,I as __namedExportsOrder,x as default};

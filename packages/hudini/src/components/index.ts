@@ -1,3 +1,4 @@
+export * from './card';
 export * from './circular-progress';
 export * from './column';
 export * from './flat-icon-button';

@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.6.0
+
+### Minor Changes
+
+- 322e9b1: add new component circular spinner loading
+
 ## 0.5.0
 
 ### Minor Changes

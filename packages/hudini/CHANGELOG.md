@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.9.0
+
+### Minor Changes
+
+- 19a9db7: add component section-header
+
 ## 0.8.0
 
 ### Minor Changes

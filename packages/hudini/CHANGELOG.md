@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.7.0
+
+### Minor Changes
+
+- 9851153: add linear progress bar
+
 ## 0.6.0
 
 ### Minor Changes

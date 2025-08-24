@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "storybook dev -p 6006",
-    "build": "storybook build",
-    "storybook": "npm run dev",
-    "build-storybook": "npm run build"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5173",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "font-awesome-for-phaser": "link:../font-awesome-for-phaser",

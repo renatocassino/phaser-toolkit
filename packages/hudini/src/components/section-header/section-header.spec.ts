@@ -102,7 +102,7 @@ vi.mock('phaser', () => {
 
   class MockSprite {
     // eslint-disable-next-line no-unused-vars
-    constructor(_x: number, _y: number, _texture: string) {}
+    constructor(_x: number, _y: number, _texture: string) { }
     setOrigin(): this {
       return this;
     }
@@ -112,6 +112,9 @@ vi.mock('phaser', () => {
   }
 
   class MockGraphics {
+    clear(): this {
+      return this;
+    }
     fillStyle(): this {
       return this;
     }
@@ -128,8 +131,17 @@ vi.mock('phaser', () => {
 
   class Container {
     // eslint-disable-next-line no-unused-vars
-    constructor(_scene: Scene, _x: number, _y: number) {}
+    constructor(_scene: Scene, _x: number, _y: number) { }
     add(): this {
+      return this;
+    }
+    setInteractive(): this {
+      return this;
+    }
+    on(): this {
+      return this;
+    }
+    setScale(): this {
       return this;
     }
   }
@@ -152,7 +164,7 @@ vi.mock('phaser', () => {
   }
 
   class BasePlugin {
-    constructor() {}
+    constructor() { }
   }
 
   const GameObjects = { Container };

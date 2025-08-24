@@ -143,7 +143,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
   create(): void {
     const { pw } = this.hudini;
-    this.cameras.main.setBackgroundColor(pw.color.slate(900));
+    this.cameras.main.setBackgroundColor(pw.color.slate(400));
 
     const header = new SectionHeader({
       scene: this,
@@ -245,7 +245,7 @@ export const SectionHeaderExample: StoryObj<{
       type: Phaser.AUTO,
       width: 800,
       height: 600,
-      backgroundColor: Color.slate(900),
+      backgroundColor: Color.slate(500),
       parent: document.getElementById(ID) as HTMLElement,
       scene: [PreviewScene],
       plugins: {
@@ -333,7 +333,7 @@ export const SectionHeaderShowcase: StoryObj = {
 
       create(): void {
         const { pw } = this.hudini;
-        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+        this.cameras.main.setBackgroundColor(pw.color.slate(500));
 
         // Title
         const title = this.add.text(this.cameras.main.centerX, 40, 'SectionHeader Showcase', {
@@ -487,7 +487,7 @@ export const SectionHeaderShowcase: StoryObj = {
       type: Phaser.AUTO,
       width: 800,
       height: 600,
-      backgroundColor: Color.slate(900),
+      backgroundColor: Color.slate(500),
       parent: document.getElementById(showcaseId) as HTMLElement,
       scene: [ShowcaseScene],
       plugins: {

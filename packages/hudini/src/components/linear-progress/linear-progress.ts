@@ -29,15 +29,16 @@ export type LinearProgressParams = {
   progress?: number;
   /** Whether this is an indeterminate progress bar */
   indeterminate?: boolean;
+  /** Duration of the indeterminate animation in milliseconds */
+  indeterminateAnimationDuration?: number;
 };
 
 const A_HUNDRED = 100;
-const INDETERMINATE_BAR_WIDTH_RATIO = 0.3; // 30% of total width
 const INDETERMINATE_ANIMATION_DURATION = 1500; // 1.5 seconds
 
 export class LinearProgress extends GameObjects.Container {
-  public backgroundSprite!: GameObjects.Sprite;
-  public progressSprite!: GameObjects.Sprite;
+  public backgroundProgressBar!: GameObjects.Graphics;
+  public progressBar!: GameObjects.Graphics;
 
   private pw: PhaserWindPlugin<{}>;
   private progressWidth: number;
@@ -48,6 +49,7 @@ export class LinearProgress extends GameObjects.Container {
   private currentProgress: number;
   private isIndeterminate: boolean;
   private indeterminateAnimation?: Phaser.Tweens.Tween | undefined;
+  private indeterminateAnimationDuration: number;
 
   constructor({
     scene,
@@ -60,6 +62,7 @@ export class LinearProgress extends GameObjects.Container {
     borderRadius = 'default',
     progress = 0,
     indeterminate = false,
+    indeterminateAnimationDuration = INDETERMINATE_ANIMATION_DURATION,
   }: LinearProgressParams) {
     super(scene, x, y);
     this.pw = getPWFromScene(scene);
@@ -70,11 +73,14 @@ export class LinearProgress extends GameObjects.Container {
     this.progressColor = progressColor;
     this.currentProgress = Math.max(0, Math.min(A_HUNDRED, progress));
     this.isIndeterminate = indeterminate;
+    this.indeterminateAnimationDuration = indeterminateAnimationDuration;
     this.borderRadiusPx =
       typeof borderRadius === 'number'
         ? borderRadius
         : this.pw.radius.px(borderRadius as RadiusKey);
 
+    // @ts-ignore
+    window.component = this;
     this.createBackgroundSprite();
     this.createProgressSprite();
     this.setupContainer();
@@ -207,85 +213,51 @@ export class LinearProgress extends GameObjects.Container {
   }
 
   private createBackgroundSprite(): void {
-    const backgroundTexture = this.createBackgroundTexture();
-    this.backgroundSprite = this.scene.add.sprite(0, 0, backgroundTexture);
-    this.backgroundSprite.setOrigin(0.5, 0.5);
-  }
-
-  private createProgressSprite(): void {
-    const progressTexture = this.createProgressTexture();
-    this.progressSprite = this.scene.add.sprite(0, 0, progressTexture);
-    this.progressSprite.setOrigin(0.5, 0.5);
-  }
-
-  private createBackgroundTexture(): string {
-    const textureKey = `linearProgress_bg_${this.backgroundColor}_${this.progressWidth}x${this.progressHeight}_r${this.borderRadiusPx}`;
-
-    if (this.scene.textures.exists(textureKey)) {
-      return textureKey;
-    }
-
-    const graphics = this.scene.add.graphics();
-    const radius = Math.min(this.borderRadiusPx, Math.min(this.progressWidth, this.progressHeight) / 2);
-
-    graphics.fillStyle(Color.hex(this.backgroundColor), 1);
-    graphics.fillRoundedRect(
+    const bgGraphic = this.scene.add.graphics();
+    bgGraphic.fillStyle(Color.hex(this.backgroundColor), 1);
+    bgGraphic.fillRoundedRect(
       -this.progressWidth / 2,
       -this.progressHeight / 2,
       this.progressWidth,
       this.progressHeight,
-      radius
+      this.borderRadiusPx
     );
 
-    graphics.generateTexture(textureKey, this.progressWidth, this.progressHeight);
-    graphics.destroy();
-
-    return textureKey;
+    this.backgroundProgressBar = bgGraphic;
   }
 
-  private createProgressTexture(): string {
-    const width = this.isIndeterminate
-      ? this.progressWidth * INDETERMINATE_BAR_WIDTH_RATIO
-      : this.progressWidth;
-
-    const textureKey = `linearProgress_fill_${this.progressColor}_${width}x${this.progressHeight}_r${this.borderRadiusPx}_${this.isIndeterminate ? 'indeterminate' : 'determinate'}`;
-
-    if (this.scene.textures.exists(textureKey)) {
-      return textureKey;
-    }
-
-    const graphics = this.scene.add.graphics();
-    const radius = Math.min(this.borderRadiusPx, Math.min(width, this.progressHeight) / 2);
-
-    graphics.fillStyle(Color.hex(this.progressColor), 1);
-    graphics.fillRoundedRect(
-      -width / 2,
+  private createProgressSprite(): void {
+    const progressBar = this.scene.add.graphics();
+    progressBar.fillStyle(Color.hex(this.progressColor), 1);
+    progressBar.fillRoundedRect(
+      -this.progressWidth / 2,
       -this.progressHeight / 2,
-      width,
+      this.progressWidth,
       this.progressHeight,
-      radius
+      this.borderRadiusPx
     );
 
-    graphics.generateTexture(textureKey, width, this.progressHeight);
-    graphics.destroy();
-
-    return textureKey;
+    this.progressBar = progressBar;
   }
 
   private setupContainer(): void {
-    this.add([this.backgroundSprite, this.progressSprite]);
+    this.add([this.backgroundProgressBar, this.progressBar]);
   }
 
-  private updateProgressBar(): void {
-    if (this.isIndeterminate) {
+  private calculateProgressDimensions(): { progressWidth: number; leftOffset: number } {
+    const progressWidth = (this.progressWidth * this.currentProgress) / A_HUNDRED;
+    const leftOffset = (progressWidth - this.progressWidth) / 2;
+    return { progressWidth, leftOffset };
+  }
+
+  private updateProgressBar(force: boolean = false): void {
+    if (this.isIndeterminate && !force) {
       return;
     }
 
-    const progressWidth = (this.progressWidth * this.currentProgress) / A_HUNDRED;
-    const leftOffset = (progressWidth - this.progressWidth) / 2;
-
-    this.progressSprite.setScale(progressWidth / this.progressWidth, 1);
-    this.progressSprite.setX(leftOffset);
+    const { progressWidth, leftOffset } = this.calculateProgressDimensions();
+    this.progressBar.setScale(progressWidth / this.progressWidth, 1);
+    this.progressBar.setX(leftOffset);
   }
 
   private startIndeterminateAnimation(): void {
@@ -293,20 +265,21 @@ export class LinearProgress extends GameObjects.Container {
       return;
     }
 
-    const barWidth = this.progressWidth * INDETERMINATE_BAR_WIDTH_RATIO;
+    this.currentProgress = 40;
+    this.updateProgressBar(true);
+    const { progressWidth } = this.calculateProgressDimensions();
     // Calculate the movement range: the bar should move within the background bounds
     // The bar center can move from left edge + half bar width to right edge - half bar width
-    const maxX = (this.progressWidth / 2) - (barWidth / 2);
-    const minX = 0;
+    const maxX = (this.progressWidth / 2) - (progressWidth / 2);
+    const minX = -(this.progressWidth / 2) + (progressWidth / 2);
 
     // Start from the left
-    this.progressSprite.setX(minX);
-    this.progressSprite.setScale(1, 1);
+    this.progressBar.setX(minX);
 
     this.indeterminateAnimation = this.scene.tweens.add({
-      targets: this.progressSprite,
+      targets: this.progressBar,
       x: maxX,
-      duration: INDETERMINATE_ANIMATION_DURATION,
+      duration: this.indeterminateAnimationDuration,
       ease: 'Sine.easeInOut',
       yoyo: true,
       repeat: -1,
@@ -322,9 +295,9 @@ export class LinearProgress extends GameObjects.Container {
 
   private recreateSprites(): void {
     // Remove old sprites
-    this.remove([this.backgroundSprite, this.progressSprite]);
-    this.backgroundSprite.destroy();
-    this.progressSprite.destroy();
+    this.remove([this.backgroundProgressBar, this.progressBar]);
+    this.backgroundProgressBar.destroy();
+    this.progressBar.destroy();
 
     // Create new sprites with updated properties
     this.createBackgroundSprite();

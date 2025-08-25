@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.10.0
+
+### Minor Changes
+
+- ba1d4e0: add card component
+
 ## 0.9.0
 
 ### Minor Changes

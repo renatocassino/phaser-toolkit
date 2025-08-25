@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-magic-numbers */
 /* eslint-disable sonarjs/cognitive-complexity */

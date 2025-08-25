@@ -1,0 +1,73 @@
+{
+  "name": "phaser-sound-studio",
+  "version": "0.1.0",
+  "description": "Sound Studio for Phaser games",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --build --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint:report": "eslint src --ext .ts,.tsx --format html --output-file eslint-report.html",
+    "validate": "pnpm run lint && pnpm run typecheck && pnpm run test && lint-staged"
+  },
+  "keywords": [
+    "phaser",
+    "game-development",
+    "sound",
+    "studio",
+    "sound management",
+    "typescript"
+  ],
+  "author": "CassinoDev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renatocassino/phaser-toolkit.git",
+    "directory": "packages/phaser-sound-studio"
+  },
+  "bugs": {
+    "url": "https://github.com/renatocassino/phaser-toolkit/issues"
+  },
+  "homepage": "https://github.com/renatocassino/phaser-toolkit/tree/main/packages/phaser-sound-studio#readme",
+  "devDependencies": {
+    "@eslint-recommended/eslint-config": "^28.0.0",
+    "@types/node": "^24.2.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-security": "^1.7.1",
+    "eslint-plugin-sonarjs": "^0.23.0",
+    "eslint-plugin-unicorn": "^50.0.1",
+    "tsx": "^4.20.3",
+    "typescript": "^5.3.0",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "phaser": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

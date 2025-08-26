@@ -301,6 +301,9 @@ importers:
       phaser-hooks:
         specifier: link:../phaser-hooks
         version: link:../phaser-hooks
+      phaser-sound-studio:
+        specifier: link:../phaser-sound-studio
+        version: link:../phaser-sound-studio
       phaser-wind:
         specifier: link:../phaser-wind
         version: link:../phaser-wind

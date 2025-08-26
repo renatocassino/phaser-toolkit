@@ -14,7 +14,8 @@
     "phaser": "*",
     "phaser-hooks": "link:../phaser-hooks",
     "phaser-wind": "link:../phaser-wind",
-    "hudini": "link:../hudini"
+    "hudini": "link:../hudini",
+    "phaser-sound-studio": "link:../phaser-sound-studio"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "8.6.14",

@@ -89,7 +89,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 `;
 
 const meta: Meta = {
-    title: 'Hudini/Card',
+    title: 'Hudini/components/Card',
     component: Card,
     parameters: {
         docs: {

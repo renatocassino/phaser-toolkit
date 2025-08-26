@@ -47,8 +47,8 @@ const column = new Column({
 
 
 enum SountKeys {
-    MOUSE_HOVER,
-    MOUSE_CLICK,
+    MOUSE_HOVER = 'mouse-hover',
+    MOUSE_CLICK = 'mouse-click',
 }
 
 const soundKeys: SoundListConfig = {
@@ -88,7 +88,6 @@ class PreviewScene extends SceneWithHudini {
             textColor: 'white',
             text: 'Click me',
             onClick: (): void => {
-                console.log('Button clicked');
                 (this.plugins.get(PHASER_SOUND_STUDIO_KEY) as PhaserSoundStudioPlugin).play(this, SountKeys.MOUSE_CLICK);
             }
         });

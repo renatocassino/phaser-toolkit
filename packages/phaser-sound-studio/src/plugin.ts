@@ -65,8 +65,21 @@ export class PhaserSoundStudioPlugin extends Plugins.BasePlugin {
   play(scene: Scene, key: string): void {
     if (!this.loadedSounds.has(key)) {
       scene.load.audio(key, this.soundList[key]?.path);
+      // Wait for the audio to finish loading before proceeding
+      scene.load.once(Phaser.Loader.Events.COMPLETE, () => {
+        this.loadedSounds.add(key);
+        this.sounds[key] = scene.sound.add(key, this.soundList[key]);
+
+        scene.sound.play(key);
+      });
+      scene.load.start();
+      return;
     }
 
-    this.sounds[key]?.play();
+    // if (!(key in this.sounds)) {
+    //   throw new Error(`Sound ${key} not loaded`);
+    // }
+
+    scene.sound.play(key);
   }
 }

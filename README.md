@@ -1,4 +1,4 @@
-# Hhaser Toolkit
+# Phaser Toolkit
 
 A comprehensive collection of tools and utilities for game development with Phaser.
 

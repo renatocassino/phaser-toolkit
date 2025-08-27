@@ -18,16 +18,18 @@ import { withGlobalState } from './with-global-state';
  * ```
  */
 export const withPersistentState = <T>(
+  scene: Phaser.Scene,
   key: string,
   initialValue: T,
-  storageKey?: string
+  storageKey?: string,
+  storageType: 'session' | 'local' = 'local'
 ): HookState<T> => {
-  const actualStorageKey = storageKey ?? `phaser-state-${key}`;
+  const actualStorageKey = storageKey ?? `phaser-hooks-state:${key}`;
 
   // Load from localStorage if available
   let storedValue = initialValue;
   try {
-    const stored = localStorage.getItem(actualStorageKey);
+    const stored = storageType === 'local' ? localStorage.getItem(actualStorageKey) : sessionStorage.getItem(actualStorageKey);
     if (stored) {
       storedValue = JSON.parse(stored);
     }
@@ -39,12 +41,14 @@ export const withPersistentState = <T>(
     );
   }
 
-  const state = withGlobalState<T>(key, storedValue);
+  // @ts-ignore
+  const state = withGlobalState<T>(scene, key, storedValue);
 
   // Save to localStorage on changes
-  state.onChange(newValue => {
+  state.onChange((newValue: unknown) => {
     try {
-      localStorage.setItem(actualStorageKey, JSON.stringify(newValue));
+      const storage = storageType === 'local' ? localStorage : sessionStorage;
+      storage.setItem(actualStorageKey, JSON.stringify(newValue));
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn(

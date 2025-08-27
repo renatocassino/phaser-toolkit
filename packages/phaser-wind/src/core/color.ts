@@ -120,6 +120,10 @@ export type Color<T = BaseThemeConfig['colors']> = {
   /** Get hex number representation of a color */
   hex(color: ColorToken | keyof T): number;
 
+  /** Get RGB string for black color */
+  black(): string;
+  /** Get RGB string for white color */
+  white(): string;
   /** Get RGB string for slate color with specified shade */
   slate(shade: ShadeKey): string;
   /** Get RGB string for gray color with specified shade */
@@ -209,6 +213,10 @@ export type Color<T = BaseThemeConfig['colors']> = {
   pinkHex(shade: ShadeKey): number;
   /** Get hex number for rose color with specified shade */
   roseHex(shade: ShadeKey): number;
+  /** Get hex number for black color */
+  blackHex(): number;
+  /** Get hex number for white color */
+  whiteHex(): number;
 };
 
 /**
@@ -325,6 +333,8 @@ export const createColor = <T = BaseThemeConfig['colors']>(
     rgb,
     hex,
 
+    black: () => rgb('black'),
+    white: () => rgb('white'),
     slate: (shade: ShadeKey) => rgb(`slate-${shade}`),
     gray: (shade: ShadeKey) => rgb(`gray-${shade}`),
     zinc: (shade: ShadeKey) => rgb(`zinc-${shade}`),
@@ -348,6 +358,8 @@ export const createColor = <T = BaseThemeConfig['colors']>(
     pink: (shade: ShadeKey) => rgb(`pink-${shade}`),
     rose: (shade: ShadeKey) => rgb(`rose-${shade}`),
 
+    blackHex: () => hex('black'),
+    whiteHex: () => hex('white'),
     slateHex: (shade: ShadeKey) => hex(`slate-${shade}`),
     grayHex: (shade: ShadeKey) => hex(`gray-${shade}`),
     zincHex: (shade: ShadeKey) => hex(`zinc-${shade}`),

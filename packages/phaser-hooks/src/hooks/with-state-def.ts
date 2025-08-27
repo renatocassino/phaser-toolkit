@@ -24,6 +24,12 @@ export type StateDefOptions = {
    * @default false
    */
   debug?: boolean;
+
+  /**
+   * Whether to use global state
+   * @default false
+   */
+  global?: boolean;
 };
 
 /**
@@ -89,9 +95,13 @@ export const withStateDef = <T>(
     throw new Error('[withStateDef] Scene parameter is required');
   }
 
-  if (!scene.registry) {
+  if (options.global && !scene.registry) {
     throw new Error(
       '[withStateDef] Scene registry is not available. Ensure the scene is properly initialized.'
+    );
+  } else if (!options.global && !scene.data) {
+    throw new Error(
+      '[withStateDef] Scene data is not available. Ensure the scene is properly initialized.'
     );
   }
 
@@ -99,9 +109,8 @@ export const withStateDef = <T>(
     throw new Error('[withStateDef] Key must be a non-empty string');
   }
 
-  const { validator, debug = false } = options;
-  const registry = scene.registry;
-  const eventKey = `changedata-${key}`;
+  const { validator, debug = false, global = false } = options;
+  const registry = global ? scene.registry : scene.data;
 
   // Validate and set initial value if provided
   if (!registry.has(key) && initialValue !== undefined) {
@@ -176,8 +185,8 @@ export const withStateDef = <T>(
       throw new Error('[withStateDef] onChange callback must be a function');
     }
 
-    registry.events.on(
-      eventKey,
+    (global ? registry.events : scene.data.events).on(
+      `changedata-${key}`, // reserved word in Phaser
       (_parent: unknown, key: string, value: T, previousValue: T) => {
         if (debug) {
           // eslint-disable-next-line no-console

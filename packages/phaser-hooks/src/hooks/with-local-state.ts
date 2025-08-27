@@ -84,5 +84,6 @@ export const withLocalState = <T>(
   return withStateDef(scene, localKey, initialValue, {
     ...options,
     persistent: false, // Local state shouldn't persist across scene changes
+    global: false,
   });
 };

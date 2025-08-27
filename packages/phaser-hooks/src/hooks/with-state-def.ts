@@ -111,7 +111,6 @@ export const withStateDef = <T>(
 
   const { validator, debug = false, global = false } = options;
   const registry = global ? scene.registry : scene.data;
-  const eventKey = `changedata${global ? '-' : '_'}${key}`;
 
   // Validate and set initial value if provided
   if (!registry.has(key) && initialValue !== undefined) {
@@ -186,8 +185,8 @@ export const withStateDef = <T>(
       throw new Error('[withStateDef] onChange callback must be a function');
     }
 
-    registry.events.on(
-      eventKey,
+    (global ? registry.events : scene.data.events).on(
+      `changedata-${key}`, // reserved word in Phaser
       (_parent: unknown, key: string, value: T, previousValue: T) => {
         if (debug) {
           // eslint-disable-next-line no-console

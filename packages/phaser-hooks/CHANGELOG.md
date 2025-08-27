@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.2.0
+
+### Minor Changes
+
+- 98346a7: add support to multiple games in same page. Use registry to global and data to local
+
 ## 0.1.1
 
 ### Patch Changes

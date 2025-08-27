@@ -1,4 +1,4 @@
-import{c as i,n as c,a as l,C as p,P as s,e as a,f as d}from"./create-game-C3tE16Ml.js";import{c as m}from"./theme-manager-DiU4aH8F.js";import"./_commonjsHelpers-Cpj98o6Y.js";const r="phaser-wind-install-cast-type",h=`
+import{c as i,n as c,a as l,C as p,P as s,e as a,f as d}from"./create-game-Dqgfp28j.js";import{c as m}from"./theme-manager-DQEyBMi9.js";import"./_commonjsHelpers-Cpj98o6Y.js";const r="phaser-wind-install-cast-type",h=`
 import Phaser from 'phaser';
 import {
     Color,

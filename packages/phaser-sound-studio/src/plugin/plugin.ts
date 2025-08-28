@@ -137,6 +137,10 @@ export class PhaserSoundStudioPlugin<
      * @type {string | undefined}
      */
     this.gameName = gameName;
+
+    this.channels.forEach(channel => {
+      this.channelVolumes[channel] = 1.0;
+    });
   }
 
   /**
@@ -191,7 +195,15 @@ export class PhaserSoundStudioPlugin<
       this.lazyLoadPlay(scene, key);
       return;
     }
-    scene.sound.play(key);
+
+    const soundConfig = this.soundList[key];
+    if (!soundConfig) {
+      return;
+    }
+    const channelVolume = this.channelVolumes[soundConfig.channel] || 1;
+    const finalVolume = soundConfig.volume * channelVolume;
+
+    scene.sound.play(key, { volume: finalVolume });
   }
 
   /**
@@ -243,9 +255,11 @@ export class PhaserSoundStudioPlugin<
 
     Object.entries<SoundConfig<TChannel>>(this.soundList)
       .filter(s => s[1].channel === channel)
-      .forEach(([soundKey, sound]) => {
-        const finalVolume = sound.volume * volume;
-        this.sounds[soundKey]?.setVolume(finalVolume);
+      .forEach(([soundKey]) => {
+        const soundInstance = this.sounds[soundKey] ?? scene.sound.get(soundKey);
+        if (soundInstance && 'setVolume' in soundInstance) {
+          soundInstance.setVolume(volume);
+        }
       });
 
     this.saveChannelVolumes(scene);

@@ -21,20 +21,38 @@ export class PreviewScene extends SceneWithHudini<BaseThemeConfig> {
     preload(): void { }
 
     create(): void {
-        const state = withLocalState(this, 'test', 'test');
-        state.set('Local state definido na preview 1');
+        const state = withLocalState(this, 'localState', 'Local state defined in preview 1');
+        state.set('Local state defined in preview 1');
 
-        const globalState = withGlobalState(this, 'test', 'Global state definido na preview 1');
-        globalState.set('Global state definido na preview 1');
+        const globalState = withGlobalState(this, 'globalState', 'Global state defined in preview 1');
+        globalState.set('Global state defined in preview 1');
 
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
 
         this.add
-            .text(centerX, centerY - 180, 'Phaser Wind', {
+            .text(centerX, centerY - 180, 'Phaser Wind - Scene 1', {
                 color: Color.rgb('slate-200'),
                 align: 'center',
                 fontSize: FontSize.px('6xl'),
+            })
+            .setOrigin(0.5, 0.5);
+
+        // Display local state
+        this.add
+            .text(centerX, centerY - 100, `Local State: ${state.get()}`, {
+                color: Color.rgb('slate-300'),
+                align: 'center',
+                fontSize: FontSize.px('lg'),
+            })
+            .setOrigin(0.5, 0.5);
+
+        // Display global state
+        this.add
+            .text(centerX, centerY - 60, `Global State: ${globalState.get()}`, {
+                color: Color.rgb('slate-300'),
+                align: 'center',
+                fontSize: FontSize.px('lg'),
             })
             .setOrigin(0.5, 0.5);
 
@@ -65,21 +83,52 @@ export class PreviewScene2 extends SceneWithHudini<BaseThemeConfig> {
 
     create(): void {
 
-        const state = withLocalState(this, 'test', 'test');
-        console.log(state.get(), '<<<<< preview 2');
-
-        const globalState = withGlobalState(this, 'test', 'Global state definido na preview 2');
-        console.log(globalState.get(), '<<<<< preview 2');
+        debugger;
+        const state = withLocalState(this, 'localState');
+        const globalState = withGlobalState(this, 'globalState');
 
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
 
         this.add
-            .text(centerX, centerY - 180, 'Phaser Wind', {
+            .text(centerX, centerY - 180, 'Phaser Wind - Scene 2', {
                 color: Color.rgb('slate-200'),
                 align: 'center',
                 fontSize: FontSize.px('6xl'),
             })
+            .setOrigin(0.5, 0.5);
+
+        // Display local state (will show undefined as it's not shared between scenes)
+        this.add
+            .text(centerX, centerY - 100, `Local State: ${state.get()}`, {
+                color: Color.rgb('slate-300'),
+                align: 'center',
+                fontSize: FontSize.px('lg'),
+            })
+            .setOrigin(0.5, 0.5);
+
+        // Display global state (will show the value from preview 1)
+        this.add
+            .text(centerX, centerY - 60, `Global State: ${globalState.get()}`, {
+                color: Color.rgb('slate-300'),
+                align: 'center',
+                fontSize: FontSize.px('lg'),
+            })
+            .setOrigin(0.5, 0.5);
+
+        // Explanation about local and global state behavior
+        this.add
+            .text(
+                centerX,
+                centerY + 20,
+                'Note that in this scene, the localState did not bring the value from the other scene,\nbut the globalState did share the value between scenes.',
+                {
+                    color: Color.rgb('slate-400'),
+                    align: 'center',
+                    fontSize: FontSize.px('lg'),
+                    wordWrap: { width: 600 },
+                }
+            )
             .setOrigin(0.5, 0.5);
     }
 }

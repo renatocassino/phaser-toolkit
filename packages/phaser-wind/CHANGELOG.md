@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.6.0
+
+### Minor Changes
+
+- 7db28ab: add methods .black and .white
+
 ## 0.5.2
 
 ### Patch Changes

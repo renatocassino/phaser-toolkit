@@ -2,6 +2,45 @@
 
 A comprehensive state management library for Phaser games with React-like hooks pattern.
 
+## Why phaser-hooks?
+
+Phaser already gives you two ways of storing state:
+
+- `registry` → global state across the game
+- `data` → local state inside a scene or game object
+
+They work, but the API is a bit… verbose:
+
+```ts
+// Using registry (global)
+this.game.registry.set('volume', 0.5); // too boring
+const volume = this.game.registry.get('volume');
+this.game.registry.events.on('changedata-volume', (game, value) => {
+  console.log('Volume changed to', value);
+});
+
+// Using scene.data (local)
+this.data.set('score', 42); // too boring too
+const score = this.data.get('score');
+this.data.events.on('changedata-score', (scene, value) => {
+  console.log('Score updated to', value);
+});
+```
+
+With _phaser-hooks_, you get a simple, React-like API:
+
+```ts
+// Global state
+const volume = withGlobalState(scene, 'volume', 0.5); // woow! awesome
+volume.get(); // 0.5
+volume.set(0.8); // updates value
+volume.onChange(v => console.log('Volume changed →', v)); // Nice callback <3
+
+// Persisted state (localStorage / sessionStorage)
+const score = withPersistState(scene, 'score', 0, { storage: 'local' }); // Wow! Saving in localStorage
+score.set(100); // Update localStorage!! Wow! I love this lib <3
+```
+
 ## Installation
 
 ```bash
@@ -41,7 +80,7 @@ const playerState = withLocalState<PlayerData>(scene, 'player', {
 Application-wide state that persists across all scenes.
 
 ```typescript
-const settingsState = withGlobalState<GameSettings>('settings', {
+const settingsState = withGlobalState<GameSettings>(scene, 'settings', {
   soundVolume: 0.8,
   musicEnabled: true,
 });
@@ -66,10 +105,14 @@ const customState = withStateDef<number>(scene, 'score', {
 State with automatic localStorage persistence.
 
 ```typescript
-const persistentSettings = withPersistentState<UserSettings>('settings', {
-  volume: 0.8,
-  difficulty: 'normal',
-});
+const persistentSettings = withPersistentState<UserSettings>(
+  'settings',
+  {
+    volume: 0.8,
+    difficulty: 'normal',
+  },
+  'local' // If you want only in sessionStorage, you can set 'session'
+);
 ```
 
 #### `withComputedState`

@@ -69,5 +69,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "phaser-hooks": "workspace:^"
   }
 }

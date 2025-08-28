@@ -237,6 +237,9 @@ importers:
       phaser:
         specifier: 3.90.0
         version: 3.90.0
+      phaser-hooks:
+        specifier: workspace:^
+        version: link:../phaser-hooks
     devDependencies:
       '@eslint-recommended/eslint-config':
         specifier: ^28.0.0

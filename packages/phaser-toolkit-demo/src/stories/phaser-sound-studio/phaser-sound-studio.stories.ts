@@ -54,16 +54,25 @@ const SOUND_KEYS = {
 
 export type SoundKeys = typeof SOUND_KEYS[keyof typeof SOUND_KEYS];
 
-const soundKeys: SoundListConfig = {
+export const SOUND_CHANNELS = {
+    HUD: 'hud',
+    BACKGROUND: 'background',
+    SFX: 'sfx',
+    MUSIC: 'music',
+    VOICE: 'voice'
+} as const;
+export type ChannelKeys = typeof SOUND_CHANNELS[keyof typeof SOUND_CHANNELS];
+
+const soundKeys: SoundListConfig<SoundKeys, ChannelKeys> = {
     [SOUND_KEYS.MOUSE_HOVER]: {
-        channel: 'hud',
+        channel: SOUND_CHANNELS.HUD,
         volume: 1,
         loop: false,
         preload: true,
         path: '/sounds/ui-pop.m4a'
     },
     [SOUND_KEYS.MOUSE_CLICK]: {
-        channel: 'hud',
+        channel: SOUND_CHANNELS.HUD,
         volume: 1,
         loop: false,
         preload: true,
@@ -77,7 +86,7 @@ class PreviewScene extends SceneWithHudini {
     }
 
     preload(): void {
-        (this.plugins.get(PHASER_SOUND_STUDIO_KEY) as PhaserSoundStudioPlugin).loadAll(this);
+        getSoundStudio(this).loadAll(this);
     }
 
     create(): void {
@@ -91,7 +100,7 @@ class PreviewScene extends SceneWithHudini {
             textColor: 'white',
             text: 'Click me',
             onClick: (): void => {
-                getSoundStudio<SoundKeys>(this).play(this, SOUND_KEYS.MOUSE_CLICK);
+                getSoundStudio<SoundKeys, ChannelKeys>(this).play(this, SOUND_KEYS.MOUSE_CLICK);
             }
         });
 

@@ -195,6 +195,21 @@ export class PhaserSoundStudioPlugin<
   }
 
   /**
+   * Plays a sound by key only if it is not already playing.
+   * @param {Scene} scene - The Phaser scene to play the sound in.
+   * @param {TSoundKey} key - The key of the sound to play.
+   * @returns {void}
+   */
+  playOnce(scene: Scene, key: TSoundKey): void {
+    const sound = scene.sound.get(key);
+    if (sound?.isPlaying) {
+      return;
+    }
+
+    this.play(scene, key);
+  }
+
+  /**
    * Lazy loads a sound by key in the given scene.
    * @param {Scene} scene - The Phaser scene to load the sound into.
    * @param {TSoundKey} key - The key of the sound to load.

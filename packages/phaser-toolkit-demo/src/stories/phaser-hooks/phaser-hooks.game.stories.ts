@@ -306,18 +306,18 @@ export class LocalStorageScene extends SceneWithHudini<BaseThemeConfig> {
 }
 
 const meta: Meta = {
-    title: 'Phaser Hooks/Game Example',
+    title: 'Phaser Hooks/Examples',
     parameters: {
         docs: {
             description: {
-                component: 'A basic game example using Phaser Hooks for state management',
+                component: 'Examples using Phaser Hooks for state management',
             },
         },
     },
 };
 export default meta;
 
-export const GameExample: StoryObj = {
+export const LocalStateVsGlobalState: StoryObj = {
     render: (): HTMLElement => {
         const root = document.createElement('div');
         root.id = ID;

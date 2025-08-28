@@ -4,6 +4,7 @@
 /* eslint-disable complexity */
 import type { Meta, StoryObj } from '@storybook/html';
 import {
+    Color,
     defaultLightTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -12,7 +13,7 @@ import {
     TextButton
 } from 'hudini';
 import Phaser from 'phaser';
-import { PHASER_SOUND_STUDIO_KEY, PhaserSoundStudioPlugin, PhaserSoundStudioPluginData, SoundListConfig } from 'phaser-sound-studio';
+import { getSoundStudio, PHASER_SOUND_STUDIO_KEY, PhaserSoundStudioPlugin, PhaserSoundStudioPluginData, SoundListConfig } from 'phaser-sound-studio';
 
 import { cleanGames, createGame } from '../helpers/create-game';
 import { nextFrames } from '../helpers/next-tick';
@@ -46,20 +47,22 @@ const column = new Column({
 `;
 
 
-enum SountKeys {
-    MOUSE_HOVER = 'mouse-hover',
-    MOUSE_CLICK = 'mouse-click',
-}
+const SOUND_KEYS = {
+    MOUSE_HOVER: 'mouse-hover',
+    MOUSE_CLICK: 'mouse-click',
+} as const;
+
+export type SoundKeys = typeof SOUND_KEYS[keyof typeof SOUND_KEYS];
 
 const soundKeys: SoundListConfig = {
-    [SountKeys.MOUSE_HOVER]: {
+    [SOUND_KEYS.MOUSE_HOVER]: {
         channel: 'hud',
         volume: 1,
         loop: false,
         preload: true,
         path: '/sounds/ui-pop.m4a'
     },
-    [SountKeys.MOUSE_CLICK]: {
+    [SOUND_KEYS.MOUSE_CLICK]: {
         channel: 'hud',
         volume: 1,
         loop: false,
@@ -88,7 +91,7 @@ class PreviewScene extends SceneWithHudini {
             textColor: 'white',
             text: 'Click me',
             onClick: (): void => {
-                (this.plugins.get(PHASER_SOUND_STUDIO_KEY) as PhaserSoundStudioPlugin).play(this, SountKeys.MOUSE_CLICK);
+                getSoundStudio<SoundKeys>(this).play(this, SOUND_KEYS.MOUSE_CLICK);
             }
         });
 
@@ -125,7 +128,7 @@ export const Default: Story = {
             type: Phaser.AUTO,
             width: 800,
             height: 600,
-            backgroundColor: '#F00',
+            backgroundColor: Color.rgb('slate-900'),
             parent: document.getElementById(ID) as HTMLElement,
             scene: [PreviewScene],
             plugins: {

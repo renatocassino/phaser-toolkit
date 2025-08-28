@@ -6,4 +6,4 @@ export type SoundConfig = {
     path: string;
 }
 
-export type SoundListConfig = Record<string, SoundConfig>;
+export type SoundListConfig<T extends string = string> = Record<T, SoundConfig>;

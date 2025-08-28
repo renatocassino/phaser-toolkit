@@ -1,6 +1,6 @@
 import { Plugins, Scene } from 'phaser';
 
-import { SoundListConfig } from './types';
+import { SoundListConfig } from '../types';
 
 export const PHASER_SOUND_STUDIO_KEY: string = 'soundStudio';
 
@@ -11,8 +11,8 @@ export const PHASER_SOUND_STUDIO_KEY: string = 'soundStudio';
  * @property {SoundListConfig} [soundList] - List of sounds to be loaded
  * @property {string[]} [channels] - List of channels to be used
  */
-export type PhaserSoundStudioPluginData = {
-  soundList: SoundListConfig;
+export type PhaserSoundStudioPluginData<T extends string = string> = {
+  soundList: SoundListConfig<T>;
   channels: string[];
   storage: 'local' | 'session';
 };
@@ -21,10 +21,10 @@ export type PhaserSoundStudioPluginData = {
  * Phaser Wind Plugin class that manages theme configuration
  * @extends Plugins.BasePlugin
  */
-export class PhaserSoundStudioPlugin extends Plugins.BasePlugin {
-  private soundList: SoundListConfig;
-  private channels: string[];
-  private storage: 'local' | 'session';
+export class PhaserSoundStudioPlugin<T extends string = string> extends Plugins.BasePlugin {
+  private soundList: SoundListConfig<T>;
+  public channels: string[]
+  public storage: 'local' | 'session'
   private loadedSounds: Set<string> = new Set();
 
   protected sounds: Partial<Record<string, Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound>> = {};
@@ -35,21 +35,12 @@ export class PhaserSoundStudioPlugin extends Plugins.BasePlugin {
    */
   constructor(pluginManager: Plugins.PluginManager) {
     super(pluginManager);
-    this.soundList = {};
+    this.soundList = {} as SoundListConfig<T>;
     this.channels = [];
     this.storage = 'local';
-
-    // @ts-ignore
-    window.a = {
-      soundList: this.soundList,
-      channels: this.channels,
-      storage: this.storage,
-      loadedSounds: this.loadedSounds,
-      sounds: this.sounds,
-    }
   }
 
-  override init({ soundList, channels, storage }: PhaserSoundStudioPluginData): void {
+  override init({ soundList, channels, storage }: PhaserSoundStudioPluginData<T>): void {
     this.soundList = soundList;
     this.channels = channels;
     this.storage = storage;
@@ -57,12 +48,14 @@ export class PhaserSoundStudioPlugin extends Plugins.BasePlugin {
 
   loadAll(scene: Scene): void {
     for (const [key, sound] of Object.entries(this.soundList)) {
-      scene.load.audio(key, sound.path);
-      this.loadedSounds.add(key);
+      if (typeof sound === 'object' && sound !== null && 'path' in sound) {
+        scene.load.audio(key as T, (sound as { path: string }).path);
+        this.loadedSounds.add(key);
+      }
     }
   }
 
-  play(scene: Scene, key: string): void {
+  play(scene: Scene, key: T): void {
     if (!this.loadedSounds.has(key)) {
       scene.load.audio(key, this.soundList[key]?.path);
       // Wait for the audio to finish loading before proceeding

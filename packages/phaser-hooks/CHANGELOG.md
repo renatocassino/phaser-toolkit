@@ -1,5 +1,12 @@
 # phaser-hooks
 
+## 0.2.1
+
+### Patch Changes
+
+- f8b0fc4: add channels in plugin
+  fix global hooks
+
 ## 0.2.0
 
 ### Minor Changes

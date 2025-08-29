@@ -1,8 +1,6 @@
-name: CI
+name: Check Storybook Build
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -64,3 +62,31 @@ jobs:
           name: dist-files
           path: packages/*/dist
           retention-days: 1
+
+  build-storybook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build libs
+        run: pnpm build
+
+      - name: Build Storybook (demo)
+        run: pnpm build-storybook

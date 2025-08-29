@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "storybook build",
     "storybook": "npm run dev",
     "build-storybook": "npm run build"
   },

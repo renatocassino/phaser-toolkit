@@ -1,4 +1,4 @@
-import { withPersistentState } from 'packages/phaser-hooks/dist';
+import { withPersistentState } from 'packages/phaser-hooks';
 import { Plugins, Scene } from 'phaser';
 
 import { SoundConfig, SoundListConfig } from '../types';

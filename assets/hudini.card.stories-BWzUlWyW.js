@@ -48,7 +48,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
         this.add.existing(card);
     }
 }
-`,Z={title:"Hudini/Card",component:t,parameters:{docs:{description:{component:`A flexible card component that adapts to its child content size, using phaser-wind tokens for styling.
+`,Z={title:"Hudini/components/Card",component:t,parameters:{docs:{description:{component:`A flexible card component that adapts to its child content size, using phaser-wind tokens for styling.
 
 ${N}
 

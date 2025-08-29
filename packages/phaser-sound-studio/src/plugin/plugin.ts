@@ -76,20 +76,6 @@ export class PhaserSoundStudioPlugin<
   public gameName: string | undefined;
 
   /**
-   * Map of sound keys to Phaser sound objects.
-   * @type {Partial<Record<string, Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound>>}
-   * @protected
-   */
-  protected sounds: Partial<
-    Record<
-      string,
-      | Phaser.Sound.NoAudioSound
-      | Phaser.Sound.HTML5AudioSound
-      | Phaser.Sound.WebAudioSound
-    >
-  > = {};
-
-  /**
    * Creates an instance of PhaserSoundStudioPlugin.
    * @param {Plugins.PluginManager} pluginManager - Phaser plugin manager instance.
    */
@@ -156,14 +142,6 @@ export class PhaserSoundStudioPlugin<
       scene.load.audio(key as TSoundKey, sound.path);
     }
 
-    scene.load.once('complete', () => {
-      for (const [key, sound] of soundsToLoad) {
-        this.sounds[key] = scene.sound.add(key, {
-          volume: this.channelVolumes[sound.channel] ?? 1,
-          loop: sound.loop ?? false,
-        });
-      }
-    });
     this.loadChannelVolumes(scene);
   }
 
@@ -211,7 +189,6 @@ export class PhaserSoundStudioPlugin<
       return;
     }
     const channelVolume = this.channelVolumes[soundConfig.channel] ?? 1;
-
     scene.sound.play(key, { volume: channelVolume });
   }
 
@@ -245,7 +222,7 @@ export class PhaserSoundStudioPlugin<
     scene.load.audio(key, path);
     // Wait for the audio to finish loading before proceeding
     scene.load.once(`filecomplete-audio-${key}`, () => {
-      this.sounds[key] = scene.sound.add(key, {
+      scene.sound.add(key, {
         volume: this.channelVolumes[this.soundList[key].channel] ?? 1,
         loop: this.soundList[key].loop ?? false,
       });
@@ -268,14 +245,15 @@ export class PhaserSoundStudioPlugin<
         `Volume must be between 0 and 1. Setting volume to ${volume} instead in channel ${channel}.`
       );
     }
+
     this.channelVolumes[channel] = volume;
 
     Object.entries<SoundConfig<TChannel>>(this.soundList)
       .filter(s => s[1].channel === channel)
       .forEach(([soundKey]) => {
-        const soundInstance = this.sounds[soundKey] ?? scene.sound.get(soundKey);
+        const soundInstance = scene.sound.get(soundKey);
         if (soundInstance && 'setVolume' in soundInstance) {
-          soundInstance.setVolume(volume);
+          (soundInstance as Phaser.Sound.HTML5AudioSound).setVolume(volume);
         }
       });
 

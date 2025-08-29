@@ -149,9 +149,13 @@ export class PhaserSoundStudioPlugin<
    * @returns {void}
    */
   loadAll(scene: Scene): void {
-    for (const [key, sound] of Object.entries(this.soundList)) {
-      if (typeof sound === 'object' && sound !== null && 'path' in sound) {
-        scene.load.audio(key as TSoundKey, (sound as { path: string }).path);
+    for (const [key, sound] of Object.entries<SoundConfig<TChannel>>(this.soundList)) {
+      if (sound.preload !== false) {
+        scene.load.audio(key as TSoundKey, sound.path);
+        this.sounds[key] = scene.sound.add(key, {
+          volume: this.channelVolumes[sound.channel] ?? 1,
+          loop: sound.loop ?? false,
+        });
       }
     }
     this.loadChannelVolumes(scene);
@@ -200,10 +204,9 @@ export class PhaserSoundStudioPlugin<
     if (!soundConfig) {
       return;
     }
-    const channelVolume = this.channelVolumes[soundConfig.channel] || 1;
-    const finalVolume = soundConfig.volume * channelVolume;
+    const channelVolume = this.channelVolumes[soundConfig.channel] ?? 1;
 
-    scene.sound.play(key, { volume: finalVolume });
+    scene.sound.play(key, { volume: channelVolume });
   }
 
   /**
@@ -228,10 +231,18 @@ export class PhaserSoundStudioPlugin<
    * @returns {void}
    */
   public lazyLoadPlay(scene: Scene, key: TSoundKey): void {
-    scene.load.audio(key, this.soundList[key]?.path);
+    const path = this.soundList[key]?.path;
+    if (!path) {
+      return;
+    }
+
+    scene.load.audio(key, path);
     // Wait for the audio to finish loading before proceeding
     scene.load.once(`filecomplete-audio-${key}`, () => {
-      this.sounds[key] = scene.sound.add(key, this.soundList[key]);
+      this.sounds[key] = scene.sound.add(key, {
+        volume: this.channelVolumes[this.soundList[key].channel] ?? 1,
+        loop: this.soundList[key].loop ?? false,
+      });
       scene.sound.play(key);
     });
   }

@@ -52,31 +52,29 @@ const SOUND_KEYS = {
     MOUSE_CLICK: 'mouse-click',
 } as const;
 
-export type SoundKeys = typeof SOUND_KEYS[keyof typeof SOUND_KEYS];
+type SoundKeys = typeof SOUND_KEYS[keyof typeof SOUND_KEYS];
 
-export const SOUND_CHANNELS = {
+const SOUND_CHANNELS = {
     HUD: 'hud',
     BACKGROUND: 'background',
     SFX: 'sfx',
     MUSIC: 'music',
     VOICE: 'voice'
 } as const;
-export type ChannelKeys = typeof SOUND_CHANNELS[keyof typeof SOUND_CHANNELS];
+type ChannelKeys = typeof SOUND_CHANNELS[keyof typeof SOUND_CHANNELS];
 
 const soundKeys: SoundListConfig<SoundKeys, ChannelKeys> = {
     [SOUND_KEYS.MOUSE_HOVER]: {
         channel: SOUND_CHANNELS.HUD,
-        volume: 1,
-        loop: false,
         preload: true,
-        path: '/sounds/ui-pop.m4a'
+        path: '/sounds/ui-pop.m4a',
+        loop: false,
     },
     [SOUND_KEYS.MOUSE_CLICK]: {
         channel: SOUND_CHANNELS.HUD,
-        volume: 1,
-        loop: false,
         preload: true,
-        path: '/sounds/click.mp3'
+        path: '/sounds/click.mp3',
+        loop: false,
     }
 }
 

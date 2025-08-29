@@ -22,7 +22,7 @@ export type SectionHeaderParams = {
   /** Text content of the header */
   text: string;
   /** Font size in px (number) or a Phaser Wind font size token (string). Defaults to 'lg'. */
-  textSize?: FontSizeKey | number;
+  fontSize?: FontSizeKey | number;
   /** Font family. Defaults to 'display'. */
   font?: FontKey | string;
   /** Background color. Defaults to 'blue-600'. */
@@ -60,7 +60,7 @@ export class SectionHeader extends GameObjects.Container {
   /** Reference to the PhaserWind plugin */
   private pw: PhaserWindPlugin<{}>;
   /** Font size in pixels */
-  private textSizePx!: number;
+  private fontSizePx!: number;
   /** Margin size in pixels */
   private marginPx!: number;
   /** Border radius in pixels */
@@ -85,7 +85,7 @@ export class SectionHeader extends GameObjects.Container {
     x,
     y,
     text,
-    textSize,
+    fontSize,
     font,
     backgroundColor = 'blue-600',
     textColor = 'white',
@@ -98,10 +98,10 @@ export class SectionHeader extends GameObjects.Container {
 
     // Store values
     this.textValue = text;
-    this.textSizePx =
-      typeof textSize === 'number'
-        ? textSize
-        : this.pw.fontSize.px(textSize ?? ('lg' as FontSizeKey));
+    this.fontSizePx =
+      typeof fontSize === 'number'
+        ? fontSize
+        : this.pw.fontSize.px(fontSize ?? ('lg' as FontSizeKey));
     this.marginPx =
       typeof margin === 'number'
         ? margin
@@ -142,15 +142,15 @@ export class SectionHeader extends GameObjects.Container {
 
   /**
    * Sets the font size of the header text
-   * @param textSize New font size (number in px or FontSizeKey)
+   * @param fontSize New font size (number in px or FontSizeKey)
    * @returns this for chaining
    */
-  public setTextSize(textSize: FontSizeKey | number): this {
-    this.textSizePx =
-      typeof textSize === 'number'
-        ? textSize
-        : this.pw.fontSize.px(textSize ?? ('lg' as FontSizeKey));
-    this.headerText.setFontSize(this.textSizePx);
+  public setFontSize(fontSize: FontSizeKey | number): this {
+    this.fontSizePx =
+      typeof fontSize === 'number'
+        ? fontSize
+        : this.pw.fontSize.px(fontSize ?? ('lg' as FontSizeKey));
+    this.headerText.setFontSize(this.fontSizePx);
     this.regenerateGraphics();
     return this;
   }
@@ -239,7 +239,7 @@ export class SectionHeader extends GameObjects.Container {
    */
   private createHeaderText(scene: Scene): void {
     this.headerText = scene.add.text(0, 0, this.textValue, {
-      fontSize: `${this.textSizePx}px`,
+      fontSize: `${this.fontSizePx}px`,
       fontFamily: this.fontValue,
       color: this.textColorValue,
       stroke: this.strokeColorValue,

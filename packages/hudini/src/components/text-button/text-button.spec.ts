@@ -95,7 +95,7 @@ vi.mock('phaser', () => {
 
   class MockSprite {
     // eslint-disable-next-line no-unused-vars
-    constructor(_x: number, _y: number, _texture: string) {}
+    constructor(_x: number, _y: number, _texture: string) { }
     setOrigin(): this {
       return this;
     }
@@ -146,7 +146,7 @@ vi.mock('phaser', () => {
   }
 
   class BasePlugin {
-    constructor() {}
+    constructor() { }
   }
 
   const GameObjects = { Container: MockContainer };
@@ -178,7 +178,7 @@ describe('TextButton', () => {
       x: 100,
       y: 100,
       text: 'Custom Button',
-      textSize: 'lg',
+      fontSize: 'lg',
       backgroundColor: 'red',
       textColor: 'white',
       borderRadius: 'lg',
@@ -199,7 +199,7 @@ describe('TextButton', () => {
 
     const result = textButton
       .setText('Chained')
-      .setTextSize('lg')
+      .setFontSize('lg')
       .setBackgroundColor('green')
       .setBorderRadius('lg')
       .setMargin('4');

@@ -149,15 +149,21 @@ export class PhaserSoundStudioPlugin<
    * @returns {void}
    */
   loadAll(scene: Scene): void {
-    for (const [key, sound] of Object.entries<SoundConfig<TChannel>>(this.soundList)) {
-      if (sound.preload !== false) {
-        scene.load.audio(key as TSoundKey, sound.path);
+    const soundsToLoad = Object.entries<SoundConfig<TChannel>>(this.soundList)
+      .filter((s) => s[1].preload !== false);
+
+    for (const [key, sound] of soundsToLoad) {
+      scene.load.audio(key as TSoundKey, sound.path);
+    }
+
+    scene.load.once('complete', () => {
+      for (const [key, sound] of soundsToLoad) {
         this.sounds[key] = scene.sound.add(key, {
           volume: this.channelVolumes[sound.channel] ?? 1,
           loop: sound.loop ?? false,
         });
       }
-    }
+    });
     this.loadChannelVolumes(scene);
   }
 

@@ -314,7 +314,7 @@ class ShowcaseScene extends SceneWithHudini<Theme> {
             x: 0,
             y: 0,
             text: 'Header Card',
-            textSize: 'lg',
+            fontSize: 'lg',
             backgroundColor: 'purple-600',
             textColor: 'white',
             borderRadius: 'md',

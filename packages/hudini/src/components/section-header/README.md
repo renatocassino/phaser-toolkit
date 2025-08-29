@@ -39,7 +39,7 @@ export type SectionHeaderParams = {
   text: string; // Texto do cabeçalho
 
   // Opcionais com padrões sensatos
-  textSize?: FontSizeKey | number; // Tamanho da fonte ('xs', 'sm', 'base', 'lg', 'xl'... ou px) - padrão: 'lg'
+  fontSize?: FontSizeKey | number; // Tamanho da fonte ('xs', 'sm', 'base', 'lg', 'xl'... ou px) - padrão: 'lg'
   font?: FontKey | string; // Família da fonte ('primary', 'secondary', 'monospace', 'display') - padrão: 'display'
   backgroundColor?: ColorKey | string; // Cor de fundo (tokens ou CSS) - padrão: 'blue-600'
   textColor?: ColorKey | string; // Cor do texto (tokens ou CSS) - padrão: 'white'
@@ -59,7 +59,7 @@ const mainHeader = new SectionHeader({
   x: 400,
   y: 80,
   text: 'MAIN MENU',
-  textSize: 'xl',
+  fontSize: 'xl',
   font: 'display',
   backgroundColor: 'slate-700',
   textColor: 'white',
@@ -77,7 +77,7 @@ const sectionHeader = new SectionHeader({
   x: 200,
   y: 150,
   text: 'Audio Settings',
-  textSize: 'lg',
+  fontSize: 'lg',
   backgroundColor: 'green-600',
   textColor: 'white',
   borderRadius: 'md',
@@ -93,7 +93,7 @@ const pillHeader = new SectionHeader({
   x: 300,
   y: 200,
   text: '🏆 Achievements',
-  textSize: 'lg',
+  fontSize: 'lg',
   backgroundColor: 'yellow-600',
   textColor: 'white',
   strokeColor: 'yellow-800',
@@ -115,7 +115,7 @@ const dynamicHeader = new SectionHeader({
 // Customizar usando method chaining
 dynamicHeader
   .setText('Updated Title')
-  .setTextSize('2xl')
+  .setFontSize('2xl')
   .setBackgroundColor('purple-600')
   .setTextColor('white')
   .setStrokeColor('purple-800')
@@ -132,7 +132,7 @@ dynamicHeader
 header.setText('New Title'): SectionHeader
 
 // Atualizar tamanho da fonte
-header.setTextSize('xl' | 24): SectionHeader
+header.setFontSize('xl' | 24): SectionHeader
 
 // Atualizar fonte
 header.setFont('display' | 'Arial, sans-serif'): SectionHeader

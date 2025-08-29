@@ -196,7 +196,7 @@ describe('SectionHeader', () => {
       x: 100,
       y: 100,
       text: 'Custom Header',
-      textSize: 'xl',
+      fontSize: 'xl',
       font: 'display',
       backgroundColor: 'purple-600',
       textColor: 'white',

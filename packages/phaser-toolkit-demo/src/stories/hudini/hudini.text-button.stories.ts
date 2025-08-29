@@ -12,8 +12,8 @@ import {
   SceneWithHudini,
   TextButton,
   type ColorKey,
-  type SpacingKey,
-  type RadiusKey
+  type RadiusKey,
+  type SpacingKey
 } from 'hudini';
 import Phaser from 'phaser';
 
@@ -88,7 +88,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
                 x: 100 + (i * 120),
                 y: y,
                 text: 'Click Me!',
-                textSize: 'lg',
+                fontSize: 'lg',
                 backgroundColor: \`${'${color}'}-600\`,
                 textColor: 'white',
                 borderRadius: 'md',
@@ -138,7 +138,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
       x: this.cameras.main.centerX,
       y: this.cameras.main.centerY,
       text: 'Hello World!',
-      textSize: 'lg',
+      fontSize: 'lg',
       font: 'primary',
       backgroundColor: 'blue-600',
       textColor: 'white',
@@ -155,7 +155,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
       'props:update',
       (p: {
         text: string;
-        textSize: FontSizeKey;
+        fontSize: FontSizeKey;
         font: string;
         backgroundColor: string;
         textColor: string;
@@ -167,7 +167,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
   private applyProps(p: {
     text: string;
-    textSize: FontSizeKey;
+    fontSize: FontSizeKey;
     font: string;
     backgroundColor: string;
     textColor: string;
@@ -176,7 +176,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
   }): void {
     if (!this.button) return;
     this.button.setText(p.text);
-    this.button.setTextSize(p.textSize);
+    this.button.setFontSize(p.fontSize);
     this.button.setFont(p.font);
     this.button.setBackgroundColor(p.backgroundColor);
     this.button.setTextColor(p.textColor);
@@ -187,7 +187,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
 export const TextButtonExample: StoryObj<{
   text: string;
-  textSize: number | string;
+  fontSize: number | string;
   font: string;
   backgroundColor: string;
   textColor: string;
@@ -205,7 +205,7 @@ export const TextButtonExample: StoryObj<{
 
       scene.events.emit('props:update', args as {
         text: string;
-        textSize: number | string;
+        fontSize: number | string;
         font: string;
         backgroundColor: string;
         textColor: string;
@@ -249,7 +249,7 @@ export const TextButtonExample: StoryObj<{
   },
   args: {
     text: 'Hello World!',
-    textSize: 'lg',
+    fontSize: 'lg',
     font: 'primary',
     backgroundColor: 'blue-600',
     textColor: 'white',
@@ -261,7 +261,7 @@ export const TextButtonExample: StoryObj<{
       control: 'text',
       description: 'The text content of the button',
     },
-    textSize: {
+    fontSize: {
       control: 'select',
       options: sizeTokens as unknown as string[],
       description: 'Font size token or pixel value',
@@ -304,7 +304,7 @@ export const TextButtonShowcase: StoryObj = {
   },
   play: async (): Promise<void> => {
     const showcaseId = 'hudini-text-button-showcase';
-    
+
     class ShowcaseScene extends SceneWithHudini<Theme> {
       constructor() {
         super('showcase');
@@ -330,7 +330,7 @@ export const TextButtonShowcase: StoryObj = {
             x: 150 + (index * 150),
             y: 150,
             text: `Size ${size}`,
-            textSize: size,
+            fontSize: size,
             backgroundColor: 'blue-600',
             textColor: 'white',
             borderRadius: 'md',
@@ -348,7 +348,7 @@ export const TextButtonShowcase: StoryObj = {
             x: 150 + (index * 150),
             y: 230,
             text: color.split('-')[0].toUpperCase(),
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: color,
             textColor: 'white',
             borderRadius: 'lg',
@@ -366,7 +366,7 @@ export const TextButtonShowcase: StoryObj = {
             x: 150 + (index * 150),
             y: 310,
             text: radius === 'full' ? 'Fully Rounded' : `${radius}`,
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: 'gray-600',
             textColor: 'white',
             borderRadius: radius,
@@ -384,7 +384,7 @@ export const TextButtonShowcase: StoryObj = {
             x: 150 + (index * 150),
             y: 390,
             text: `Margin ${margin}`,
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: 'indigo-600',
             textColor: 'white',
             borderRadius: 'md',
@@ -402,7 +402,7 @@ export const TextButtonShowcase: StoryObj = {
             x: 150 + (index * 150),
             y: 470,
             text: font,
-            textSize: 'base',
+            fontSize: 'base',
             font: font,
             backgroundColor: 'teal-600',
             textColor: 'white',

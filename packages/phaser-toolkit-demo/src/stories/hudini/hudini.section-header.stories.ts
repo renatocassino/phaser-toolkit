@@ -83,7 +83,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
             x: this.cameras.main.centerX,
             y: 100,
             text: 'Game Settings',
-            textSize: 'xl',
+            fontSize: 'xl',
             backgroundColor: 'blue-600',
             textColor: 'white',
             borderRadius: 'lg',
@@ -104,7 +104,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
                 x: 200 + (index * 200),
                 y: 200,
                 text: section.text,
-                textSize: 'lg',
+                fontSize: 'lg',
                 backgroundColor: section.color,
                 textColor: 'white',
                 borderRadius: 'md',
@@ -150,7 +150,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
       x: this.cameras.main.centerX,
       y: this.cameras.main.centerY,
       text: 'Section Title',
-      textSize: 'xl',
+      fontSize: 'xl',
       font: 'display',
       backgroundColor: 'blue-600',
       textColor: 'white',
@@ -165,7 +165,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
       'props:update',
       (p: {
         text: string;
-        textSize: FontSizeKey;
+        fontSize: FontSizeKey;
         font: string;
         backgroundColor: string;
         textColor: string;
@@ -178,7 +178,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
   private applyProps(p: {
     text: string;
-    textSize: FontSizeKey;
+    fontSize: FontSizeKey;
     font: string;
     backgroundColor: string;
     textColor: string;
@@ -188,7 +188,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
   }): void {
     if (!this.header) return;
     this.header.setText(p.text);
-    this.header.setTextSize(p.textSize);
+    this.header.setFontSize(p.fontSize);
     this.header.setFont(p.font);
     this.header.setBackgroundColor(p.backgroundColor);
     this.header.setTextColor(p.textColor);
@@ -200,7 +200,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
 export const SectionHeaderExample: StoryObj<{
   text: string;
-  textSize: number | string;
+  fontSize: number | string;
   font: string;
   backgroundColor: string;
   textColor: string;
@@ -219,7 +219,7 @@ export const SectionHeaderExample: StoryObj<{
 
       scene.events.emit('props:update', args as {
         text: string;
-        textSize: number | string;
+        fontSize: number | string;
         font: string;
         backgroundColor: string;
         textColor: string;
@@ -264,7 +264,7 @@ export const SectionHeaderExample: StoryObj<{
   },
   args: {
     text: 'Section Title',
-    textSize: 'xl',
+    fontSize: 'xl',
     font: 'display',
     backgroundColor: 'blue-600',
     textColor: 'white',
@@ -277,7 +277,7 @@ export const SectionHeaderExample: StoryObj<{
       control: 'text',
       description: 'The text content of the section header',
     },
-    textSize: {
+    fontSize: {
       control: 'select',
       options: sizeTokens as unknown as string[],
       description: 'Font size token or pixel value',
@@ -351,7 +351,7 @@ export const SectionHeaderShowcase: StoryObj = {
             x: 200 + (index * 150),
             y: 100,
             text: `Size ${size}`,
-            textSize: size,
+            fontSize: size,
             backgroundColor: 'indigo-600',
             textColor: 'white',
             borderRadius: 'md',
@@ -369,7 +369,7 @@ export const SectionHeaderShowcase: StoryObj = {
             x: 200 + (index * 150),
             y: 180,
             text: panelNames[index] as string,
-            textSize: 'lg',
+            fontSize: 'lg',
             backgroundColor: color,
             textColor: 'white',
             borderRadius: 'lg',
@@ -386,7 +386,7 @@ export const SectionHeaderShowcase: StoryObj = {
             x: 200 + (index * 150),
             y: 260,
             text: radius === 'full' ? 'Pill Style' : `${radius}`,
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: 'gray-600',
             textColor: 'white',
             borderRadius: radius,
@@ -403,7 +403,7 @@ export const SectionHeaderShowcase: StoryObj = {
             x: 200 + (index * 150),
             y: 340,
             text: `Margin ${margin}`,
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: 'teal-600',
             textColor: 'white',
             borderRadius: 'md',
@@ -421,7 +421,7 @@ export const SectionHeaderShowcase: StoryObj = {
             x: 200 + (index * 150),
             y: 420,
             text: fontTexts[index] as string,
-            textSize: 'base',
+            fontSize: 'base',
             font: font,
             backgroundColor: 'orange-600',
             textColor: 'white',
@@ -440,7 +440,7 @@ export const SectionHeaderShowcase: StoryObj = {
           x: 150,
           y: usageY,
           text: 'MAIN MENU',
-          textSize: 'xl',
+          fontSize: 'xl',
           font: 'display',
           backgroundColor: 'slate-700',
           textColor: 'white',
@@ -456,7 +456,7 @@ export const SectionHeaderShowcase: StoryObj = {
           x: 400,
           y: usageY,
           text: 'Options',
-          textSize: 'lg',
+          fontSize: 'lg',
           backgroundColor: 'blue-500',
           textColor: 'white',
           borderRadius: 'md',
@@ -470,7 +470,7 @@ export const SectionHeaderShowcase: StoryObj = {
           x: 600,
           y: usageY,
           text: '🏆 Achievements',
-          textSize: 'lg',
+          fontSize: 'lg',
           backgroundColor: 'yellow-600',
           textColor: 'white',
           strokeColor: 'yellow-800',

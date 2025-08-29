@@ -40,7 +40,7 @@ export type TextButtonParams = {
   text: string; // Texto do botão
 
   // Opcionais com padrões sensatos
-  textSize?: FontSizeKey | number; // Tamanho da fonte ('xs', 'sm', 'md', 'lg', 'xl' ou px)
+  fontSize?: FontSizeKey | number; // Tamanho da fonte ('xs', 'sm', 'md', 'lg', 'xl' ou px)
   font?: FontKey | string; // Família da fonte ('primary', 'secondary', 'monospace', 'display')
   backgroundColor?: ColorKey | string; // Cor de fundo (tokens ou CSS)
   textColor?: ColorKey | string; // Cor do texto (tokens ou CSS)
@@ -60,7 +60,7 @@ const customButton = new TextButton({
   x: 200,
   y: 200,
   text: 'Custom Style',
-  textSize: 'lg',
+  fontSize: 'lg',
   font: 'display',
   backgroundColor: 'emerald-500',
   textColor: 'white',
@@ -80,7 +80,7 @@ const pixelButton = new TextButton({
   x: 300,
   y: 400,
   text: 'Pixel Perfect',
-  textSize: 18,
+  fontSize: 18,
   backgroundColor: '#3B82F6',
   textColor: '#FFFFFF',
   borderRadius: 12,
@@ -101,7 +101,7 @@ const dynamicButton = new TextButton({
 // Customizar usando method chaining
 dynamicButton
   .setText('Updated Text')
-  .setTextSize('xl')
+  .setFontSize('xl')
   .setBackgroundColor('red-600')
   .setTextColor('white')
   .setBorderRadius('full')
@@ -117,7 +117,7 @@ dynamicButton
 button.setText('New Text'): TextButton
 
 // Atualizar tamanho da fonte
-button.setTextSize('lg' | 20): TextButton
+button.setFontSize('lg' | 20): TextButton
 
 // Atualizar fonte
 button.setFont('monospace' | 'Arial, sans-serif'): TextButton

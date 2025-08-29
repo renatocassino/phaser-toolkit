@@ -70,8 +70,6 @@ pnpm add phaser-sound-studio
 ```ts
 // src/config/audio.config.ts
 import {
-  SOUND_CHANNELS,
-  SOUND_KEYS,
   getSoundStudio,
 } from 'phaser-sound-studio';
 

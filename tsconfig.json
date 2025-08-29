@@ -29,7 +29,8 @@
       "phaser-wind": ["./packages/phaser-wind"],
       "phaser-hooks": ["./packages/phaser-hooks"],
       "font-awesome-for-phaser": ["./packages/font-awesome-for-phaser"],
-      "hudini": ["./packages/hudini"]
+      "hudini": ["./packages/hudini"],
+      "phaser-sound-studio": ["./packages/phaser-sound-studio"]
     }
   },
   "include": [

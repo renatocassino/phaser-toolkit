@@ -20,6 +20,7 @@ Briefly describe the changes in this PR.
 - [ ] phaser-hooks
 - [ ] phaser-wind
 - [ ] hudini
+- [ ] phaser-sound-studio
 - [ ] phaser-toolkit-demo
 - [ ] Other (please specify): **\*\***\_\_\_**\*\***
 

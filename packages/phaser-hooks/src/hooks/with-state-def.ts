@@ -125,7 +125,11 @@ export const withStateDef = <T>(
       }
     }
 
-    registry.set(key, initialValue);
+    if (global) {
+      registry.set(key, initialValue);
+    } else {
+      scene.data.set(key, initialValue);
+    }
 
     if (debug) {
       // eslint-disable-next-line no-console

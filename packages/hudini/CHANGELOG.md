@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.11.0
+
+### Minor Changes
+
+- 83965bf: add function to get hudini
+
 ## 0.10.1
 
 ### Patch Changes

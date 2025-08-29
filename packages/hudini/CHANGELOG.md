@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.11.1
+
+### Patch Changes
+
+- ced8448: fix getHudini and fix load sounds
+
 ## 0.11.0
 
 ### Minor Changes

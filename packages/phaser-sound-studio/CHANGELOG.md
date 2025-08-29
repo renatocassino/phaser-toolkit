@@ -1,5 +1,11 @@
 # phaser-sound-studio
 
+## 0.3.1
+
+### Patch Changes
+
+- ced8448: fix getHudini and fix load sounds
+
 ## 0.3.0
 
 ### Minor Changes

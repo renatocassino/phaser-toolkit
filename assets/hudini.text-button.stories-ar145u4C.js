@@ -1,4 +1,4 @@
-import{H as u,a as x,T as c}from"./plugin-HFtBARcL.js";import{c as C,n as h,a as b,C as f,P as m,g}from"./create-game-Dqgfp28j.js";import{c as T}from"./theme-manager-DQEyBMi9.js";import{S as k}from"./scene-with-hudini-DCgcD6-P.js";import"./webfontloader-VUTCp1vF.js";import"./_commonjsHelpers-Cpj98o6Y.js";const r="hudini-text-button",S=["red","blue","green","yellow","purple","orange","pink","gray"],z=["400","500","600","700"],p=[...S.flatMap(n=>z.map(t=>`${n}-${t}`)),"white","black"],E=["none","sm","md","lg","xl","full"],I=["xs","sm","base","lg","xl","2xl","3xl","4xl","5xl","6xl","7xl","8xl","9xl"],B=["0","1","2","3","4","5","6","8","10","12","16","20"],v=["primary","secondary","monospace","display"],R=`
+import{H as u,a as h,T as c}from"./plugin-vm0A8zqt.js";import{c as C,n as x,a as b,C as f,P as m,g}from"./create-game-Dqgfp28j.js";import{c as S}from"./theme-manager-DQEyBMi9.js";import{S as k}from"./scene-with-hudini-DCgcD6-P.js";import"./webfontloader-VUTCp1vF.js";import"./_commonjsHelpers-Cpj98o6Y.js";const r="hudini-text-button",T=["red","blue","green","yellow","purple","orange","pink","gray"],z=["400","500","600","700"],p=[...T.flatMap(t=>z.map(n=>`${t}-${n}`)),"white","black"],E=["none","sm","md","lg","xl","full"],I=["xs","sm","base","lg","xl","2xl","3xl","4xl","5xl","6xl","7xl","8xl","9xl"],B=["0","1","2","3","4","5","6","8","10","12","16","20"],v=["primary","secondary","monospace","display"],R=`
 import Phaser from 'phaser';
 import {
     Color,
@@ -35,7 +35,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
                 x: 100 + (i * 120),
                 y: y,
                 text: 'Click Me!',
-                textSize: 'lg',
+                fontSize: 'lg',
                 backgroundColor: \`\${color}-600\`,
                 textColor: 'white',
                 borderRadius: 'md',
@@ -49,7 +49,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
         }
     }
 }
-`,O={title:"Hudini/Components/TextButton",parameters:{docs:{description:{component:"Text button with auto-sizing and full customization support. The button automatically adjusts its size based on the text content plus margin."},source:{language:"ts",code:R}}}},w=T({});class H extends k{button;constructor(){super("preview")}create(){const{pw:t}=this.hudini;this.cameras.main.setBackgroundColor(t.color.slate(900));const a=new c({scene:this,x:this.cameras.main.centerX,y:this.cameras.main.centerY,text:"Hello World!",textSize:"lg",font:"primary",backgroundColor:"blue-600",textColor:"white",borderRadius:"md",margin:"4",onClick:()=>{console.log("TextButton clicked!")}});this.add.existing(a),this.button=a,this.events.on("props:update",i=>this.applyProps(i))}applyProps(t){this.button&&(this.button.setText(t.text),this.button.setTextSize(t.textSize),this.button.setFont(t.font),this.button.setBackgroundColor(t.backgroundColor),this.button.setTextColor(t.textColor),this.button.setBorderRadius(t.borderRadius),this.button.setMargin(t.margin))}}const l={render:n=>{const t=document.getElementById(r)??document.createElement("div");t.id=r;const a=()=>{const i=g(r);if(!i)return;(i.scene.getScene("preview")??i.scene.getScene("preview")).events.emit("props:update",n)};return g(r)?a():g(r)?.events.once(m.Core.Events.READY,a),t},play:async()=>{C(),await h(3),b(r,{type:m.AUTO,width:800,height:600,backgroundColor:f.slate(900),parent:document.getElementById(r),scene:[H],plugins:{global:[{key:u,plugin:x,mapping:u,data:{theme:w}}]}})},args:{text:"Hello World!",textSize:"lg",font:"primary",backgroundColor:"blue-600",textColor:"white",borderRadius:"md",margin:"4"},argTypes:{text:{control:"text",description:"The text content of the button"},textSize:{control:"select",options:I,description:"Font size token or pixel value"},font:{control:"select",options:v,description:"Font family token"},backgroundColor:{control:"select",options:p,description:'Background color token (e.g., "blue-600")'},textColor:{control:"select",options:p,description:"Text color token"},borderRadius:{control:"select",options:E,description:"Border radius token or pixel value"},margin:{control:"select",options:B,description:"Internal margin/padding token or pixel value"}}},d={render:()=>{const n="hudini-text-button-showcase",t=document.getElementById(n)??document.createElement("div");return t.id=n,t},play:async()=>{const n="hudini-text-button-showcase";class t extends k{constructor(){super("showcase")}create(){const{pw:i}=this.hudini;this.cameras.main.setBackgroundColor(i.color.slate(900)),this.add.text(this.cameras.main.centerX,50,"TextButton Showcase",{fontSize:"24px",color:"#ffffff",fontFamily:"Arial, sans-serif"}).setOrigin(.5),["sm","base","lg","xl"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:150,text:`Size ${e}`,textSize:e,backgroundColor:"blue-600",textColor:"white",borderRadius:"md",margin:"3",onClick:()=>console.log(`Size ${e} clicked`)});this.add.existing(s)}),["red-500","green-500","purple-500","orange-500"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:230,text:e.split("-")[0].toUpperCase(),textSize:"base",backgroundColor:e,textColor:"white",borderRadius:"lg",margin:"4",onClick:()=>console.log(`${e} clicked`)});this.add.existing(s)}),["none","sm","lg","full"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:310,text:e==="full"?"Fully Rounded":`${e}`,textSize:"base",backgroundColor:"gray-600",textColor:"white",borderRadius:e,margin:"4",onClick:()=>console.log(`Radius ${e} clicked`)});this.add.existing(s)}),["2","4","6","8"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:390,text:`Margin ${e}`,textSize:"base",backgroundColor:"indigo-600",textColor:"white",borderRadius:"md",margin:e,onClick:()=>console.log(`Margin ${e} clicked`)});this.add.existing(s)}),["primary","secondary","monospace","display"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:470,text:e,textSize:"base",font:e,backgroundColor:"teal-600",textColor:"white",borderRadius:"md",margin:"4",onClick:()=>console.log(`Font ${e} clicked`)});this.add.existing(s)})}}await h(3),b(n,{type:m.AUTO,width:800,height:600,backgroundColor:f.slate(900),parent:document.getElementById(n),scene:[t],plugins:{global:[{key:u,plugin:x,mapping:u,data:{theme:w}}]}})},parameters:{docs:{description:{story:"Showcase of different TextButton configurations showing various sizes, colors, border radiuses, margins, and fonts."}}}};l.parameters={...l.parameters,docs:{...l.parameters?.docs,source:{originalSource:`{
+`,O={title:"Hudini/Components/TextButton",parameters:{docs:{description:{component:"Text button with auto-sizing and full customization support. The button automatically adjusts its size based on the text content plus margin."},source:{language:"ts",code:R}}}},w=S({});class H extends k{button;constructor(){super("preview")}create(){const{pw:n}=this.hudini;this.cameras.main.setBackgroundColor(n.color.slate(900));const a=new c({scene:this,x:this.cameras.main.centerX,y:this.cameras.main.centerY,text:"Hello World!",fontSize:"lg",font:"primary",backgroundColor:"blue-600",textColor:"white",borderRadius:"md",margin:"4",onClick:()=>{console.log("TextButton clicked!")}});this.add.existing(a),this.button=a,this.events.on("props:update",i=>this.applyProps(i))}applyProps(n){this.button&&(this.button.setText(n.text),this.button.setFontSize(n.fontSize),this.button.setFont(n.font),this.button.setBackgroundColor(n.backgroundColor),this.button.setTextColor(n.textColor),this.button.setBorderRadius(n.borderRadius),this.button.setMargin(n.margin))}}const l={render:t=>{const n=document.getElementById(r)??document.createElement("div");n.id=r;const a=()=>{const i=g(r);if(!i)return;(i.scene.getScene("preview")??i.scene.getScene("preview")).events.emit("props:update",t)};return g(r)?a():g(r)?.events.once(m.Core.Events.READY,a),n},play:async()=>{C(),await x(3),b(r,{type:m.AUTO,width:800,height:600,backgroundColor:f.slate(900),parent:document.getElementById(r),scene:[H],plugins:{global:[{key:u,plugin:h,mapping:u,data:{theme:w}}]}})},args:{text:"Hello World!",fontSize:"lg",font:"primary",backgroundColor:"blue-600",textColor:"white",borderRadius:"md",margin:"4"},argTypes:{text:{control:"text",description:"The text content of the button"},fontSize:{control:"select",options:I,description:"Font size token or pixel value"},font:{control:"select",options:v,description:"Font family token"},backgroundColor:{control:"select",options:p,description:'Background color token (e.g., "blue-600")'},textColor:{control:"select",options:p,description:"Text color token"},borderRadius:{control:"select",options:E,description:"Border radius token or pixel value"},margin:{control:"select",options:B,description:"Internal margin/padding token or pixel value"}}},d={render:()=>{const t="hudini-text-button-showcase",n=document.getElementById(t)??document.createElement("div");return n.id=t,n},play:async()=>{const t="hudini-text-button-showcase";class n extends k{constructor(){super("showcase")}create(){const{pw:i}=this.hudini;this.cameras.main.setBackgroundColor(i.color.slate(900)),this.add.text(this.cameras.main.centerX,50,"TextButton Showcase",{fontSize:"24px",color:"#ffffff",fontFamily:"Arial, sans-serif"}).setOrigin(.5),["sm","base","lg","xl"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:150,text:`Size ${e}`,fontSize:e,backgroundColor:"blue-600",textColor:"white",borderRadius:"md",margin:"3",onClick:()=>console.log(`Size ${e} clicked`)});this.add.existing(s)}),["red-500","green-500","purple-500","orange-500"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:230,text:e.split("-")[0].toUpperCase(),fontSize:"base",backgroundColor:e,textColor:"white",borderRadius:"lg",margin:"4",onClick:()=>console.log(`${e} clicked`)});this.add.existing(s)}),["none","sm","lg","full"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:310,text:e==="full"?"Fully Rounded":`${e}`,fontSize:"base",backgroundColor:"gray-600",textColor:"white",borderRadius:e,margin:"4",onClick:()=>console.log(`Radius ${e} clicked`)});this.add.existing(s)}),["2","4","6","8"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:390,text:`Margin ${e}`,fontSize:"base",backgroundColor:"indigo-600",textColor:"white",borderRadius:"md",margin:e,onClick:()=>console.log(`Margin ${e} clicked`)});this.add.existing(s)}),["primary","secondary","monospace","display"].forEach((e,o)=>{const s=new c({scene:this,x:150+o*150,y:470,text:e,fontSize:"base",font:e,backgroundColor:"teal-600",textColor:"white",borderRadius:"md",margin:"4",onClick:()=>console.log(`Font ${e} clicked`)});this.add.existing(s)})}}await x(3),b(t,{type:m.AUTO,width:800,height:600,backgroundColor:f.slate(900),parent:document.getElementById(t),scene:[n],plugins:{global:[{key:u,plugin:h,mapping:u,data:{theme:w}}]}})},parameters:{docs:{description:{story:"Showcase of different TextButton configurations showing various sizes, colors, border radiuses, margins, and fonts."}}}};l.parameters={...l.parameters,docs:{...l.parameters?.docs,source:{originalSource:`{
   render: (args: Args): HTMLElement => {
     const root = document.getElementById(ID) ?? document.createElement('div');
     root.id = ID;
@@ -59,7 +59,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
       const scene = (game.scene.getScene('preview') ?? game.scene.getScene('preview')) as PreviewScene;
       scene.events.emit('props:update', args as {
         text: string;
-        textSize: number | string;
+        fontSize: number | string;
         font: string;
         backgroundColor: string;
         textColor: string;
@@ -98,7 +98,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
   },
   args: {
     text: 'Hello World!',
-    textSize: 'lg',
+    fontSize: 'lg',
     font: 'primary',
     backgroundColor: 'blue-600',
     textColor: 'white',
@@ -110,7 +110,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
       control: 'text',
       description: 'The text content of the button'
     },
-    textSize: {
+    fontSize: {
       control: 'select',
       options: sizeTokens as unknown as string[],
       description: 'Font size token or pixel value'
@@ -176,7 +176,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
             x: 150 + index * 150,
             y: 150,
             text: \`Size \${size}\`,
-            textSize: size,
+            fontSize: size,
             backgroundColor: 'blue-600',
             textColor: 'white',
             borderRadius: 'md',
@@ -194,7 +194,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
             x: 150 + index * 150,
             y: 230,
             text: color.split('-')[0].toUpperCase(),
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: color,
             textColor: 'white',
             borderRadius: 'lg',
@@ -212,7 +212,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
             x: 150 + index * 150,
             y: 310,
             text: radius === 'full' ? 'Fully Rounded' : \`\${radius}\`,
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: 'gray-600',
             textColor: 'white',
             borderRadius: radius,
@@ -230,7 +230,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
             x: 150 + index * 150,
             y: 390,
             text: \`Margin \${margin}\`,
-            textSize: 'base',
+            fontSize: 'base',
             backgroundColor: 'indigo-600',
             textColor: 'white',
             borderRadius: 'md',
@@ -248,7 +248,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
             x: 150 + index * 150,
             y: 470,
             text: font,
-            textSize: 'base',
+            fontSize: 'base',
             font: font,
             backgroundColor: 'teal-600',
             textColor: 'white',

@@ -167,22 +167,11 @@ export class PhaserSoundStudioPlugin<
 
   /**
    * Plays a sound by key in the given scene. If the sound is not loaded, it loads and then plays it.
-   * @param {Scene} scene - The Phaser scene to play the sound in.
    * @param {TSoundKey} key - The key of the sound to play.
    * @returns {void}
    */
-  play(scene: Scene, key: TSoundKey): void {
-    if (!scene.cache.audio.has(key)) {
-      this.lazyLoadPlay(scene, key);
-      return;
-    }
-
-    const soundConfig = this.soundList[key];
-    if (!soundConfig) {
-      return;
-    }
-    const channelVolume = this.channelVolumes[soundConfig.channel] ?? 1;
-    scene.sound.play(key, { volume: channelVolume });
+  play(key: TSoundKey): void {
+    this.soundPlayer.play(key);
   }
 
   /**
@@ -197,7 +186,7 @@ export class PhaserSoundStudioPlugin<
       return;
     }
 
-    this.play(scene, key);
+    this.play(key);
   }
 
   /**
@@ -213,13 +202,8 @@ export class PhaserSoundStudioPlugin<
     }
 
     scene.load.audio(key, path);
-    // Wait for the audio to finish loading before proceeding
     scene.load.once(`filecomplete-audio-${key}`, () => {
-      scene.sound.add(key, {
-        volume: this.channelVolumes[this.soundList[key].channel] ?? 1,
-        loop: this.soundList[key].loop ?? false,
-      });
-      scene.sound.play(key);
+      this.play(key);
     });
   }
 

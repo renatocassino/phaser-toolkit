@@ -1,5 +1,11 @@
 # phaser-sound-studio
 
+## 0.4.0
+
+### Minor Changes
+
+- d53ef0a: add support to pool
+
 ## 0.3.2
 
 ### Patch Changes

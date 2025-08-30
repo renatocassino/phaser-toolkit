@@ -62,4 +62,55 @@ describe('SoundLoader', () => {
             expect(scene.load.audio).not.toHaveBeenCalled();
         });
     });
+
+    describe('loadByChannel', () => {
+        it('typecheck error', () => {
+            const gameMock = factoryGameMock();
+            const basePlugin = factoryPluginBase({ game: gameMock });
+            const scene = factorySceneMock();
+            const soundLoaderPlugin = new SoundLoader<GameSounds, GameChannels>(basePlugin);
+
+            // @ts-check
+            soundLoaderPlugin.loadByChannel(scene, 'hud');
+
+            // @ts-check
+            soundLoaderPlugin.loadByChannel(scene, 'music');
+
+            // @ts-check
+            soundLoaderPlugin.loadByChannel(scene, 'sfx');
+
+            // @ts-expect-error invalid channel
+            soundLoaderPlugin.loadByChannel(scene, 'invalid-channel');
+        });
+
+        it('should load the sounds by channel when the sounds are not loaded', () => {
+            const gameMock = factoryGameMock();
+            gameMock.cache.audio.has = vi.fn().mockReturnValue(false);
+
+            const plugin = factoryPluginBase({ game: gameMock });
+            const scene = factorySceneMock();
+
+            const soundLoaderPlugin = new SoundLoader<GameSounds, GameChannels>(plugin);
+            soundLoaderPlugin.loadByChannel(scene, 'hud');
+
+            expect(scene.load.audio).toHaveBeenCalledTimes(2);
+            expect(scene.load.audio).toHaveBeenCalledWith('button-hover', audioConfig.soundList['button-hover'].path);
+            expect(scene.load.audio).toHaveBeenCalledWith('button-click', audioConfig.soundList['button-click'].path);
+            expect(gameMock.cache.audio.has).toHaveBeenCalledWith('button-hover');
+        });
+
+        it('should not load the sounds by channel when the sounds are already loaded', () => {
+            const gameMock = factoryGameMock();
+            gameMock.cache.audio.has = vi.fn().mockReturnValue(true);
+
+            const plugin = factoryPluginBase({ game: gameMock });
+            const scene = factorySceneMock();
+
+            const soundLoaderPlugin = new SoundLoader<GameSounds, GameChannels>(plugin);
+            soundLoaderPlugin.loadByChannel(scene, 'hud');
+
+            expect(scene.load.audio).not.toHaveBeenCalled();
+            expect(gameMock.cache.audio.has).toHaveBeenCalledWith('button-hover');
+        });
+    });
 });

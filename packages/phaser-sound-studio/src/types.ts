@@ -16,12 +16,14 @@ export type SoundConfig<TChannel extends string = string> = {
     path: string;
 };
 
-export type ChannelConfig<TChannel extends string = string> = Record<TChannel, {
+export type ChannelItem = {
     mode?: 'single';
 } | {
     mode: 'multiple';
     maxInstances?: number;
-}>;
+}
+
+export type ChannelConfig<TChannel extends string = string> = Record<TChannel, ChannelItem>;
 
 /**
  * Configuration object for a list of sounds.

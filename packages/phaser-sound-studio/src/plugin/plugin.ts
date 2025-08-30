@@ -3,6 +3,7 @@ import { withPersistentState } from 'phaser-hooks';
 
 import { SoundLoader } from '../core/sound-loader';
 import { SoundPlayer } from '../core/sound-player';
+import { SoundRegistry } from '../core/sound-registry';
 import type {
   ChannelConfig,
   PhaserSoundStudioPluginData,
@@ -46,6 +47,13 @@ export class PhaserSoundStudioPlugin<
    * @public
    */
   public soundLoader: SoundLoader<TSoundKey, TChannel>;
+
+  /**
+   * The sound registry instance.
+   * @type {SoundRegistry<TSoundKey, TChannel>}
+   * @public
+   */
+  public soundRegistry: SoundRegistry<TSoundKey, TChannel>;
 
   /**
    * The list of sound configurations.
@@ -95,6 +103,7 @@ export class PhaserSoundStudioPlugin<
     this.channels = {} as ChannelConfig<TChannel>;
     this.storage = 'local';
     this.soundPlayer = new SoundPlayer<TSoundKey>(this);
+    this.soundRegistry = new SoundRegistry<TSoundKey, TChannel>(this);
   }
 
   /**
@@ -109,21 +118,9 @@ export class PhaserSoundStudioPlugin<
     storage,
     gameName,
   }: PhaserSoundStudioPluginData<TSoundKey, TChannel>): void {
-    /**
-     * @type {SoundListConfig<TSoundKey, TChannel>}
-     */
     this.soundList = soundList;
-    /**
-     * @type {TChannel[]}
-     */
     this.channels = channels;
-    /**
-     * @type {'local' | 'session'}
-     */
     this.storage = storage;
-    /**
-     * @type {string | undefined}
-     */
     this.gameName = gameName;
 
     Object.keys(channels).forEach((channel) => {
@@ -154,11 +151,7 @@ export class PhaserSoundStudioPlugin<
    * @returns {void}
    */
   loadByChannel(scene: Scene, channel: TChannel): void {
-    Object.entries<SoundConfig<TChannel>>(this.soundList)
-      .filter(s => s[1].channel === channel)
-      .forEach(([soundKey, sound]) => {
-        scene.load.audio(soundKey, sound.path);
-      });
+    this.soundLoader.loadByChannel(scene, channel);
     this.loadChannelVolumes(scene);
   }
 

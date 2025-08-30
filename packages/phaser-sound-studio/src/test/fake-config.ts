@@ -1,4 +1,4 @@
-import type { PhaserSoundStudioPluginData, SoundListConfig } from '../types';
+import type { ChannelConfig, PhaserSoundStudioPluginData, SoundListConfig } from '../types';
 
 // Define your sound channels (fully type-safe)
 export const CHANNELS = {
@@ -59,7 +59,7 @@ export const audioConfig: PhaserSoundStudioPluginData<GameSounds, GameChannels> 
         [CHANNELS.VOICE]: {
             mode: 'single',
         },
-    },
+    } satisfies ChannelConfig<GameChannels>,
     storage: 'local' as const, // or 'session'
     gameName: 'my-awesome-game', // Optional: for unique storage keys
 };

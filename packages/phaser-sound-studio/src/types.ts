@@ -1,3 +1,5 @@
+export type SoundMode = 'single' | 'multiple';
+
 /**
  * Configuration for a single sound.
  *
@@ -14,6 +16,15 @@ export type SoundConfig<TChannel extends string = string> = {
     path: string;
 };
 
+export type ChannelItem = {
+    mode?: 'single';
+} | {
+    mode: 'multiple';
+    maxInstances?: number;
+}
+
+export type ChannelConfig<TChannel extends string = string> = Record<TChannel, ChannelItem>;
+
 /**
  * Configuration object for a list of sounds.
  *
@@ -26,3 +37,24 @@ export type SoundListConfig<
     TSoundKey extends string = string,
     TChannel extends string = string,
 > = Record<TSoundKey, SoundConfig<TChannel>>;
+
+/**
+ * Plugin configuration data type.
+ *
+ * @template TSoundKey - The type of the sound key (defaults to string).
+ * @template TChannel - The type of the channel name (defaults to string).
+ * @typedef {Object} PhaserSoundStudioPluginData
+ * @property {SoundListConfig} soundList - List of sounds to be loaded.
+ * @property {TChannel[]} channels - List of channels to be used.
+ * @property {'local' | 'session'} storage - Storage type for sound settings.
+ * @property {string} [gameName] - Optional name of the game for storage key.
+ */
+export type PhaserSoundStudioPluginData<
+    TSoundKey extends string = string,
+    TChannel extends string = string,
+> = {
+    soundList: SoundListConfig<TSoundKey, TChannel>;
+    channels: ChannelConfig<TChannel>;
+    storage: 'local' | 'session';
+    gameName?: string;
+};

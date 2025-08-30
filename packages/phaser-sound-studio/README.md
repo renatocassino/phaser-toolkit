@@ -13,45 +13,27 @@ Transform your game's audio experience with professional-grade sound management,
 The Problem
 Managing audio in Phaser games is often chaotic:
 
-❌ No type safety for sound keys
-
-❌ Manual volume management across different audio categories
-
-❌ Complex preloading logic
-
-❌ No automatic settings persistence
-
-❌ Scattered audio code throughout your scenes
-
-The Solution
-Phaser Sound Studio provides a centralized, type-safe audio management system that handles everything:
-✅ Full TypeScript Support - Complete type safety for sound keys and channels
-
-✅ Multi-Channel Audio - Professional mixing with HUD, SFX, Music, and custom channels
-
-✅ Automatic Persistence - Player volume preferences saved automatically
-
-✅ Smart Preloading - Efficient audio loading with lazy loading fallbacks
-
-✅ Zero Configuration - Works out of the box with sensible defaults
-
-✅ Phaser Hooks Integration - Leverages battle-tested state management
+- ❌ No type safety for sound keys
+- ❌ Manual volume management across different audio categories
+- ❌ Complex preloading logic
+- ❌ No automatic settings persistence
+- ❌ Scattered audio code throughout your scenes
 
 ## The Solution
 
 Phaser Sound Studio provides a centralized, type-safe audio management system that handles everything:
 
-✅ Full TypeScript Support - Complete type safety for sound keys and channels
+- ✅ Full TypeScript Support - Complete type safety for sound keys and channels
 
-✅ Multi-Channel Audio - Professional mixing with HUD, SFX, Music, and custom channels
-
-✅ Automatic Persistence - Player volume preferences saved automatically
-
-✅ Smart Preloading - Efficient audio loading with lazy loading fallbacks
-
-✅ Zero Configuration - Works out of the box with sensible defaults
-
-✅ Phaser Hooks Integration - Leverages battle-tested state management
+- ✅ Multi-Channel Audio - Professional mixing with HUD, SFX, Music, and custom channels
+- ✅ Automatic Persistence - Player volume preferences saved automatically
+- ✅ Smart Preloading - Efficient audio loading with lazy loading fallbacks
+- ✅ Zero Configuration - Works out of the box with sensible defaults
+- ✅ Phaser Hooks Integration - Leverages battle-tested state management
+- ✅ Effortless control over how many sounds can play simultaneously per channel
+- ✅ Automatic audio pooling to reuse sound instances and avoid unnecessary recreation
+- ✅ Guarantees background music plays only once (no overlapping)
+- ✅ Sound effects have configurable limits to prevent audio overload
 
 ## 📦 Installation
 
@@ -69,9 +51,7 @@ pnpm add phaser-sound-studio
 
 ```ts
 // src/config/audio.config.ts
-import {
-  getSoundStudio,
-} from 'phaser-sound-studio';
+import { getSoundStudio } from 'phaser-sound-studio';
 
 // Define your sound channels (fully type-safe)
 const CHANNELS = {
@@ -119,7 +99,26 @@ const audioConfig = {
       path: '/audio/sfx/jump.m4a',
     },
   } satisfies SoundListConfig<GameSounds, GameChannels>,
-  channels: Object.values(CHANNELS),
+  channels: {
+    [CHANNELS.HUD]: {
+      // HUD channel: for UI sounds, allow multiple instances
+      mode: 'multiple', // allow multiple sounds at once
+      maxInstances: 3, // up to 3 sounds can play simultaneously
+    },
+    [CHANNELS.MUSIC]: {
+      // MUSIC channel: for background music, only one at a time
+      mode: 'single', // only one music track at a time
+    },
+    [CHANNELS.SFX]: {
+      // SFX channel: for sound effects, allow multiple
+      mode: 'multiple', // allow overlapping sound effects
+      maxInstances: 5, // up to 5 SFX can play at once
+    },
+    [CHANNELS.VOICE]: {
+      // VOICE channel: for voice lines, only one at a time
+      mode: 'single', // only one voice line at a time
+    },
+  },
   storage: 'local' as const, // or 'session'
   gameName: 'my-awesome-game', // Optional: for unique storage keys
 };
@@ -182,12 +181,12 @@ export class GameScene extends Phaser.Scene {
     button
       .setInteractive()
       .on('pointerover', () => {
-        studio.play(this, SOUNDS.BUTTON_HOVER); // ✅ Type-safe!
+        studio.play(SOUNDS.BUTTON_HOVER); // ✅ Type-safe!
         // example of error
         // studio.play(this, 'my-custom-button-hover'); // ❌ Type check error!!!
       })
       .on('pointerdown', () => {
-        studio.play(this, 'button-click'); // ✅ Type-safe!
+        studio.play('button-click'); // ✅ Type-safe!
       });
 
     // Professional audio mixing
@@ -195,9 +194,9 @@ export class GameScene extends Phaser.Scene {
     studio.muteChannel(this, 'voice'); // Mute voice channel
 
     // Play background music
-    studio.play(this, CHANNELS.BG_MUSIC); // ✅ Type-safe!
+    studio.play(CHANNELS.BG_MUSIC); // ✅ Type-safe!
     // Example of error. If you call
-    // studio.play(this, 'invalid-key'); // ❌ Type check error!!!
+    // studio.play('invalid-key'); // ❌ Type check error!!!
   }
 
   update() {
@@ -205,7 +204,7 @@ export class GameScene extends Phaser.Scene {
 
     // Lazy loading - sound will be loaded if not cached
     if (this.cursors.space.isDown) {
-      studio?.play(this, SOUNDS.PLAYER_JUMP); // Auto-loads if needed!
+      studio?.play(SOUNDS.PLAYER_JUMP); // Auto-loads if needed!
     }
   }
 }

@@ -1,34 +1,20 @@
-import { Plugins, Scene } from 'phaser';
+import { Game, Plugins, Scene } from 'phaser';
 import { withPersistentState } from 'phaser-hooks';
 
-import { SoundConfig, SoundListConfig } from '../types';
+import { SoundLoader } from '../core/sound-loader';
+import { SoundPlayer } from '../core/sound-player';
+import type {
+  ChannelConfig,
+  PhaserSoundStudioPluginData,
+  SoundConfig,
+  SoundListConfig,
+} from '../types';
 
 /**
  * The key used to register the Phaser Sound Studio plugin.
  * @type {string}
  */
 export const PHASER_SOUND_STUDIO_KEY: string = 'soundStudio';
-
-/**
- * Plugin configuration data type.
- *
- * @template TSoundKey - The type of the sound key (defaults to string).
- * @template TChannel - The type of the channel name (defaults to string).
- * @typedef {Object} PhaserSoundStudioPluginData
- * @property {SoundListConfig} soundList - List of sounds to be loaded.
- * @property {TChannel[]} channels - List of channels to be used.
- * @property {'local' | 'session'} storage - Storage type for sound settings.
- * @property {string} [gameName] - Optional name of the game for storage key.
- */
-export type PhaserSoundStudioPluginData<
-  TSoundKey extends string = string,
-  TChannel extends string = string,
-> = {
-  soundList: SoundListConfig<TSoundKey, TChannel>;
-  channels: TChannel[];
-  storage: 'local' | 'session';
-  gameName?: string;
-};
 
 /**
  * Phaser Sound Studio Plugin class that manages sound configuration and playback.
@@ -48,18 +34,32 @@ export class PhaserSoundStudioPlugin<
   private channelVolumes: Record<TChannel, number> = {} as Record<TChannel, number>;
 
   /**
+   * The sound player instance.
+   * @type {SoundPlayer<TSoundKey>}
+   * @public
+   */
+  public soundPlayer: SoundPlayer<TSoundKey>;
+
+  /**
+   * The sound loader instance.
+   * @type {SoundLoader<TSoundKey, TChannel>}
+   * @public
+   */
+  public soundLoader: SoundLoader<TSoundKey, TChannel>;
+
+  /**
    * The list of sound configurations.
    * @type {SoundListConfig<TSoundKey, TChannel>}
    * @private
    */
-  private soundList: SoundListConfig<TSoundKey, TChannel>;
+  public soundList: SoundListConfig<TSoundKey, TChannel>;
 
   /**
    * The list of available channels.
-   * @type {TChannel[]}
+   * @type {ChannelConfig<TChannel>}
    * @public
    */
-  public channels: TChannel[];
+  public channels: ChannelConfig<TChannel>;
 
   /**
    * The storage type for sound settings.
@@ -76,23 +76,25 @@ export class PhaserSoundStudioPlugin<
   public gameName: string | undefined;
 
   /**
+   * The game instance.
+   * @type {Game}
+   * @public
+   */
+  public getGame(): Game {
+    return this.game;
+  }
+
+  /**
    * Creates an instance of PhaserSoundStudioPlugin.
    * @param {Plugins.PluginManager} pluginManager - Phaser plugin manager instance.
    */
   constructor(pluginManager: Plugins.PluginManager) {
     super(pluginManager);
-    /**
-     * @type {SoundListConfig<TSoundKey, TChannel>}
-     */
     this.soundList = {} as SoundListConfig<TSoundKey, TChannel>;
-    /**
-     * @type {TChannel[]}
-     */
-    this.channels = [];
-    /**
-     * @type {'local' | 'session'}
-     */
+    this.soundLoader = new SoundLoader<TSoundKey, TChannel>(this);
+    this.channels = {} as ChannelConfig<TChannel>;
     this.storage = 'local';
+    this.soundPlayer = new SoundPlayer<TSoundKey>(this);
   }
 
   /**
@@ -124,8 +126,8 @@ export class PhaserSoundStudioPlugin<
      */
     this.gameName = gameName;
 
-    this.channels.forEach(channel => {
-      this.channelVolumes[channel] = 1.0;
+    Object.keys(channels).forEach((channel) => {
+      this.channelVolumes[channel as TChannel] = 1.0;
     });
   }
 
@@ -167,9 +169,7 @@ export class PhaserSoundStudioPlugin<
    * @returns {void}
    */
   loadBySoundKey(scene: Scene, soundKey: TSoundKey): void {
-    if (!scene.cache.audio.has(soundKey)) {
-      scene.load.audio(soundKey, this.soundList[soundKey]?.path);
-    }
+    this.soundLoader.loadBySoundKey(scene, soundKey);
   }
 
   /**
@@ -291,9 +291,9 @@ export class PhaserSoundStudioPlugin<
 
   /**
    * Gets all channels.
-   * @returns {TChannel[]} All channels.
+   * @returns {ChannelConfig<TChannel>} All channels.
    */
-  getAllChannels(): TChannel[] {
+  getAllChannels(): ChannelConfig<TChannel> {
     return this.channels;
   }
 

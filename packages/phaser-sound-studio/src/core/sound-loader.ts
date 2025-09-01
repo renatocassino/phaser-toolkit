@@ -20,7 +20,6 @@ export class SoundLoader<TSoundKey extends string = string, TChannel extends str
      */
     loadBySoundKey(scene: Scene, soundKey: TSoundKey): void {
         const { game, plugin } = this;
-
         if (!game.cache.audio.has(soundKey)) {
             scene.load.audio(soundKey, plugin.soundList[soundKey]?.path);
         }

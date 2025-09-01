@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { GameObjects, Scene } from 'phaser';
 import { FontSizeKey, PhaserWindPlugin, type ColorToken } from 'phaser-wind';
 
@@ -144,15 +145,29 @@ export class RadialProgress extends GameObjects.Container {
     }
 
     /**
-     * Sets the background color of the progress bar
-     * @param color Background color token
-     */
+ * Sets the background color of the progress bar
+ * @param color Background color token
+ */
     public setBackgroundColor(color: ColorToken): this {
         if (this.backgroundColor === color) {
             return this;
         }
 
         this.backgroundColor = color;
+        this.recreateSprites();
+        return this;
+    }
+
+    /**
+     * Sets the background alpha of the progress bar
+     * @param alpha Background alpha value (0-1)
+     */
+    public setBackgroundAlpha(alpha: number): this {
+        if (this.backgroundAlpha === alpha) {
+            return this;
+        }
+
+        this.backgroundAlpha = alpha;
         this.recreateSprites();
         return this;
     }

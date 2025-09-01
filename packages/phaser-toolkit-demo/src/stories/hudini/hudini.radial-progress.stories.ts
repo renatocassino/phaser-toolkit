@@ -138,6 +138,7 @@ class InteractiveScene extends SceneWithHudini<Theme> {
         this.events.on('props:update', (props: {
             progress: number;
             backgroundColor: ColorToken;
+            backgroundAlpha: number;
             progressColor: ColorToken;
             thickness: number;
             animate: boolean;
@@ -152,6 +153,7 @@ class InteractiveScene extends SceneWithHudini<Theme> {
     private applyProps(props: {
         progress: number;
         backgroundColor: ColorToken;
+        backgroundAlpha: number;
         progressColor: ColorToken;
         thickness: number;
         animate: boolean;
@@ -166,6 +168,9 @@ class InteractiveScene extends SceneWithHudini<Theme> {
         // Update colors
         this.progressCircle.setBackgroundColor(props.backgroundColor);
         this.progressCircle.setProgressColor(props.progressColor);
+
+        // Update background alpha
+        this.progressCircle.setBackgroundAlpha(props.backgroundAlpha);
 
         // Update thickness
         this.progressCircle.setThickness(props.thickness);
@@ -232,8 +237,11 @@ class ShowcaseScene extends SceneWithHudini<Theme> {
         // Text examples
         this.createTextSection('Text Examples', 800);
 
+        // Background alpha examples
+        this.createBackgroundAlphaSection('Background Alpha Examples', 980);
+
         // Animated progress example
-        this.createAnimatedSection('Animated Progress', 980);
+        this.createAnimatedSection('Animated Progress', 1160);
     }
 
     private createProgressCircleSection(
@@ -433,6 +441,47 @@ class ShowcaseScene extends SceneWithHudini<Theme> {
         });
     }
 
+    private createBackgroundAlphaSection(title: string, y: number): void {
+        // Section title
+        this.add.text(50, y, title, {
+            fontSize: '18px',
+            color: '#ffffff',
+            fontFamily: 'Arial'
+        });
+
+        // Different background alpha examples
+        const alphaOptions = [0.1, 0.3, 0.5, 0.7, 0.9, 1.0];
+        const colors = ['blue-500', 'green-500', 'red-500', 'purple-500', 'orange-500', 'cyan-500'];
+
+        alphaOptions.forEach((alpha, index) => {
+            const progressCircle = new RadialProgress({
+                scene: this,
+                x: 150 + (index * 100),
+                y: y + 80,
+                radius: 48,
+                thickness: 12,
+                backgroundColor: 'gray-200',
+                backgroundAlpha: alpha,
+                progressColor: colors[index] as ColorToken,
+                progress: 60,
+                showText: true,
+                textColor: 'white',
+                fontSize: 'base',
+                textAlpha: 1,
+            });
+
+            this.add.existing(progressCircle);
+            this.progressCircles.push(progressCircle);
+
+            // Add alpha label
+            this.add.text(150 + (index * 100), y + 80 + 60, `α: ${alpha}`, {
+                fontSize: '12px',
+                color: '#ffffff',
+                fontFamily: 'Arial'
+            }).setOrigin(0.5);
+        });
+    }
+
     destroy(): void {
         // Clean up timers
         this.animationTimers.forEach(timer => timer.destroy());
@@ -458,6 +507,7 @@ const colorOptions: ColorToken[] = [
 export const Interactive: StoryObj<{
     progress: number;
     backgroundColor: ColorToken;
+    backgroundAlpha: number;
     progressColor: ColorToken;
     thickness: number;
     animate: boolean;
@@ -512,6 +562,7 @@ export const Interactive: StoryObj<{
     args: {
         progress: 50,
         backgroundColor: 'gray-200',
+        backgroundAlpha: 0.2,
         progressColor: 'blue-500',
         thickness: 16,
         animate: true,
@@ -526,6 +577,10 @@ export const Interactive: StoryObj<{
             control: 'select',
             options: colorOptions,
             description: 'Background color using phaser-wind color tokens',
+        },
+        backgroundAlpha: {
+            control: { type: 'range', min: 0, max: 1, step: 0.1 },
+            description: 'Alpha (transparency) of the background circle',
         },
         progressColor: {
             control: 'select',
@@ -578,7 +633,7 @@ export const Showcase: StoryObj = {
         createGame(`${ID}-showcase`, {
             type: Phaser.AUTO,
             width: 800,
-            height: 1200,
+            height: 1400,
             backgroundColor: Color.slate(900),
             parent: document.getElementById(`${ID}-showcase`) as HTMLElement,
             plugins: {

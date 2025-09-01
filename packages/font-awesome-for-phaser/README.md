@@ -17,10 +17,33 @@ yarn add font-awesome-for-phaser
 First, you must have the free font awesome imported in your page.
 
 ```html
-<style>
-  @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-</style>
+<!-- As HTML -->
+<link
+  rel="preload"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/webfonts/fa-solid-900.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link
+  rel="preload"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/webfonts/fa-regular-400.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link
+  rel="preload"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/webfonts/fa-brands-400.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
 ```
+
+> **Note:** Browsers only load a web font the first time it is requested. This means that, in Phaser, the very first time you display a Font Awesome icon, you may see a missing character (the "tofu" box) instead of the correct icon. After the font is loaded, subsequent icons will display correctly.
+
+To avoid this issue, it is recommended to preload the font files using the `<link rel="preload" ...>` tags shown above **and** to call `loadFont()` before your game starts. This ensures the font is available when Phaser tries to render the icons, preventing the "tofu" character from appearing.
 
 Or, you can use our auto import
 

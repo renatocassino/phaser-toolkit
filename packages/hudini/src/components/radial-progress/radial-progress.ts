@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser';
-import { PhaserWindPlugin, type ColorToken } from 'phaser-wind';
+import { FontSizeKey, PhaserWindPlugin, type ColorToken } from 'phaser-wind';
 
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 
@@ -22,9 +22,16 @@ export type RadialProgressParams = {
   thickness?: number;
   /** Initial progress value (0-100) */
   progress?: number;
-
   /** Start angle of the progress bar in degrees */
   startAngle?: number;
+  /** Whether to show the percentage text in the center */
+  showText?: boolean;
+  /** Color of the percentage text */
+  textColor?: ColorToken;
+  /** Font size of the percentage text */
+  fontSize?: FontSizeKey;
+  /** Alpha of the percentage text */
+  textAlpha?: number;
 };
 
 const A_HUNDRED = 100;
@@ -32,11 +39,15 @@ const THREE_SIXTY = 360;
 const START_ANGLE = 270;
 const DEFAULT_THICKNESS = 4;
 const DEFAULT_BACKGROUND_ALPHA = 0.2;
+const DEFAULT_TEXT_COLOR = 'white';
+const DEFAULT_FONT_SIZE: FontSizeKey = 'base';
+const DEFAULT_TEXT_ALPHA = 1;
 
 export class RadialProgress extends GameObjects.Container {
   public backgroundProgressBar!: GameObjects.Graphics;
   public progressBar!: GameObjects.Graphics;
   public radialArc!: GameObjects.Graphics;
+  public percentageText?: GameObjects.Text | undefined;
 
   private pw: PhaserWindPlugin<{}>;
   private radius: number;
@@ -46,6 +57,10 @@ export class RadialProgress extends GameObjects.Container {
   private progressColor: ColorToken;
   private currentProgress: number;
   private startAngle: number;
+  private showText: boolean;
+  private textColor: ColorToken;
+  private fontSize: FontSizeKey;
+  private textAlpha: number;
 
   constructor({
     scene,
@@ -58,6 +73,10 @@ export class RadialProgress extends GameObjects.Container {
     progressColor = 'blue-500',
     progress = 0,
     startAngle = START_ANGLE,
+    showText = false,
+    textColor = DEFAULT_TEXT_COLOR,
+    fontSize = DEFAULT_FONT_SIZE,
+    textAlpha = DEFAULT_TEXT_ALPHA,
   }: RadialProgressParams) {
     super(scene, x, y);
     this.pw = getPWFromScene(scene);
@@ -69,9 +88,16 @@ export class RadialProgress extends GameObjects.Container {
     this.progressColor = progressColor;
     this.currentProgress = Math.max(0, Math.min(A_HUNDRED, progress));
     this.startAngle = startAngle;
+    this.showText = showText;
+    this.textColor = textColor;
+    this.fontSize = fontSize;
+    this.textAlpha = textAlpha;
 
     this.createBackgroundSprite();
     this.createRadialArc();
+    if (this.showText) {
+      this.createPercentageText();
+    }
     this.setupContainer();
     this.updateProgressBar();
   }
@@ -97,11 +123,13 @@ export class RadialProgress extends GameObjects.Container {
         onUpdate: () => {
           this.currentProgress = target.value;
           this.updateProgressBar();
+          this.updatePercentageText();
         },
       });
     } else {
       this.currentProgress = newProgress;
       this.updateProgressBar();
+      this.updatePercentageText();
     }
 
     return this;
@@ -140,6 +168,82 @@ export class RadialProgress extends GameObjects.Container {
 
     this.progressColor = color;
     this.recreateSprites();
+    return this;
+  }
+
+  /**
+   * Sets whether to show the percentage text
+   * @param show Whether to show the text
+   */
+  public setShowText(show: boolean): this {
+    if (this.showText === show) {
+      return this;
+    }
+
+    this.showText = show;
+    if (show && !this.percentageText) {
+      this.createPercentageText();
+      if (this.percentageText) {
+        this.add(this.percentageText);
+      }
+    } else if (!show && this.percentageText) {
+      this.remove(this.percentageText);
+      this.percentageText.destroy();
+      this.percentageText = undefined;
+    }
+
+    return this;
+  }
+
+  /**
+   * Sets the text color
+   * @param color Text color token
+   */
+  public setTextColor(color: ColorToken): this {
+    if (this.textColor === color) {
+      return this;
+    }
+
+    this.textColor = color;
+    if (this.percentageText) {
+      this.percentageText.destroy();
+      this.createPercentageText();
+      this.add(this.percentageText);
+    }
+    return this;
+  }
+
+  /**
+   * Sets the font size
+   * @param size Font size in pixels
+   */
+  public setFontSize(size: FontSizeKey): this {
+    if (this.fontSize === size) {
+      return this;
+    }
+
+    this.fontSize = size;
+    if (this.percentageText) {
+      this.percentageText.destroy();
+      this.createPercentageText();
+      this.add(this.percentageText);
+    }
+    return this;
+  }
+
+  /**
+   * Sets the text alpha
+   * @param alpha Alpha value (0-1)
+   */
+  public setTextAlpha(alpha: number): this {
+    if (this.textAlpha === alpha) {
+      return this;
+    }
+
+    this.textAlpha = alpha;
+    if (this.percentageText) {
+      this.percentageText.setAlpha(this.textAlpha);
+    }
     return this;
   }
 
@@ -185,13 +289,35 @@ export class RadialProgress extends GameObjects.Container {
     this.radialArc = graphics;
   }
 
+  private createPercentageText(): void {
+    this.percentageText = this.scene.add.text(
+      0,
+      0,
+      `${Math.round(this.currentProgress)}%`,
+      {
+        fontSize: this.pw.fontSize.css(this.fontSize),
+        color: this.pw.color.rgb(this.textColor),
+        fontStyle: 'bold',
+      }
+    );
+    this.percentageText.setOrigin(0.5);
+    this.percentageText.setAlpha(this.textAlpha);
+  }
+
   public setThickness(thickness: number): void {
     this.thickness = thickness;
     this.recreateSprites();
   }
 
   private setupContainer(): void {
-    this.add([this.backgroundProgressBar, this.radialArc]);
+    const children: GameObjects.GameObject[] = [
+      this.backgroundProgressBar,
+      this.radialArc,
+    ];
+    if (this.percentageText) {
+      children.push(this.percentageText);
+    }
+    this.add(children);
   }
 
   private updateProgressBar(): void {
@@ -233,15 +359,35 @@ export class RadialProgress extends GameObjects.Container {
     }
   }
 
+  private updatePercentageText(): void {
+    if (this.percentageText) {
+      this.percentageText.setText(`${Math.round(this.currentProgress)}%`);
+    }
+  }
+
   private recreateSprites(): void {
     // Remove old sprites
-    this.remove([this.backgroundProgressBar, this.radialArc]);
+    const children: GameObjects.GameObject[] = [
+      this.backgroundProgressBar,
+      this.radialArc,
+    ];
+    if (this.percentageText) {
+      children.push(this.percentageText);
+    }
+    this.remove(children);
     this.backgroundProgressBar.destroy();
     this.radialArc.destroy();
+    if (this.percentageText) {
+      this.percentageText.destroy();
+      this.percentageText = undefined;
+    }
 
     // Create new sprites with updated properties
     this.createBackgroundSprite();
     this.createRadialArc();
+    if (this.showText) {
+      this.createPercentageText();
+    }
     this.setupContainer();
     this.updateProgressBar();
   }

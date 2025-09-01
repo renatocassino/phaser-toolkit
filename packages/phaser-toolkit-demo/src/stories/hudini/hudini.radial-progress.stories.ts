@@ -10,6 +10,8 @@ import {
     ColorToken,
     createTheme,
     defaultLightTheme,
+    FontSizeKey,
+    fontSizeMap,
     HUDINI_KEY,
     HudiniPlugin,
     HudiniPluginData,
@@ -92,8 +94,6 @@ type Theme = typeof theme;
 
 class InteractiveScene extends SceneWithHudini<Theme> {
     private progressCircle?: RadialProgress;
-    private currentProgress = 0;
-    private progressTimer?: Phaser.Time.TimerEvent;
 
     constructor() {
         super('interactive');
@@ -113,6 +113,10 @@ class InteractiveScene extends SceneWithHudini<Theme> {
             backgroundColor: 'gray-200',
             progressColor: 'blue-500',
             progress: 50,
+            showText: true,
+            textColor: 'white',
+            fontSize: 'base',
+            textAlpha: 1,
         });
 
         this.add.existing(this.progressCircle);
@@ -130,20 +134,6 @@ class InteractiveScene extends SceneWithHudini<Theme> {
         );
         title.setOrigin(0.5);
 
-        // Add progress text
-        const progressText = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY,
-            '50%',
-            {
-                fontSize: '28px',
-                color: '#ffffff',
-                fontFamily: 'Arial'
-            }
-        );
-        progressText.setOrigin(0.5);
-        progressText.setName('progressText');
-
         // Listen for property updates from Storybook controls
         this.events.on('props:update', (props: {
             progress: number;
@@ -151,6 +141,10 @@ class InteractiveScene extends SceneWithHudini<Theme> {
             progressColor: ColorToken;
             thickness: number;
             animate: boolean;
+            showText: boolean;
+            textColor: ColorToken;
+            fontSize: FontSizeKey;
+            textAlpha: number;
         }) => this.applyProps(props));
     }
 
@@ -160,6 +154,10 @@ class InteractiveScene extends SceneWithHudini<Theme> {
         progressColor: ColorToken;
         thickness: number;
         animate: boolean;
+        showText: boolean;
+        textColor: ColorToken;
+        fontSize: FontSizeKey;
+        textAlpha: number;
     }): void {
         if (!this.progressCircle) return;
 
@@ -170,18 +168,12 @@ class InteractiveScene extends SceneWithHudini<Theme> {
         // Update thickness
         this.progressCircle.setThickness(props.thickness);
 
-        // Update progress if not indeterminate
+        // Update text properties
+        this.progressCircle.setShowText(props.showText);
+        this.progressCircle.setTextColor(props.textColor);
+        this.progressCircle.setFontSize(props.fontSize);
+        this.progressCircle.setTextAlpha(props.textAlpha);
         this.progressCircle.setProgress(props.progress, props.animate);
-
-        // Update progress text
-        const progressText = this.children.getByName('progressText') as Phaser.GameObjects.Text;
-        if (progressText) {
-            progressText.setText(`${Math.round(props.progress)}%`);
-        }
-
-        // Note: For dimension changes, we would need to recreate the progress circle
-        // This is a limitation of the current implementation
-        // For now, we'll just update the existing properties
     }
 }
 
@@ -231,8 +223,11 @@ class ShowcaseScene extends SceneWithHudini<Theme> {
             { backgroundColor: 'orange-200' as const, progressColor: 'orange-500' as const, progress: 40, radius: 64 },
         ]);
 
+        // Text examples
+        this.createTextSection('Text Examples', 620);
+
         // Animated progress example
-        this.createAnimatedSection('Animated Progress', 720);
+        this.createAnimatedSection('Animated Progress', 800);
     }
 
     private createProgressCircleSection(
@@ -331,10 +326,71 @@ class ShowcaseScene extends SceneWithHudini<Theme> {
         this.animationTimers.push(timer);
     }
 
+    private createTextSection(title: string, y: number): void {
+        // Section title
+        this.add.text(50, y, title, {
+            fontSize: '18px',
+            color: '#ffffff',
+            fontFamily: 'Arial'
+        });
+
+        // Example with text enabled
+        const textCircle = new RadialProgress({
+            scene: this,
+            x: 300,
+            y: y + 80,
+            radius: 48,
+            thickness: 12,
+            backgroundColor: 'purple-200',
+            progressColor: 'purple-500',
+            progress: 75,
+            showText: true,
+            textColor: 'white',
+            fontSize: 'base',
+            textAlpha: 1,
+        });
+
+        this.add.existing(textCircle);
+        this.progressCircles.push(textCircle);
+
+        // Add label
+        this.add.text(300, y + 80, 'With Text (75%)', {
+            fontSize: '14px',
+            color: '#ffffff',
+            fontFamily: 'Arial'
+        }).setOrigin(0.5);
+
+        // Example with different text color
+        const coloredTextCircle = new RadialProgress({
+            scene: this,
+            x: 500,
+            y: y + 80,
+            radius: 48,
+            thickness: 12,
+            backgroundColor: 'yellow-200',
+            progressColor: 'yellow-600',
+            progress: 60,
+            showText: true,
+            textColor: 'yellow-800',
+            fontSize: 'lg',
+            textAlpha: 0.9,
+        });
+
+        this.add.existing(coloredTextCircle);
+        this.progressCircles.push(coloredTextCircle);
+
+        // Add label
+        this.add.text(500, y + 80, 'Colored Text (60%)', {
+            fontSize: '14px',
+            color: '#ffffff',
+            fontFamily: 'Arial'
+        }).setOrigin(0.5);
+    }
+
     destroy(): void {
         // Clean up timers
         this.animationTimers.forEach(timer => timer.destroy());
-        super.destroy();
+        // super.destroy();
     }
 }
 
@@ -359,6 +415,10 @@ export const Interactive: StoryObj<{
     progressColor: ColorToken;
     thickness: number;
     animate: boolean;
+    showText: boolean;
+    textColor: ColorToken;
+    fontSize: FontSizeKey;
+    textAlpha: number;
 }> = {
     render: (args: Args): HTMLElement => {
         const root = document.getElementById(`${ID}-interactive`) ?? document.createElement('div');
@@ -408,6 +468,10 @@ export const Interactive: StoryObj<{
         progressColor: 'blue-500',
         thickness: 16,
         animate: true,
+        showText: false,
+        textColor: 'white',
+        fontSize: 'base',
+        textAlpha: 1,
     },
     argTypes: {
         backgroundColor: {
@@ -428,6 +492,24 @@ export const Interactive: StoryObj<{
             control: 'boolean',
             description: 'Whether to animate progress changes',
         },
+        showText: {
+            control: 'boolean',
+            description: 'Whether to show the percentage text in the center',
+        },
+        textColor: {
+            control: 'select',
+            options: colorOptions,
+            description: 'Color of the percentage text',
+        },
+        fontSize: {
+            control: 'select',
+            options: Object.keys(fontSizeMap) as FontSizeKey[],
+            description: 'Font size of the percentage text in pixels',
+        },
+        textAlpha: {
+            control: { type: 'range', min: 0, max: 1, step: 0.1 },
+            description: 'Alpha (transparency) of the percentage text',
+        },
     },
 };
 
@@ -443,7 +525,7 @@ export const Showcase: StoryObj = {
         createGame(`${ID}-showcase`, {
             type: Phaser.AUTO,
             width: 800,
-            height: 900,
+            height: 1000,
             backgroundColor: Color.slate(900),
             parent: document.getElementById(`${ID}-showcase`) as HTMLElement,
             plugins: {

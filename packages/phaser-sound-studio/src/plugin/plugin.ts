@@ -3,6 +3,7 @@ import { withPersistentState } from 'phaser-hooks';
 
 import { SoundLoader } from '../core/sound-loader';
 import { SoundPlayer } from '../core/sound-player';
+import { SoundRegistry } from '../core/sound-registry';
 import type {
   ChannelConfig,
   PhaserSoundStudioPluginData,
@@ -48,6 +49,13 @@ export class PhaserSoundStudioPlugin<
   public soundLoader: SoundLoader<TSoundKey, TChannel>;
 
   /**
+   * The sound registry instance.
+   * @type {SoundRegistry<TSoundKey, TChannel>}
+   * @public
+   */
+  public soundRegistry: SoundRegistry<TSoundKey, TChannel>;
+
+  /**
    * The list of sound configurations.
    * @type {SoundListConfig<TSoundKey, TChannel>}
    * @private
@@ -85,20 +93,6 @@ export class PhaserSoundStudioPlugin<
   }
 
   /**
-   * Map of sound keys to Phaser sound objects.
-   * @type {Partial<Record<string, Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound>>}
-   * @protected
-   */
-  protected sounds: Partial<
-    Record<
-      string,
-      | Phaser.Sound.NoAudioSound
-      | Phaser.Sound.HTML5AudioSound
-      | Phaser.Sound.WebAudioSound
-    >
-  > = {};
-
-  /**
    * Creates an instance of PhaserSoundStudioPlugin.
    * @param {Plugins.PluginManager} pluginManager - Phaser plugin manager instance.
    */
@@ -109,6 +103,7 @@ export class PhaserSoundStudioPlugin<
     this.channels = {} as ChannelConfig<TChannel>;
     this.storage = 'local';
     this.soundPlayer = new SoundPlayer<TSoundKey>(this);
+    this.soundRegistry = new SoundRegistry<TSoundKey, TChannel>(this);
   }
 
   /**
@@ -123,21 +118,9 @@ export class PhaserSoundStudioPlugin<
     storage,
     gameName,
   }: PhaserSoundStudioPluginData<TSoundKey, TChannel>): void {
-    /**
-     * @type {SoundListConfig<TSoundKey, TChannel>}
-     */
     this.soundList = soundList;
-    /**
-     * @type {TChannel[]}
-     */
     this.channels = channels;
-    /**
-     * @type {'local' | 'session'}
-     */
     this.storage = storage;
-    /**
-     * @type {string | undefined}
-     */
     this.gameName = gameName;
 
     Object.keys(channels).forEach((channel) => {
@@ -158,14 +141,6 @@ export class PhaserSoundStudioPlugin<
       scene.load.audio(key as TSoundKey, sound.path);
     }
 
-    scene.load.once('complete', () => {
-      for (const [key, sound] of soundsToLoad) {
-        this.sounds[key] = scene.sound.add(key, {
-          volume: this.channelVolumes[sound.channel] ?? 1,
-          loop: sound.loop ?? false,
-        });
-      }
-    });
     this.loadChannelVolumes(scene);
   }
 
@@ -176,11 +151,7 @@ export class PhaserSoundStudioPlugin<
    * @returns {void}
    */
   loadByChannel(scene: Scene, channel: TChannel): void {
-    Object.entries<SoundConfig<TChannel>>(this.soundList)
-      .filter(s => s[1].channel === channel)
-      .forEach(([soundKey, sound]) => {
-        scene.load.audio(soundKey, sound.path);
-      });
+    this.soundLoader.loadByChannel(scene, channel);
     this.loadChannelVolumes(scene);
   }
 
@@ -196,23 +167,11 @@ export class PhaserSoundStudioPlugin<
 
   /**
    * Plays a sound by key in the given scene. If the sound is not loaded, it loads and then plays it.
-   * @param {Scene} scene - The Phaser scene to play the sound in.
    * @param {TSoundKey} key - The key of the sound to play.
    * @returns {void}
    */
-  play(scene: Scene, key: TSoundKey): void {
-    if (!scene.cache.audio.has(key)) {
-      this.lazyLoadPlay(scene, key);
-      return;
-    }
-
-    const soundConfig = this.soundList[key];
-    if (!soundConfig) {
-      return;
-    }
-    const channelVolume = this.channelVolumes[soundConfig.channel] ?? 1;
-
-    scene.sound.play(key, { volume: channelVolume });
+  play(key: TSoundKey): void {
+    this.soundPlayer.play(key);
   }
 
   /**
@@ -227,7 +186,7 @@ export class PhaserSoundStudioPlugin<
       return;
     }
 
-    this.play(scene, key);
+    this.play(key);
   }
 
   /**
@@ -243,13 +202,8 @@ export class PhaserSoundStudioPlugin<
     }
 
     scene.load.audio(key, path);
-    // Wait for the audio to finish loading before proceeding
     scene.load.once(`filecomplete-audio-${key}`, () => {
-      this.sounds[key] = scene.sound.add(key, {
-        volume: this.channelVolumes[this.soundList[key].channel] ?? 1,
-        loop: this.soundList[key].loop ?? false,
-      });
-      scene.sound.play(key);
+      this.play(key);
     });
   }
 
@@ -268,14 +222,15 @@ export class PhaserSoundStudioPlugin<
         `Volume must be between 0 and 1. Setting volume to ${volume} instead in channel ${channel}.`
       );
     }
+
     this.channelVolumes[channel] = volume;
 
     Object.entries<SoundConfig<TChannel>>(this.soundList)
       .filter(s => s[1].channel === channel)
       .forEach(([soundKey]) => {
-        const soundInstance = this.sounds[soundKey] ?? scene.sound.get(soundKey);
+        const soundInstance = scene.sound.get(soundKey);
         if (soundInstance && 'setVolume' in soundInstance) {
-          soundInstance.setVolume(volume);
+          (soundInstance as Phaser.Sound.HTML5AudioSound).setVolume(volume);
         }
       });
 

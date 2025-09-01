@@ -1,5 +1,17 @@
 # phaser-sound-studio
 
+## 0.4.0
+
+### Minor Changes
+
+- d53ef0a: add support to pool
+
+## 0.3.2
+
+### Patch Changes
+
+- b26da95: remove sound map list and remove useless add sound. Fix to use cache instead get
+
 ## 0.3.1
 
 ### Patch Changes

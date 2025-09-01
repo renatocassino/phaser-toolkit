@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.12.0
+
+### Minor Changes
+
+- 78095f0: add new component called radial progress
+
 ## 0.11.1
 
 ### Patch Changes

@@ -145,6 +145,7 @@ class InteractiveScene extends SceneWithHudini<Theme> {
             textColor: ColorToken;
             fontSize: FontSizeKey;
             textAlpha: number;
+            radius: number;
         }) => this.applyProps(props));
     }
 
@@ -158,6 +159,7 @@ class InteractiveScene extends SceneWithHudini<Theme> {
         textColor: ColorToken;
         fontSize: FontSizeKey;
         textAlpha: number;
+        radius: number;
     }): void {
         if (!this.progressCircle) return;
 
@@ -174,6 +176,7 @@ class InteractiveScene extends SceneWithHudini<Theme> {
         this.progressCircle.setFontSize(props.fontSize);
         this.progressCircle.setTextAlpha(props.textAlpha);
         this.progressCircle.setProgress(props.progress, props.animate);
+        this.progressCircle.setRadius(props.radius);
     }
 }
 
@@ -223,11 +226,14 @@ class ShowcaseScene extends SceneWithHudini<Theme> {
             { backgroundColor: 'orange-200' as const, progressColor: 'orange-500' as const, progress: 40, radius: 64 },
         ]);
 
+        // Radius examples
+        this.createRadiusSection('Radius Variants', 620);
+
         // Text examples
-        this.createTextSection('Text Examples', 620);
+        this.createTextSection('Text Examples', 800);
 
         // Animated progress example
-        this.createAnimatedSection('Animated Progress', 800);
+        this.createAnimatedSection('Animated Progress', 980);
     }
 
     private createProgressCircleSection(
@@ -387,6 +393,46 @@ class ShowcaseScene extends SceneWithHudini<Theme> {
         }).setOrigin(0.5);
     }
 
+    private createRadiusSection(title: string, y: number): void {
+        // Section title
+        this.add.text(50, y, title, {
+            fontSize: '18px',
+            color: '#ffffff',
+            fontFamily: 'Arial'
+        });
+
+        // Different radius examples
+        const radiusOptions = [32, 48, 64, 80, 96, 120];
+        const colors = ['blue-500', 'green-500', 'red-500', 'purple-500', 'orange-500', 'cyan-500'];
+
+        radiusOptions.forEach((radius, index) => {
+            const progressCircle = new RadialProgress({
+                scene: this,
+                x: 150 + (index * 100),
+                y: y + 80,
+                radius: radius,
+                thickness: Math.max(4, radius / 8), // Proportional thickness
+                backgroundColor: 'gray-200',
+                progressColor: colors[index] as ColorToken,
+                progress: 60,
+                showText: true,
+                textColor: 'white',
+                fontSize: radius < 48 ? 'sm' : radius < 80 ? 'base' : 'lg',
+                textAlpha: 1,
+            });
+
+            this.add.existing(progressCircle);
+            this.progressCircles.push(progressCircle);
+
+            // Add radius label
+            this.add.text(150 + (index * 100), y + 80 + radius + 20, `${radius}px`, {
+                fontSize: '12px',
+                color: '#ffffff',
+                fontFamily: 'Arial'
+            }).setOrigin(0.5);
+        });
+    }
+
     destroy(): void {
         // Clean up timers
         this.animationTimers.forEach(timer => timer.destroy());
@@ -419,6 +465,7 @@ export const Interactive: StoryObj<{
     textColor: ColorToken;
     fontSize: FontSizeKey;
     textAlpha: number;
+    radius: number;
 }> = {
     render: (args: Args): HTMLElement => {
         const root = document.getElementById(`${ID}-interactive`) ?? document.createElement('div');
@@ -472,6 +519,7 @@ export const Interactive: StoryObj<{
         textColor: 'white',
         fontSize: 'base',
         textAlpha: 1,
+        radius: 80,
     },
     argTypes: {
         backgroundColor: {
@@ -510,6 +558,11 @@ export const Interactive: StoryObj<{
             control: { type: 'range', min: 0, max: 1, step: 0.1 },
             description: 'Alpha (transparency) of the percentage text',
         },
+        radius: {
+            control: 'select',
+            options: [32, 48, 64, 80, 96, 120, 160],
+            description: 'Radius of the progress circle in pixels',
+        },
     },
 };
 
@@ -525,7 +578,7 @@ export const Showcase: StoryObj = {
         createGame(`${ID}-showcase`, {
             type: Phaser.AUTO,
             width: 800,
-            height: 1000,
+            height: 1200,
             backgroundColor: Color.slate(900),
             parent: document.getElementById(`${ID}-showcase`) as HTMLElement,
             plugins: {

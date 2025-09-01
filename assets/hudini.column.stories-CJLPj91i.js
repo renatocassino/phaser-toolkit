@@ -1,4 +1,4 @@
-import{H as i,a as l,c as n}from"./plugin-vm0A8zqt.js";import{c as m,n as h,a as p,P as g,d as u,S as a}from"./create-game-Dqgfp28j.js";import{S as x}from"./scene-with-hudini-DCgcD6-P.js";import"./webfontloader-VUTCp1vF.js";import"./_commonjsHelpers-Cpj98o6Y.js";const s="phaser-column-example",f=`
+import{H as i,a as l,c as n}from"./plugin-BqRTo20k.js";import{c as m,n as h,a as p,P as g,d as u,S as a}from"./create-game-IT2NM2Nb.js";import{S as x}from"./scene-with-hudini-EXJR7ZX3.js";import"./webfontloader-DPE_tNm0.js";import"./_commonjsHelpers-Cpj98o6Y.js";const s="phaser-column-example",f=`
 import { Column } from 'hudini';
 
 const column = new Column({

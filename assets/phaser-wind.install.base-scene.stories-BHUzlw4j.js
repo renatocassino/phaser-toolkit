@@ -1,4 +1,4 @@
-import{c as i,n as c,a as l,C as p,P as s,e as a,f as d}from"./create-game-Dqgfp28j.js";import{c as m}from"./theme-manager-DQEyBMi9.js";import"./_commonjsHelpers-Cpj98o6Y.js";const r="phaser-wind-install-cast-type",h=`
+import{c as s,n as i,a as c,C as l,P as d,e as a,h,b as p}from"./create-game-IT2NM2Nb.js";import{c as m}from"./theme-manager-BFQS-suy.js";import"./_commonjsHelpers-Cpj98o6Y.js";const r="phaser-wind-install-base-scene",y=`
 import Phaser from 'phaser';
 import {
     Color,
@@ -18,13 +18,13 @@ const theme = createTheme({
 type Theme = typeof theme;
 
 
-class PreviewScene extends Phaser.Scene {
+class PreviewScene extends SceneWithPhaserWind<Theme> { // Inherit from SceneWithPhaserWind to get the pw property
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = (this as unknown as SceneWithPhaserWind<Theme>); // cast to get the pw property
+        const { pw } = this; // Don't need to cast to SceneWithPhaserWind<Theme> because we're using the generic type
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         let y = 90;
@@ -61,18 +61,7 @@ class PreviewScene extends Phaser.Scene {
         // ❌ pw.color.rgb('invalid-color')
     }
 }
-`,S={title:"PhaserWind/Install/WithCastType",parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"}}}},y=m({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class g extends s.Scene{constructor(){super("preview")}create(){const{pw:e}=this;this.cameras.main.setBackgroundColor(e.color.slate(800));let t=90;this.add.text(300,t,"Primary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("primary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Secondary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("secondary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Tertiary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("tertiary")}).setOrigin(.5)}}const o={parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"},source:{language:"ts",code:h}}},render:()=>{const n=document.getElementById(r)??document.createElement("div");return n.id=r,n},play:async()=>{await i(),await c(2),l(r,{type:s.AUTO,width:600,height:400,backgroundColor:p.slate(900),parent:document.getElementById(r),scene:[g],plugins:{global:[{key:a,plugin:d,mapping:a,data:{theme:y}}]}})}};o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`{
-  parameters: {
-    docs: {
-      description: {
-        component: 'Examples of how to install and use PhaserWind'
-      },
-      source: {
-        language: 'ts',
-        code: usageSnippet
-      }
-    }
-  },
+`,P={title:"PhaserWind/Install/WithBaseScene",parameters:{docs:{description:{component:"Examples of how to install and use PhaserWind"},source:{language:"ts",code:y}}}},g=m({colors:{primary:"red-500",secondary:"blue-500",tertiary:"green-500"}});class u extends p{constructor(){super("preview")}create(){const{pw:e}=this;this.cameras.main.setBackgroundColor(e.color.slate(900));let t=90;this.add.text(300,t,"Primary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("primary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Secondary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("secondary")}).setOrigin(.5),t+=100,this.add.text(300,t,"Tertiary color",{fontSize:e.fontSize.css("2xl"),color:e.color.rgb("tertiary")}).setOrigin(.5)}}const o={render:()=>{const n=document.getElementById(r)??document.createElement("div");return n.id=r,n},play:async()=>{await s(),await i(3),c(r,{type:d.AUTO,width:600,height:400,backgroundColor:l.slate(900),parent:document.getElementById(r),scene:[u],plugins:{global:[{key:a,plugin:h,mapping:a,data:{theme:g}}]}})}};o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`{
   render: (): HTMLElement => {
     const root = document.getElementById(ID) ?? document.createElement('div');
     root.id = ID;
@@ -80,7 +69,7 @@ class PreviewScene extends Phaser.Scene {
   },
   play: async (): Promise<void> => {
     await cleanGames();
-    await nextFrames(2);
+    await nextFrames(3);
     createGame(ID, {
       type: Phaser.AUTO,
       width: 600,
@@ -100,4 +89,4 @@ class PreviewScene extends Phaser.Scene {
       }
     });
   }
-}`,...o.parameters?.docs?.source}}};const P=["WithCastType"];export{o as WithCastType,P as __namedExportsOrder,S as default};
+}`,...o.parameters?.docs?.source}}};const W=["WithBaseScene"];export{o as WithBaseScene,W as __namedExportsOrder,P as default};

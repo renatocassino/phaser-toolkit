@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
@@ -49,7 +50,16 @@ export class IconButton extends GameObjects.Container {
   private sizePx!: number;
   private borderRadiusPx!: number;
 
-  constructor({ scene, x, y, icon, size, color, onClick, borderRadius }: IconButtonParams) {
+  constructor({
+    scene,
+    x,
+    y,
+    icon,
+    size,
+    color,
+    onClick,
+    borderRadius,
+  }: IconButtonParams) {
     super(scene, x, y);
     this.pw = getPWFromScene(scene);
 
@@ -59,6 +69,9 @@ export class IconButton extends GameObjects.Container {
         : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
     const baseColor = color ?? 'gray';
     this.sizePx = sizePx;
+
+    this.updateSize();
+
     this.baseColor = baseColor;
     this.borderRadiusPx =
       typeof borderRadius === 'number'
@@ -100,8 +113,13 @@ export class IconButton extends GameObjects.Container {
 
   public setButtonSize(size: FontSizeKey | number): this {
     this.sizePx =
-      typeof size === 'number' ? size : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
+      typeof size === 'number'
+        ? size
+        : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
     this.iconText.setFontSize(`${this.sizePx}px`);
+
+    this.updateSize();
+
     const shadowTexture = this.createShadowTexture(
       this.scene,
       this.sizePx,
@@ -125,7 +143,12 @@ export class IconButton extends GameObjects.Container {
     baseColor: Omit<ColorKey, 'black' | 'white'>,
     borderRadiusPx: number
   ): void {
-    const shadowTexture = this.createShadowTexture(scene, size, baseColor, borderRadiusPx);
+    const shadowTexture = this.createShadowTexture(
+      scene,
+      size,
+      baseColor,
+      borderRadiusPx
+    );
     this.shadowSprite = scene.add.sprite(1, SHADOW_OFFSET, shadowTexture);
     this.shadowSprite.setOrigin(0.5, 0.5);
   }
@@ -169,13 +192,23 @@ export class IconButton extends GameObjects.Container {
     return textureKey;
   }
 
+  private updateSize(): void {
+    this.width = this.sizePx * BUTTON_SCALE;
+    this.height = this.sizePx * BUTTON_SCALE;
+  }
+
   private createBackgroundSprite(
     scene: Scene,
     size: number,
     baseColor: Omit<ColorKey, 'black' | 'white'>,
     borderRadiusPx: number
   ): void {
-    const backgroundTexture = this.createBackgroundTexture(scene, size, baseColor, borderRadiusPx);
+    const backgroundTexture = this.createBackgroundTexture(
+      scene,
+      size,
+      baseColor,
+      borderRadiusPx
+    );
     this.backgroundSprite = scene.add.sprite(1, 0, backgroundTexture);
     this.backgroundSprite.setOrigin(0.5, 0.5);
   }
@@ -285,5 +318,33 @@ export class IconButton extends GameObjects.Container {
       });
       onClick?.();
     });
+  }
+
+  /**
+   * Gets the bounds of the icon button for layout calculations
+   * @param output Optional rectangle to store the result
+   * @returns Rectangle with the button bounds
+   */
+  public override getBounds(
+    output?: Phaser.Geom.Rectangle
+  ): Phaser.Geom.Rectangle {
+    const width = this.shadowSprite.displayWidth ?? this.shadowSprite.width;
+    const height = this.shadowSprite.displayHeight ?? this.shadowSprite.height;
+
+    if (output) {
+      return output.setTo(
+        this.x - width / 2,
+        this.y - height / 2,
+        width,
+        height
+      );
+    }
+
+    return new Phaser.Geom.Rectangle(
+      this.x - width / 2,
+      this.y - height / 2,
+      width,
+      height
+    );
   }
 }

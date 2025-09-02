@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.12.1
+
+### Patch Changes
+
+- 40b2cd2: Fix card width/height using child containers. Now calculate the child component width/height
+
 ## 0.12.0
 
 ### Minor Changes

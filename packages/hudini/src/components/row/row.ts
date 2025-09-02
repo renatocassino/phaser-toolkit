@@ -91,9 +91,14 @@ export class Row extends GameObjects.Container {
    * @param relayout Whether to update layout after adding
    * @returns This row instance for chaining
    */
-  public addChild(child: GameObjects.GameObject, relayout: boolean = true): this {
+  public addChild(
+    child: GameObjects.GameObject,
+    relayout: boolean = true
+  ): this {
     this.add(child);
-    if (relayout) this.layout();
+    if (relayout) {
+      this.layout();
+    }
     return this;
   }
 
@@ -103,14 +108,17 @@ export class Row extends GameObjects.Container {
    * @param relayout Whether to update layout after adding
    * @returns This row instance for chaining
    */
-  public addChildren(children: GameObjects.GameObject[], relayout: boolean = true): this {
+  public addChildren(
+    children: GameObjects.GameObject[],
+    relayout: boolean = true
+  ): this {
     if (children.length > 0) this.add(children);
     if (relayout) this.layout();
     return this;
   }
 
-  /** 
-   * Recomputes children's positions and updates this container size 
+  /**
+   * Recomputes children's positions and updates this container size
    */
   public layout(): void {
     const children = this.list as GameObjects.GameObject[];
@@ -120,7 +128,7 @@ export class Row extends GameObjects.Container {
     }
 
     // Measure sizes and origins
-    const entries = children.map((child) => ({
+    const entries = children.map(child => ({
       child,
       width: this.getDisplayWidth(child),
       height: this.getDisplayHeight(child),
@@ -128,10 +136,17 @@ export class Row extends GameObjects.Container {
     }));
 
     const maxHeight = entries.reduce((m, s) => Math.max(m, s.height), 0);
-    const totalWidth = entries.reduce((sum, s) => sum + s.width, 0) + this.gap * (entries.length - 1);
+    const totalWidth =
+      entries.reduce((sum, s) => sum + s.width, 0) +
+      this.gap * (entries.length - 1);
 
     // Determine left of content based on horizontalOrigin
-    const contentLeftX = this.horizontalOrigin === 'left' ? 0 : this.horizontalOrigin === 'center' ? -totalWidth / 2 : -totalWidth;
+    const contentLeftX =
+      this.horizontalOrigin === 'left'
+        ? 0
+        : this.horizontalOrigin === 'center'
+          ? -totalWidth / 2
+          : -totalWidth;
 
     // Walk left to right, aligning considering each child's origin
     let cursorLeftX = contentLeftX;
@@ -152,7 +167,9 @@ export class Row extends GameObjects.Container {
       // Horizontal position so that child's left is at cursorLeftX
       const x = cursorLeftX + origin.x * width;
 
-      (child as unknown as { setPosition: (x: number, y: number) => void }).setPosition(x, y);
+      (
+        child as unknown as { setPosition: (x: number, y: number) => void }
+      ).setPosition(x, y);
 
       cursorLeftX += width + this.gap;
     }
@@ -183,7 +200,10 @@ export class Row extends GameObjects.Container {
    * @param child GameObject to get origin from
    * @returns Object with normalized x,y coordinates of the origin point
    */
-  public getNormalizedOrigin(child: GameObjects.GameObject): { x: number; y: number } {
+  public getNormalizedOrigin(child: GameObjects.GameObject): {
+    x: number;
+    y: number;
+  } {
     return getNormalizedOriginOf(child);
   }
 }

@@ -1,4 +1,8 @@
-import { IconText, type IconKey, type IconStyle } from 'font-awesome-for-phaser';
+import {
+  IconText,
+  type IconKey,
+  type IconStyle,
+} from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
@@ -64,7 +68,11 @@ export class FlatIconButton extends GameObjects.Container {
     this.pw = getPWFromScene(scene);
 
     this.baseSizePx =
-      typeof size === 'number' ? size : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
+      typeof size === 'number'
+        ? size
+        : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
+
+    this.updateSize();
 
     this.borderRadiusPx =
       typeof borderRadius === 'number'
@@ -129,10 +137,20 @@ export class FlatIconButton extends GameObjects.Container {
 
   public setButtonSize(size: FontSizeKey | number): this {
     this.baseSizePx =
-      typeof size === 'number' ? size : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
+      typeof size === 'number'
+        ? size
+        : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
     this.iconText.setFontSize(`${this.baseSizePx}px`);
+
+    this.updateSize();
+
     this.regenerateBackgroundTexture();
     return this;
+  }
+
+  private updateSize(): void {
+    this.width = this.baseSizePx * BUTTON_SCALE;
+    this.height = this.baseSizePx * BUTTON_SCALE;
   }
 
   private createBackgroundSprite(scene: Scene): void {
@@ -173,7 +191,11 @@ export class FlatIconButton extends GameObjects.Container {
     return textureKey;
   }
 
-  private createIconText(scene: Scene, icon: IconKey, iconStyle: IconStyle): void {
+  private createIconText(
+    scene: Scene,
+    icon: IconKey,
+    iconStyle: IconStyle
+  ): void {
     this.iconText = new IconText({
       scene,
       x: 0,
@@ -215,5 +237,33 @@ export class FlatIconButton extends GameObjects.Container {
       });
       onClick?.();
     });
+  }
+
+  /**
+   * Gets the bounds of the flat icon button for layout calculations
+   * @param output Optional rectangle to store the result
+   * @returns Rectangle with the button bounds
+   */
+  public override getBounds(
+    output?: Phaser.Geom.Rectangle
+  ): Phaser.Geom.Rectangle {
+    const width = this.baseSizePx * BUTTON_SCALE;
+    const height = this.baseSizePx * BUTTON_SCALE;
+
+    if (output) {
+      return output.setTo(
+        this.x - width / 2,
+        this.y - height / 2,
+        width,
+        height
+      );
+    }
+
+    return new Phaser.Geom.Rectangle(
+      this.x - width / 2,
+      this.y - height / 2,
+      width,
+      height
+    );
   }
 }

@@ -11,7 +11,21 @@ export const getDisplayWidthOf = (child: GameObjects.GameObject): number => {
     width?: number;
     getBounds?: () => { width: number };
   };
-  if (typeof childTyped.displayWidth === 'number') return childTyped.displayWidth;
+  // Check if it's a Container-like object (has list property and width/height)
+  if (child && typeof child === 'object' && 'list' in child && Array.isArray((child as unknown as { list: unknown[] }).list)) {
+    const container = child as unknown as { list: unknown[]; width: number };
+    if (container.width > 0) {
+      return container.width;
+    }
+    let w = 0;
+    for (const sub of container.list) {
+      const size = getDisplayWidthOf(sub as GameObjects.GameObject);
+      w = Math.max(w, size);
+    }
+    return w;
+  }
+  if (typeof childTyped.displayWidth === 'number')
+    return childTyped.displayWidth;
   if (typeof childTyped.width === 'number') return childTyped.width as number;
   const bounds = childTyped.getBounds?.();
   return bounds ? bounds.width : 0;
@@ -24,14 +38,30 @@ export const getDisplayHeightOf = (child: GameObjects.GameObject): number => {
     height?: number;
     getBounds?: () => { height: number };
   };
-  if (typeof childTyped.displayHeight === 'number') return childTyped.displayHeight;
+  // Check if it's a Container-like object (has list property and width/height)
+  if (child && typeof child === 'object' && 'list' in child && Array.isArray((child as unknown as { list: unknown[] }).list)) {
+    const container = child as unknown as { list: unknown[]; height: number };
+    if (container.height > 0) {
+      return container.height;
+    }
+    let h = 0;
+    for (const sub of container.list) {
+      const size = getDisplayHeightOf(sub as GameObjects.GameObject);
+      h = Math.max(h, size);
+    }
+    return h;
+  }
+  if (typeof childTyped.displayHeight === 'number')
+    return childTyped.displayHeight;
   if (typeof childTyped.height === 'number') return childTyped.height as number;
   const bounds = childTyped.getBounds?.();
   return bounds ? bounds.height : 0;
 };
 
 /** Returns normalized origin (0..1) for a game object */
-export const getNormalizedOriginOf = (child: GameObjects.GameObject): { x: number; y: number } => {
+export const getNormalizedOriginOf = (
+  child: GameObjects.GameObject
+): { x: number; y: number } => {
   const width = getDisplayWidthOf(child);
   const height = getDisplayHeightOf(child);
 
@@ -47,10 +77,18 @@ export const getNormalizedOriginOf = (child: GameObjects.GameObject): { x: numbe
   let oy: number | undefined =
     typeof childTyped.originY === 'number' ? childTyped.originY : undefined;
 
-  if (ox === undefined && typeof childTyped.displayOriginX === 'number' && width > 0) {
+  if (
+    ox === undefined &&
+    typeof childTyped.displayOriginX === 'number' &&
+    width > 0
+  ) {
     ox = childTyped.displayOriginX / width;
   }
-  if (oy === undefined && typeof childTyped.displayOriginY === 'number' && height > 0) {
+  if (
+    oy === undefined &&
+    typeof childTyped.displayOriginY === 'number' &&
+    height > 0
+  ) {
     oy = childTyped.displayOriginY / height;
   }
 

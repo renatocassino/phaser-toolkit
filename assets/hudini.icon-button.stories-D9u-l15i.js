@@ -1,4 +1,4 @@
-import{f as l}from"./webfontloader-DPE_tNm0.js";import{l as u}from"./load-font--385G9yf.js";import{H as a,a as d,I as p}from"./plugin-BqRTo20k.js";import{r as m,c as g,n as h,a as y,C as f,P as c,g as i}from"./create-game-IT2NM2Nb.js";import{c as b}from"./theme-manager-BFQS-suy.js";import{S as I}from"./scene-with-hudini-EXJR7ZX3.js";import"./_commonjsHelpers-Cpj98o6Y.js";const x=["xs","sm","base","lg","xl","2xl","3xl","4xl","5xl","6xl","7xl","8xl","9xl"],o="hudini-icon-button",w=`
+import{f as l}from"./webfontloader-DPE_tNm0.js";import{l as u}from"./load-font--385G9yf.js";import{a,H as d,I as p}from"./plugin-hap-7yT1.js";import{r as m,c as g,n as h,a as y,C as f,P as c,g as i}from"./create-game-IT2NM2Nb.js";import{c as b}from"./theme-manager-BFQS-suy.js";import{S as I}from"./scene-with-hudini-EXJR7ZX3.js";import"./_commonjsHelpers-Cpj98o6Y.js";const x=["xs","sm","base","lg","xl","2xl","3xl","4xl","5xl","6xl","7xl","8xl","9xl"],o="hudini-icon-button",w=`
 import Phaser from 'phaser';
 import {
     Color,

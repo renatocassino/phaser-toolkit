@@ -1,4 +1,4 @@
-import{H as i,a as c,d as a}from"./plugin-BqRTo20k.js";import{c as m,n as h,a as l,P as p,d as g}from"./create-game-IT2NM2Nb.js";import{S as x}from"./scene-with-hudini-EXJR7ZX3.js";import"./webfontloader-DPE_tNm0.js";import"./_commonjsHelpers-Cpj98o6Y.js";const t="phaser-row-example",u=`
+import{a as i,H as c,R as a}from"./plugin-hap-7yT1.js";import{c as m,n as h,a as l,P as p,d as g}from"./create-game-IT2NM2Nb.js";import{S as x}from"./scene-with-hudini-EXJR7ZX3.js";import"./webfontloader-DPE_tNm0.js";import"./_commonjsHelpers-Cpj98o6Y.js";const t="phaser-row-example",u=`
 import { Row } from 'hudini';
 
 const row = new Row({

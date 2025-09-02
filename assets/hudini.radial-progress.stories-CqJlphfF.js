@@ -1,4 +1,4 @@
-import{H as d,a as f,R as a}from"./plugin-BqRTo20k.js";import{f as S,c as C,n as x,a as y,C as k,P as m,g as h,d as A}from"./create-game-IT2NM2Nb.js";import{c as v}from"./theme-manager-BFQS-suy.js";import{S as w}from"./scene-with-hudini-EXJR7ZX3.js";import"./webfontloader-DPE_tNm0.js";import"./_commonjsHelpers-Cpj98o6Y.js";const i="hudini-radial-progress",b=`
+import{a as d,H as f,d as a}from"./plugin-hap-7yT1.js";import{f as S,c as C,n as x,a as y,C as k,P as m,g as h,d as A}from"./create-game-IT2NM2Nb.js";import{c as v}from"./theme-manager-BFQS-suy.js";import{S as w}from"./scene-with-hudini-EXJR7ZX3.js";import"./webfontloader-DPE_tNm0.js";import"./_commonjsHelpers-Cpj98o6Y.js";const i="hudini-radial-progress",b=`
 import Phaser from 'phaser';
 import {
     Color,
@@ -186,4 +186,4 @@ class PreviewScene extends SceneWithHudini<Theme> {
       scene: [ShowcaseScene]
     });
   }
-}`,...g.parameters?.docs?.source}}};const R=["Interactive","Showcase"];export{p as Interactive,g as Showcase,R as __namedExportsOrder,F as default};
+}`,...g.parameters?.docs?.source}}};const B=["Interactive","Showcase"];export{p as Interactive,g as Showcase,B as __namedExportsOrder,F as default};

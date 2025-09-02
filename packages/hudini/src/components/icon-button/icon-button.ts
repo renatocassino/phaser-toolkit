@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {

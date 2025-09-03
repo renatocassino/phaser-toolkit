@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.13.0
+
+### Minor Changes
+
+- 667b835: add new feature to use width/height in card without child
+
 ## 0.12.1
 
 ### Patch Changes

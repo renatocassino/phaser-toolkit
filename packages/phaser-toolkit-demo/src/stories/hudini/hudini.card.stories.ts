@@ -7,6 +7,7 @@ import type { Args, Meta, StoryObj } from '@storybook/html';
 import {
     Card,
     Color,
+    ColorToken,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -90,7 +91,6 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
 const meta: Meta = {
     title: 'Hudini/components/Card',
-    component: Card,
     parameters: {
         docs: {
             description: {
@@ -138,6 +138,11 @@ ${usageSnippet}
             options: spacingTokens,
             description: 'Margin/spacing token or pixel value',
         },
+        textColor: {
+            control: 'select',
+            options: colorTokens,
+            description: 'Text color token or CSS color string',
+        },
     },
 };
 
@@ -145,7 +150,8 @@ export default meta;
 
 class PreviewScene extends SceneWithHudini<Theme> {
     private card?: Card;
-    private button?: TextButton;
+    private emptyCard?: Card;
+    private text?: Phaser.GameObjects.Text;
 
     constructor() {
         super('preview');
@@ -155,17 +161,11 @@ class PreviewScene extends SceneWithHudini<Theme> {
         const { pw } = this.hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
-        // Create a button to put inside the card
-        this.button = new TextButton({
-            scene: this,
-            x: 0,
-            y: 0,
-            text: 'Click Me!',
-            backgroundColor: 'blue-500',
-            textColor: 'white',
-            borderRadius: 'md',
-            margin: '4',
-        });
+        this.text = this.add.text(0, 0, 'Card with child', {
+            color: this.pw.color.rgb('black'),
+            align: 'center',
+            fontSize: '18px',
+        })
 
         // Create a card containing the button
         this.card = new Card({
@@ -175,24 +175,57 @@ class PreviewScene extends SceneWithHudini<Theme> {
             backgroundColor: 'white',
             borderRadius: 'lg',
             margin: '6',
-            child: this.button,
+            child: this.text,
         });
         this.add.existing(this.card);
+
+        // Create an empty card
+        this.emptyCard = new Card({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: this.cameras.main.centerY + 130,
+            backgroundColor: 'green-500',
+            borderRadius: 'lg',
+            margin: '6',
+            width: 200,
+            height: 100,
+        });
+        this.add.existing(this.emptyCard);
+        // Add text label for empty card example
+        this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + 200,
+            'Example of empty card',
+            {
+                color: this.pw.color.rgb('white'),
+                align: 'center',
+                fontSize: '16px'
+            }
+        ).setOrigin(0.5, 0.5);
 
         // Listen for prop updates
         this.events.on(
             'props:update',
-            (p: { backgroundColor: string; borderRadius: string | number; margin: string | number }): void => this.applyProps(p)
+            (p: { backgroundColor: string; borderRadius: RadiusKey | number; margin: SpacingKey | number; textColor: ColorToken }): void => this.applyProps(p)
         );
     }
 
-    private applyProps(p: { backgroundColor: string; borderRadius: string | number; margin: string | number }): void {
+    private applyProps(p: {
+        backgroundColor: string;
+        borderRadius: RadiusKey | number;
+        margin: SpacingKey | number;
+        textColor: ColorToken;
+    }): void {
         if (!this.card) return;
 
         this.card
             .setBackgroundColor(p.backgroundColor)
             .setBorderRadius(p.borderRadius)
             .setMargin(p.margin);
+
+        if (this.text) {
+            this.text.setColor(this.pw.color.rgb(p.textColor));
+        }
     }
 }
 
@@ -420,6 +453,7 @@ export const CardExample: StoryObj<{
     backgroundColor: string;
     borderRadius: string | number;
     margin: string | number;
+    textColor: ColorToken;
 }> = {
     render: (args: Args): HTMLElement => {
         const root = document.getElementById(ID) ?? document.createElement('div');
@@ -432,8 +466,9 @@ export const CardExample: StoryObj<{
 
             scene.events.emit('props:update', args as {
                 backgroundColor: string;
-                borderRadius: string | number;
-                margin: string | number;
+                borderRadius: RadiusKey | number;
+                margin: SpacingKey | number;
+                textColor: ColorToken;
             });
         };
 
@@ -474,6 +509,7 @@ export const CardExample: StoryObj<{
         backgroundColor: 'white',
         borderRadius: 'lg',
         margin: '6',
+        textColor: 'black',
     },
     parameters: {
         docs: {

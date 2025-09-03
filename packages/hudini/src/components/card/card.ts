@@ -23,7 +23,11 @@ export type CardParams = {
   /** Margin/padding in px (number) or a Phaser Wind spacing token (string). Defaults to '4'. */
   margin?: SpacingKey | number;
   /** Child component to be contained within the card */
-  child: GameObjects.GameObject;
+  child?: GameObjects.GameObject;
+  /** Width of the card in pixels */
+  width?: number;
+  /** Height of the card in pixels */
+  height?: number;
 };
 
 /**
@@ -33,7 +37,7 @@ export class Card extends GameObjects.Container {
   /** The background graphics of the card */
   public backgroundGraphics!: GameObjects.Graphics;
   /** The child component contained within the card */
-  public child!: GameObjects.GameObject;
+  public child: GameObjects.GameObject | undefined;
 
   /** Reference to the PhaserWind plugin */
   private pw: PhaserWindPlugin<{}>;
@@ -56,6 +60,8 @@ export class Card extends GameObjects.Container {
     borderRadius = 'md',
     margin = '4',
     child,
+    width,
+    height,
   }: CardParams) {
     super(scene, x, y);
     this.pw = getPWFromScene(scene);
@@ -75,8 +81,27 @@ export class Card extends GameObjects.Container {
     this.child = child;
 
     // Create background and setup container
-    this.createBackgroundGraphics(scene);
+    this.createBackgroundGraphics(scene, width, height);
     this.setupContainer();
+  }
+  /**
+   * Sets the width of the card. Useful when you want to set a fixed width without a child component.
+   * @param width Width in pixels
+   * @returns this for chaining
+   */
+  public setWidth(width: number): this {
+    this.setSize(width, this.height);
+    return this;
+  }
+
+  /**
+   * Sets the height of the card. Useful when you want to set a fixed height without a child component.
+   * @param height Height in pixels
+   * @returns this for chaining
+   */
+  public setHeight(height: number): this {
+    this.setSize(this.width, height);
+    return this;
   }
 
   /**
@@ -125,7 +150,9 @@ export class Card extends GameObjects.Container {
    */
   public setChild(child: GameObjects.GameObject): this {
     // Remove old child
-    this.remove(this.child);
+    if (this.child) {
+      this.remove(this.child);
+    }
 
     // Set new child
     this.child = child;
@@ -140,16 +167,19 @@ export class Card extends GameObjects.Container {
    * Creates the background graphics for the card
    * @param scene The scene to add the graphics to
    */
-  private createBackgroundGraphics(scene: Scene): void {
+  private createBackgroundGraphics(scene: Scene, width: number | undefined, height: number | undefined): void {
     this.backgroundGraphics = scene.add.graphics();
-    this.drawBackground();
+    this.drawBackground(width, height);
   }
 
   /**
    * Sets up the container with background and child
    */
   private setupContainer(): void {
-    this.add([this.backgroundGraphics, this.child]);
+    this.add([this.backgroundGraphics]);
+    if (this.child) {
+      this.add([this.child]);
+    }
     this.layout();
   }
 
@@ -157,6 +187,10 @@ export class Card extends GameObjects.Container {
    * Updates the layout after property changes
    */
   public layout(): void {
+    if (!this.child) {
+      return;
+    }
+
     // Get child bounds using type assertion
     const childBounds = (
       this.child as unknown as {
@@ -198,7 +232,7 @@ export class Card extends GameObjects.Container {
    */
   private getChildOrigin(): { x: number; y: number } | null {
     // Check if child has origin property
-    if ('originX' in this.child && 'originY' in this.child) {
+    if (this.child && 'originX' in this.child && 'originY' in this.child) {
       return {
         x: (this.child as unknown as { originX: number }).originX,
         y: (this.child as unknown as { originY: number }).originY,
@@ -207,6 +241,7 @@ export class Card extends GameObjects.Container {
 
     // Check if child has getOrigin method
     if (
+      this.child &&
       typeof (
         this.child as unknown as { getOrigin: () => { x: number; y: number } }
       ).getOrigin === 'function'
@@ -238,7 +273,7 @@ export class Card extends GameObjects.Container {
     childWidth: number,
     childOrigin: { x: number; y: number } | null
   ): number {
-    if (childOrigin) {
+    if (this.child && childOrigin) {
       // Consider child's origin for centering
       // If child origin is 0.5 (center), we need to offset by half the child width
       // If child origin is 0 (left), we need to offset by the full child width
@@ -277,16 +312,21 @@ export class Card extends GameObjects.Container {
   /**
    * Draws the background graphics
    */
-  private drawBackground(): void {
-    // Get child bounds for current dimensions
-    const childBounds = (
-      this.child as unknown as {
-        getBounds: () => { width: number; height: number };
-      }
-    ).getBounds();
-    const width = childBounds.width + this.marginPx * 2;
-    const height = childBounds.height + this.marginPx * 2;
-
+  private drawBackground(w?: number, h?: number): void {
+    let [width, height] = [0, 0];
+    if (w && h) {
+      width = w;
+      height = h;
+    } else {
+      // Get child bounds for current dimensions
+      const childBounds = (
+        this.child as unknown as {
+          getBounds: () => { width: number; height: number };
+        }
+      ).getBounds();
+      width = childBounds.width + this.marginPx * 2;
+      height = childBounds.height + this.marginPx * 2;
+    }
     this.backgroundGraphics.clear();
 
     // Limit radius to maximum possible for the card dimensions

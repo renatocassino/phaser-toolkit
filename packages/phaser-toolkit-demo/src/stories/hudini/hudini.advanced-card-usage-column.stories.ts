@@ -56,7 +56,6 @@ class PreviewScene extends SceneWithHudini {
       y: 0,
       gap: 10,
       align: 'center',
-      verticalOrigin: 'center',
       children: [
         new IconButton({
           scene: this,

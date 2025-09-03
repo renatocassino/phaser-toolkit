@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable complexity */
 import { GameObjects, Scene } from 'phaser';
 
@@ -52,7 +53,7 @@ export class Column extends GameObjects.Container {
     gap = DEFAULT_GAP,
     align = 'center',
     children = [],
-    verticalOrigin = 'top',
+    verticalOrigin = 'center',
   }: ColumnParams) {
     super(scene, x, y);
 

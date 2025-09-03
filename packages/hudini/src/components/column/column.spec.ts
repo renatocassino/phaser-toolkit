@@ -121,7 +121,7 @@ describe('Column layout', () => {
     const a = new TestChild({ displayWidth: 100, displayHeight: 50 });
     const b = new TestChild({ displayWidth: 200, displayHeight: 100 });
 
-    const col = new Column({ scene, x: 0, y: 0, children: [a, b] as unknown as GameObjects.GameObject[] }); // default gap=8, align=center, verticalOrigin=top
+    const col = new Column({ scene, x: 0, y: 0, verticalOrigin: 'top', children: [a, b] as unknown as GameObjects.GameObject[] }); // default gap=8, align=center, verticalOrigin=top
 
     // Initial state with gap=8
     expect(b.lastPosition?.y).toBe(50 + 8 + 50); // 108

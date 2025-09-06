@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.5.2
+
+### Patch Changes
+
+- 8b711a8: fix load in font-awesome-for-phaser
+
 ## 0.5.1
 
 ### Patch Changes

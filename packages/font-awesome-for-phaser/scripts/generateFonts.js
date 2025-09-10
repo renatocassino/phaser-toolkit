@@ -16,7 +16,7 @@ const acceptedStyles = ['solid', 'regular', 'brands'];
 
 const getAllFonts = async () => {
   const url =
-    'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/refs/heads/6.x/metadata/icons.yml';
+    'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/refs/heads/7.x/metadata/icons.yml';
   const req = await fetch(url);
   const data = await req.text();
   console.log('Successfully fetched icons.yml');
@@ -35,8 +35,8 @@ const getAllFonts = async () => {
       item.styles.length > 0 &&
       item.styles.some(style => acceptedStyles.includes(style))
     ) {
-      if (item.styles.length == 1) {
-        content.push(`  '${name}': { hexCode: '${item.unicode}' },`);
+      if (item.styles.length > 0) {
+        content.push(`  '${name}': { hexCode: '${item.unicode}', acceptedStyles: [${item.styles.map(style => `'${style}'`).join(',')}] },`);
         return;
       }
     }

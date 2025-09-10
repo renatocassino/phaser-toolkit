@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.6.0
+
+### Minor Changes
+
+- aa0bf03: add more fonts
+
 ## 0.5.2
 
 ### Patch Changes

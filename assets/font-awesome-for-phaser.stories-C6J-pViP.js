@@ -1,4 +1,4 @@
-import{f as l,I as m}from"./webfontloader-DPE_tNm0.js";import{l as d}from"./load-font-C-uD1_gu.js";import{c as p,n as y,a as g,C as s,P as c,g as t,F as u}from"./create-game-IT2NM2Nb.js";import"./_commonjsHelpers-Cpj98o6Y.js";const n="font-awesome-for-phaser-basic",f=`import { IconText, loadFont } from 'font-awesome-for-phaser';
+import{f as l,I as m}from"./webfontloader-CT6D7eKM.js";import{l as d}from"./load-font-BqiCbOdw.js";import{c as p,n as y,a as g,C as s,P as c,g as t,F as u}from"./create-game-IT2NM2Nb.js";import"./_commonjsHelpers-Cpj98o6Y.js";const n="font-awesome-for-phaser-basic",f=`import { IconText, loadFont } from 'font-awesome-for-phaser';
 
 await loadFont();
 

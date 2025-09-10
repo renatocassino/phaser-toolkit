@@ -1,6 +1,6 @@
 {
   "name": "font-awesome-for-phaser",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Font Awesome icons integration for Phaser games",
   "type": "module",
   "main": "./dist/index.js",

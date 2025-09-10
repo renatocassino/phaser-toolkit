@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.7.0
+
+### Minor Changes
+
+- 6f1da6b: add fallback to always use a valid icon font
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 import { type IconKey } from '../constants/icons';
-import { getIconChar } from '../utils';
+import { getIconChar, getIconStyles } from '../utils';
 
 export type IconStyle = 'solid' | 'regular' | 'brands';
 
@@ -28,6 +28,7 @@ export type IconTextParams = {
  */
 export class IconText extends Phaser.GameObjects.Text {
   private currentIconStyle: IconStyle = 'solid';
+  private icon: IconKey;
 
   constructor({
     scene,
@@ -43,6 +44,8 @@ export class IconText extends Phaser.GameObjects.Text {
       ...style,
     });
 
+    this.icon = icon;
+
     this.currentIconStyle = iconStyle;
     this.applyIconStyle(this.currentIconStyle);
     this.setOrigin(0.5, 0.5);
@@ -50,6 +53,7 @@ export class IconText extends Phaser.GameObjects.Text {
 
   public setIcon(icon: IconKey, opts?: { iconStyle?: IconStyle }): void {
     this.setText(getIconChar(icon));
+    this.icon = icon;
     if (opts?.iconStyle) {
       this.applyIconStyle(opts.iconStyle);
     }
@@ -63,19 +67,32 @@ export class IconText extends Phaser.GameObjects.Text {
     return this.currentIconStyle;
   }
 
+  public getIcon(): IconKey {
+    return this.icon;
+  }
+
   private applyIconStyle(iconStyle: IconStyle): void {
+    let newIconStyle = iconStyle;
+    const availableStyles = getIconStyles(this.icon);
+    if (!availableStyles.has(iconStyle)) {
+      const newStyle = [...availableStyles][0] as IconStyle;
+      // eslint-disable-next-line no-console
+      console.warn(`Icon ${this.icon} does not support style "${iconStyle}", using "${newStyle}" instead. Available styles: ${Array.from([...availableStyles].map(style => `"${style}"`)).join(', ')}`);
+      newIconStyle = newStyle;
+    }
+
     // Font Awesome v7:
     // - Free Regular (400) and Free Solid (900) share family "Font Awesome 6 Free"
     // - Brands (400) uses family "Font Awesome 6 Brands"
-    if (iconStyle === 'brands') {
+    if (newIconStyle === 'brands') {
       this.setFontFamily("'Font Awesome 7 Brands'");
       this.setFontStyle('normal');
     } else {
       this.setFontFamily("'Font Awesome 7 Free'");
       // Use bold for solid, normal for regular. Bold maps to the closest available weight (900 for solid)
-      this.setFontStyle(iconStyle === 'solid' ? 'bold' : 'normal');
+      this.setFontStyle(newIconStyle === 'solid' ? 'bold' : 'normal');
     }
 
-    this.currentIconStyle = iconStyle;
+    this.currentIconStyle = newIconStyle;
   }
 }

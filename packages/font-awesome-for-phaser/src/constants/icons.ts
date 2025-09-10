@@ -1920,6 +1920,6 @@ export const fontIcons = {
   'youtube': { hexCode: 'f167', acceptedStyles: ['brands'] },
   'z': { hexCode: '5a', acceptedStyles: ['solid'] },
   'zhihu': { hexCode: 'f63f', acceptedStyles: ['brands'] },
-}
+} as const;
 
 export type IconKey = keyof typeof fontIcons;

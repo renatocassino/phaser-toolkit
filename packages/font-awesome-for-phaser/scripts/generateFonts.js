@@ -7,7 +7,7 @@ const template = `
 // Please, don't edit this file manually, it will be overwritten on the next run of the script.
 export const fontIcons = {
 {{content}}
-}
+} as const;
 
 export type IconKey = keyof typeof fontIcons;
 `;

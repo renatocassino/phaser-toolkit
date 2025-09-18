@@ -243,7 +243,7 @@ export class PhaserSoundStudioPlugin<
    * @returns {number} The volume for the channel.
    */
   getChannelVolume(channel: TChannel): number {
-    return this.channelVolumes[channel] || 1;
+    return this.channelVolumes[channel] ?? 1;
   }
 
   /**

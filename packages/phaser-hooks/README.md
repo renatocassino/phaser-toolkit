@@ -22,9 +22,14 @@ this.game.registry.events.on('changedata-volume', (game, value) => {
 // Using scene.data (local)
 this.data.set('score', 42); // too boring too
 const score = this.data.get('score');
-this.data.events.on('changedata-score', (scene, value) => {
+
+const onChangeFn = (scene, value) => {
   console.log('Score updated to', value);
-});
+};
+this.data.events.on('changedata-score', onChangeFn); // If you pass an anonymous function, you cannot unsubscribe :(
+
+// when move to another scene, you must unsubscribe. Boring and easy to forget
+this.data.events.off('changeset-score', onChangeFn);
 ```
 
 With _phaser-hooks_, you get a simple, React-like API:
@@ -34,7 +39,11 @@ With _phaser-hooks_, you get a simple, React-like API:
 const volume = withGlobalState(scene, 'volume', 0.5); // woow! awesome
 volume.get(); // 0.5
 volume.set(0.8); // updates value
-volume.onChange(v => console.log('Volume changed →', v)); // Nice callback <3
+
+const unsubscribe = volume.on('change', v => console.log('Volume changed →', v)); // Nice callback in event <3 - Return the easy unsubscribe function
+
+// when move to another scene, just call :)
+unsubscribe();
 
 // Persisted state (localStorage / sessionStorage)
 const score = withPersistState(scene, 'score', 0, { storage: 'local' }); // Wow! Saving in localStorage
@@ -68,6 +77,12 @@ This approach allows you to use these state management utilities in your Phaser 
 Scene-specific state management that gets cleaned up when the scene is destroyed.
 
 ```typescript
+type PlayerData = {
+  hp: number;
+  level: number;
+  exp: number;
+}
+
 const playerState = withLocalState<PlayerData>(scene, 'player', {
   hp: 100,
   level: 1,
@@ -80,21 +95,14 @@ const playerState = withLocalState<PlayerData>(scene, 'player', {
 Application-wide state that persists across all scenes.
 
 ```typescript
+type GameSettings = {
+  soundVolume: number;
+  musicEnabled: true;
+};
+
 const settingsState = withGlobalState<GameSettings>(scene, 'settings', {
   soundVolume: 0.8,
   musicEnabled: true,
-});
-```
-
-#### `withStateDef`
-
-Low-level state definition with custom behaviors and validation.
-
-```typescript
-const customState = withStateDef<number>(scene, 'score', {
-  initialValue: 0,
-  validator: value => value >= 0,
-  onChange: (newValue, oldValue) => console.log('Score changed!'),
 });
 ```
 
@@ -105,6 +113,11 @@ const customState = withStateDef<number>(scene, 'score', {
 State with automatic localStorage persistence.
 
 ```typescript
+type UserSettings = {
+  volume: number;
+  difficulty: 'easy' | 'normal' | 'hard';
+}
+
 const persistentSettings = withPersistentState<UserSettings>(
   'settings',
   {
@@ -211,7 +224,7 @@ export class GameScene extends Phaser.Scene {
     );
 
     // Listen to changes
-    playerState.onChange((newPlayer, oldPlayer) => {
+    const ubsubscribe = playerState.on('change', (newPlayer, oldPlayer) => {
       console.log('Player health changed:', newPlayer.hp);
     });
 
@@ -313,8 +326,7 @@ function withPlayerEnergy(scene: Phaser.Scene) {
   return {
     get: () => player.get().energy,
     set: (value: number) => player.set({ ...player.get(), energy: value }),
-    onChange: (fn: (energy: number) => void) =>
-      player.onChange(newVal => fn(newVal.energy)),
+    ...player,
   };
 }
 ```
@@ -328,11 +340,153 @@ console.log('Current energy:', energy.get());
 
 energy.set(energy.get() - 10);
 
-energy.onChange(newEnergy => {
-  if (newEnergy <= 0) {
+energy.on('change', () => {
+  if (energy.get() <= 0) {
     console.warn('You are out of energy!');
   }
 });
+```
+
+## Unsubscribe Events
+
+When you subscribe to state changes using `.on('change', callback)`, it's crucial to properly unsubscribe to prevent memory leaks and unexpected behavior. Phaser Hooks provides two ways for unsubscribing from events.
+
+### Method 1: Using the Return Value from `.on('change')`
+
+The `.on('change', callback)` method returns an unsubscribe function that you can call to remove the listener:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  create() {
+    const playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
+    
+    // Subscribe to changes and get unsubscribe function
+    const unsubscribe = playerState.on('change', (newPlayer, oldPlayer) => {
+      console.log('Player health changed:', newPlayer.hp);
+    });
+
+    this.add.text(centerX, centerY, 'Go to another scene')
+      .setInteractive().on('pointerdown', () => {
+        // Later, unsubscribe when needed
+        unsubscribe();
+
+        // To switch to another scene in Phaser, use:
+        this.scene.start('OtherSceneKey');
+      });
+  }
+}
+```
+
+### Method 2: Using `.off('change', callback)`
+
+You can also unsubscribe by passing the same callback function to `.off('change', callback)`:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  private healthCallback?: (newPlayer: any, oldPlayer: any) => void;
+  
+  create() {
+    const playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
+    
+    // Define callback function
+    this.healthCallback = (newPlayer, oldPlayer) => {
+      console.log('Player health changed:', newPlayer.hp);
+    };
+    
+    // Subscribe to changes
+    playerState.on('change', this.healthCallback);
+
+    this.add.text(centerX, centerY, 'Go to another scene')
+      .setInteractive().on('pointerdown', () => {
+        // Later, unsubscribe when needed
+        playerState.off('change', this.healthCallback);
+
+        // To switch to another scene in Phaser, use:
+        this.scene.start('OtherSceneKey');
+      });
+  }
+}
+```
+
+> **Note:** When using `.off`, you must pass the exact same function instance that was used with `.on`. This means you cannot use an inline closure or anonymous function—use a named function or store the callback reference to unsubscribe properly.
+
+### Best Practices for Scene Cleanup
+
+**⚠️ IMPORTANT DISCLAIMER**: If you don't clean up event listeners when leaving a scene, you may encounter:
+- Memory leaks
+- Unexpected behavior when returning to the scene
+- Callbacks firing on destroyed or inactive scenes
+- Performance issues over time
+
+Always unsubscribe from events when transitioning between scenes:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  private unsubscribeFunctions: (() => void)[] = [];
+  
+  create() {
+    const playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
+    const scoreState = withGlobalState<number>(this, 'score', 0);
+    
+    // Store unsubscribe functions
+    this.unsubscribeFunctions.push(
+      playerState.on('change', (newPlayer) => {
+        console.log('Player updated:', newPlayer);
+      })
+    );
+    
+    this.unsubscribeFunctions.push(
+      scoreState.on('change', (newScore) => {
+        console.log('Score updated:', newScore);
+      })
+    );
+  }
+  
+  // Clean up when scene is destroyed or when transitioning
+  shutdown() {
+    // Unsubscribe from all events
+    this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    this.unsubscribeFunctions = [];
+  }
+  
+  // Or clean up before transitioning to another scene
+  goToNextScene() {
+    // Clean up before changing scenes
+    this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    this.unsubscribeFunctions = [];
+    
+    // Then transition
+    this.scene.start('NextScene');
+  }
+}
+```
+
+### Multiple Subscriptions Example
+
+You can have multiple listeners for the same state:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  create() {
+    const playerState = withLocalState<{ hp: number; level: number }>(this, 'player', { 
+      hp: 100, 
+      level: 1 
+    });
+    
+    // Multiple listeners for the same state
+    const unsubscribeHealth = playerState.on('change', (newPlayer) => {
+      console.log('Health changed:', newPlayer.hp);
+    });
+    
+    const unsubscribeLevel = playerState.on('change', (newPlayer) => {
+      console.log('Level changed:', newPlayer.level);
+    });
+    
+    // Unsubscribe specific listeners
+    unsubscribeHealth(); // Only removes health listener
+    // unsubscribeLevel still active
+  }
+}
 ```
 
 ### Why use this pattern?

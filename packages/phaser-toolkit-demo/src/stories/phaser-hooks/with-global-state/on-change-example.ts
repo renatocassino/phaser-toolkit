@@ -144,7 +144,7 @@ export class PreviewSceneOnChange extends Scene {
 
 
 export class PreviewScene2OnChange extends Scene {
-    private unsubscribe?: () => void;
+    private unsubscribe?: (() => void) | undefined;
     private changeCount = 0;
     private changeLogText?: Phaser.GameObjects.Text;
 

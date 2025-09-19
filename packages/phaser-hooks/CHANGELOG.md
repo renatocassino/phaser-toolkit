@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.4.0
+
+### Minor Changes
+
+- dd22cf2: add better logs and method to clean all listeners
+
 ## 0.3.0
 
 ### Minor Changes

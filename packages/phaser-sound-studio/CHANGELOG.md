@@ -1,5 +1,11 @@
 # phaser-sound-studio
 
+## 0.4.1
+
+### Patch Changes
+
+- 825014f: fix get channel volume, when 0 returns 1.
+
 ## 0.4.0
 
 ### Minor Changes

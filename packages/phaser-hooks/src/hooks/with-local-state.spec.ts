@@ -1,18 +1,20 @@
 /* eslint-disable max-lines-per-function */
+/* eslint-disable no-magic-numbers */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { buildSceneMock } from "../test/scene-mock";
+import { buildSceneMock } from '../test/scene-mock';
 
-import { withLocalState } from "./with-local-state";
+import { withLocalState } from './with-local-state';
+import { type Scene } from 'phaser';
 
 type FakeState = {
   life: number;
-}
+};
 
 describe('withLocalState', () => {
   const baseState: FakeState = {
     life: 100,
-  }
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -20,15 +22,21 @@ describe('withLocalState', () => {
 
   describe('validation', () => {
     it('should throw an error if the scene is not provided', () => {
-      // @ts-expect-error - we want to test the error case
-      expect(() => withLocalState<FakeState>(null, 'test-state', baseState)).toThrow('[withLocalState] Scene parameter is required');
+      const scene = null as unknown as Scene;
+      expect(() =>
+        withLocalState<FakeState>(scene, 'test-state', baseState)
+      ).toThrow('[withLocalState] Scene parameter is required');
     });
 
     it('should throw an error if the data manager is not provided', () => {
       const scene = buildSceneMock();
       // @ts-expect-error - we want to test the error case
       scene.data = null;
-      expect(() => withLocalState<FakeState>(scene, 'test-state', baseState)).toThrow('[withStateDef] Scene data is not available. Ensure the scene is properly initialized.');
+      expect(() =>
+        withLocalState<FakeState>(scene, 'test-state', baseState)
+      ).toThrow(
+        '[withStateDef] Scene data is not available. Ensure the scene is properly initialized.'
+      );
     });
   });
 
@@ -40,14 +48,17 @@ describe('withLocalState', () => {
     it('should set initial state value if not provided in first call', () => {
       const scene = buildSceneMock();
       const key = `test-state-${Date.now()}`;
-      const initialState = { ...baseState, life: 90 }
+      const initialState = { ...baseState, life: 90 };
 
       const setSpy = vi.spyOn(scene.data, 'set');
 
       withLocalState<FakeState>(scene, key, initialState);
 
       // withLocalState uses scene.data, not scene.registry, for local state
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}`, initialState);
+      expect(setSpy).toHaveBeenCalledWith(
+        `phaser-hooks:local:test-scene:${key}`,
+        initialState
+      );
 
       setSpy.mockRestore();
     });
@@ -55,16 +66,22 @@ describe('withLocalState', () => {
     it('should not set state in second call', () => {
       const scene = buildSceneMock();
       const key = `test-state-${Date.now()}`;
-      const initialState = { ...baseState, life: 75 }
+      const initialState = { ...baseState, life: 75 };
 
       const setSpy = vi.spyOn(scene.data, 'set');
 
       withLocalState<FakeState>(scene, key, initialState);
 
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}`, initialState);
+      expect(setSpy).toHaveBeenCalledWith(
+        `phaser-hooks:local:test-scene:${key}`,
+        initialState
+      );
 
       // second call should not set state
-      const hook = withLocalState<FakeState>(scene, key, { ...baseState, life: 100 });
+      const hook = withLocalState<FakeState>(scene, key, {
+        ...baseState,
+        life: 100,
+      });
 
       expect(setSpy).toHaveBeenCalledTimes(1);
       expect(hook.get()).toEqual(initialState);
@@ -77,7 +94,7 @@ describe('withLocalState', () => {
     it('should return the initial state', () => {
       const scene = buildSceneMock();
       const key = `test-state-${Date.now()}`;
-      const initialState = { ...baseState, life: 100 }
+      const initialState = { ...baseState, life: 100 };
       const hook = withLocalState<FakeState>(scene, key, initialState);
       expect(hook.get()).toEqual(initialState);
     });
@@ -85,7 +102,7 @@ describe('withLocalState', () => {
     it('should return the updated state', () => {
       const scene = buildSceneMock();
       const key = `test-state-${Date.now()}`;
-      const initialState = { ...baseState, life: 100 }
+      const initialState = { ...baseState, life: 100 };
       const hook = withLocalState<FakeState>(scene, key, initialState);
       hook.set({ ...baseState, life: 90 });
       expect(hook.get()).toEqual({ ...baseState, life: 90 });
@@ -97,7 +114,7 @@ describe('withLocalState', () => {
       it('should register a change listener', () => {
         const scene = buildSceneMock();
         const key = `test-state-${Date.now()}`;
-        const initialState = { ...baseState, life: 100 }
+        const initialState = { ...baseState, life: 100 };
 
         const callback = vi.fn();
         const hook = withLocalState<FakeState>(scene, key, initialState);
@@ -109,7 +126,7 @@ describe('withLocalState', () => {
       it('should call multiple listeners', () => {
         const scene = buildSceneMock();
         const key = `test-state-${Date.now()}`;
-        const initialState = { ...baseState, life: 100 }
+        const initialState = { ...baseState, life: 100 };
 
         const callback1 = vi.fn();
         const callback2 = vi.fn();
@@ -124,7 +141,7 @@ describe('withLocalState', () => {
       it('should not call listener when call unsubscribe returned by .on function', () => {
         const scene = buildSceneMock();
         const key = `test-state-${Date.now()}`;
-        const initialState = { ...baseState, life: 100 }
+        const initialState = { ...baseState, life: 100 };
 
         const callback = vi.fn();
         const hook = withLocalState<FakeState>(scene, key, initialState);
@@ -141,7 +158,7 @@ describe('withLocalState', () => {
       it('should not call listener when add .off method to remove listener', () => {
         const scene = buildSceneMock();
         const key = `test-state-${Date.now()}`;
-        const initialState = { ...baseState, life: 100 }
+        const initialState = { ...baseState, life: 100 };
 
         const callback = vi.fn();
         const hook = withLocalState<FakeState>(scene, key, initialState);
@@ -155,7 +172,7 @@ describe('withLocalState', () => {
       it('should call listener when call .once method', () => {
         const scene = buildSceneMock();
         const key = `test-state-${Date.now()}`;
-        const initialState = { ...baseState, life: 100 }
+        const initialState = { ...baseState, life: 100 };
 
         const callback = vi.fn();
         const hook = withLocalState<FakeState>(scene, key, initialState);
@@ -167,7 +184,7 @@ describe('withLocalState', () => {
       it('should call listener once when call .once method', () => {
         const scene = buildSceneMock();
         const key = `test-state-${Date.now()}`;
-        const initialState = { ...baseState, life: 100 }
+        const initialState = { ...baseState, life: 100 };
 
         const callback = vi.fn();
         const hook = withLocalState<FakeState>(scene, key, initialState);
@@ -181,15 +198,245 @@ describe('withLocalState', () => {
       it('should not call listener when call unsubscribe returned by .once function', () => {
         const scene = buildSceneMock();
         const key = `test-state-${Date.now()}`;
-        const initialState = { ...baseState, life: 100 }
+        const initialState = { ...baseState, life: 100 };
 
         const callback = vi.fn();
         const hook = withLocalState<FakeState>(scene, key, initialState);
         const unsubscribe = hook.once('change', callback);
         unsubscribe();
-        hook.set({ ...baseState, life: 90 })
+        hook.set({ ...baseState, life: 90 });
         hook.set({ ...baseState, life: 100 });
         expect(callback).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('validators', () => {
+    describe('valid values', () => {
+      it('should accept valid values when validator returns true', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockReturnValue(true);
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        expect(validator).toHaveBeenCalledWith(initialState);
+        expect(hook.get()).toEqual(initialState);
+
+        // Test setting a new valid value
+        const newValue = { ...baseState, life: 75 };
+        hook.set(newValue);
+        expect(validator).toHaveBeenCalledWith(newValue);
+        expect(hook.get()).toEqual(newValue);
+        expect(validator).toHaveBeenCalledTimes(2);
+      });
+
+      it('should accept valid values when validator returns string true', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockReturnValue(true);
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        expect(validator).toHaveBeenCalledWith(initialState);
+        expect(hook.get()).toEqual(initialState);
+      });
+    });
+
+    describe('invalid values', () => {
+      it('should reject invalid values when validator returns false', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockImplementation((value: FakeState) => {
+          return value.life >= 0 ? true : false;
+        });
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        expect(validator).toHaveBeenCalledWith(initialState);
+        expect(hook.get()).toEqual(initialState);
+
+        // Test setting an invalid value
+        const invalidValue = { ...baseState, life: -10 };
+        expect(() => hook.set(invalidValue)).toThrow(
+          '[withStateDef] Invalid value for key'
+        );
+        expect(validator).toHaveBeenCalledWith(invalidValue);
+        expect(hook.get()).toEqual(initialState); // Should remain unchanged
+      });
+
+      it('should reject invalid values when validator returns error message', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+        const errorMessage = 'Life must be between 0 and 100';
+
+        const validator = vi.fn().mockImplementation((value: FakeState) => {
+          return value.life >= 0 && value.life <= 100 ? true : errorMessage;
+        });
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        expect(validator).toHaveBeenCalledWith(initialState);
+        expect(hook.get()).toEqual(initialState);
+
+        // Test setting an invalid value
+        const invalidValue = { ...baseState, life: 150 };
+        expect(() => hook.set(invalidValue)).toThrow(
+          `[withStateDef] ${errorMessage}`
+        );
+        expect(validator).toHaveBeenCalledWith(invalidValue);
+        expect(hook.get()).toEqual(initialState); // Should remain unchanged
+      });
+
+      it('should reject invalid initial value when validator returns false', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const invalidInitialValue = { ...baseState, life: -50 };
+
+        const validator = vi.fn().mockReturnValue(false);
+
+        expect(() =>
+          withLocalState<FakeState>(scene, key, invalidInitialValue, {
+            validator,
+          })
+        ).toThrow('[withStateDef] Invalid initial value for key');
+        expect(validator).toHaveBeenCalledWith(invalidInitialValue);
+      });
+
+      it('should reject invalid initial value when validator returns error message', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const invalidInitialValue = { ...baseState, life: 200 };
+        const errorMessage = 'Life cannot exceed 100';
+
+        const validator = vi.fn().mockReturnValue(errorMessage);
+
+        expect(() =>
+          withLocalState<FakeState>(scene, key, invalidInitialValue, {
+            validator,
+          })
+        ).toThrow(`[withStateDef] ${errorMessage}`);
+        expect(validator).toHaveBeenCalledWith(invalidInitialValue);
+      });
+    });
+
+    describe('validator behavior', () => {
+      it('should not call validator on get operations', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockReturnValue(true);
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        // Clear the validator calls from initialization
+        validator.mockClear();
+
+        // Get the value multiple times
+        hook.get();
+        hook.get();
+        hook.get();
+
+        expect(validator).not.toHaveBeenCalled();
+      });
+
+      it('should call validator on every set operation', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockReturnValue(true);
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        // Clear the validator calls from initialization
+        validator.mockClear();
+
+        // Set multiple values
+        hook.set({ ...baseState, life: 60 });
+        hook.set({ ...baseState, life: 70 });
+        hook.set({ ...baseState, life: 80 });
+
+        expect(validator).toHaveBeenCalledTimes(3);
+        expect(validator).toHaveBeenCalledWith({ ...baseState, life: 60 });
+        expect(validator).toHaveBeenCalledWith({ ...baseState, life: 70 });
+        expect(validator).toHaveBeenCalledWith({ ...baseState, life: 80 });
+      });
+
+      it('should work with complex validator logic', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockImplementation((value: FakeState) => {
+          if (value.life < 0) return 'Life cannot be negative';
+          if (value.life > 100) return 'Life cannot exceed 100';
+          if (value.life % 10 !== 0) return 'Life must be a multiple of 10';
+          return true;
+        });
+
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        // Test valid value
+        hook.set({ ...baseState, life: 90 });
+        expect(hook.get()).toEqual({ ...baseState, life: 90 });
+
+        // Test invalid values
+        expect(() => hook.set({ ...baseState, life: -10 })).toThrow(
+          '[withStateDef] Life cannot be negative'
+        );
+
+        expect(() => hook.set({ ...baseState, life: 150 })).toThrow(
+          '[withStateDef] Life cannot exceed 100'
+        );
+
+        expect(() => hook.set({ ...baseState, life: 55 })).toThrow(
+          '[withStateDef] Life must be a multiple of 10'
+        );
+
+        // State should remain unchanged after invalid attempts
+        expect(hook.get()).toEqual({ ...baseState, life: 90 });
+      });
+
+      it('should work with async-like validator (synchronous)', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockImplementation((value: FakeState) => {
+          // Simulate some validation logic
+          const isValid = value.life >= 0 && value.life <= 100;
+          return isValid ? true : 'Invalid life value';
+        });
+
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        // Test valid value
+        hook.set({ ...baseState, life: 75 });
+        expect(hook.get()).toEqual({ ...baseState, life: 75 });
+
+        // Test invalid value
+        expect(() => hook.set({ ...baseState, life: 150 })).toThrow(
+          '[withStateDef] Invalid life value'
+        );
       });
     });
   });

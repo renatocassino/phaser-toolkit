@@ -48,7 +48,9 @@ const volume = withGlobalState(scene, 'volume', 0.5); // woow! awesome
 volume.get(); // 0.5
 volume.set(0.8); // updates value
 
-const unsubscribe = volume.on('change', v => console.log('Volume changed →', v)); // Nice callback in event <3 - Return the easy unsubscribe function
+const unsubscribe = volume.on('change', v =>
+  console.log('Volume changed →', v)
+); // Nice callback in event <3 - Return the easy unsubscribe function
 
 // when move to another scene, just call :)
 unsubscribe();
@@ -80,27 +82,27 @@ This approach allows you to use these state management utilities in your Phaser 
 
 All hooks return a `HookState` object with the following methods:
 
-| Method | Description | Parameters | Returns |
-|--------|-------------|------------|---------|
-| `get()` | Gets the current state value | None | `T` - Current state value |
-| `set(value)` | Sets a new state value and triggers change listeners | `value: T` - New value to set | `void` |
-| `onChange(callback)` | Registers a callback for state changes (deprecated) | `callback: (newValue, oldValue) => void` | `void` |
-| `on('change', callback)` | Registers a callback for state changes | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
-| `once('change', callback)` | Registers a callback that fires only once | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
-| `off('change', callback)` | Removes an event listener | `event: 'change'`, `callback: () => void` | `void` |
+| Method                     | Description                                          | Parameters                                | Returns                             |
+| -------------------------- | ---------------------------------------------------- | ----------------------------------------- | ----------------------------------- |
+| `get()`                    | Gets the current state value                         | None                                      | `T` - Current state value           |
+| `set(value)`               | Sets a new state value and triggers change listeners | `value: T` - New value to set             | `void`                              |
+| `on('change', callback)`   | Registers a callback for state changes               | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
+| `once('change', callback)` | Registers a callback that fires only once            | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
+| `off('change', callback)`  | Removes an event listener                            | `event: 'change'`, `callback: () => void` | `void`                              |
 
 ### Special Hook Methods
 
 Some hooks have additional methods beyond the standard `HookState` interface:
 
 #### `withUndoableState` Additional Methods:
-| Method | Description | Parameters | Returns |
-|--------|-------------|------------|---------|
-| `undo()` | Reverts to the previous state | None | `boolean` - Success status |
-| `redo()` | Advances to the next state | None | `boolean` - Success status |
-| `canUndo()` | Checks if undo is available | None | `boolean` |
-| `canRedo()` | Checks if redo is available | None | `boolean` |
-| `clearHistory()` | Clears the undo/redo history | None | `void` |
+
+| Method           | Description                   | Parameters | Returns                    |
+| ---------------- | ----------------------------- | ---------- | -------------------------- |
+| `undo()`         | Reverts to the previous state | None       | `boolean` - Success status |
+| `redo()`         | Advances to the next state    | None       | `boolean` - Success status |
+| `canUndo()`      | Checks if undo is available   | None       | `boolean`                  |
+| `canRedo()`      | Checks if redo is available   | None       | `boolean`                  |
+| `clearHistory()` | Clears the undo/redo history  | None       | `void`                     |
 
 ## Available Hooks
 
@@ -115,7 +117,7 @@ type PlayerData = {
   hp: number;
   level: number;
   exp: number;
-}
+};
 
 const playerState = withLocalState<PlayerData>(scene, 'player', {
   hp: 100,
@@ -150,7 +152,7 @@ State with automatic localStorage persistence.
 type UserSettings = {
   volume: number;
   difficulty: 'easy' | 'normal' | 'hard';
-}
+};
 
 const persistentSettings = withPersistentState<UserSettings>(
   'settings',
@@ -226,18 +228,23 @@ const inventoryState = withLocalState<string[]>(scene, 'inventory', [], {
 });
 
 // One of allowed values validation
-const difficultyState = withGlobalState<'easy' | 'normal' | 'hard'>(scene, 'difficulty', 'normal', {
-  validator: validators.oneOf(['easy', 'normal', 'hard']),
-});
+const difficultyState = withGlobalState<'easy' | 'normal' | 'hard'>(
+  scene,
+  'difficulty',
+  'normal',
+  {
+    validator: validators.oneOf(['easy', 'normal', 'hard']),
+  }
+);
 
 // Custom validator example
 const healthState = withLocalState<number>(scene, 'health', 100, {
-  validator: (value) => {
+  validator: value => {
     const health = value as number;
     if (health < 0) return 'Health cannot be negative';
     if (health > 100) return 'Health cannot exceed 100';
     return true; // Valid
-  }
+  },
 });
 ```
 
@@ -414,15 +421,19 @@ The `.on('change', callback)` method returns an unsubscribe function that you ca
 ```typescript
 export class GameScene extends Phaser.Scene {
   create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
-    
+    const playerState = withLocalState<{ hp: number }>(this, 'player', {
+      hp: 100,
+    });
+
     // Subscribe to changes and get unsubscribe function
     const unsubscribe = playerState.on('change', (newPlayer, oldPlayer) => {
       console.log('Player health changed:', newPlayer.hp);
     });
 
-    this.add.text(centerX, centerY, 'Go to another scene')
-      .setInteractive().on('pointerdown', () => {
+    this.add
+      .text(centerX, centerY, 'Go to another scene')
+      .setInteractive()
+      .on('pointerdown', () => {
         // Later, unsubscribe when needed
         unsubscribe();
 
@@ -440,20 +451,24 @@ You can also unsubscribe by passing the same callback function to `.off('change'
 ```typescript
 export class GameScene extends Phaser.Scene {
   private healthCallback?: (newPlayer: any, oldPlayer: any) => void;
-  
+
   create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
-    
+    const playerState = withLocalState<{ hp: number }>(this, 'player', {
+      hp: 100,
+    });
+
     // Define callback function
     this.healthCallback = (newPlayer, oldPlayer) => {
       console.log('Player health changed:', newPlayer.hp);
     };
-    
+
     // Subscribe to changes
     playerState.on('change', this.healthCallback);
 
-    this.add.text(centerX, centerY, 'Go to another scene')
-      .setInteractive().on('pointerdown', () => {
+    this.add
+      .text(centerX, centerY, 'Go to another scene')
+      .setInteractive()
+      .on('pointerdown', () => {
         // Later, unsubscribe when needed
         playerState.off('change', this.healthCallback);
 
@@ -469,6 +484,7 @@ export class GameScene extends Phaser.Scene {
 ### Best Practices for Scene Cleanup
 
 **⚠️ IMPORTANT DISCLAIMER**: If you don't clean up event listeners when leaving a scene, you may encounter:
+
 - Memory leaks
 - Unexpected behavior when returning to the scene
 - Callbacks firing on destroyed or inactive scenes
@@ -479,38 +495,40 @@ Always unsubscribe from events when transitioning between scenes:
 ```typescript
 export class GameScene extends Phaser.Scene {
   private unsubscribeFunctions: (() => void)[] = [];
-  
+
   create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
+    const playerState = withLocalState<{ hp: number }>(this, 'player', {
+      hp: 100,
+    });
     const scoreState = withGlobalState<number>(this, 'score', 0);
-    
+
     // Store unsubscribe functions
     this.unsubscribeFunctions.push(
-      playerState.on('change', (newPlayer) => {
+      playerState.on('change', newPlayer => {
         console.log('Player updated:', newPlayer);
       })
     );
-    
+
     this.unsubscribeFunctions.push(
-      scoreState.on('change', (newScore) => {
+      scoreState.on('change', newScore => {
         console.log('Score updated:', newScore);
       })
     );
   }
-  
+
   // Clean up when scene is destroyed or when transitioning
   shutdown() {
     // Unsubscribe from all events
     this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     this.unsubscribeFunctions = [];
   }
-  
+
   // Or clean up before transitioning to another scene
   goToNextScene() {
     // Clean up before changing scenes
     this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     this.unsubscribeFunctions = [];
-    
+
     // Then transition
     this.scene.start('NextScene');
   }
@@ -524,20 +542,24 @@ You can have multiple listeners for the same state:
 ```typescript
 export class GameScene extends Phaser.Scene {
   create() {
-    const playerState = withLocalState<{ hp: number; level: number }>(this, 'player', { 
-      hp: 100, 
-      level: 1 
-    });
-    
+    const playerState = withLocalState<{ hp: number; level: number }>(
+      this,
+      'player',
+      {
+        hp: 100,
+        level: 1,
+      }
+    );
+
     // Multiple listeners for the same state
-    const unsubscribeHealth = playerState.on('change', (newPlayer) => {
+    const unsubscribeHealth = playerState.on('change', newPlayer => {
       console.log('Health changed:', newPlayer.hp);
     });
-    
-    const unsubscribeLevel = playerState.on('change', (newPlayer) => {
+
+    const unsubscribeLevel = playerState.on('change', newPlayer => {
       console.log('Level changed:', newPlayer.level);
     });
-    
+
     // Unsubscribe specific listeners
     unsubscribeHealth(); // Only removes health listener
     // unsubscribeLevel still active
@@ -552,20 +574,24 @@ The `.once()` method registers a callback that will only fire once, then automat
 ```typescript
 export class GameScene extends Phaser.Scene {
   create() {
-    const playerState = withLocalState<{ hp: number; level: number }>(this, 'player', { 
-      hp: 100, 
-      level: 1 
-    });
-    
+    const playerState = withLocalState<{ hp: number; level: number }>(
+      this,
+      'player',
+      {
+        hp: 100,
+        level: 1,
+      }
+    );
+
     // One-time listener - fires only once then auto-unsubscribes
-    const unsubscribeOnce = playerState.once('change', (newPlayer) => {
+    const unsubscribeOnce = playerState.once('change', newPlayer => {
       console.log('First level up detected!', newPlayer.level);
       // This callback will only run once, even if the state changes multiple times
     });
-    
+
     // You can still manually unsubscribe if needed before it fires
     // unsubscribeOnce();
-    
+
     // Simulate level up
     playerState.set({ hp: 100, level: 2 }); // Fires the once callback
     playerState.set({ hp: 100, level: 3 }); // Won't fire the once callback again
@@ -583,14 +609,14 @@ export class GameScene extends Phaser.Scene {
     const healthState = withLocalState<number>(this, 'health', 100, {
       validator: validators.numberRange(0, 100),
     });
-    
+
     try {
       healthState.set(150); // This will throw an error: "Value must be between 0 and 100"
     } catch (error) {
       console.error('Invalid health value:', error.message);
       // Handle the error appropriately
     }
-    
+
     // Valid value
     healthState.set(75); // This works fine
   }

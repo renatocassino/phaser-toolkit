@@ -89,6 +89,7 @@ All hooks return a `HookState` object with the following methods:
 | `on('change', callback)`   | Registers a callback for state changes               | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
 | `once('change', callback)` | Registers a callback that fires only once            | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
 | `off('change', callback)`  | Removes an event listener                            | `event: 'change'`, `callback: () => void` | `void`                              |
+| `clearListeners()`          | Removes all event listeners for this state           | None                                      | `void`                              |
 
 ### Special Hook Methods
 
@@ -531,6 +532,61 @@ export class GameScene extends Phaser.Scene {
 
     // Then transition
     this.scene.start('NextScene');
+  }
+}
+```
+
+### Using `clearListeners()` for Easy Cleanup
+
+For easier cleanup, you can use the `clearListeners()` method to remove all event listeners at once:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  private playerState: HookState<{ hp: number }>;
+  private scoreState: HookState<number>;
+
+  create() {
+    this.playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
+    this.scoreState = withGlobalState<number>(this, 'score', 0);
+
+    // Add listeners
+    this.playerState.on('change', (newPlayer) => {
+      console.log('Player updated:', newPlayer);
+    });
+
+    this.scoreState.on('change', (newScore) => {
+      console.log('Score updated:', newScore);
+    });
+  }
+
+  shutdown() {
+    // Clear all listeners at once - much easier!
+    this.playerState.clearListeners();
+    this.scoreState.clearListeners();
+  }
+}
+```
+
+#### Important Notes about `clearListeners()`:
+
+- **`withLocalState`**: Automatically cleans up when the scene is destroyed, but you can still use `clearListeners()` for manual cleanup
+- **`withGlobalState`**: **Requires manual cleanup** since global state persists across scenes. Always call `clearListeners()` when the scene is destroyed:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  private globalState: HookState<GameSettings>;
+
+  create() {
+    this.globalState = withGlobalState<GameSettings>(this, 'settings', defaultSettings);
+    
+    this.globalState.on('change', (newSettings) => {
+      console.log('Settings updated:', newSettings);
+    });
+
+    // IMPORTANT: Clean up global state listeners when scene is destroyed
+    this.events.once('destroy', () => {
+      this.globalState.clearListeners();
+    });
   }
 }
 ```

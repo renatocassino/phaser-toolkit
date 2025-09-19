@@ -439,5 +439,157 @@ describe('withLocalState', () => {
         );
       });
     });
+
+    describe('clearListeners', () => {
+      it('should clear all event listeners', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+
+        const callback1 = vi.fn();
+        const callback2 = vi.fn();
+        const callback3 = vi.fn();
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        // Add multiple listeners
+        hook.on('change', callback1);
+        hook.on('change', callback2);
+        hook.once('change', callback3);
+
+        // Verify listeners are working
+        hook.set({ ...baseState, life: 90 });
+        expect(callback1).toHaveBeenCalled();
+        expect(callback2).toHaveBeenCalled();
+        expect(callback3).toHaveBeenCalled();
+
+        // Clear all listeners
+        hook.clearListeners();
+
+        // Verify listeners are cleared
+        callback1.mockClear();
+        callback2.mockClear();
+        callback3.mockClear();
+
+        hook.set({ ...baseState, life: 80 });
+        expect(callback1).not.toHaveBeenCalled();
+        expect(callback2).not.toHaveBeenCalled();
+        expect(callback3).not.toHaveBeenCalled();
+      });
+
+      it('should clear listeners added via onChange (deprecated)', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+
+        const callback = vi.fn();
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        // Add listener via deprecated onChange
+        hook.onChange(callback);
+
+        // Verify listener is working
+        hook.set({ ...baseState, life: 90 });
+        expect(callback).toHaveBeenCalled();
+
+        // Clear all listeners
+        hook.clearListeners();
+
+        // Verify listener is cleared
+        callback.mockClear();
+        hook.set({ ...baseState, life: 80 });
+        expect(callback).not.toHaveBeenCalled();
+      });
+
+      it('should work with debug mode enabled', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+
+        const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+        const hook = withLocalState<FakeState>(scene, key, initialState, { debug: true });
+
+        const callback = vi.fn();
+        hook.on('change', callback);
+
+        // Clear listeners with debug enabled
+        hook.clearListeners();
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining('[withStateDef] Cleared all event listeners for "phaser-hooks:local:test-scene:test-state-')
+        );
+
+        consoleSpy.mockRestore();
+      });
+
+      it('should not affect other state instances', () => {
+        const scene = buildSceneMock();
+        const key1 = `test-state-1-${Date.now()}`;
+        const key2 = `test-state-2-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+
+        const callback1 = vi.fn();
+        const callback2 = vi.fn();
+        
+        const hook1 = withLocalState<FakeState>(scene, key1, initialState);
+        const hook2 = withLocalState<FakeState>(scene, key2, initialState);
+
+        // Add listeners to both hooks
+        hook1.on('change', callback1);
+        hook2.on('change', callback2);
+
+        // Clear listeners from hook1 only
+        hook1.clearListeners();
+
+        // Verify hook1 listeners are cleared but hook2 listeners still work
+        hook1.set({ ...baseState, life: 90 });
+        hook2.set({ ...baseState, life: 90 });
+
+        expect(callback1).not.toHaveBeenCalled();
+        expect(callback2).toHaveBeenCalled();
+      });
+
+      it('should work when no listeners are present', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        // Should not throw when clearing listeners that don't exist
+        expect(() => hook.clearListeners()).not.toThrow();
+      });
+
+      it('should clear listeners after partial removal', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+
+        const callback1 = vi.fn();
+        const callback2 = vi.fn();
+        const callback3 = vi.fn();
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        // Add multiple listeners
+        hook.on('change', callback1);
+        hook.on('change', callback2);
+        hook.on('change', callback3);
+
+        // Remove one listener manually
+        hook.off('change', callback2);
+
+        // Clear all remaining listeners
+        hook.clearListeners();
+
+        // Verify all listeners are cleared
+        callback1.mockClear();
+        callback2.mockClear();
+        callback3.mockClear();
+
+        hook.set({ ...baseState, life: 90 });
+        expect(callback1).not.toHaveBeenCalled();
+        expect(callback2).not.toHaveBeenCalled();
+        expect(callback3).not.toHaveBeenCalled();
+      });
+    });
   });
 });

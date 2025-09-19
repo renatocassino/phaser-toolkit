@@ -331,6 +331,25 @@ const off = (
 };
 
 /**
+ * Removes all event listeners for the state.
+ * @param {Phaser.Data.DataManager} registry - The Phaser data manager
+ * @param {string} key - The key to remove all listeners from
+ * @param {boolean} debug - Whether to log debug info
+ */
+const clearListeners = (
+  registry: Phaser.Data.DataManager,
+  key: string,
+  debug: boolean
+): void => {
+  registry.events.removeAllListeners(`changedata-${key}`);
+
+  if (debug) {
+    // eslint-disable-next-line no-console
+    console.debug(`[withStateDef] Cleared all event listeners for "${key}"`);
+  }
+};
+
+/**
  * Low-level state management hook that directly interfaces with Phaser's registry system.
  * This is the foundation for all other state hooks and provides direct access to
  * Phaser's scene registry with additional safety and TypeScript support.
@@ -393,6 +412,7 @@ const off = (
  * const unsubscribe = playerState.on('change', callback);
  * unsubscribe(); // Removes the listener
  * playerState.off('change', callback); // Also removes the listener
+ * playerState.clearListeners(); // Removes all listeners
  * ```
  *
  * @method get Gets the current state value
@@ -400,6 +420,7 @@ const off = (
  * @method on Registers a callback to be called whenever the state changes. Returns an unsubscribe function.
  * @method once Registers a callback to be called once when the state changes. Returns an unsubscribe function.
  * @method off Removes an event listener for the state
+ * @method clearListeners Removes all event listeners for this state
  * @method onChange (DEPRECATED) Registers a callback to be called whenever the state changes
  */
 export const withStateDef = <T>(
@@ -455,5 +476,9 @@ export const withStateDef = <T>(
      * @param {Function} fn
      */
     off: (event: string | symbol, fn: Function) => off(registry, event, key, debug, fn),
+    /**
+     * Removes all event listeners for this state.
+     */
+    clearListeners: () => clearListeners(registry, key, debug),
   };
 };

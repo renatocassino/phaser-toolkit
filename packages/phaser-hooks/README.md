@@ -76,6 +76,32 @@ Since this library is designed to work with Phaser games, which typically use pl
 
 This approach allows you to use these state management utilities in your Phaser games without having to modify your linting configuration or suppress warnings.
 
+## Hook API Reference
+
+All hooks return a `HookState` object with the following methods:
+
+| Method | Description | Parameters | Returns |
+|--------|-------------|------------|---------|
+| `get()` | Gets the current state value | None | `T` - Current state value |
+| `set(value)` | Sets a new state value and triggers change listeners | `value: T` - New value to set | `void` |
+| `onChange(callback)` | Registers a callback for state changes (deprecated) | `callback: (newValue, oldValue) => void` | `void` |
+| `on('change', callback)` | Registers a callback for state changes | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
+| `once('change', callback)` | Registers a callback that fires only once | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
+| `off('change', callback)` | Removes an event listener | `event: 'change'`, `callback: () => void` | `void` |
+
+### Special Hook Methods
+
+Some hooks have additional methods beyond the standard `HookState` interface:
+
+#### `withUndoableState` Additional Methods:
+| Method | Description | Parameters | Returns |
+|--------|-------------|------------|---------|
+| `undo()` | Reverts to the previous state | None | `boolean` - Success status |
+| `redo()` | Advances to the next state | None | `boolean` - Success status |
+| `canUndo()` | Checks if undo is available | None | `boolean` |
+| `canRedo()` | Checks if redo is available | None | `boolean` |
+| `clearHistory()` | Clears the undo/redo history | None | `void` |
+
 ## Available Hooks
 
 ### Core Hooks
@@ -184,12 +210,34 @@ Pre-built validation functions for common patterns.
 ```typescript
 import { validators } from 'phaser-hooks';
 
-const scoreState = withGlobalState<number>('score', 0, {
+// Number range validation (0-1000)
+const scoreState = withGlobalState<number>(scene, 'score', 0, {
   validator: validators.numberRange(0, 1000),
 });
 
-const nameState = withGlobalState<string>('name', '', {
+// Non-empty string validation
+const nameState = withGlobalState<string>(scene, 'name', '', {
   validator: validators.nonEmptyString,
+});
+
+// Array length validation (2-4 items)
+const inventoryState = withLocalState<string[]>(scene, 'inventory', [], {
+  validator: validators.arrayLength(2, 4),
+});
+
+// One of allowed values validation
+const difficultyState = withGlobalState<'easy' | 'normal' | 'hard'>(scene, 'difficulty', 'normal', {
+  validator: validators.oneOf(['easy', 'normal', 'hard']),
+});
+
+// Custom validator example
+const healthState = withLocalState<number>(scene, 'health', 100, {
+  validator: (value) => {
+    const health = value as number;
+    if (health < 0) return 'Health cannot be negative';
+    if (health > 100) return 'Health cannot exceed 100';
+    return true; // Valid
+  }
 });
 ```
 
@@ -493,6 +541,58 @@ export class GameScene extends Phaser.Scene {
     // Unsubscribe specific listeners
     unsubscribeHealth(); // Only removes health listener
     // unsubscribeLevel still active
+  }
+}
+```
+
+### Using `.once()` for One-Time Events
+
+The `.once()` method registers a callback that will only fire once, then automatically unsubscribes:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  create() {
+    const playerState = withLocalState<{ hp: number; level: number }>(this, 'player', { 
+      hp: 100, 
+      level: 1 
+    });
+    
+    // One-time listener - fires only once then auto-unsubscribes
+    const unsubscribeOnce = playerState.once('change', (newPlayer) => {
+      console.log('First level up detected!', newPlayer.level);
+      // This callback will only run once, even if the state changes multiple times
+    });
+    
+    // You can still manually unsubscribe if needed before it fires
+    // unsubscribeOnce();
+    
+    // Simulate level up
+    playerState.set({ hp: 100, level: 2 }); // Fires the once callback
+    playerState.set({ hp: 100, level: 3 }); // Won't fire the once callback again
+  }
+}
+```
+
+### Validation Error Handling
+
+When using validators, invalid values will throw errors. Handle them appropriately:
+
+```typescript
+export class GameScene extends Phaser.Scene {
+  create() {
+    const healthState = withLocalState<number>(this, 'health', 100, {
+      validator: validators.numberRange(0, 100),
+    });
+    
+    try {
+      healthState.set(150); // This will throw an error: "Value must be between 0 and 100"
+    } catch (error) {
+      console.error('Invalid health value:', error.message);
+      // Handle the error appropriately
+    }
+    
+    // Valid value
+    healthState.set(75); // This works fine
   }
 }
 ```

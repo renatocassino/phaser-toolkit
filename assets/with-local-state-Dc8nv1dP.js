@@ -1,1 +1,0 @@
-import{w as n}from"./with-state-def-B07kmtJ8.js";const l=(e,t,o,a)=>{if(!e)throw new Error("[withLocalState] Scene parameter is required");const r=`phaser-hooks:local:${e.scene?.key||"unknown-scene"}:${t}`;return n(e,r,o,{...a,global:!1})};export{l as w};

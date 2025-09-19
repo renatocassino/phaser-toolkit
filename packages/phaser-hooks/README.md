@@ -712,6 +712,105 @@ const playerState = withLocalState<PlayerData>(scene, 'player', {
 const currentPlayer: PlayerData = playerState.get();
 ```
 
+## Debug Mode / Dev tool
+
+Phaser Hooks includes a built-in debug mode that provides detailed logging for state operations. This is extremely useful for development and troubleshooting state management issues.
+
+### How to Enable Debug Mode
+
+To enable debug mode, simply pass `{ debug: true }` in the options parameter when creating any hook:
+
+```typescript
+import { withLocalState } from 'phaser-hooks';
+
+export class GameScene extends Phaser.Scene {
+  create() {
+    // Enable debug mode for this state
+    const playerState = withLocalState<{ hp: number; level: number }>(
+      this,
+      'player',
+      {
+        hp: 100,
+        level: 1,
+      },
+      { debug: true } // Enable debug logging
+    );
+
+    // All operations will now be logged to the console
+    playerState.set({ hp: 90, level: 2 });
+    const currentPlayer = playerState.get();
+
+    // Listen to changes with debug info
+    playerState.on('change', (newPlayer, oldPlayer) => {
+      console.log('Player state changed:', newPlayer);
+    });
+  }
+}
+```
+
+### What Debug Mode Shows
+
+When debug mode is enabled, you'll see detailed logs in your browser's developer console for:
+
+- **State Initialization**: When a state is first created
+- **State Updates**: When values are set with old and new values
+- **State Retrieval**: When values are accessed
+- **Event Listeners**: When listeners are added, removed, or cleared
+- **Validation**: When validators are applied and their results
+- **Errors**: Detailed error information with context
+
+### Viewing Debug Logs
+
+Debug logs appear in your browser's developer console. To view them:
+
+1. Open your browser's Developer Tools (F12 or right-click → Inspect)
+2. Go to the **Console** tab
+3. Run your Phaser game
+4. Look for logs prefixed with `[phaser-hooks]`
+
+![Debug Console Screenshot](data/debug-mode.png)
+*Screenshot showing debug logs in browser console*
+
+### Debug Log Format
+
+Debug logs follow a consistent format with timestamps and structured information:
+
+```
+[phaser-hooks] 2024-01-15 10:30:45 [INIT] player - Initializing state with value: {hp: 100, level: 1}
+[phaser-hooks] 2024-01-15 10:30:46 [SET] player - Updating state: {hp: 90, level: 2} (was: {hp: 100, level: 1})
+[phaser-hooks] 2024-01-15 10:30:47 [GET] player - Retrieved state: {hp: 90, level: 2}
+[phaser-hooks] 2024-01-15 10:30:48 [EVENT] player - Added change listener
+```
+
+### Best Practices for Debug Mode
+
+- **Development Only**: Only enable debug mode during development. Remove `{ debug: true }` in production builds
+- **Selective Debugging**: Enable debug mode only for the specific states you're troubleshooting
+- **Performance**: Debug mode adds overhead, so avoid enabling it for all states in production
+- **Console Filtering**: Use browser console filters to focus on specific log types
+
+### Example: Debugging State Issues
+
+```typescript
+export class DebugScene extends Phaser.Scene {
+  create() {
+    // Enable debug for problematic state
+    const inventoryState = withLocalState<string[]>(
+      this,
+      'inventory',
+      [],
+      { debug: true }
+    );
+
+    // Debug logs will show exactly what's happening
+    inventoryState.set(['sword', 'potion']);
+    inventoryState.set([...inventoryState.get(), 'shield']);
+    
+    // Check console for detailed operation logs
+  }
+}
+```
+
 ## License
 
 MIT

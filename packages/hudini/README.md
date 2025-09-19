@@ -1,4 +1,11 @@
-<img src="data/hudini.png" style="max-width: 500px" alt="hudini" />
+<p align="center">
+  <img src="data/hudini.png" style="max-width: 500px" alt="hudini" />
+</p>
+
+[![NPM Version](https://img.shields.io/npm/v/phaser-wind)](https://www.npmjs.com/package/phaser-wind)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+
 
 # 🎩 Hudini
 

@@ -1,6 +1,11 @@
-<img src="data/phaser-sound-studio.png" style="margin: 0 auto; max-height: 300px" />
+<p align="center">
+    <img src="data/phaser-sound-studio.png" style="margin: 0 auto; max-height: 300px" />
+</p>
 
----
+
+[![NPM Version](https://img.shields.io/npm/v/phaser-wind)](https://www.npmjs.com/package/phaser-wind)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
 # 🎵 Phaser Sound Studio
 

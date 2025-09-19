@@ -1,8 +1,8 @@
 # 🌪️ Phaser Wind
 
-<center>
-<img src="data/image.png" height="350" style="margin: 0 auto;" alt="Phaser + TailWIND">
-</center>
+<p align="center">
+    <img src="data/image.png" height="350" style="margin: 0 auto;" alt="Phaser + TailWIND">
+</p>
 
 > **Tired of fighting with Phaser layouts and colors?**
 >

@@ -1,5 +1,13 @@
 # phaser-sound-studio
 
+## 0.4.2
+
+### Patch Changes
+
+- b61b0af: fix get channel volume, when 0 returns 1.
+- Updated dependencies [b61b0af]
+  - phaser-hooks@0.3.0
+
 ## 0.4.1
 
 ### Patch Changes

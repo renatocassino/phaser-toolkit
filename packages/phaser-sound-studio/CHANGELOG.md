@@ -1,5 +1,13 @@
 # phaser-sound-studio
 
+## 0.4.3
+
+### Patch Changes
+
+- dd22cf2: add better logs and method to clean all listeners
+- Updated dependencies [dd22cf2]
+  - phaser-hooks@0.4.0
+
 ## 0.4.2
 
 ### Patch Changes

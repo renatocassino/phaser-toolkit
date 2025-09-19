@@ -33,7 +33,8 @@ export const withComputedState = <T, U>(
   const computedState = withLocalState<U>(scene, key, initialValue);
 
   // Update computed state when source changes
-  sourceState.onChange(newSourceValue => {
+  sourceState.on('change', () => {
+    const newSourceValue = sourceState.get();
     const newComputedValue = selector(newSourceValue);
     computedState.set(newComputedValue);
   });
@@ -46,5 +47,8 @@ export const withComputedState = <T, U>(
       );
     },
     onChange: computedState.onChange,
+    on: computedState.on,
+    once: computedState.once,
+    off: computedState.off,
   };
 };

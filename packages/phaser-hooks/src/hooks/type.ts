@@ -60,4 +60,23 @@ export type HookState<T> = {
    * @param callback Function to call when state changes
    */
   onChange: (callback: StateChangeCallback<T>) => void;
+
+  /**
+   * Registers a callback to be called whenever the state changes
+   * @param callback Function to call when state changes
+   */
+  on: (event: 'change', callback: () => void) => () => void;
+
+  /**
+   * Registers a callback to be called whenever the state changes
+   * @param callback Function to call when state changes
+   */
+  once: (event: 'change', callback: () => void) => () => void;
+
+  /**
+   * Removes an event listener
+   * @param event The event to remove
+   * @param callback The callback to remove
+   */
+  off: (event: 'change', callback: () => void) => void;
 };

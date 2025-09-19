@@ -1,11 +1,12 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-magic-numbers */
+/* eslint-disable max-lines */
+import { type Scene } from 'phaser';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { buildSceneMock } from '../test/scene-mock';
 
 import { withLocalState } from './with-local-state';
-import { type Scene } from 'phaser';
 
 type FakeState = {
   life: number;
@@ -506,7 +507,9 @@ describe('withLocalState', () => {
         const initialState = { ...baseState, life: 100 };
 
         // Test that debug mode doesn't throw errors
-        const hook = withLocalState<FakeState>(scene, key, initialState, { debug: true });
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          debug: true,
+        });
 
         const callback = vi.fn();
         hook.on('change', callback);
@@ -523,7 +526,7 @@ describe('withLocalState', () => {
 
         const callback1 = vi.fn();
         const callback2 = vi.fn();
-        
+
         const hook1 = withLocalState<FakeState>(scene, key1, initialState);
         const hook2 = withLocalState<FakeState>(scene, key2, initialState);
 

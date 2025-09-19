@@ -2,6 +2,17 @@
 /* eslint-disable max-lines-per-function */
 import * as Phaser from 'phaser';
 
+import {
+  logStateInit,
+  logStateGet,
+  logStateSet,
+  logEventListenerAdd,
+  logEventListenerRemove,
+  logClearListeners,
+  logError,
+  logWarning,
+} from '../utils/logger';
+
 import { type HookState, type StateChangeCallback } from './type';
 
 /**
@@ -47,12 +58,15 @@ export type StateDefOptions = {
  * @param {boolean} debug - Whether to log debug info
  * @returns {T} The value stored in the registry for the given key
  */
-const get = <T>(registry: Phaser.Data.DataManager, key: string, debug: boolean): T => {
+const get = <T>(
+  registry: Phaser.Data.DataManager,
+  key: string,
+  debug: boolean
+): T => {
   const value = registry.get(key) as T;
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Getting "${key}":`, value);
+    logStateGet(key, value);
   }
 
   return value;
@@ -90,11 +104,7 @@ const set = <T>(
   registry.set(key, value);
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Setting "${key}":`, {
-      oldValue,
-      newValue: value,
-    });
+    logStateSet(key, oldValue, value);
   }
 };
 
@@ -114,8 +124,12 @@ const onChange = <T>(
   debug: boolean,
   callback: StateChangeCallback<T>
 ): void => {
-  // eslint-disable-next-line no-console
-  console.warn('[withStateDef] DEPRECATED: onChange callback is deprecated in phaser-hooks. Use .on(\'change\', callback) or .once(\'change\', callback) instead.');
+  logWarning(
+    'DEPRECATED_ONCHANGE',
+    "onChange callback is deprecated in phaser-hooks. Use .on('change', callback) or .once('change', callback) instead.",
+    { key }
+  );
+
   if (!callback || typeof callback !== 'function') {
     throw new Error('[withStateDef] onChange callback must be a function');
   }
@@ -124,21 +138,13 @@ const onChange = <T>(
     `changedata-${key}`, // reserved word in Phaser
     (_parent: unknown, key: string, value: T, previousValue: T) => {
       if (debug) {
-        // eslint-disable-next-line no-console
-        console.debug(`[withStateDef] Change detected for "${key}":`, {
-          previousValue,
-          value,
-        });
+        logStateSet(key, previousValue, value);
       }
 
       try {
         callback(value, previousValue);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(
-          `[withStateDef] Error in onChange callback for "${key}":`,
-          error
-        );
+        logError('ONCHANGE_CALLBACK_ERROR', error as Error, { key });
       }
     }
   );
@@ -161,30 +167,24 @@ const on = (
   key: string,
   debug: boolean,
   callback: Function
-): () => void => {
+): (() => void) => {
   if (event !== 'change') {
-    throw new Error('[withStateDef] Invalid event. Only "change" is supported.');
+    throw new Error(
+      '[withStateDef] Invalid event. Only "change" is supported.'
+    );
   }
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Adding event listener for "${key}":`, {
-      event,
-      callback,
-    });
+    logEventListenerAdd(key, event as string, callback);
   }
   registry.events.on(`changedata-${key}`, callback);
 
   return () => {
     if (debug) {
-      // eslint-disable-next-line no-console
-      console.debug(`[withStateDef] Removing event listener for "${key}":`, {
-        event,
-        callback,
-      });
+      logEventListenerRemove(key, event as string, callback);
     }
     registry.events.off(`changedata-${key}`, callback);
-  }
+  };
 };
 
 /**
@@ -193,7 +193,11 @@ const on = (
  * @param {StateDefOptions} options - State definition options
  * @throws {Error} If scene or registry/data is not available
  */
-const validateHook = (scene: Phaser.Scene, options: StateDefOptions, key: string): void => {
+const validateHook = (
+  scene: Phaser.Scene,
+  options: StateDefOptions,
+  key: string
+): void => {
   if (!scene) {
     throw new Error('[withStateDef] Scene parameter is required');
   }
@@ -211,7 +215,7 @@ const validateHook = (scene: Phaser.Scene, options: StateDefOptions, key: string
       '[withStateDef] Scene data is not available. Ensure the scene is properly initialized.'
     );
   }
-}
+};
 
 /**
  * Initializes the state in the registry if not already set.
@@ -246,14 +250,10 @@ const initializeState = <T>(
     registry.set(key, initialValue);
 
     if (debug) {
-      // eslint-disable-next-line no-console
-      console.debug(
-        `[withStateDef] Initialized "${key}" with value:`,
-        initialValue
-      );
+      logStateInit(key, initialValue);
     }
   }
-}
+};
 
 /**
  * Registers a one-time event listener for the state.
@@ -272,30 +272,24 @@ const once = (
   key: string,
   debug: boolean,
   callback: Function
-): () => void => {
+): (() => void) => {
   if (event !== 'change') {
-    throw new Error('[withStateDef] Invalid event. Only "change" is supported.');
+    throw new Error(
+      '[withStateDef] Invalid event. Only "change" is supported.'
+    );
   }
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Adding once event listener for "${key}":`, {
-      event,
-      callback,
-    });
+    logEventListenerAdd(key, event as string, callback);
   }
   registry.events.once(`changedata-${key}`, callback);
 
   return () => {
     if (debug) {
-      // eslint-disable-next-line no-console
-      console.debug(`[withStateDef] Removing once event listener for "${key}":`, {
-        event,
-        callback,
-      });
+      logEventListenerRemove(key, event as string, callback);
     }
     registry.events.off(`changedata-${key}`, callback);
-  }
+  };
 };
 
 /**
@@ -316,17 +310,33 @@ const off = (
   callback: Function
 ): void => {
   if (event !== 'change') {
-    throw new Error('[withStateDef] Invalid event. Only "change" is supported.');
+    throw new Error(
+      '[withStateDef] Invalid event. Only "change" is supported.'
+    );
   }
 
   registry.events.off(`changedata-${key}`, callback);
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Removing event listener for "${key}":`, {
-      event,
-      callback,
-    });
+    logEventListenerRemove(key, event as string, callback);
+  }
+};
+
+/**
+ * Removes all event listeners for the state.
+ * @param {Phaser.Data.DataManager} registry - The Phaser data manager
+ * @param {string} key - The key to remove all listeners from
+ * @param {boolean} debug - Whether to log debug info
+ */
+const clearListeners = (
+  registry: Phaser.Data.DataManager,
+  key: string,
+  debug: boolean
+): void => {
+  registry.events.removeAllListeners(`changedata-${key}`);
+
+  if (debug) {
+    logClearListeners(key);
   }
 };
 
@@ -393,6 +403,7 @@ const off = (
  * const unsubscribe = playerState.on('change', callback);
  * unsubscribe(); // Removes the listener
  * playerState.off('change', callback); // Also removes the listener
+ * playerState.clearListeners(); // Removes all listeners
  * ```
  *
  * @method get Gets the current state value
@@ -400,6 +411,7 @@ const off = (
  * @method on Registers a callback to be called whenever the state changes. Returns an unsubscribe function.
  * @method once Registers a callback to be called once when the state changes. Returns an unsubscribe function.
  * @method off Removes an event listener for the state
+ * @method clearListeners Removes all event listeners for this state
  * @method onChange (DEPRECATED) Registers a callback to be called whenever the state changes
  */
 export const withStateDef = <T>(
@@ -431,7 +443,8 @@ export const withStateDef = <T>(
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback
      */
-    onChange: (callback: StateChangeCallback<T>) => onChange<T>(registry, key, debug, callback),
+    onChange: (callback: StateChangeCallback<T>) =>
+      onChange<T>(registry, key, debug, callback),
     /**
      * Registers a callback to be called whenever the state changes.
      * Only the 'change' event is supported.
@@ -439,7 +452,8 @@ export const withStateDef = <T>(
      * @param {Function} fn
      * @returns {() => void} Unsubscribe function
      */
-    on: (event: string | symbol, fn: Function) => on(registry, event, key, debug, fn),
+    on: (event: string | symbol, fn: Function) =>
+      on(registry, event, key, debug, fn),
     /**
      * Registers a callback to be called once when the state changes.
      * Only the 'change' event is supported.
@@ -447,13 +461,19 @@ export const withStateDef = <T>(
      * @param {Function} fn
      * @returns {() => void} Unsubscribe function
      */
-    once: (event: string | symbol, fn: Function) => once(registry, event, key, debug, fn),
+    once: (event: string | symbol, fn: Function) =>
+      once(registry, event, key, debug, fn),
     /**
      * Removes an event listener for the state.
      * Only the 'change' event is supported.
      * @param {'change'} event
      * @param {Function} fn
      */
-    off: (event: string | symbol, fn: Function) => off(registry, event, key, debug, fn),
+    off: (event: string | symbol, fn: Function) =>
+      off(registry, event, key, debug, fn),
+    /**
+     * Removes all event listeners for this state.
+     */
+    clearListeners: () => clearListeners(registry, key, debug),
   };
 };

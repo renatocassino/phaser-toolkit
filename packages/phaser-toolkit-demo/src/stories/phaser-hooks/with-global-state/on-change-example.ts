@@ -13,8 +13,8 @@ export class PreviewSceneOnChange extends Scene {
     preload(): void { }
 
     create(): void {
-        const state = withGlobalState<number>(this, 'onChangeState', 0);
-        const countState = withGlobalState<number>(this, 'onChangeCount', 0);
+        const state = withGlobalState<number>(this, 'onChangeState', 0, { debug: true });
+        const countState = withGlobalState<number>(this, 'onChangeCount', 0, { debug: true });
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
 
@@ -155,7 +155,7 @@ export class PreviewScene2OnChange extends Scene {
     preload(): void { }
 
     create(): void {
-        const state = withGlobalState<number>(this, 'onChangeState', 0);
+        const state = withGlobalState<number>(this, 'onChangeState', 0, { debug: true });
 
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;

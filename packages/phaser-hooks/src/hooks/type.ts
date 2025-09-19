@@ -79,4 +79,9 @@ export type HookState<T> = {
    * @param callback The callback to remove
    */
   off: (event: 'change', callback: () => void) => void;
+
+  /**
+   * Removes all event listeners for this state
+   */
+  clearListeners: () => void;
 };

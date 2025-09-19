@@ -11,7 +11,7 @@ export class PreviewScene extends Scene {
     preload(): void { }
 
     create(): void {
-        const state = withGlobalState<number>(this, 'globalState', 10);
+        const state = withGlobalState<number>(this, 'globalState', 10, { debug: true });
         state.set(10);
 
         const centerX = this.cameras.main.centerX;
@@ -109,7 +109,7 @@ export class PreviewScene2 extends Scene {
     preload(): void { }
 
     create(): void {
-        const state = withGlobalState<number>(this, 'globalState', 10);
+        const state = withGlobalState<number>(this, 'globalState', 10, { debug: true });
 
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;

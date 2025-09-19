@@ -40,15 +40,11 @@ export const withComputedState = <T, U>(
   });
 
   return {
-    get: computedState.get,
+    ...computedState,
     set: (): void => {
       throw new Error(
         `[withComputedState] Cannot directly set computed state "${key}". Update the source state instead.`
       );
     },
-    onChange: computedState.onChange,
-    on: computedState.on,
-    once: computedState.once,
-    off: computedState.off,
   };
 };

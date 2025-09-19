@@ -116,12 +116,8 @@ export const withUndoableState = <T>(
   };
 
   return {
-    get: currentState.get,
+    ...currentState,
     set,
-    onChange: currentState.onChange,
-    on: currentState.on,
-    once: currentState.once,
-    off: currentState.off,
     undo,
     redo,
     canUndo,

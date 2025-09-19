@@ -13,7 +13,7 @@ export class PreviewSceneOnChange extends Scene {
     preload(): void { }
 
     create(): void {
-        const state = withLocalState<number>(this, 'onChangeState', 0);
+        const state = withLocalState<number>(this, 'onChangeState', 0, { debug: true });
         const countState = withLocalState<number>(this, 'onChangeCount', 0);
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
@@ -155,7 +155,7 @@ export class PreviewScene2OnChange extends Scene {
     preload(): void { }
 
     create(): void {
-        const state = withLocalState<number>(this, 'onChangeState', 0);
+        const state = withLocalState<number>(this, 'onChangeState', 0, { debug: true });
 
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;

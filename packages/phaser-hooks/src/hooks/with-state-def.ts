@@ -3,6 +3,16 @@
 import * as Phaser from 'phaser';
 
 import { type HookState, type StateChangeCallback } from './type';
+import { 
+  logStateInit, 
+  logStateGet, 
+  logStateSet, 
+  logEventListenerAdd, 
+  logEventListenerRemove, 
+  logClearListeners, 
+  logError, 
+  logWarning 
+} from '../utils/logger';
 
 /**
  * Configuration options for state definition
@@ -51,8 +61,7 @@ const get = <T>(registry: Phaser.Data.DataManager, key: string, debug: boolean):
   const value = registry.get(key) as T;
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Getting "${key}":`, value);
+    logStateGet(key, value);
   }
 
   return value;
@@ -90,11 +99,7 @@ const set = <T>(
   registry.set(key, value);
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Setting "${key}":`, {
-      oldValue,
-      newValue: value,
-    });
+    logStateSet(key, oldValue, value);
   }
 };
 
@@ -114,8 +119,8 @@ const onChange = <T>(
   debug: boolean,
   callback: StateChangeCallback<T>
 ): void => {
-  // eslint-disable-next-line no-console
-  console.warn('[withStateDef] DEPRECATED: onChange callback is deprecated in phaser-hooks. Use .on(\'change\', callback) or .once(\'change\', callback) instead.');
+  logWarning('DEPRECATED_ONCHANGE', 'onChange callback is deprecated in phaser-hooks. Use .on(\'change\', callback) or .once(\'change\', callback) instead.', { key });
+  
   if (!callback || typeof callback !== 'function') {
     throw new Error('[withStateDef] onChange callback must be a function');
   }
@@ -124,21 +129,13 @@ const onChange = <T>(
     `changedata-${key}`, // reserved word in Phaser
     (_parent: unknown, key: string, value: T, previousValue: T) => {
       if (debug) {
-        // eslint-disable-next-line no-console
-        console.debug(`[withStateDef] Change detected for "${key}":`, {
-          previousValue,
-          value,
-        });
+        logStateSet(key, previousValue, value);
       }
 
       try {
         callback(value, previousValue);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(
-          `[withStateDef] Error in onChange callback for "${key}":`,
-          error
-        );
+        logError('ONCHANGE_CALLBACK_ERROR', error as Error, { key });
       }
     }
   );
@@ -167,21 +164,13 @@ const on = (
   }
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Adding event listener for "${key}":`, {
-      event,
-      callback,
-    });
+    logEventListenerAdd(key, event as string, callback);
   }
   registry.events.on(`changedata-${key}`, callback);
 
   return () => {
     if (debug) {
-      // eslint-disable-next-line no-console
-      console.debug(`[withStateDef] Removing event listener for "${key}":`, {
-        event,
-        callback,
-      });
+      logEventListenerRemove(key, event as string, callback);
     }
     registry.events.off(`changedata-${key}`, callback);
   }
@@ -246,11 +235,7 @@ const initializeState = <T>(
     registry.set(key, initialValue);
 
     if (debug) {
-      // eslint-disable-next-line no-console
-      console.debug(
-        `[withStateDef] Initialized "${key}" with value:`,
-        initialValue
-      );
+      logStateInit(key, initialValue);
     }
   }
 }
@@ -278,21 +263,13 @@ const once = (
   }
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Adding once event listener for "${key}":`, {
-      event,
-      callback,
-    });
+    logEventListenerAdd(key, event as string, callback);
   }
   registry.events.once(`changedata-${key}`, callback);
 
   return () => {
     if (debug) {
-      // eslint-disable-next-line no-console
-      console.debug(`[withStateDef] Removing once event listener for "${key}":`, {
-        event,
-        callback,
-      });
+      logEventListenerRemove(key, event as string, callback);
     }
     registry.events.off(`changedata-${key}`, callback);
   }
@@ -322,11 +299,7 @@ const off = (
   registry.events.off(`changedata-${key}`, callback);
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Removing event listener for "${key}":`, {
-      event,
-      callback,
-    });
+    logEventListenerRemove(key, event as string, callback);
   }
 };
 
@@ -344,8 +317,7 @@ const clearListeners = (
   registry.events.removeAllListeners(`changedata-${key}`);
 
   if (debug) {
-    // eslint-disable-next-line no-console
-    console.debug(`[withStateDef] Cleared all event listeners for "${key}"`);
+    logClearListeners(key);
   }
 };
 

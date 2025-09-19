@@ -41,11 +41,7 @@ export const withDebouncedState = <T>(
   };
 
   return {
-    get: actualState.get,
+    ...actualState,
     set: debouncedSet,
-    onChange: actualState.onChange,
-    on: actualState.on,
-    once: actualState.once,
-    off: actualState.off,
   };
 };

@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.3.0
+
+### Minor Changes
+
+- b61b0af: add methods .on, .once and .off + unit tests
+
 ## 0.2.2
 
 ### Patch Changes

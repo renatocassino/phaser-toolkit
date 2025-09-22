@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@storybook/addon-essentials": "8.6.14",
-    "@storybook/html": "8.6.14",
+    "@storybook/html": "9.1.7",
     "@storybook/html-vite": "8.6.14",
     "@types/node": "^24.3.0",
     "storybook": "8.6.14",

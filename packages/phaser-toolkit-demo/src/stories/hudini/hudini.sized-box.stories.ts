@@ -33,31 +33,45 @@ const column = new Column({
             x: 0,
             y: 0,
             text: 'Button 1',
+            backgroundColor: 'red-500',
+            textColor: 'white',
+            borderRadius: 'lg',
+            margin: '4',
+            fontSize: 'lg',
         }),
         new SizedBox({
             scene: this,
             x: 0,
             y: 0,
             width: 0,
-            height: 20, // Creates vertical spacing
+            height: 20, // Creates vertical spacing between buttons
         }),
         new TextButton({
             scene: this,
             x: 0,
             y: 0,
             text: 'Button 2',
+            backgroundColor: 'blue-500',
+            textColor: 'white',
+            fontSize: 'lg',
         }),
         new TextButton({
             scene: this,
             x: 0,
             y: 0,
             text: 'Button 3',
+            backgroundColor: 'green-500',
+            textColor: 'white',
+            fontSize: 'lg',
         }),
         new TextButton({
             scene: this,
             x: 0,
             y: 0,
             text: 'Button 4',
+            backgroundColor: 'yellow-500',
+            textColor: 'white',
+            fontSize: 'lg',
         }),
     ]
 });

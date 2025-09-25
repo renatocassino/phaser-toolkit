@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.14.0
+
+### Minor Changes
+
+- 28dbea8: add new component called SizedBox
+
 ## 0.13.3
 
 ### Patch Changes

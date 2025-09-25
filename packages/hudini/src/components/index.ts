@@ -7,4 +7,5 @@ export * from './linear-progress';
 export * from './radial-progress';
 export * from './row';
 export * from './section-header';
+export * from './sized-box';
 export * from './text-button';

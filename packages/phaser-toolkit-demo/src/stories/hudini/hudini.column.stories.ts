@@ -57,7 +57,7 @@ class PreviewScene extends SceneWithHudini {
         const centerColumn = new Column({
             scene: this,
             x: this.cameras.main.centerX,
-            y: Spacing.px('4'),
+            y: this.cameras.main.centerY,
             gap: 16,
             align: 'center',
             children: [
@@ -73,7 +73,7 @@ class PreviewScene extends SceneWithHudini {
         const leftColumn = new Column({
             scene: this,
             x: this.cameras.main.centerX - 300,
-            y: Spacing.px('4'),
+            y: this.cameras.main.centerY,
             gap: 16,
             align: 'left',
             children: [
@@ -89,7 +89,7 @@ class PreviewScene extends SceneWithHudini {
         const rightColumn = new Column({
             scene: this,
             x: this.cameras.main.centerX + 300,
-            y: Spacing.px('4'),
+            y: this.cameras.main.centerY,
             gap: 16,
             align: 'right',
             children: [

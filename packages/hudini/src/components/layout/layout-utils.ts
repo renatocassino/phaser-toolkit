@@ -1,4 +1,5 @@
 /* eslint-disable complexity */
+/* eslint-disable sonarjs/cognitive-complexity */
 import { GameObjects } from 'phaser';
 
 /** Default gap between elements in pixels */
@@ -13,8 +14,23 @@ export const getDisplayWidthOf = (child: GameObjects.GameObject): number => {
   };
   // Check if it's a Container-like object (has list property and width/height)
   if (child && typeof child === 'object' && 'list' in child && Array.isArray((child as unknown as { list: unknown[] }).list)) {
-    const container = child as unknown as { list: unknown[]; width: number };
-    if (container.width > 0) {
+    if (typeof childTyped.displayWidth === 'number' && childTyped.displayWidth > 0) {
+      return childTyped.displayWidth;
+    }
+
+    if (typeof childTyped.width === 'number' && childTyped.width > 0) {
+      return childTyped.width;
+    }
+
+    const container = child as unknown as { list: unknown[]; width?: number; displayWidth?: number, scale?: number };
+    if (typeof container.displayWidth === 'number' && container.displayWidth > 0) {
+      return container.displayWidth;
+    }
+
+    if (typeof container.width === 'number' && container.width > 0) {
+      if (typeof container.scale === 'number' && container.scale > 0) {
+        return container.width / container.scale;
+      }
       return container.width;
     }
     let w = 0;
@@ -24,9 +40,12 @@ export const getDisplayWidthOf = (child: GameObjects.GameObject): number => {
     }
     return w;
   }
-  if (typeof childTyped.displayWidth === 'number')
+  if (typeof childTyped.displayWidth === 'number') {
     return childTyped.displayWidth;
-  if (typeof childTyped.width === 'number') return childTyped.width as number;
+  }
+  if (typeof childTyped.width === 'number') {
+    return childTyped.width as number;
+  }
   const bounds = childTyped.getBounds?.();
   return bounds ? bounds.width : 0;
 };
@@ -40,8 +59,23 @@ export const getDisplayHeightOf = (child: GameObjects.GameObject): number => {
   };
   // Check if it's a Container-like object (has list property and width/height)
   if (child && typeof child === 'object' && 'list' in child && Array.isArray((child as unknown as { list: unknown[] }).list)) {
-    const container = child as unknown as { list: unknown[]; height: number };
-    if (container.height > 0) {
+    if (typeof childTyped.displayHeight === 'number' && childTyped.displayHeight > 0) {
+      return childTyped.displayHeight;
+    }
+
+    if (typeof childTyped.height === 'number' && childTyped.height > 0) {
+      return childTyped.height;
+    }
+
+    const container = child as unknown as { list: unknown[]; height?: number; displayHeight?: number, scale?: number };
+    if (typeof container.displayHeight === 'number' && container.displayHeight > 0) {
+      return container.displayHeight;
+    }
+
+    if (typeof container.height === 'number' && container.height > 0) {
+      if (typeof container.scale === 'number' && container.scale > 0) {
+        return container.height / container.scale;
+      }
       return container.height;
     }
     let h = 0;
@@ -51,9 +85,12 @@ export const getDisplayHeightOf = (child: GameObjects.GameObject): number => {
     }
     return h;
   }
-  if (typeof childTyped.displayHeight === 'number')
+  if (typeof childTyped.displayHeight === 'number') {
     return childTyped.displayHeight;
-  if (typeof childTyped.height === 'number') return childTyped.height as number;
+  }
+  if (typeof childTyped.height === 'number') {
+    return childTyped.height as number;
+  }
   const bounds = childTyped.getBounds?.();
   return bounds ? bounds.height : 0;
 };

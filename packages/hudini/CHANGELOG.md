@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.14.1
+
+### Patch Changes
+
+- 4403f41: fix card width/height children/child
+
 ## 0.14.0
 
 ### Minor Changes

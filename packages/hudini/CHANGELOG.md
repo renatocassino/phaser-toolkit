@@ -1,5 +1,12 @@
 # phaser-wind
 
+## 0.14.2
+
+### Patch Changes
+
+- Updated dependencies [742b14f]
+  - font-awesome-for-phaser@0.8.0
+
 ## 0.14.1
 
 ### Patch Changes

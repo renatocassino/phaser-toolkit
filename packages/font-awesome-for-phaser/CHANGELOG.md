@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.8.0
+
+### Minor Changes
+
+- 742b14f: add custom url to use in self-hosted
+
 ## 0.7.0
 
 ### Minor Changes

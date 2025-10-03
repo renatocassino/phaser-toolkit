@@ -410,4 +410,19 @@ export class TextButton extends GameObjects.Container {
       onClick?.();
     });
   }
+
+
+  /**
+   * Gets the interactive sprite of the icon button
+   * @returns The interactive sprite
+   */
+  public get interactive(): Pick<GameObjects.Sprite, 'on' | 'off' | 'setInteractive' | 'setInteractive' | 'once'> {
+    const { on, off, setInteractive, once } = this.backgroundSprite;
+    return {
+      on: on.bind(this.backgroundSprite),
+      off: off.bind(this.backgroundSprite),
+      setInteractive: setInteractive.bind(this.backgroundSprite),
+      once: once.bind(this.backgroundSprite),
+    };
+  }
 }

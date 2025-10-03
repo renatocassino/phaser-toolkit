@@ -240,6 +240,20 @@ export class FlatIconButton extends GameObjects.Container {
   }
 
   /**
+   * Gets the interactive sprite of the icon button
+   * @returns The interactive sprite
+   */
+  public get interactive(): Pick<GameObjects.Sprite, 'on' | 'off' | 'setInteractive' | 'setInteractive' | 'once'> {
+    const { on, off, setInteractive, once } = this.backgroundSprite;
+    return {
+      on: on.bind(this.backgroundSprite),
+      off: off.bind(this.backgroundSprite),
+      setInteractive: setInteractive.bind(this.backgroundSprite),
+      once: once.bind(this.backgroundSprite),
+    };
+  }
+
+  /**
    * Gets the bounds of the flat icon button for layout calculations
    * @param output Optional rectangle to store the result
    * @returns Rectangle with the button bounds

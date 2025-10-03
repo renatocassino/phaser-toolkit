@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.15.0
+
+### Minor Changes
+
+- 49f940a: add events to buttons
+
 ## 0.14.2
 
 ### Patch Changes

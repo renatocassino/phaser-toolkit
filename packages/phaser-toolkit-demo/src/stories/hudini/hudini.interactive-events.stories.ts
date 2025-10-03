@@ -74,19 +74,19 @@ class InteractiveEventsScene extends SceneWithHudini<Theme> {
         // Wait for next frame to ensure button is fully initialized
         this.time.delayedCall(0, () => {
             if (this.button) {
-                this.button.interactive.on('pointerover', () => {
+                this.button.on('pointerover', () => {
                     this.updateStatus('pointerover', 0xffff00);
                 });
 
-                this.button.interactive.on('pointerout', () => {
+                this.button.on('pointerout', () => {
                     this.updateStatus('pointerout', 0x666666);
                 });
 
-                this.button.interactive.on('pointerdown', () => {
+                this.button.on('pointerdown', () => {
                     this.updateStatus('pointerdown', 0xff0000);
                 });
 
-                this.button.interactive.on('pointerup', () => {
+                this.button.on('pointerup', () => {
                     this.updateStatus('pointerup', 0x00ff00);
                 });
             }
@@ -209,25 +209,25 @@ class InteractiveEventsScene extends SceneWithHudini<Theme> {
             fontFamily: 'Arial'
         });
 
-        this.add.text(50, 420, 'The interactive API provides direct access to the underlying sprite\'s event methods:', {
+        this.add.text(50, 420, 'The button provides direct access to event methods:', {
             fontSize: '12px',
             color: '#cccccc',
             fontFamily: 'Arial'
         });
 
-        this.add.text(50, 440, 'button.interactive.on(event, callback)', {
+        this.add.text(50, 440, 'button.on(event, callback)', {
             fontSize: '12px',
             color: '#cccccc',
             fontFamily: 'Arial'
         });
 
-        this.add.text(50, 460, 'button.interactive.off(event, callback)', {
+        this.add.text(50, 460, 'button.off(event, callback)', {
             fontSize: '12px',
             color: '#cccccc',
             fontFamily: 'Arial'
         });
 
-        this.add.text(50, 480, 'button.interactive.once(event, callback)', {
+        this.add.text(50, 480, 'button.once(event, callback)', {
             fontSize: '12px',
             color: '#cccccc',
             fontFamily: 'Arial'

@@ -230,7 +230,7 @@ this.add.existing(flatBtn);
 
 ### Interactive API
 
-Both `IconButton` and `FlatIconButton` provide an `interactive` getter that exposes the underlying sprite's event methods for advanced event handling:
+Both `IconButton` and `FlatIconButton` provide direct access to event methods for advanced event handling:
 
 ```ts
 const button = new IconButton({ 
@@ -246,7 +246,7 @@ button.interactive.on('pointerover', () => console.log('Hover'));
 button.interactive.on('pointerdown', () => console.log('Press'));
 button.interactive.once('pointerup', () => console.log('Release once'));
 
-// Available methods:
+// Available methods in .interactive:
 // - on(event, callback) - Register event listener
 // - off(event, callback) - Remove event listener  
 // - once(event, callback) - Register one-time event listener

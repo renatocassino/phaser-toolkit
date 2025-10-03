@@ -67,6 +67,7 @@ export class IconButton extends GameObjects.Container {
       typeof size === 'number'
         ? size
         : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
+
     const baseColor = color ?? 'gray';
     this.sizePx = sizePx;
 
@@ -318,6 +319,19 @@ export class IconButton extends GameObjects.Container {
       });
       onClick?.();
     });
+  }
+
+  /**
+   * Gets the interactive sprite of the icon button
+   * @returns The interactive sprite
+   */
+  public get interactive(): Pick<GameObjects.Sprite, 'on' | 'off' | 'setInteractive' | 'once'> {
+    return {
+      on: this.backgroundSprite.on.bind(this.backgroundSprite),
+      off: this.backgroundSprite.off.bind(this.backgroundSprite),
+      setInteractive: this.backgroundSprite.setInteractive.bind(this.backgroundSprite),
+      once: this.backgroundSprite.once.bind(this.backgroundSprite)
+    };
   }
 
   /**

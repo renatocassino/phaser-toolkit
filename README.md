@@ -28,6 +28,7 @@ This monorepo contains a cohesive suite of TypeScript-first libraries for Phaser
 - `Column` - Stacks children vertically with spacing and alignment
 - `Row` - Arranges children horizontally with spacing and alignment  
 - `IconButton` - Interactive circular icon button with animations
+- `FlatIconButton` - Flat-style icon button with customizable colors and opacity
 
 **Links:**
 - 📦 [NPM Package](https://www.npmjs.com/package/hudini)

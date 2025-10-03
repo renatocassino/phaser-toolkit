@@ -10,7 +10,7 @@ const ensureFA7Ready = async (): Promise<void> => {
   await (document as unknown as { fonts: { ready: Promise<void> } })['fonts'].ready;
 }
 
-export const loadFont = (): Promise<void> => {
+export const loadFont = (url?: string): Promise<void> => {
   return new Promise((resolve, reject): void => {
     WebFont.load({
       custom: {
@@ -22,7 +22,7 @@ export const loadFont = (): Promise<void> => {
           'FontAwesome',
         ],
         urls: [
-          'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css',
+          url ?? 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css',
         ],
       },
       active: (): void => {

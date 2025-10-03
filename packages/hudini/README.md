@@ -252,6 +252,40 @@ button.interactive.once('pointerup', () => console.log('Release once'));
 // - once(event, callback) - Register one-time event listener
 // - setInteractive(options) - Configure interactivity
 ```
+### SizedBox
+
+A simple invisible rectangle component for spacing and layout purposes. It occupies space without any visual appearance.
+
+```ts
+import { SizedBox } from 'hudini';
+// inside a Phaser.Scene (e.g., in create())
+
+const spacer = new SizedBox({
+  scene: this,
+  x: 0,
+  y: 0,
+  width: 0,   // horizontal spacing
+  height: 20, // vertical spacing
+});
+
+// Use in layouts for precise spacing control
+const column = new Column({
+  scene: this,
+  x: 400,
+  y: 300,
+  children: [
+    new TextButton({ scene: this, x: 0, y: 0, text: 'Button 1' }),
+    new SizedBox({ scene: this, x: 0, y: 0, width: 0, height: 20 }),
+    new TextButton({ scene: this, x: 0, y: 0, text: 'Button 2' }),
+  ]
+});
+```
+
+Notes:
+
+- Extends `Phaser.GameObjects.Rectangle` for native width/height support.
+- Default values: `width: 1px`, `height: 1px` if not specified.
+- Perfect for creating custom spacing in layouts where gap isn't sufficient.
 
 ## 📦 API Surfaces
 
@@ -261,6 +295,10 @@ button.interactive.once('pointerup', () => console.log('Release once'));
   - `addChild(child, relayout = true): this`
   - `addChildren(children, relayout = true): this`
 - `IconButton` constructor accepts `{ scene, x, y, icon, size?, color?, onClick? }`.
+- `SizedBox` extends `Phaser.GameObjects.Rectangle`. Useful methods:
+  - `setWidth(width: number): this`
+  - `setHeight(height: number): this`
+  - `setSize(width: number, height: number): this`
 
 ## 🔗 Storybook
 

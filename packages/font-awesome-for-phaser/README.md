@@ -40,6 +40,14 @@ async function startGame() {
 }
 ```
 
+If you want to use self-hosted fonts, you can pass a URL pointing to your `all.min.css` file:
+
+```ts
+loadFont('/fonts/font-awesome/all.min.css').then(() => {
+  new Game(config);
+})
+```
+
 ## Usage
 
 You can use Font Awesome icons in your Phaser game in two ways:

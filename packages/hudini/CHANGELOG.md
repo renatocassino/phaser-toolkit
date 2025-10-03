@@ -1,5 +1,24 @@
 # phaser-wind
 
+## 0.14.2
+
+### Patch Changes
+
+- Updated dependencies [742b14f]
+  - font-awesome-for-phaser@0.8.0
+
+## 0.14.1
+
+### Patch Changes
+
+- 4403f41: fix card width/height children/child
+
+## 0.14.0
+
+### Minor Changes
+
+- 28dbea8: add new component called SizedBox
+
 ## 0.13.3
 
 ### Patch Changes

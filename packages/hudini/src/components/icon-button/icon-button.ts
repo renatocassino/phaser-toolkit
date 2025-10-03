@@ -38,7 +38,6 @@ const HOVER_SCALE = 1.07;
 const CLICK_OFFSET = 2;
 const MAIN_OVERLAY_SCALE = 0.9;
 const INNER_OVERLAY_SCALE = 0.7;
-// no-magic-number for ratios used by overlays
 
 export class IconButton extends GameObjects.Container {
   public backgroundSprite!: GameObjects.Sprite;
@@ -194,8 +193,7 @@ export class IconButton extends GameObjects.Container {
   }
 
   private updateSize(): void {
-    this.width = this.sizePx * BUTTON_SCALE;
-    this.height = this.sizePx * BUTTON_SCALE;
+    this.setSize(this.sizePx * BUTTON_SCALE, this.sizePx * BUTTON_SCALE);
   }
 
   private createBackgroundSprite(

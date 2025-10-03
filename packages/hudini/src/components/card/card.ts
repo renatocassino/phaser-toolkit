@@ -8,6 +8,7 @@ import {
 } from 'phaser-wind';
 
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
+import { getDisplayHeightOf, getDisplayWidthOf } from '../layout/layout-utils';
 
 export type CardParams = {
   /** The Phaser scene to add the card to */
@@ -309,6 +310,12 @@ export class Card extends GameObjects.Container {
     }
   }
 
+  private measureChild(child: Phaser.GameObjects.GameObject): { w: number; h: number } {
+    const w = getDisplayWidthOf(child);
+    const h = getDisplayHeightOf(child);
+    return { w, h };
+  }
+
   /**
    * Draws the background graphics
    */
@@ -318,14 +325,9 @@ export class Card extends GameObjects.Container {
       width = w;
       height = h;
     } else {
-      // Get child bounds for current dimensions
-      const childBounds = (
-        this.child as unknown as {
-          getBounds: () => { width: number; height: number };
-        }
-      ).getBounds();
-      width = childBounds.width + this.marginPx * 2;
-      height = childBounds.height + this.marginPx * 2;
+      const { w: cw, h: ch } = this.measureChild(this.child as GameObjects.GameObject);
+      width  = cw + this.marginPx * 2;
+      height = ch + this.marginPx * 2;
     }
     this.backgroundGraphics.clear();
 

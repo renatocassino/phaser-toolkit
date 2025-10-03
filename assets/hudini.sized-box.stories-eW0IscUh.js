@@ -1,4 +1,4 @@
-import{a as o,H as r,C as c,T as t,S as l}from"./plugin-B2MFCD_T.js";import{c as d,n as u,a as m,P as h,d as p}from"./create-game-ukjiax-1.js";import{S as x}from"./scene-with-hudini-BITB4cOD.js";import"./webfontloader-5Azx9hTn.js";import"./_commonjsHelpers-Cpj98o6Y.js";const i="phaser-sized-box-example",g=`
+import{a as o,H as r,C as c,T as t,S as l}from"./plugin-CWmWIBW8.js";import{c as d,n as u,a as m,P as h,d as p}from"./create-game-ukjiax-1.js";import{S as x}from"./scene-with-hudini-BITB4cOD.js";import"./webfontloader-5Azx9hTn.js";import"./_commonjsHelpers-Cpj98o6Y.js";const i="phaser-sized-box-example",g=`
 import { Column, SizedBox, TextButton } from 'hudini';
 
 const column = new Column({

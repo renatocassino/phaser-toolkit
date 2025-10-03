@@ -1,4 +1,4 @@
-import{a as d,H as f,e as a}from"./plugin-B2MFCD_T.js";import{f as S,c as C,n as x,a as y,C as k,P as m,g as h,d as A}from"./create-game-ukjiax-1.js";import{c as v}from"./theme-manager-EhPXZ0nu.js";import{S as w}from"./scene-with-hudini-BITB4cOD.js";import"./webfontloader-5Azx9hTn.js";import"./_commonjsHelpers-Cpj98o6Y.js";const i="hudini-radial-progress",b=`
+import{a as d,H as f,e as a}from"./plugin-CWmWIBW8.js";import{f as S,c as C,n as x,a as y,C as k,P as m,g as h,d as A}from"./create-game-ukjiax-1.js";import{c as v}from"./theme-manager-EhPXZ0nu.js";import{S as w}from"./scene-with-hudini-BITB4cOD.js";import"./webfontloader-5Azx9hTn.js";import"./_commonjsHelpers-Cpj98o6Y.js";const i="hudini-radial-progress",b=`
 import Phaser from 'phaser';
 import {
     Color,

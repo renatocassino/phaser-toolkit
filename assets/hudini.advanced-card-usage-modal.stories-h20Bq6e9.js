@@ -1,4 +1,4 @@
-import{a as l,H as f,T as r,b as y,C as d,S as C,R as u,F as c}from"./plugin-B2MFCD_T.js";import{c as k,n as b,a as B,P as I,d as S}from"./create-game-ukjiax-1.js";import{S as M}from"./scene-with-hudini-BITB4cOD.js";import"./webfontloader-5Azx9hTn.js";import"./_commonjsHelpers-Cpj98o6Y.js";const m="phaser-modal-example",P=`
+import{a as l,H as f,T as r,b as y,C as d,S as C,R as u,F as c}from"./plugin-CWmWIBW8.js";import{c as k,n as b,a as B,P as I,d as S}from"./create-game-ukjiax-1.js";import{S as M}from"./scene-with-hudini-BITB4cOD.js";import"./webfontloader-5Azx9hTn.js";import"./_commonjsHelpers-Cpj98o6Y.js";const m="phaser-modal-example",P=`
 import { Card, Column, Row, TextButton, FlatIconButton, SizedBox } from 'hudini';
 
 // Create a modal card with settings

@@ -77,7 +77,7 @@ const get = <T>(
  * @template T
  * @param {Phaser.Data.DataManager} registry - The Phaser data manager
  * @param {string} key - The key to set
- * @param {T} value - The value to set
+ * @param {T | ((currentValue: T) => T)} value - The value to set, or a function that receives the current value and returns the new value
  * @param {boolean} debug - Whether to log debug info
  * @param {(value: unknown) => boolean | string} [validator] - Optional validator function
  * @throws {Error} If the validator returns false or an error message
@@ -85,12 +85,15 @@ const get = <T>(
 const set = <T>(
   registry: Phaser.Data.DataManager,
   key: string,
-  value: T,
+  value: T | ((currentValue: T) => T),
   debug: boolean,
   validator?: (value: unknown) => boolean | string
 ): void => {
+  const oldValue = registry.get(key) as T;
+  const newValue = typeof value === 'function' ? (value as (currentValue: T) => T)(oldValue) : value;
+
   if (validator) {
-    const validationResult = validator(value);
+    const validationResult = validator(newValue);
     if (validationResult !== true) {
       const message =
         typeof validationResult === 'string'
@@ -100,11 +103,10 @@ const set = <T>(
     }
   }
 
-  const oldValue = registry.get(key) as T;
-  registry.set(key, value);
+  registry.set(key, newValue);
 
   if (debug) {
-    logStateSet(key, oldValue, value);
+    logStateSet(key, oldValue, newValue);
   }
 };
 
@@ -390,9 +392,9 @@ const clearListeners = (
  *   { debug: true }
  * );
  *
- * // Updating based on current value
+ * // Setting based on current value
  * const counter = withStateDef<number>(scene, 'counter', 0);
- * counter.update(current => current + 1); // Increment by 1
+ * counter.set(current => current + 1); // Increment by 1
  * 
  * // Listening to changes
  * playerState.on('change', (newValue, oldValue) => {
@@ -412,8 +414,7 @@ const clearListeners = (
  * ```
  *
  * @method get Gets the current state value
- * @method set Sets a new state value and triggers change listeners
- * @method update Updates the state based on the current value using a callback function
+ * @method set Sets a new state value (or uses a function to compute it from current value) and triggers change listeners
  * @method on Registers a callback to be called whenever the state changes. Returns an unsubscribe function.
  * @method once Registers a callback to be called once when the state changes. Returns an unsubscribe function.
  * @method off Removes an event listener for the state
@@ -442,18 +443,9 @@ export const withStateDef = <T>(
     get: () => get<T>(registry, key, debug),
     /**
      * Sets a new state value and triggers change listeners.
-     * @param {T} value
+     * @param {T | ((currentValue: T) => T)} value - The new value to set, or a function that receives the current value and returns the new value
      */
-    set: (value: T) => set<T>(registry, key, value, debug, validator),
-    /**
-     * Updates the state based on the current value.
-     * @param {(currentValue: T) => T} callback - Function that receives the current state and returns the new state
-     */
-    update: (callback: (currentValue: T) => T): void => {
-      const currentValue = get<T>(registry, key, debug);
-      const newValue = callback(currentValue);
-      set<T>(registry, key, newValue, debug, validator);
-    },
+    set: (value: T | ((currentValue: T) => T)) => set<T>(registry, key, value, debug, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

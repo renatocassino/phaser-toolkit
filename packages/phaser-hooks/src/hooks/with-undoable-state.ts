@@ -1,4 +1,4 @@
-import { type HookState } from './type';
+import { type HookState, type StateUpdater } from './type';
 import { withLocalState } from './with-local-state';
 
 /**
@@ -70,9 +70,12 @@ export const withUndoableState = <T>(
     historyState.set(newHistory);
   };
 
-  const set = (value: T): void => {
-    addToHistory(value);
-    currentState.set(value);
+  const set = (value: T | StateUpdater<T>): void => {
+    const resolvedValue = typeof value === 'function' 
+      ? (value as StateUpdater<T>)(currentState.get()) 
+      : value;
+    addToHistory(resolvedValue);
+    currentState.set(resolvedValue);
   };
 
   const undo = (): boolean => {

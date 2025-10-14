@@ -1,4 +1,4 @@
-import { type HookState } from './type';
+import { type HookState, type StateUpdater } from './type';
 import { withLocalState } from './with-local-state';
 
 /**
@@ -29,7 +29,7 @@ export const withDebouncedState = <T>(
   const actualState = withLocalState<T>(scene, key, initialValue);
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  const debouncedSet = (value: T): void => {
+  const debouncedSet = (value: T | StateUpdater<T>): void => {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }

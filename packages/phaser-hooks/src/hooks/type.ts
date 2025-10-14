@@ -39,7 +39,12 @@ export type StateUpdater<T> = (currentState: T) => T;
  * // Setting based on current value
  * scoreState.set(current => current + 10); // Adds 10 to current score
  *
- * // Listening to changes
+ * // Listening to changes with on (receives all Phaser event params)
+ * scoreState.on('change', (parent, key, newScore, oldScore) => {
+ *   console.log(`Score changed from ${oldScore} to ${newScore}`);
+ * });
+ *
+ * // Or use onChange (deprecated, but simpler signature)
  * scoreState.onChange((newScore, oldScore) => {
  *   console.log(`Score changed from ${oldScore} to ${newScore}`);
  * });
@@ -66,22 +71,22 @@ export type HookState<T> = {
 
   /**
    * Registers a callback to be called whenever the state changes
-   * @param callback Function to call when state changes
+   * @param callback Function to call when state changes. Receives: parent, key, newValue, oldValue
    */
-  on: (event: 'change', callback: () => void) => () => void;
+  on: (event: 'change', callback: (parent: unknown, key: string, newValue: T, oldValue: T) => void) => () => void;
 
   /**
    * Registers a callback to be called whenever the state changes
-   * @param callback Function to call when state changes
+   * @param callback Function to call when state changes. Receives: parent, key, newValue, oldValue
    */
-  once: (event: 'change', callback: () => void) => () => void;
+  once: (event: 'change', callback: (parent: unknown, key: string, newValue: T, oldValue: T) => void) => () => void;
 
   /**
    * Removes an event listener
    * @param event The event to remove
    * @param callback The callback to remove
    */
-  off: (event: 'change', callback: () => void) => void;
+  off: (event: 'change', callback: (parent: unknown, key: string, newValue: T, oldValue: T) => void) => void;
 
   /**
    * Removes all event listeners for this state

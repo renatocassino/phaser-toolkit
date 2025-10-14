@@ -397,12 +397,12 @@ const clearListeners = (
  * counter.set(current => current + 1); // Increment by 1
  * 
  * // Listening to changes
- * playerState.on('change', (newValue, oldValue) => {
+ * playerState.on('change', (parent, key, newValue, oldValue) => {
  *   console.log('Player state changed:', newValue, oldValue);
  * });
  *
  * // Listening to changes only once
- * playerState.once('change', (newValue, oldValue) => {
+ * playerState.once('change', (parent, key, newValue, oldValue) => {
  *   console.log('Player state changed once:', newValue, oldValue);
  * });
  *
@@ -456,7 +456,7 @@ export const withStateDef = <T>(
      * Registers a callback to be called whenever the state changes.
      * Only the 'change' event is supported.
      * @param {'change'} event
-     * @param {Function} fn
+     * @param {Function} fn - Callback receives: (parent, key, newValue, oldValue)
      * @returns {() => void} Unsubscribe function
      */
     on: (event: string | symbol, fn: Function) =>
@@ -465,7 +465,7 @@ export const withStateDef = <T>(
      * Registers a callback to be called once when the state changes.
      * Only the 'change' event is supported.
      * @param {'change'} event
-     * @param {Function} fn
+     * @param {Function} fn - Callback receives: (parent, key, newValue, oldValue)
      * @returns {() => void} Unsubscribe function
      */
     once: (event: string | symbol, fn: Function) =>
@@ -474,7 +474,7 @@ export const withStateDef = <T>(
      * Removes an event listener for the state.
      * Only the 'change' event is supported.
      * @param {'change'} event
-     * @param {Function} fn
+     * @param {Function} fn - Callback receives: (parent, key, newValue, oldValue)
      */
     off: (event: string | symbol, fn: Function) =>
       off(registry, event, key, debug, fn),

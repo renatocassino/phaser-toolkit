@@ -340,6 +340,7 @@ const clearListeners = (
   }
 };
 
+
 /**
  * Low-level state management hook that directly interfaces with Phaser's registry system.
  * This is the foundation for all other state hooks and provides direct access to
@@ -389,6 +390,10 @@ const clearListeners = (
  *   { debug: true }
  * );
  *
+ * // Updating based on current value
+ * const counter = withStateDef<number>(scene, 'counter', 0);
+ * counter.update(current => current + 1); // Increment by 1
+ * 
  * // Listening to changes
  * playerState.on('change', (newValue, oldValue) => {
  *   console.log('Player state changed:', newValue, oldValue);
@@ -408,6 +413,7 @@ const clearListeners = (
  *
  * @method get Gets the current state value
  * @method set Sets a new state value and triggers change listeners
+ * @method update Updates the state based on the current value using a callback function
  * @method on Registers a callback to be called whenever the state changes. Returns an unsubscribe function.
  * @method once Registers a callback to be called once when the state changes. Returns an unsubscribe function.
  * @method off Removes an event listener for the state
@@ -439,6 +445,15 @@ export const withStateDef = <T>(
      * @param {T} value
      */
     set: (value: T) => set<T>(registry, key, value, debug, validator),
+    /**
+     * Updates the state based on the current value.
+     * @param {(currentValue: T) => T} callback - Function that receives the current state and returns the new state
+     */
+    update: (callback: (currentValue: T) => T): void => {
+      const currentValue = get<T>(registry, key, debug);
+      const newValue = callback(currentValue);
+      set<T>(registry, key, newValue, debug, validator);
+    },
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

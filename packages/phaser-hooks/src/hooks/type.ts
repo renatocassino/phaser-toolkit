@@ -36,6 +36,9 @@ export type StateUpdater<T> = (currentState: T) => T;
  * // Setting new value
  * scoreState.set(100);
  *
+ * // Updating based on current value
+ * scoreState.update(current => current + 10); // Adds 10 to current score
+ *
  * // Listening to changes
  * scoreState.onChange((newScore, oldScore) => {
  *   console.log(`Score changed from ${oldScore} to ${newScore}`);
@@ -54,6 +57,12 @@ export type HookState<T> = {
    * @param value The new value to set
    */
   set: (value: T) => void;
+
+  /**
+   * Updates the state based on the current value
+   * @param updater Function that receives the current state and returns the new state
+   */
+  update: (updater: StateUpdater<T>) => void;
 
   /**
    * Registers a callback to be called whenever the state changes

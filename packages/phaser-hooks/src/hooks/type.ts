@@ -39,6 +39,10 @@ export type StateUpdater<T> = (currentState: T) => T;
  * // Setting based on current value
  * scoreState.set(current => current + 10); // Adds 10 to current score
  *
+ * // Partial update (for object states)
+ * const playerState: HookState<{name: string, score: number}> = withLocalState(scene, 'player', {name: 'Player', score: 0});
+ * playerState.patch({ score: 100 }); // Only updates score, keeps name
+ *
  * // Listening to changes with on (receives all Phaser event params)
  * scoreState.on('change', (parent, key, newScore, oldScore) => {
  *   console.log(`Score changed from ${oldScore} to ${newScore}`);
@@ -62,6 +66,13 @@ export type HookState<T> = {
    * @param value The new value to set, or a function that receives the current value and returns the new value
    */
   set: (value: T | StateUpdater<T>) => void;
+
+  /**
+   * Partially updates the state (only works when T is an object)
+   * @param partial Partial object to merge with current state
+   * @throws {Error} If the current state is not an object
+   */
+  patch: (partial: Partial<T>) => void;
 
   /**
    * Registers a callback to be called whenever the state changes

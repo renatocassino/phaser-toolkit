@@ -342,6 +342,41 @@ const clearListeners = (
   }
 };
 
+/**
+ * Partially updates an object state by merging with current value.
+ * @template T
+ * @param {Phaser.Data.DataManager} registry - The Phaser data manager
+ * @param {string} key - The key to update
+ * @param {Partial<T>} partial - Partial object to merge
+ * @param {boolean} debug - Whether to log debug info
+ * @param {(value: unknown) => boolean | string} [validator] - Optional validator function
+ * @throws {Error} If the current state is not an object
+ * @throws {Error} If the validator returns false or an error message
+ */
+const patch = <T>(
+  registry: Phaser.Data.DataManager,
+  key: string,
+  partial: Partial<T>,
+  debug: boolean,
+  validator?: (value: unknown) => boolean | string
+): void => {
+  const currentValue = get<T>(registry, key, debug);
+
+  // Validate that current value is an object
+  if (
+    typeof currentValue !== 'object' ||
+    currentValue === null ||
+    Array.isArray(currentValue)
+  ) {
+    throw new Error(
+      `[withStateDef] patch() can only be used with object states. Current value type: ${typeof currentValue}`
+    );
+  }
+
+  // Merge current value with partial
+  const newValue = { ...currentValue, ...partial };
+  set<T>(registry, key, newValue, debug, validator);
+};
 
 /**
  * Low-level state management hook that directly interfaces with Phaser's registry system.
@@ -396,6 +431,14 @@ const clearListeners = (
  * const counter = withStateDef<number>(scene, 'counter', 0);
  * counter.set(current => current + 1); // Increment by 1
  * 
+ * // Partial update for object states
+ * const player = withStateDef<{name: string, items: number}>(
+ *   scene,
+ *   'player',
+ *   { name: 'someone', items: 10 }
+ * );
+ * player.patch({ items: 11 }); // Only updates items, keeps name
+ * 
  * // Listening to changes
  * playerState.on('change', (parent, key, newValue, oldValue) => {
  *   console.log('Player state changed:', newValue, oldValue);
@@ -415,6 +458,7 @@ const clearListeners = (
  *
  * @method get Gets the current state value
  * @method set Sets a new state value (or uses a function to compute it from current value) and triggers change listeners
+ * @method patch Partially updates an object state by merging with current value
  * @method on Registers a callback to be called whenever the state changes. Returns an unsubscribe function.
  * @method once Registers a callback to be called once when the state changes. Returns an unsubscribe function.
  * @method off Removes an event listener for the state
@@ -446,6 +490,12 @@ export const withStateDef = <T>(
      * @param {T | ((currentValue: T) => T)} value - The new value to set, or a function that receives the current value and returns the new value
      */
     set: (value: T | ((currentValue: T) => T)) => set<T>(registry, key, value, debug, validator),
+    /**
+     * Partially updates the state (only works when T is an object).
+     * @param {Partial<T>} partial - Partial object to merge with current state
+     * @throws {Error} If the current state is not an object
+     */
+    patch: (partial: Partial<T>) => patch<T>(registry, key, partial, debug, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

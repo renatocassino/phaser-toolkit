@@ -1,5 +1,12 @@
 # phaser-sound-studio
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [25f7f05]
+  - phaser-hooks@0.5.0
+
 ## 0.4.3
 
 ### Patch Changes

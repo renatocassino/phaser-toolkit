@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.5.0
+
+### Minor Changes
+
+- 25f7f05: add methods .patch and .set(fn)
+
 ## 0.4.0
 
 ### Minor Changes

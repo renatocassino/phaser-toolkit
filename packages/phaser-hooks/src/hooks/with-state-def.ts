@@ -77,7 +77,7 @@ const get = <T>(
  * @template T
  * @param {Phaser.Data.DataManager} registry - The Phaser data manager
  * @param {string} key - The key to set
- * @param {T} value - The value to set
+ * @param {T | ((currentState: T) => T)} value - The value to set or a function that receives current state and returns new state
  * @param {boolean} debug - Whether to log debug info
  * @param {(value: unknown) => boolean | string} [validator] - Optional validator function
  * @throws {Error} If the validator returns false or an error message
@@ -85,12 +85,17 @@ const get = <T>(
 const set = <T>(
   registry: Phaser.Data.DataManager,
   key: string,
-  value: T,
+  value: T | ((currentState: T) => T),
   debug: boolean,
   validator?: (value: unknown) => boolean | string
 ): void => {
+  const currentValue = registry.get(key) as T;
+  
+  // If value is a function, execute it with current state
+  const newValue = typeof value === 'function' ? (value as (currentState: T) => T)(currentValue) : value;
+
   if (validator) {
-    const validationResult = validator(value);
+    const validationResult = validator(newValue);
     if (validationResult !== true) {
       const message =
         typeof validationResult === 'string'
@@ -100,11 +105,10 @@ const set = <T>(
     }
   }
 
-  const oldValue = registry.get(key) as T;
-  registry.set(key, value);
+  registry.set(key, newValue);
 
   if (debug) {
-    logStateSet(key, oldValue, value);
+    logStateSet(key, currentValue, newValue);
   }
 };
 
@@ -389,6 +393,12 @@ const clearListeners = (
  *   { debug: true }
  * );
  *
+ * // Setting values directly
+ * playerState.set({ name: 'Player2', level: 5 });
+ *
+ * // Setting values using updater function
+ * playerState.set((currentState) => ({ ...currentState, level: currentState.level + 1 }));
+ *
  * // Listening to changes
  * playerState.on('change', (newValue, oldValue) => {
  *   console.log('Player state changed:', newValue, oldValue);
@@ -436,9 +446,9 @@ export const withStateDef = <T>(
     get: () => get<T>(registry, key, debug),
     /**
      * Sets a new state value and triggers change listeners.
-     * @param {T} value
+     * @param {T | ((currentState: T) => T)} value - The new value to set or a function that receives current state and returns new state
      */
-    set: (value: T) => set<T>(registry, key, value, debug, validator),
+    set: (value: T | ((currentState: T) => T)) => set<T>(registry, key, value, debug, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

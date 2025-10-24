@@ -51,9 +51,9 @@ export type HookState<T> = {
 
   /**
    * Sets a new state value and triggers change listeners
-   * @param value The new value to set
+   * @param value The new value to set or a function that receives current state and returns new state
    */
-  set: (value: T) => void;
+  set: (value: T | StateUpdater<T>) => void;
 
   /**
    * Registers a callback to be called whenever the state changes

@@ -85,11 +85,57 @@ All hooks return a `HookState` object with the following methods:
 | Method                     | Description                                          | Parameters                                | Returns                             |
 | -------------------------- | ---------------------------------------------------- | ----------------------------------------- | ----------------------------------- |
 | `get()`                    | Gets the current state value                         | None                                      | `T` - Current state value           |
-| `set(value)`               | Sets a new state value and triggers change listeners | `value: T` - New value to set             | `void`                              |
+| `set(value)`               | Sets a new state value and triggers change listeners | `value: T \| ((currentState: T) => T)` - New value to set or updater function | `void`                              |
 | `on('change', callback)`   | Registers a callback for state changes               | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
 | `once('change', callback)` | Registers a callback that fires only once            | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
 | `off('change', callback)`  | Removes an event listener                            | `event: 'change'`, `callback: () => void` | `void`                              |
 | `clearListeners()`          | Removes all event listeners for this state           | None                                      | `void`                              |
+
+### State Updater Functions
+
+The `set()` method supports both direct values and updater functions, similar to React's `useState`:
+
+```typescript
+// Direct value assignment
+playerState.set({ hp: 100, level: 5 });
+
+// Using updater function (receives current state, returns new state)
+playerState.set((currentState) => ({ 
+  ...currentState, 
+  level: currentState.level + 1 
+}));
+
+// Equivalent to:
+const newState = { ...playerState.get(), level: playerState.get().level + 1 };
+playerState.set(newState);
+```
+
+**Benefits of updater functions:**
+- ✅ **Immutable updates**: Always work with the latest state
+- ✅ **Race condition safe**: No risk of using stale state
+- ✅ **Cleaner code**: No need to manually get current state
+- ✅ **Functional approach**: Encourages immutable state patterns
+
+**Example with complex state updates:**
+
+```typescript
+// Instead of this verbose approach:
+const currentPlayer = playerState.get();
+playerState.set({
+  ...currentPlayer,
+  hp: Math.min(currentPlayer.hp + 20, currentPlayer.maxHp),
+  level: currentPlayer.exp >= 100 ? currentPlayer.level + 1 : currentPlayer.level,
+  exp: currentPlayer.exp >= 100 ? 0 : currentPlayer.exp + 10
+});
+
+// Use this clean updater function:
+playerState.set((player) => ({
+  ...player,
+  hp: Math.min(player.hp + 20, player.maxHp),
+  level: player.exp >= 100 ? player.level + 1 : player.level,
+  exp: player.exp >= 100 ? 0 : player.exp + 10
+}));
+```
 
 ### Special Hook Methods
 
@@ -292,11 +338,17 @@ export class GameScene extends Phaser.Scene {
       console.log('Player health changed:', newPlayer.hp);
     });
 
-    // Update state
-    playerState.set({
-      ...playerState.get(),
-      hp: playerState.get().hp - 10,
-    });
+    // Update state - using updater function (recommended)
+    playerState.set((currentPlayer) => ({
+      ...currentPlayer,
+      hp: currentPlayer.hp - 10,
+    }));
+
+    // Alternative: direct value assignment
+    // playerState.set({
+    //   ...playerState.get(),
+    //   hp: playerState.get().hp - 10,
+    // });
   }
 }
 ```
@@ -388,8 +440,6 @@ function withPlayerEnergy(scene: Phaser.Scene) {
   });
 
   return {
-    get: () => player.get().energy,
-    set: (value: number) => player.set({ ...player.get(), energy: value }),
     ...player,
   };
 }
@@ -402,7 +452,11 @@ const energy = withPlayerEnergy(this);
 
 console.log('Current energy:', energy.get());
 
-energy.set(energy.get() - 10);
+// Using updater function (recommended)
+energy.set((currentEnergy) => currentEnergy - 10);
+
+// Alternative: direct value
+// energy.set(energy.get() - 10);
 
 energy.on('change', () => {
   if (energy.get() <= 0) {

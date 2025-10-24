@@ -86,6 +86,7 @@ All hooks return a `HookState` object with the following methods:
 | -------------------------- | ---------------------------------------------------- | ----------------------------------------- | ----------------------------------- |
 | `get()`                    | Gets the current state value                         | None                                      | `T` - Current state value           |
 | `set(value)`               | Sets a new state value and triggers change listeners | `value: T \| ((currentState: T) => T)` - New value to set or updater function | `void`                              |
+| `patch(value)`             | Patches object state with partial updates            | `value: Partial<T> \| ((currentState: T) => Partial<T>)` - Partial object or updater function | `void`                              |
 | `on('change', callback)`   | Registers a callback for state changes               | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
 | `once('change', callback)` | Registers a callback that fires only once            | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
 | `off('change', callback)`  | Removes an event listener                            | `event: 'change'`, `callback: () => void` | `void`                              |
@@ -134,6 +135,103 @@ playerState.set((player) => ({
   hp: Math.min(player.hp + 20, player.maxHp),
   level: player.exp >= 100 ? player.level + 1 : player.level,
   exp: player.exp >= 100 ? 0 : player.exp + 10
+}));
+```
+
+### State Patching
+
+The `patch()` method allows you to update only specific properties of an object state, similar to React's state updates:
+
+```typescript
+// Direct partial object patching
+playerState.patch({ life: 90 });
+// Only updates 'life', preserves other properties
+
+// Using updater function for patching
+playerState.patch((currentState) => ({
+  life: currentState.life - 10,
+  level: currentState.level + 1
+}));
+// Updates multiple properties based on current state
+```
+
+**Benefits of patching:**
+- ✅ **Partial updates**: Only change the properties you need
+- ✅ **Preserves other data**: Unchanged properties remain untouched
+- ✅ **Deep merging**: Works with nested objects using lodash.merge
+- ✅ **Type safety**: TypeScript ensures you only patch valid properties
+- ✅ **Performance**: More efficient than full object replacement
+
+**Example with complex state updates:**
+
+```typescript
+// Instead of this verbose approach:
+const currentPlayer = playerState.get();
+playerState.set({
+  ...currentPlayer,
+  stats: {
+    ...currentPlayer.stats,
+    hp: currentPlayer.stats.hp - 20,
+    mp: currentPlayer.stats.mp + 10
+  },
+  position: {
+    ...currentPlayer.position,
+    x: currentPlayer.position.x + 5
+  }
+});
+
+// Use this clean patch approach:
+playerState.patch({
+  stats: {
+    hp: playerState.get().stats.hp - 20,
+    mp: playerState.get().stats.mp + 10
+  },
+  position: {
+    x: playerState.get().position.x + 5
+  }
+});
+
+// Or even cleaner with updater function:
+playerState.patch((player) => ({
+  stats: {
+    hp: player.stats.hp - 20,
+    mp: player.stats.mp + 10
+  },
+  position: {
+    x: player.position.x + 5
+  }
+}));
+```
+
+**Deep object patching:**
+
+```typescript
+// Patch deeply nested properties
+gameState.patch({
+  player: {
+    character: {
+      stats: {
+        primary: {
+          strength: 15
+        }
+      }
+    }
+  }
+});
+// Only updates the strength value, preserves all other nested properties
+```
+
+**Array property patching:**
+
+```typescript
+// Update array properties
+inventoryState.patch({
+  items: [...inventoryState.get().items, 'new-item']
+});
+
+// Or with updater function
+inventoryState.patch((inventory) => ({
+  items: [...inventory.items, 'new-item']
 }));
 ```
 
@@ -338,11 +436,14 @@ export class GameScene extends Phaser.Scene {
       console.log('Player health changed:', newPlayer.hp);
     });
 
-    // Update state - using updater function (recommended)
-    playerState.set((currentPlayer) => ({
-      ...currentPlayer,
-      hp: currentPlayer.hp - 10,
-    }));
+    // Update state - using patch method (recommended for partial updates)
+    playerState.patch({ hp: playerState.get().hp - 10 });
+
+    // Alternative: using updater function with set
+    // playerState.set((currentPlayer) => ({
+    //   ...currentPlayer,
+    //   hp: currentPlayer.hp - 10,
+    // }));
 
     // Alternative: direct value assignment
     // playerState.set({

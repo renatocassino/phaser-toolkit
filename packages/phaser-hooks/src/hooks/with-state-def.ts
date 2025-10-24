@@ -114,12 +114,25 @@ const set = <T>(
 };
 
 /**
+ * Applies a shallow merge ("patch") to an object state in the registry.
  * 
+ * This method attempts to update the current state associated with the given key by performing a shallow merge
+ * between the existing state and the provided value or the result of an updater function. 
+ * The function will throw an error if the current state is not an object.
+ * An optional validator function can be provided to ensure the new value is valid before committing the patch.
+ * 
+ * @template T
+ * @param {Phaser.Data.DataManager} registry - The Phaser data manager
+ * @param {string} key - The key to patch in the registry
+ * @param {T | ((currentState: T) => T)} value - The value object to merge, or a function that returns a value given the current state
+ * @param {boolean} debug - Whether to enable debug logging
+ * @param {(value: unknown) => boolean | string} [validator] - Optional validator function; must return true or an error message
+ * @throws {Error} If the current value is not an object or the validator returns false/an error message
  */
 const patch = <T>(
   registry: Phaser.Data.DataManager,
   key: string,
-  value: T | ((currentState: T) => T),
+  value: Partial<T> | ((currentState: T) => Partial<T>),
   debug: boolean,
   validator?: (value: unknown) => boolean | string
 ): void => {
@@ -129,7 +142,9 @@ const patch = <T>(
     throw new Error('[withStateDef] Current value is not an object');
   }
 
-  const newValue = merge({}, currentValue, value) as T;
+  // If value is a function, execute it with current state to get the patch
+  const patchValue = typeof value === 'function' ? (value as (currentState: T) => Partial<T>)(currentValue) : value;
+  const newValue = merge({}, currentValue, patchValue) as T;
   if (validator) {
     const validationResult = validator(newValue);
     if (validationResult !== true) {
@@ -487,9 +502,9 @@ export const withStateDef = <T>(
     set: (value: T | ((currentState: T) => T)) => set<T>(registry, key, value, debug, validator),
     /**
      * Patches the current state value with a new value.
-     * @param {T | ((currentState: T) => T)} value - The new value to patch or a function that receives current state and returns new state
+     * @param {Partial<T> | ((currentState: T) => Partial<T>)} value - The new value to patch or a function that receives current state and returns new state
      */
-    patch: (value: T | ((currentState: T) => T)) => patch<T>(registry, key, value, debug, validator),
+    patch: (value: Partial<T> | ((currentState: T) => Partial<T>)) => patch<T>(registry, key, value, debug, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

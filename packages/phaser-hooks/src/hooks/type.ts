@@ -20,6 +20,22 @@ export type StateSelector<T, U> = (state: T) => U;
 export type StateUpdater<T> = (currentState: T) => T;
 
 /**
+ * Utility type for deep partial objects
+ * Makes all properties optional recursively
+ * @template T The state type
+ */
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+
+/**
+ * Utility type for state patch updaters
+ * @template T The state type
+ */
+export type StatePatchUpdater<T> = (currentState: T) => DeepPartial<T>;
+
+/**
  * Core interface for all state management hooks in Phaser games.
  * Provides a React-like state management API with get/set/onChange functionality.
  *
@@ -51,9 +67,15 @@ export type HookState<T> = {
 
   /**
    * Sets a new state value and triggers change listeners
-   * @param value The new value to set
+   * @param value The new value to set or a function that receives current state and returns new state
    */
-  set: (value: T) => void;
+  set: (value: T | StateUpdater<T>) => void;
+
+  /**
+   * Patches the current state value with a new value
+   * @param value The new value to patch or a function that receives current state and returns new state
+   */
+  patch: (value: DeepPartial<T> | StatePatchUpdater<T>) => void;
 
   /**
    * Registers a callback to be called whenever the state changes

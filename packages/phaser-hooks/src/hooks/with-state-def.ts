@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable max-lines-per-function */
+import merge from 'lodash.merge';
 import * as Phaser from 'phaser';
 
 import {
@@ -13,7 +14,7 @@ import {
   logWarning,
 } from '../utils/logger';
 
-import { type HookState, type StateChangeCallback } from './type';
+import { type HookState, type StateChangeCallback, type StatePatchUpdater, type DeepPartial } from './type';
 
 /**
  * Configuration options for state definition
@@ -77,7 +78,7 @@ const get = <T>(
  * @template T
  * @param {Phaser.Data.DataManager} registry - The Phaser data manager
  * @param {string} key - The key to set
- * @param {T} value - The value to set
+ * @param {T | ((currentState: T) => T)} value - The value to set or a function that receives current state and returns new state
  * @param {boolean} debug - Whether to log debug info
  * @param {(value: unknown) => boolean | string} [validator] - Optional validator function
  * @throws {Error} If the validator returns false or an error message
@@ -85,12 +86,17 @@ const get = <T>(
 const set = <T>(
   registry: Phaser.Data.DataManager,
   key: string,
-  value: T,
+  value: T | ((currentState: T) => T),
   debug: boolean,
   validator?: (value: unknown) => boolean | string
 ): void => {
+  const currentValue = registry.get(key) as T;
+  
+  // If value is a function, execute it with current state
+  const newValue = typeof value === 'function' ? (value as (currentState: T) => T)(currentValue) : value;
+
   if (validator) {
-    const validationResult = validator(value);
+    const validationResult = validator(newValue);
     if (validationResult !== true) {
       const message =
         typeof validationResult === 'string'
@@ -100,11 +106,60 @@ const set = <T>(
     }
   }
 
-  const oldValue = registry.get(key) as T;
-  registry.set(key, value);
+  registry.set(key, newValue);
 
   if (debug) {
-    logStateSet(key, oldValue, value);
+    logStateSet(key, currentValue, newValue);
+  }
+};
+
+/**
+ * Applies a shallow merge ("patch") to an object state in the registry.
+ * 
+ * This method attempts to update the current state associated with the given key by performing a shallow merge
+ * between the existing state and the provided value or the result of an updater function. 
+ * The function will throw an error if the current state is not an object.
+ * An optional validator function can be provided to ensure the new value is valid before committing the patch.
+ * 
+ * @template T
+ * @param {Phaser.Data.DataManager} registry - The Phaser data manager
+ * @param {string} key - The key to patch in the registry
+ * @param {T | ((currentState: T) => T)} value - The value object to merge, or a function that returns a value given the current state
+ * @param {boolean} debug - Whether to enable debug logging
+ * @param {(value: unknown) => boolean | string} [validator] - Optional validator function; must return true or an error message
+ * @throws {Error} If the current value is not an object or the validator returns false/an error message
+ */
+const patch = <T>(
+  registry: Phaser.Data.DataManager,
+  key: string,
+  value: DeepPartial<T> | StatePatchUpdater<T>,
+  debug: boolean,
+  validator?: (value: unknown) => boolean | string
+): void => {
+  const currentValue = registry.get(key) as T;
+
+  if (typeof currentValue !== 'object' || currentValue === null) {
+    throw new Error('[withStateDef] Current value is not an object');
+  }
+
+  // If value is a function, execute it with current state to get the patch
+  const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(currentValue) : value;
+  const newValue = merge({}, currentValue, patchValue) as T;
+  if (validator) {
+    const validationResult = validator(newValue);
+    if (validationResult !== true) {
+      const message =
+        typeof validationResult === 'string'
+          ? validationResult
+          : `Invalid value for key "${key}"`;
+      throw new Error(`[withStateDef] ${message}`);
+    }
+  }
+
+  registry.set(key, newValue);
+
+  if (debug) {
+    logStateSet(key, currentValue, newValue);
   }
 };
 
@@ -389,6 +444,12 @@ const clearListeners = (
  *   { debug: true }
  * );
  *
+ * // Setting values directly
+ * playerState.set({ name: 'Player2', level: 5 });
+ *
+ * // Setting values using updater function
+ * playerState.set((currentState) => ({ ...currentState, level: currentState.level + 1 }));
+ *
  * // Listening to changes
  * playerState.on('change', (newValue, oldValue) => {
  *   console.log('Player state changed:', newValue, oldValue);
@@ -436,9 +497,14 @@ export const withStateDef = <T>(
     get: () => get<T>(registry, key, debug),
     /**
      * Sets a new state value and triggers change listeners.
-     * @param {T} value
+     * @param {T | ((currentState: T) => T)} value - The new value to set or a function that receives current state and returns new state
      */
-    set: (value: T) => set<T>(registry, key, value, debug, validator),
+    set: (value: T | ((currentState: T) => T)) => set<T>(registry, key, value, debug, validator),
+    /**
+     * Patches the current state value with a new value.
+     * @param {DeepPartial<T> | StatePatchUpdater<T>} value - The new value to patch or a function that receives current state and returns new state
+     */
+    patch: (value: DeepPartial<T> | StatePatchUpdater<T>) => patch<T>(registry, key, value, debug, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

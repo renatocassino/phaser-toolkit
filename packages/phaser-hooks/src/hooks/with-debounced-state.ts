@@ -1,4 +1,6 @@
-import { type HookState } from './type';
+import merge from 'lodash.merge';
+
+import { type DeepPartial, type StatePatchUpdater, type StateUpdater, type HookState } from './type';
 import { withLocalState } from './with-local-state';
 
 /**
@@ -29,19 +31,26 @@ export const withDebouncedState = <T>(
   const actualState = withLocalState<T>(scene, key, initialValue);
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  const debouncedSet = (value: T): void => {
+  const debouncedSet = (value: T | StateUpdater<T>): void => {
+    const newValue = typeof value === 'function' ? (value as StateUpdater<T>)(actualState.get()) : value;
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
     timeoutId = setTimeout(() => {
-      actualState.set(value);
+      actualState.set(newValue);
       timeoutId = null;
     }, debounceMs);
+  };
+
+  const debouncedPatch = (value: DeepPartial<T> | StatePatchUpdater<T>): void => {
+    const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(actualState.get()) : value;
+    debouncedSet((currentState) => merge({}, currentState, patchValue));
   };
 
   return {
     ...actualState,
     set: debouncedSet,
+    patch: debouncedPatch,
   };
 };

@@ -14,7 +14,7 @@ import {
   logWarning,
 } from '../utils/logger';
 
-import { type HookState, type StateChangeCallback } from './type';
+import { type HookState, type StateChangeCallback, type StatePatchUpdater, type DeepPartial } from './type';
 
 /**
  * Configuration options for state definition
@@ -132,7 +132,7 @@ const set = <T>(
 const patch = <T>(
   registry: Phaser.Data.DataManager,
   key: string,
-  value: Partial<T> | ((currentState: T) => Partial<T>),
+  value: DeepPartial<T> | StatePatchUpdater<T>,
   debug: boolean,
   validator?: (value: unknown) => boolean | string
 ): void => {
@@ -143,7 +143,7 @@ const patch = <T>(
   }
 
   // If value is a function, execute it with current state to get the patch
-  const patchValue = typeof value === 'function' ? (value as (currentState: T) => Partial<T>)(currentValue) : value;
+  const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(currentValue) : value;
   const newValue = merge({}, currentValue, patchValue) as T;
   if (validator) {
     const validationResult = validator(newValue);
@@ -502,9 +502,9 @@ export const withStateDef = <T>(
     set: (value: T | ((currentState: T) => T)) => set<T>(registry, key, value, debug, validator),
     /**
      * Patches the current state value with a new value.
-     * @param {Partial<T> | ((currentState: T) => Partial<T>)} value - The new value to patch or a function that receives current state and returns new state
+     * @param {DeepPartial<T> | StatePatchUpdater<T>} value - The new value to patch or a function that receives current state and returns new state
      */
-    patch: (value: Partial<T> | ((currentState: T) => Partial<T>)) => patch<T>(registry, key, value, debug, validator),
+    patch: (value: DeepPartial<T> | StatePatchUpdater<T>) => patch<T>(registry, key, value, debug, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

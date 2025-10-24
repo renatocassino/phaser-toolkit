@@ -655,6 +655,7 @@ describe('withLocalState', () => {
         const hook = withLocalState<number>(scene, key, initialState);
 
         expect(() => {
+          // @ts-expect-error - we want to test the error case
           hook.patch({ value: 200 });
         }).toThrow('[withStateDef] Current value is not an object');
       });
@@ -666,6 +667,7 @@ describe('withLocalState', () => {
         const hook = withLocalState<null>(scene, key, initialState);
 
         expect(() => {
+          // @ts-expect-error - we want to test the error case
           hook.patch({ value: 'something' });
         }).toThrow('[withStateDef] Current value is not an object');
       });

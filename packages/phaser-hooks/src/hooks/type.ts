@@ -56,6 +56,12 @@ export type HookState<T> = {
   set: (value: T | StateUpdater<T>) => void;
 
   /**
+   * Patches the current state value with a new value
+   * @param value The new value to patch or a function that receives current state and returns new state
+   */
+  patch: (value: T | StateUpdater<T>) => void;
+
+  /**
    * Registers a callback to be called whenever the state changes
    * @param callback Function to call when state changes
    */

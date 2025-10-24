@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable max-lines-per-function */
+import merge from 'lodash.merge';
 import * as Phaser from 'phaser';
 
 import {
@@ -94,6 +95,41 @@ const set = <T>(
   // If value is a function, execute it with current state
   const newValue = typeof value === 'function' ? (value as (currentState: T) => T)(currentValue) : value;
 
+  if (validator) {
+    const validationResult = validator(newValue);
+    if (validationResult !== true) {
+      const message =
+        typeof validationResult === 'string'
+          ? validationResult
+          : `Invalid value for key "${key}"`;
+      throw new Error(`[withStateDef] ${message}`);
+    }
+  }
+
+  registry.set(key, newValue);
+
+  if (debug) {
+    logStateSet(key, currentValue, newValue);
+  }
+};
+
+/**
+ * 
+ */
+const patch = <T>(
+  registry: Phaser.Data.DataManager,
+  key: string,
+  value: T | ((currentState: T) => T),
+  debug: boolean,
+  validator?: (value: unknown) => boolean | string
+): void => {
+  const currentValue = registry.get(key) as T;
+
+  if (typeof currentValue !== 'object' || currentValue === null) {
+    throw new Error('[withStateDef] Current value is not an object');
+  }
+
+  const newValue = merge({}, currentValue, value) as T;
   if (validator) {
     const validationResult = validator(newValue);
     if (validationResult !== true) {
@@ -449,6 +485,11 @@ export const withStateDef = <T>(
      * @param {T | ((currentState: T) => T)} value - The new value to set or a function that receives current state and returns new state
      */
     set: (value: T | ((currentState: T) => T)) => set<T>(registry, key, value, debug, validator),
+    /**
+     * Patches the current state value with a new value.
+     * @param {T | ((currentState: T) => T)} value - The new value to patch or a function that receives current state and returns new state
+     */
+    patch: (value: T | ((currentState: T) => T)) => patch<T>(registry, key, value, debug, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

@@ -110,6 +110,267 @@ describe('withLocalState', () => {
     });
   });
 
+  describe('set with updater function', () => {
+    describe('object state', () => {
+      it('should update state using updater function', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        hook.set((currentState) => ({
+          ...currentState,
+          life: currentState.life - 10,
+        }));
+
+        expect(hook.get()).toEqual({ ...baseState, life: 90 });
+      });
+
+      it('should update state using updater function multiple times', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        // First update
+        hook.set((currentState) => ({
+          ...currentState,
+          life: currentState.life - 20,
+        }));
+        expect(hook.get()).toEqual({ ...baseState, life: 80 });
+
+        // Second update
+        hook.set((currentState) => ({
+          ...currentState,
+          life: currentState.life + 5,
+        }));
+        expect(hook.get()).toEqual({ ...baseState, life: 85 });
+      });
+
+      it('should work with complex updater logic', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        hook.set((currentState) => ({
+          ...currentState,
+          life: Math.min(currentState.life + 30, 100),
+        }));
+
+        expect(hook.get()).toEqual({ ...baseState, life: 100 });
+      });
+
+      it('should trigger change events when using updater function', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        const callback = vi.fn();
+        hook.on('change', callback);
+
+        hook.set((currentState) => ({
+          ...currentState,
+          life: currentState.life - 15,
+        }));
+
+        expect(callback).toHaveBeenCalledWith(
+          expect.anything(), // Phaser adds an extra parameter
+          { ...baseState, life: 85 },
+          { ...baseState, life: 100 }
+        );
+      });
+    });
+
+    describe('primitive state', () => {
+      it('should work with number state', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = 100;
+        const hook = withLocalState<number>(scene, key, initialState);
+
+        hook.set((currentValue) => currentValue + 10);
+        expect(hook.get()).toEqual(110);
+
+        hook.set((currentValue) => currentValue * 2);
+        expect(hook.get()).toEqual(220);
+      });
+
+      it('should work with string state', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = 'hello';
+        const hook = withLocalState<string>(scene, key, initialState);
+
+        hook.set((currentValue) => currentValue + ' world');
+        expect(hook.get()).toEqual('hello world');
+
+        hook.set((currentValue) => currentValue.toUpperCase());
+        expect(hook.get()).toEqual('HELLO WORLD');
+      });
+
+      it('should work with boolean state', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = false;
+        const hook = withLocalState<boolean>(scene, key, initialState);
+
+        hook.set((currentValue) => !currentValue);
+        expect(hook.get()).toEqual(true);
+
+        hook.set((currentValue) => !currentValue);
+        expect(hook.get()).toEqual(false);
+      });
+
+      it('should work with array state', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = [1, 2, 3];
+        const hook = withLocalState<number[]>(scene, key, initialState);
+
+        hook.set((currentValue) => [...currentValue, 4]);
+        expect(hook.get()).toEqual([1, 2, 3, 4]);
+
+        hook.set((currentValue) => currentValue.map(x => x * 2));
+        expect(hook.get()).toEqual([2, 4, 6, 8]);
+      });
+    });
+
+    describe('validator with updater function', () => {
+      it('should validate the result of updater function', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockImplementation((value: FakeState) => {
+          return value.life >= 0 && value.life <= 100 ? true : 'Invalid life value';
+        });
+
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        // Valid updater function
+        hook.set((currentState) => ({
+          ...currentState,
+          life: currentState.life + 20,
+        }));
+        expect(hook.get()).toEqual({ ...baseState, life: 70 });
+        expect(validator).toHaveBeenCalledWith({ ...baseState, life: 70 });
+
+        // Invalid updater function result
+        expect(() =>
+          hook.set((currentState) => ({
+            ...currentState,
+            life: currentState.life + 50, // This would make life = 120, which is invalid
+          }))
+        ).toThrow('[withStateDef] Invalid life value');
+      });
+
+      it('should not update state when updater function result is invalid', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 50 };
+
+        const validator = vi.fn().mockImplementation((value: FakeState) => {
+          return value.life >= 0 && value.life <= 100 ? true : 'Invalid life value';
+        });
+
+        const hook = withLocalState<FakeState>(scene, key, initialState, {
+          validator,
+        });
+
+        // Try to set invalid value via updater function
+        expect(() =>
+          hook.set((currentState) => ({
+            ...currentState,
+            life: 150, // Invalid value
+          }))
+        ).toThrow('[withStateDef] Invalid life value');
+
+        // State should remain unchanged
+        expect(hook.get()).toEqual(initialState);
+      });
+    });
+
+    describe('edge cases', () => {
+      it('should handle updater function that returns the same reference', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        const callback = vi.fn();
+        hook.on('change', callback);
+
+        // Updater function that returns the same object reference
+        hook.set((currentState) => currentState);
+
+        // Should still trigger change event (Phaser's registry will detect the change)
+        expect(callback).toHaveBeenCalled();
+      });
+
+      it('should handle updater function with complex logic', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState = { ...baseState, life: 100 };
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        hook.set((currentState) => {
+          const newLife = currentState.life - 10;
+          if (newLife < 0) {
+            return { ...currentState, life: 0 };
+          }
+          return { ...currentState, life: newLife };
+        });
+
+        expect(hook.get()).toEqual({ ...baseState, life: 90 });
+      });
+
+      it('should work with nested object updates', () => {
+        type ComplexState = {
+          player: {
+            stats: {
+              hp: number;
+              mp: number;
+            };
+            level: number;
+          };
+        };
+
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState: ComplexState = {
+          player: {
+            stats: { hp: 100, mp: 50 },
+            level: 1,
+          },
+        };
+
+        const hook = withLocalState<ComplexState>(scene, key, initialState);
+
+        hook.set((currentState) => ({
+          ...currentState,
+          player: {
+            ...currentState.player,
+            stats: {
+              ...currentState.player.stats,
+              hp: currentState.player.stats.hp - 20,
+            },
+          },
+        }));
+
+        expect(hook.get()).toEqual({
+          player: {
+            stats: { hp: 80, mp: 50 },
+            level: 1,
+          },
+        });
+      });
+    });
+  });
+
   describe('events', () => {
     describe('on', () => {
       it('should register a change listener', () => {

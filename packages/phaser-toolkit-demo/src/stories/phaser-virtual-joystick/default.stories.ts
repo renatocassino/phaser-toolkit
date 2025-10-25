@@ -4,9 +4,9 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
 import type { Meta, StoryObj } from '@storybook/html';
-import { Color, FontSize } from 'phaser-wind';
-import { VirtualJoystick } from 'phaser-virtual-joystick';
 import Phaser from 'phaser';
+import { VirtualJoystick } from 'phaser-virtual-joystick';
+import { Color, FontSize } from 'phaser-wind';
 
 import { cleanGames, createGame } from '../helpers/create-game';
 import { nextFrames } from '../helpers/next-tick';

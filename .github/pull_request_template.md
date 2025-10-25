@@ -22,6 +22,7 @@ Briefly describe the changes in this PR.
 - [ ] hudini
 - [ ] phaser-sound-studio
 - [ ] phaser-toolkit-demo
+- [ ] virtual-joystick
 - [ ] Other (please specify): **\*\***\_\_\_**\*\***
 
 ## Changes

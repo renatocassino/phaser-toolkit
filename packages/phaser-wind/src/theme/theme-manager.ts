@@ -1,4 +1,4 @@
-import merge from 'lodash/merge';
+import merge from 'lodash.merge';
 
 import { type ThemeOverride, defaultLightTheme } from './theme-config';
 

@@ -396,6 +396,9 @@ importers:
 
   packages/phaser-wind:
     dependencies:
+      lodash.merge:
+        specifier: ^4.6.2
+        version: 4.6.2
       phaser:
         specifier: 3.90.0
         version: 3.90.0

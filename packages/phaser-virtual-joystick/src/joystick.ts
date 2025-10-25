@@ -55,6 +55,7 @@ export type VirtualJoystickParams = {
     topLeft: { x: number; y: number };
     bottomRight: { x: number; y: number };
   };
+  enableWithoutTouch?: boolean;
 }
 
 import {
@@ -64,8 +65,7 @@ import {
   deadZoneConfigDefault,
   stickConfigDefault,
 } from './config';
-import { createJoystickEvents } from './events';
-import { getDefaultBounds } from './helpers';
+import { getDefaultBounds, isWithinBounds } from './helpers';
 
 /**
  * A virtual joystick component for touch devices that provides analog input control.
@@ -174,6 +174,7 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
     stick,
     stickIcon,
     bounds,
+    enableWithoutTouch = false,
   }: VirtualJoystickParams) {
     super(scene, 0, 0);
 
@@ -195,14 +196,14 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
     // Set default bounds if not provided (left half of screen with 20% top padding)
     this.bounds = bounds ?? getDefaultBounds(scene);
 
-    this.setScrollFactor(0);
-
-    if (!this.scene.sys.game.device.input.touch) {
+    if (!this.scene.sys.game.device.input.touch && !enableWithoutTouch) {
       return;
     }
 
+    this.setScrollFactor(0);
+
     this.createJoystick(stickIcon);
-    createJoystickEvents(this.scene, this);
+    this.setupEventListeners();
   }
 
   /**
@@ -404,6 +405,130 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
   }
 
   /**
+   * Sets up all the input event listeners for touch/mouse interactions.
+   * Handles pointer down, move, up, and cancel events.
+   *
+   * @private
+   */
+  private setupEventListeners(): void {
+    this.scene.input.on('pointerdown', this.onPointerDown, this);
+    this.scene.input.on('pointermove', this.onPointerMove, this);
+    this.scene.input.on('pointerup', this.onPointerUp, this);
+    this.scene.input.on('pointercancel', this.onPointerCancel, this);
+  }
+
+  /**
+   * Handles pointer down events for joystick activation.
+   *
+   * @private
+   * @param {Phaser.Input.Pointer} pointer - The pointer that was pressed
+   */
+  private onPointerDown(pointer: Phaser.Input.Pointer): void {
+    const { x, y } = pointer;
+
+    // Ignored if there is already a touch active on the joystick
+    if (this.touchId !== null) {
+      return;
+    }
+
+    // Check if the touch is over any interactive object (buttons)
+    const objectsAtPointer = this.scene.input.hitTestPointer(pointer);
+    const hasInteractiveObject = objectsAtPointer.some((obj: Phaser.GameObjects.GameObject) => {
+      // Check if it is a button or interactive object
+      if (!obj.input?.enabled) {
+        return false;
+      }
+
+      // Ignore the own container of the joystick
+      if (obj === this || obj === this.analogContainer) {
+        return false;
+      }
+      return obj.parentContainer === this.buttonsContainer;
+    });
+
+    // If touched on a button or interactive object, do not activate the joystick
+    if (hasInteractiveObject) {
+      return;
+    }
+
+    // Check if touch is within the defined bounds
+    if (!isWithinBounds(x, y, this.bounds)) {
+      return;
+    }
+
+    this.analogContainer.setPosition(x, y);
+    this.analogContainer.setAlpha(JOYSTICK_CONSTANTS.VISIBLE_ALPHA);
+    this.stickIcon?.setPosition(0, 0);
+    this.startPosition = new Phaser.Math.Vector2(x, y);
+    this.touchId = pointer.id;
+
+    this.emitPress();
+  }
+
+  /**
+   * Handles pointer move events for joystick movement.
+   *
+   * @private
+   * @param {Phaser.Input.Pointer} pointer - The pointer that moved
+   */
+  private onPointerMove(pointer: Phaser.Input.Pointer): void {
+    const { x, y } = pointer;
+
+    if (this.startPosition === null) {
+      return;
+    }
+
+    if (!this.touchId || this.touchId !== pointer.id) {
+      return;
+    }
+
+    const distance = new Phaser.Math.Vector2(x, y).subtract(this.startPosition);
+    const maxDistance = this.baseArea.radius * JOYSTICK_CONSTANTS.MAX_DISTANCE_FACTOR;
+    const currentDistance = distance.length();
+
+    if (currentDistance > maxDistance) {
+      // Normalizes the vector and multiplies by the maximum distance
+      distance.normalize().scale(maxDistance);
+    }
+
+    // Normalizes values to -1 to 1
+    const normalizedX = distance.x / maxDistance;
+    const normalizedY = distance.y / maxDistance;
+
+    this.emitMove(normalizedX, normalizedY);
+
+    this.stick.setPosition(distance.x, distance.y);
+    this.stickIcon?.setPosition(distance.x, distance.y);
+
+    // If the pointer is too far, move the joystick towards the pointer
+    if (currentDistance > maxDistance * JOYSTICK_CONSTANTS.DISTANCE_THRESHOLD_MULTIPLIER) {
+      this.moveJoystickToPointer(distance);
+    }
+  }
+
+  /**
+   * Handles pointer up events for joystick release.
+   *
+   * @private
+   * @param {Phaser.Input.Pointer} pointer - The pointer that was released
+   */
+  private onPointerUp(pointer: Phaser.Input.Pointer): void {
+    this.emitRelease();
+    this.resetJoystick(pointer);
+  }
+
+  /**
+   * Handles pointer cancel events for joystick release.
+   *
+   * @private
+   * @param {Phaser.Input.Pointer} pointer - The pointer that was cancelled
+   */
+  private onPointerCancel(pointer: Phaser.Input.Pointer): void {
+    this.emitRelease();
+    this.resetJoystick(pointer);
+  }
+
+  /**
    * Destroys the joystick and cleans up all resources.
    * Removes event listeners, clears references, and calls parent destroy method.
    *
@@ -411,9 +536,10 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
    */
   override destroy(): void {
     // Remove event listeners
-    this.scene.input.off('pointerdown', this.onPointerDown);
-    this.scene.input.off('pointermove', this.onPointerMove);
-    this.scene.input.off('pointerup', this.onPointerUp);
+    this.scene.input.off('pointerdown', this.onPointerDown, this);
+    this.scene.input.off('pointermove', this.onPointerMove, this);
+    this.scene.input.off('pointerup', this.onPointerUp, this);
+    this.scene.input.off('pointercancel', this.onPointerCancel, this);
 
     // Removes all objects from the container
     this.removeAll(true);

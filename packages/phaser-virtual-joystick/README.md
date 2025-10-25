@@ -1,971 +1,396 @@
-<p align="center">
-  <img src="data/image.png" alt="logo" style="max-width: 300px">
-</p>
+# 🎮 Phaser Virtual Joystick
 
-[![NPM Version](https://img.shields.io/npm/v/phaser-virtual-joystick)](https://www.npmjs.com/package/phaser-virtual-joystick)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://badge.fury.io/js/phaser-virtual-joystick.svg)](https://badge.fury.io/js/phaser-virtual-joystick)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# Phaser Hooks (like "use" hooks in React)
+A **highly customizable** and **strongly typed** virtual joystick component for Phaser.js games, inspired by the smooth and intuitive controls from **Brawl Stars**. Perfect for mobile games and touch-based interactions.
 
-A comprehensive state management library for Phaser games with React-like hooks pattern.
+## ✨ Features
 
-## Why phaser-hooks?
+- 🎯 **Brawl Stars-inspired behavior** - Smooth joystick following and intuitive touch controls
+- 🔧 **Fully customizable** - Colors, sizes, transparency, and visual styling
+- 📱 **Touch-optimized** - Designed specifically for mobile and touch devices
+- 🎮 **Smart bounds detection** - Configurable activation areas
+- ⚡ **High performance** - Lightweight and optimized for games
+- 🛡️ **Strongly typed** - Full TypeScript support with comprehensive type definitions
+- 🎨 **Visual feedback** - Dead zone, base area, and stick with customizable styling
+- 🔄 **Event-driven** - Listen to move, press, and release events
+- 🚫 **Button conflict prevention** - Automatically avoids interference with UI buttons
 
-Phaser already gives you two ways of storing state:
-
-- `registry` → global state across the game
-- `data` → local state inside a scene or game object
-
-They work, but the API is a bit… verbose:
-
-```ts
-// Using registry (global)
-this.game.registry.set('volume', 0.5); // too boring
-const volume = this.game.registry.get('volume');
-this.game.registry.events.on('changedata-volume', (game, value) => {
-  console.log('Volume changed to', value);
-});
-
-// Using scene.data (local)
-this.data.set('score', 42); // too boring too
-const score = this.data.get('score');
-
-const onChangeFn = (scene, value) => {
-  console.log('Score updated to', value);
-};
-this.data.events.on('changedata-score', onChangeFn); // If you pass an anonymous function, you cannot unsubscribe :(
-
-// when move to another scene, you must unsubscribe. Boring and easy to forget
-this.data.events.off('changeset-score', onChangeFn);
-```
-
-With _phaser-hooks_, you get a simple, React-like API:
-
-```ts
-// Global state
-const volume = withGlobalState(scene, 'volume', 0.5); // woow! awesome
-volume.get(); // 0.5
-volume.set(0.8); // updates value
-
-const unsubscribe = volume.on('change', v =>
-  console.log('Volume changed →', v)
-); // Nice callback in event <3 - Return the easy unsubscribe function
-
-// when move to another scene, just call :)
-unsubscribe();
-
-// Persisted state (localStorage / sessionStorage)
-const score = withPersistState(scene, 'score', 0, { storage: 'local' }); // Wow! Saving in localStorage
-score.set(100); // Update localStorage!! Wow! I love this lib <3
-```
-
-## Installation
+## 📦 Installation
 
 ```bash
-npm install phaser-hooks
+npm install phaser-virtual-joystick
 # or
-pnpm add phaser-hooks
+yarn add phaser-virtual-joystick
 # or
-yarn add phaser-hooks
+pnpm add phaser-virtual-joystick
 ```
 
-## Why "with" instead of "use"?
+## 📺 Demos
 
-While React hooks traditionally use the "use" prefix (e.g., useState, useEffect), this library intentionally uses "with" to avoid linting issues. Many linting configurations, including ESLint's built-in hooks rules, expect functions starting with "use" to be used only within React components and in .jsx/.tsx files.
+Practical demonstrations of the joystick usage in different modes:
 
-Since this library is designed to work with Phaser games, which typically use plain TypeScript/JavaScript files (.ts/.js), using the "with" prefix helps avoid false positives from linters while maintaining a clear and consistent naming convention that indicates the hook-like pattern these functions follow.
+- <img src="./data/miner-rush.gif" alt="Simple button controls" style="vertical-align:middle;">  
+  <sup>➡️ Shows the joystick being used for simple controls, like a button press.</sup>
 
-This approach allows you to use these state management utilities in your Phaser games without having to modify your linting configuration or suppress warnings.
+- <img src="./data/robot-vacuum.gif" alt="Xbox-like axes" style="vertical-align:middle;">  
+  <sup>🎮 Demonstrates the joystick working as analog axes, similar to an Xbox thumbstick.</sup>
 
-## Hook API Reference
 
-All hooks return a `HookState` object with the following methods:
-
-| Method                     | Description                                          | Parameters                                | Returns                             |
-| -------------------------- | ---------------------------------------------------- | ----------------------------------------- | ----------------------------------- |
-| `get()`                    | Gets the current state value                         | None                                      | `T` - Current state value           |
-| `set(value)`               | Sets a new state value and triggers change listeners | `value: T \| ((currentState: T) => T)` - New value to set or updater function | `void`                              |
-| `patch(value)`             | Patches object state with partial updates            | `value: Partial<T> \| ((currentState: T) => Partial<T>)` - Partial object or updater function | `void`                              |
-| `on('change', callback)`   | Registers a callback for state changes               | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
-| `once('change', callback)` | Registers a callback that fires only once            | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
-| `off('change', callback)`  | Removes an event listener                            | `event: 'change'`, `callback: () => void` | `void`                              |
-| `clearListeners()`          | Removes all event listeners for this state           | None                                      | `void`                              |
-
-### State Updater Functions
-
-The `set()` method supports both direct values and updater functions, similar to React's `useState`:
+## 🚀 Quick Start
 
 ```typescript
-// Direct value assignment
-playerState.set({ hp: 100, level: 5 });
+import { VirtualJoystick } from 'phaser-virtual-joystick';
 
-// Using updater function (receives current state, returns new state)
-playerState.set((currentState) => ({ 
-  ...currentState, 
-  level: currentState.level + 1 
-}));
+class GameScene extends Phaser.Scene {
+    create() {
+        // Create a virtual joystick with default settings
+        const joystick = new VirtualJoystick({
+            scene: this
+        });
 
-// Equivalent to:
-const newState = { ...playerState.get(), level: playerState.get().level + 1 };
-playerState.set(newState);
-```
+        // ⚠️ IMPORTANT: Don't forget to add the joystick to the scene!
+        this.add.existing(joystick);
 
-**Benefits of updater functions:**
-- ✅ **Immutable updates**: Always work with the latest state
-- ✅ **Race condition safe**: No risk of using stale state
-- ✅ **Cleaner code**: No need to manually get current state
-- ✅ **Functional approach**: Encourages immutable state patterns
+        // Listen to joystick events
+        joystick.on('move', (data) => {
+            console.log(`Joystick position: ${data.x}, ${data.y}`);
+            // Move your character based on joystick input
+            this.moveCharacter(data.x, data.y);
+        });
 
-**Example with complex state updates:**
+        joystick.on('press', () => {
+            console.log('Joystick pressed');
+        });
 
-```typescript
-// Instead of this verbose approach:
-const currentPlayer = playerState.get();
-playerState.set({
-  ...currentPlayer,
-  hp: Math.min(currentPlayer.hp + 20, currentPlayer.maxHp),
-  level: currentPlayer.exp >= 100 ? currentPlayer.level + 1 : currentPlayer.level,
-  exp: currentPlayer.exp >= 100 ? 0 : currentPlayer.exp + 10
-});
-
-// Use this clean updater function:
-playerState.set((player) => ({
-  ...player,
-  hp: Math.min(player.hp + 20, player.maxHp),
-  level: player.exp >= 100 ? player.level + 1 : player.level,
-  exp: player.exp >= 100 ? 0 : player.exp + 10
-}));
-```
-
-### State Patching
-
-The `patch()` method allows you to update only specific properties of an object state, similar to React's state updates:
-
-```typescript
-// Direct partial object patching
-playerState.patch({ life: 90 });
-// Only updates 'life', preserves other properties
-
-// Using updater function for patching
-playerState.patch((currentState) => ({
-  life: currentState.life - 10,
-  level: currentState.level + 1
-}));
-// Updates multiple properties based on current state
-```
-
-**Benefits of patching:**
-- ✅ **Partial updates**: Only change the properties you need
-- ✅ **Preserves other data**: Unchanged properties remain untouched
-- ✅ **Deep merging**: Works with nested objects using lodash.merge
-- ✅ **Type safety**: TypeScript ensures you only patch valid properties
-- ✅ **Performance**: More efficient than full object replacement
-
-**Example with complex state updates:**
-
-```typescript
-// Instead of this verbose approach:
-const currentPlayer = playerState.get();
-playerState.set({
-  ...currentPlayer,
-  stats: {
-    ...currentPlayer.stats,
-    hp: currentPlayer.stats.hp - 20,
-    mp: currentPlayer.stats.mp + 10
-  },
-  position: {
-    ...currentPlayer.position,
-    x: currentPlayer.position.x + 5
-  }
-});
-
-// Use this clean patch approach:
-playerState.patch({
-  stats: {
-    hp: playerState.get().stats.hp - 20,
-    mp: playerState.get().stats.mp + 10
-  },
-  position: {
-    x: playerState.get().position.x + 5
-  }
-});
-
-// Or even cleaner with updater function:
-playerState.patch((player) => ({
-  stats: {
-    hp: player.stats.hp - 20,
-    mp: player.stats.mp + 10
-  },
-  position: {
-    x: player.position.x + 5
-  }
-}));
-```
-
-**Deep object patching:**
-
-```typescript
-// Patch deeply nested properties
-gameState.patch({
-  player: {
-    character: {
-      stats: {
-        primary: {
-          strength: 15
-        }
-      }
+        joystick.on('release', () => {
+            console.log('Joystick released');
+        });
     }
-  }
-});
-// Only updates the strength value, preserves all other nested properties
-```
 
-**Array property patching:**
-
-```typescript
-// Update array properties
-inventoryState.patch({
-  items: [...inventoryState.get().items, 'new-item']
-});
-
-// Or with updater function
-inventoryState.patch((inventory) => ({
-  items: [...inventory.items, 'new-item']
-}));
-```
-
-### Special Hook Methods
-
-Some hooks have additional methods beyond the standard `HookState` interface:
-
-#### `withUndoableState` Additional Methods:
-
-| Method           | Description                   | Parameters | Returns                    |
-| ---------------- | ----------------------------- | ---------- | -------------------------- |
-| `undo()`         | Reverts to the previous state | None       | `boolean` - Success status |
-| `redo()`         | Advances to the next state    | None       | `boolean` - Success status |
-| `canUndo()`      | Checks if undo is available   | None       | `boolean`                  |
-| `canRedo()`      | Checks if redo is available   | None       | `boolean`                  |
-| `clearHistory()` | Clears the undo/redo history  | None       | `void`                     |
-
-## Available Hooks
-
-### Core Hooks
-
-#### `withLocalState`
-
-Scene-specific state management that gets cleaned up when the scene is destroyed.
-
-```typescript
-type PlayerData = {
-  hp: number;
-  level: number;
-  exp: number;
-};
-
-const playerState = withLocalState<PlayerData>(scene, 'player', {
-  hp: 100,
-  level: 1,
-  exp: 0,
-});
-```
-
-#### `withGlobalState`
-
-Application-wide state that persists across all scenes.
-
-```typescript
-type GameSettings = {
-  soundVolume: number;
-  musicEnabled: true;
-};
-
-const settingsState = withGlobalState<GameSettings>(scene, 'settings', {
-  soundVolume: 0.8,
-  musicEnabled: true,
-});
-```
-
-### Enhanced Hooks
-
-#### `withPersistentState`
-
-State with automatic localStorage persistence.
-
-```typescript
-type UserSettings = {
-  volume: number;
-  difficulty: 'easy' | 'normal' | 'hard';
-};
-
-const persistentSettings = withPersistentState<UserSettings>(
-  'settings',
-  {
-    volume: 0.8,
-    difficulty: 'normal',
-  },
-  'local' // If you want only in sessionStorage, you can set 'session'
-);
-```
-
-#### `withComputedState`
-
-Derived state that automatically updates when source state changes.
-
-```typescript
-const healthPercentage = withComputedState(
-  scene,
-  'healthPercent',
-  playerState,
-  player => (player.hp / player.maxHp) * 100
-);
-```
-
-#### `withUndoableState`
-
-State with undo/redo functionality.
-
-```typescript
-const undoableText = withUndoableState<string>(scene, 'text', 'initial', 10);
-
-undoableText.set('first change');
-undoableText.set('second change');
-undoableText.undo(); // Back to 'first change'
-undoableText.redo(); // Forward to 'second change'
-```
-
-#### `withDebouncedState`
-
-State with debounced updates to prevent rapid successive changes.
-
-```typescript
-const debouncedSearch = withDebouncedState<string>(scene, 'search', '', 300);
-
-// These rapid calls will be debounced
-debouncedSearch.set('a');
-debouncedSearch.set('ab');
-debouncedSearch.set('abc'); // Only this final value will be set after 300ms
-```
-
-### Utilities
-
-#### `validators`
-
-Pre-built validation functions for common patterns.
-
-```typescript
-import { validators } from 'phaser-hooks';
-
-// Number range validation (0-1000)
-const scoreState = withGlobalState<number>(scene, 'score', 0, {
-  validator: validators.numberRange(0, 1000),
-});
-
-// Non-empty string validation
-const nameState = withGlobalState<string>(scene, 'name', '', {
-  validator: validators.nonEmptyString,
-});
-
-// Array length validation (2-4 items)
-const inventoryState = withLocalState<string[]>(scene, 'inventory', [], {
-  validator: validators.arrayLength(2, 4),
-});
-
-// One of allowed values validation
-const difficultyState = withGlobalState<'easy' | 'normal' | 'hard'>(
-  scene,
-  'difficulty',
-  'normal',
-  {
-    validator: validators.oneOf(['easy', 'normal', 'hard']),
-  }
-);
-
-// Custom validator example
-const healthState = withLocalState<number>(scene, 'health', 100, {
-  validator: value => {
-    const health = value as number;
-    if (health < 0) return 'Health cannot be negative';
-    if (health > 100) return 'Health cannot exceed 100';
-    return true; // Valid
-  },
-});
-```
-
-#### `batchStateUpdates`
-
-Utility for batching multiple state updates.
-
-```typescript
-batchStateUpdates(() => {
-  playerState.set({ ...playerState.get(), hp: 90 });
-  inventoryState.set([...inventoryState.get(), 'new-item']);
-  scoreState.set(scoreState.get() + 100);
-});
-```
-
-## Basic Usage Example
-
-```typescript
-import { withLocalState, withGlobalState } from 'phaser-hooks';
-
-export class GameScene extends Phaser.Scene {
-  create() {
-    // Local state - specific to this scene
-    const playerState = withLocalState<{ hp: number; mp: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        mp: 50,
-      }
-    );
-
-    // Global state - persists across scenes
-    const gameState = withGlobalState<{ score: number; level: number }>(
-      'game',
-      {
-        score: 0,
-        level: 1,
-      }
-    );
-
-    // Listen to changes
-    const ubsubscribe = playerState.on('change', (newPlayer, oldPlayer) => {
-      console.log('Player health changed:', newPlayer.hp);
-    });
-
-    // Update state - using patch method (recommended for partial updates)
-    playerState.patch({ hp: playerState.get().hp - 10 });
-
-    // Alternative: using updater function with set
-    // playerState.set((currentPlayer) => ({
-    //   ...currentPlayer,
-    //   hp: currentPlayer.hp - 10,
-    // }));
-
-    // Alternative: direct value assignment
-    // playerState.set({
-    //   ...playerState.get(),
-    //   hp: playerState.get().hp - 10,
-    // });
-  }
-}
-```
-
-## Advanced Example
-
-```typescript
-import {
-  withPersistentState,
-  withComputedState,
-  withUndoableState,
-  validators,
-} from 'phaser-hooks';
-
-export class AdvancedGameScene extends Phaser.Scene {
-  create() {
-    // Persistent settings
-    const settings = withPersistentState<GameSettings>('settings', {
-      soundVolume: 0.8,
-      musicVolume: 0.6,
-      difficulty: 'normal',
-    });
-
-    // Player state with validation
-    const player = withLocalState<PlayerData>(
-      this,
-      'player',
-      {
-        hp: 100,
-        maxHp: 100,
-        level: 1,
-      },
-      {
-        validator: validators.oneOf(['easy', 'normal', 'hard']),
-      }
-    );
-
-    // Computed health percentage
-    const healthPercent = withComputedState(this, 'healthPercent', player, p =>
-      Math.round((p.hp / p.maxHp) * 100)
-    );
-
-    // Undoable action system
-    const actionHistory = withUndoableState<string>(this, 'actions', 'start');
-
-    // Use the states
-    console.log('Health:', healthPercent.get() + '%');
-
-    if (healthPercent.get() < 20) {
-      console.log('Low health warning!');
+    moveCharacter(x: number, y: number) {
+        // Your character movement logic here
+        const speed = 200;
+        this.character?.setVelocity(x * speed, y * speed);
     }
-  }
 }
 ```
 
-### Composing Hooks
+## ⚠️ Important Disclaimer
 
-You can compose your own hooks using other with\* hooks — similar to how custom React hooks are built. This is a powerful way to isolate logic, reuse behavior, and keep your scenes clean and focused.
+**🚨 DON'T FORGET TO ADD THE JOYSTICK TO THE SCENE!**
 
-Example: Extracting a withPlayerEnergy hook from withPlayerState
+Always remember to call `this.add.existing(joystick)` or `scene.add.existing(joystick)` after creating the joystick. The joystick won't work without being added to the scene!
 
-Imagine you have a local player state like this:
+```typescript
+// ✅ Correct
+const joystick = new VirtualJoystick({ scene: this });
+this.add.existing(joystick); // This is essential!
 
-```ts
-interface PlayerAttributes {
-  energy: number;
-  stamina: number;
-  strength: number;
-  agility: number;
-}
-
-const playerState = withLocalState<PlayerAttributes>(scene, 'player', {
-  energy: 100,
-  stamina: 80,
-  strength: 50,
-  agility: 40,
-});
+// ❌ Wrong - joystick won't work
+const joystick = new VirtualJoystick({ scene: this });
+// Missing: this.add.existing(joystick);
 ```
 
-You can now create a custom hook focused only on energy:
+## 🎛️ Configuration Options
 
-```ts
-function withPlayerEnergy(scene: Phaser.Scene) {
-  const player = withLocalState<PlayerAttributes>(scene, 'player', {
-    energy: 100,
-    stamina: 80,
-    strength: 50,
-    agility: 40,
-  });
+The `VirtualJoystick` accepts a configuration object with the following options:
 
-  return {
-    ...player,
+### Basic Configuration
+
+```typescript
+interface VirtualJoystickParams {
+  scene: Phaser.Scene;                    // Required: The Phaser scene
+  deadZone?: Partial<StyleConfig>;        // Optional: Dead zone styling
+  baseArea?: Partial<StyleConfig>;        // Optional: Base area styling
+  stick?: Partial<StyleConfig>;           // Optional: Stick styling
+  stickIcon?: Phaser.GameObjects.Text;    // Optional: Icon on the stick
+  bounds?: {                              // Optional: Activation area
+    topLeft: { x: number; y: number };
+    bottomRight: { x: number; y: number };
   };
+  enableWithoutTouch?: boolean;           // Optional: Enable on non-touch devices
 }
 ```
 
-Usage in a scene
+### Style Configuration
 
-```ts
-const energy = withPlayerEnergy(this);
+Each visual component (deadZone, baseArea, stick) can be customized:
 
-console.log('Current energy:', energy.get());
+```typescript
+interface StyleConfig {
+  alpha: number;          // Transparency (0-1)
+  strokeColor: number;    // Stroke color (hex)
+  strokeAlpha: number;    // Stroke transparency (0-1)
+  strokeWidth: number;    // Stroke width in pixels
+  radius: number;         // Circle radius in pixels
+  fillColor: number;      // Fill color (hex)
+}
+```
 
-// Using updater function (recommended)
-energy.set((currentEnergy) => currentEnergy - 10);
+## 🎨 Customization Examples
 
-// Alternative: direct value
-// energy.set(energy.get() - 10);
+### Custom Colors and Sizes
 
-energy.on('change', () => {
-  if (energy.get() <= 0) {
-    console.warn('You are out of energy!');
-  }
+```typescript
+const joystick = new VirtualJoystick({
+    scene: this,
+    deadZone: {
+        radius: 20,
+        fillColor: 0xFF6B6B,    // Red
+        alpha: 0.3,
+        strokeColor: 0xFF5252,
+        strokeWidth: 3
+    },
+    baseArea: {
+        radius: 80,
+        fillColor: 0x4ECDC4,    // Teal
+        alpha: 0.1,
+        strokeColor: 0x26A69A,
+        strokeWidth: 4
+    },
+    stick: {
+        radius: 35,
+        fillColor: 0xFFE66D,    // Yellow
+        alpha: 0.9,
+        strokeColor: 0xFFD54F,
+        strokeWidth: 2
+    }
 });
 ```
 
-## Unsubscribe Events
-
-When you subscribe to state changes using `.on('change', callback)`, it's crucial to properly unsubscribe to prevent memory leaks and unexpected behavior. Phaser Hooks provides two ways for unsubscribing from events.
-
-### Method 1: Using the Return Value from `.on('change')`
-
-The `.on('change', callback)` method returns an unsubscribe function that you can call to remove the listener:
+### Custom Activation Area
 
 ```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', {
-      hp: 100,
-    });
-
-    // Subscribe to changes and get unsubscribe function
-    const unsubscribe = playerState.on('change', (newPlayer, oldPlayer) => {
-      console.log('Player health changed:', newPlayer.hp);
-    });
-
-    this.add
-      .text(centerX, centerY, 'Go to another scene')
-      .setInteractive()
-      .on('pointerdown', () => {
-        // Later, unsubscribe when needed
-        unsubscribe();
-
-        // To switch to another scene in Phaser, use:
-        this.scene.start('OtherSceneKey');
-      });
-  }
-}
+const joystick = new VirtualJoystick({
+    scene: this,
+    bounds: {
+        topLeft: { x: 0, y: 100 },
+        bottomRight: { x: 400, y: 600 }
+    }
+});
 ```
 
-### Method 2: Using `.off('change', callback)`
-
-You can also unsubscribe by passing the same callback function to `.off('change', callback)`:
+### With Custom Icon
 
 ```typescript
-export class GameScene extends Phaser.Scene {
-  private healthCallback?: (newPlayer: any, oldPlayer: any) => void;
+const stickIcon = this.add.text(0, 0, '🎮', {
+    fontSize: '24px',
+    color: '#ffffff'
+});
 
-  create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', {
-      hp: 100,
-    });
-
-    // Define callback function
-    this.healthCallback = (newPlayer, oldPlayer) => {
-      console.log('Player health changed:', newPlayer.hp);
-    };
-
-    // Subscribe to changes
-    playerState.on('change', this.healthCallback);
-
-    this.add
-      .text(centerX, centerY, 'Go to another scene')
-      .setInteractive()
-      .on('pointerdown', () => {
-        // Later, unsubscribe when needed
-        playerState.off('change', this.healthCallback);
-
-        // To switch to another scene in Phaser, use:
-        this.scene.start('OtherSceneKey');
-      });
-  }
-}
+const joystick = new VirtualJoystick({
+    scene: this,
+    stickIcon: stickIcon
+});
 ```
 
-> **Note:** When using `.off`, you must pass the exact same function instance that was used with `.on`. This means you cannot use an inline closure or anonymous function—use a named function or store the callback reference to unsubscribe properly.
-
-### Best Practices for Scene Cleanup
-
-**⚠️ IMPORTANT DISCLAIMER**: If you don't clean up event listeners when leaving a scene, you may encounter:
-
-- Memory leaks
-- Unexpected behavior when returning to the scene
-- Callbacks firing on destroyed or inactive scenes
-- Performance issues over time
-
-Always unsubscribe from events when transitioning between scenes:
+### Enable on Desktop (for testing)
 
 ```typescript
-export class GameScene extends Phaser.Scene {
-  private unsubscribeFunctions: (() => void)[] = [];
-
-  create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', {
-      hp: 100,
-    });
-    const scoreState = withGlobalState<number>(this, 'score', 0);
-
-    // Store unsubscribe functions
-    this.unsubscribeFunctions.push(
-      playerState.on('change', newPlayer => {
-        console.log('Player updated:', newPlayer);
-      })
-    );
-
-    this.unsubscribeFunctions.push(
-      scoreState.on('change', newScore => {
-        console.log('Score updated:', newScore);
-      })
-    );
-  }
-
-  // Clean up when scene is destroyed or when transitioning
-  shutdown() {
-    // Unsubscribe from all events
-    this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
-    this.unsubscribeFunctions = [];
-  }
-
-  // Or clean up before transitioning to another scene
-  goToNextScene() {
-    // Clean up before changing scenes
-    this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
-    this.unsubscribeFunctions = [];
-
-    // Then transition
-    this.scene.start('NextScene');
-  }
-}
+const joystick = new VirtualJoystick({
+    scene: this,
+    enableWithoutTouch: true  // Allows mouse interaction on desktop
+});
 ```
 
-### Using `clearListeners()` for Easy Cleanup
+## 📱 Default Behavior
 
-For easier cleanup, you can use the `clearListeners()` method to remove all event listeners at once:
+- **Activation Area**: Left half of the screen (with 20% top padding)
+- **Visual Style**: Blue-themed with subtle transparency
+- **Dead Zone**: 16px radius - no input registered in this area
+- **Base Area**: 64px radius - maximum joystick movement range
+- **Stick**: 40px radius - follows your finger with smooth following behavior
+- **Touch Only**: Only works on touch devices by default
 
+## 🎮 Events
+
+The joystick emits three types of events:
+
+### Move Event
 ```typescript
-export class GameScene extends Phaser.Scene {
-  private playerState: HookState<{ hp: number }>;
-  private scoreState: HookState<number>;
-
-  create() {
-    this.playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
-    this.scoreState = withGlobalState<number>(this, 'score', 0);
-
-    // Add listeners
-    this.playerState.on('change', (newPlayer) => {
-      console.log('Player updated:', newPlayer);
-    });
-
-    this.scoreState.on('change', (newScore) => {
-      console.log('Score updated:', newScore);
-    });
-  }
-
-  shutdown() {
-    // Clear all listeners at once - much easier!
-    this.playerState.clearListeners();
-    this.scoreState.clearListeners();
-  }
-}
+joystick.on('move', (data) => {
+    // data.x: -1 to 1 (left to right)
+    // data.y: -1 to 1 (up to down)
+    console.log(`Position: ${data.x}, ${data.y}`);
+});
 ```
 
-#### Important Notes about `clearListeners()`:
-
-- **`withLocalState`**: Automatically cleans up when the scene is destroyed, but you can still use `clearListeners()` for manual cleanup
-- **`withGlobalState`**: **Requires manual cleanup** since global state persists across scenes. Always call `clearListeners()` when the scene is destroyed:
-
+### Press Event
 ```typescript
-export class GameScene extends Phaser.Scene {
-  private globalState: HookState<GameSettings>;
-
-  create() {
-    this.globalState = withGlobalState<GameSettings>(this, 'settings', defaultSettings);
-    
-    this.globalState.on('change', (newSettings) => {
-      console.log('Settings updated:', newSettings);
-    });
-
-    // IMPORTANT: Clean up global state listeners when scene is destroyed
-    this.events.once('destroy', () => {
-      this.globalState.clearListeners();
-    });
-  }
-}
+joystick.on('press', () => {
+    console.log('Joystick activated');
+});
 ```
 
-### Multiple Subscriptions Example
-
-You can have multiple listeners for the same state:
-
+### Release Event
 ```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const playerState = withLocalState<{ hp: number; level: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        level: 1,
-      }
-    );
-
-    // Multiple listeners for the same state
-    const unsubscribeHealth = playerState.on('change', newPlayer => {
-      console.log('Health changed:', newPlayer.hp);
-    });
-
-    const unsubscribeLevel = playerState.on('change', newPlayer => {
-      console.log('Level changed:', newPlayer.level);
-    });
-
-    // Unsubscribe specific listeners
-    unsubscribeHealth(); // Only removes health listener
-    // unsubscribeLevel still active
-  }
-}
+joystick.on('release', () => {
+    console.log('Joystick deactivated');
+});
 ```
 
-### Using `.once()` for One-Time Events
+## 🎯 Brawl Stars-Inspired Features
 
-The `.once()` method registers a callback that will only fire once, then automatically unsubscribes:
+This joystick replicates the smooth and intuitive behavior found in Brawl Stars:
 
-```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const playerState = withLocalState<{ hp: number; level: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        level: 1,
-      }
-    );
+- **Smart Following**: When you drag too far, the joystick smoothly follows your finger
+- **Dead Zone**: Small center area where no input is registered (like Brawl Stars)
+- **Visual Feedback**: Clear visual indication of joystick state
+- **Touch Optimization**: Designed for mobile gaming with proper touch handling
+- **Button Conflict Prevention**: Automatically avoids interference with UI elements
 
-    // One-time listener - fires only once then auto-unsubscribes
-    const unsubscribeOnce = playerState.once('change', newPlayer => {
-      console.log('First level up detected!', newPlayer.level);
-      // This callback will only run once, even if the state changes multiple times
-    });
+## 🔧 Advanced Usage
 
-    // You can still manually unsubscribe if needed before it fires
-    // unsubscribeOnce();
-
-    // Simulate level up
-    playerState.set({ hp: 100, level: 2 }); // Fires the once callback
-    playerState.set({ hp: 100, level: 3 }); // Won't fire the once callback again
-  }
-}
-```
-
-### Validation Error Handling
-
-When using validators, invalid values will throw errors. Handle them appropriately:
+### Character Movement Example
 
 ```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const healthState = withLocalState<number>(this, 'health', 100, {
-      validator: validators.numberRange(0, 100),
-    });
+class GameScene extends Phaser.Scene {
+    private character?: Phaser.Physics.Arcade.Sprite;
+    private joystick?: VirtualJoystick;
 
-    try {
-      healthState.set(150); // This will throw an error: "Value must be between 0 and 100"
-    } catch (error) {
-      console.error('Invalid health value:', error.message);
-      // Handle the error appropriately
+    create() {
+        // Create character
+        this.character = this.physics.add.sprite(400, 300, 'character');
+        this.character.setCollideWorldBounds(true);
+
+        // Create joystick
+        this.joystick = new VirtualJoystick({
+            scene: this,
+            bounds: {
+                topLeft: { x: 0, y: 0 },
+                bottomRight: { x: this.cameras.main.width / 2, y: this.cameras.main.height }
+            }
+        });
+        this.add.existing(this.joystick);
+
+        // Handle joystick input
+        this.joystick.on('move', (data) => {
+            const speed = 200;
+            this.character?.setVelocity(
+                data.x * speed,
+                data.y * speed
+            );
+        });
+
+        this.joystick.on('release', () => {
+            this.character?.setVelocity(0, 0);
+        });
     }
 
-    // Valid value
-    healthState.set(75); // This works fine
-  }
+    update() {
+        // Update joystick (required for smooth following behavior)
+        this.joystick?.update();
+    }
 }
 ```
 
-### Why use this pattern?
-
-✅ Keeps your scene code focused on intent (e.g., energy.get()) rather than structure (player.get().energy)
-
-✅ Allows centralized validation, side effects, or formatting for specific state slices
-
-✅ Makes it easier to refactor or share logic across scenes and systems
-
-You can extend this idea to compose computed hooks, persistent hooks, undoable hooks, and more — everything works with the same API.
-
-## TypeScript Support
-
-All hooks are fully typed and provide excellent TypeScript support:
+### Multiple Joysticks
 
 ```typescript
-interface PlayerData {
-  hp: number;
-  maxHp: number;
-  level: number;
-  inventory: string[];
-}
-
-const playerState = withLocalState<PlayerData>(scene, 'player', {
-  hp: 100,
-  maxHp: 100,
-  level: 1,
-  inventory: [],
+// Left joystick for movement
+const moveJoystick = new VirtualJoystick({
+    scene: this,
+    bounds: {
+        topLeft: { x: 0, y: 0 },
+        bottomRight: { x: this.cameras.main.width / 2, y: this.cameras.main.height }
+    }
 });
 
-// TypeScript knows the exact type
-const currentPlayer: PlayerData = playerState.get();
+// Right joystick for aiming
+const aimJoystick = new VirtualJoystick({
+    scene: this,
+    bounds: {
+        topLeft: { x: this.cameras.main.width / 2, y: 0 },
+        bottomRight: { x: this.cameras.main.width, y: this.cameras.main.height }
+    },
+    stick: {
+        fillColor: 0xFF6B6B,  // Red for aiming
+        radius: 30
+    }
+});
+
+this.add.existing(moveJoystick);
+this.add.existing(aimJoystick);
 ```
 
-## Debug Mode / Dev tool
+## 🛠️ TypeScript Support
 
-Phaser Hooks includes a built-in debug mode that provides detailed logging for state operations. This is extremely useful for development and troubleshooting state management issues.
-
-### How to Enable Debug Mode
-
-To enable debug mode, simply pass `{ debug: true }` in the options parameter when creating any hook:
+This library is built with TypeScript and provides full type definitions:
 
 ```typescript
-import { withLocalState } from 'phaser-hooks';
+import { VirtualJoystick, VirtualJoystickParams, StyleConfig } from 'phaser-virtual-joystick';
 
-export class GameScene extends Phaser.Scene {
-  create() {
-    // Enable debug mode for this state
-    const playerState = withLocalState<{ hp: number; level: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        level: 1,
-      },
-      { debug: true } // Enable debug logging
-    );
+// All parameters are strongly typed
+const config: VirtualJoystickParams = {
+    scene: this,
+    deadZone: {
+        radius: 20,
+        fillColor: 0xFF6B6B
+    }
+};
 
-    // All operations will now be logged to the console
-    playerState.set({ hp: 90, level: 2 });
-    const currentPlayer = playerState.get();
-
-    // Listen to changes with debug info
-    playerState.on('change', (newPlayer, oldPlayer) => {
-      console.log('Player state changed:', newPlayer);
-    });
-  }
-}
+const joystick = new VirtualJoystick(config);
 ```
 
-### What Debug Mode Shows
+## 🎨 Styling Tips
 
-When debug mode is enabled, you'll see detailed logs in your browser's developer console for:
-
-- **State Initialization**: When a state is first created
-- **State Updates**: When values are set with old and new values
-- **State Retrieval**: When values are accessed
-- **Event Listeners**: When listeners are added, removed, or cleared
-- **Validation**: When validators are applied and their results
-- **Errors**: Detailed error information with context
-
-### Viewing Debug Logs
-
-Debug logs appear in your browser's developer console. To view them:
-
-1. Open your browser's Developer Tools (F12 or right-click → Inspect)
-2. Go to the **Console** tab
-3. Run your Phaser game
-4. Look for logs prefixed with `[phaser-hooks]`
-
-![Debug Console Screenshot](data/debug-mode.png)
-*Screenshot showing debug logs in browser console*
-
-### Debug Log Format
-
-Debug logs follow a consistent format with timestamps and structured information:
-
-```
-[phaser-hooks] 2024-01-15 10:30:45 [INIT] player - Initializing state with value: {hp: 100, level: 1}
-[phaser-hooks] 2024-01-15 10:30:46 [SET] player - Updating state: {hp: 90, level: 2} (was: {hp: 100, level: 1})
-[phaser-hooks] 2024-01-15 10:30:47 [GET] player - Retrieved state: {hp: 90, level: 2}
-[phaser-hooks] 2024-01-15 10:30:48 [EVENT] player - Added change listener
-```
-
-### Best Practices for Debug Mode
-
-- **Development Only**: Only enable debug mode during development. Remove `{ debug: true }` in production builds
-- **Selective Debugging**: Enable debug mode only for the specific states you're troubleshooting
-- **Performance**: Debug mode adds overhead, so avoid enabling it for all states in production
-- **Console Filtering**: Use browser console filters to focus on specific log types
-
-### Example: Debugging State Issues
+### Color Schemes
 
 ```typescript
-export class DebugScene extends Phaser.Scene {
-  create() {
-    // Enable debug for problematic state
-    const inventoryState = withLocalState<string[]>(
-      this,
-      'inventory',
-      [],
-      { debug: true }
-    );
+// Neon theme
+const neonJoystick = new VirtualJoystick({
+    scene: this,
+    deadZone: { fillColor: 0x00FF00, strokeColor: 0x00CC00 },
+    baseArea: { fillColor: 0x00FF00, alpha: 0.1 },
+    stick: { fillColor: 0x00FF00, strokeColor: 0x00CC00 }
+});
 
-    // Debug logs will show exactly what's happening
-    inventoryState.set(['sword', 'potion']);
-    inventoryState.set([...inventoryState.get(), 'shield']);
-    
-    // Check console for detailed operation logs
-  }
-}
+// Dark theme
+const darkJoystick = new VirtualJoystick({
+    scene: this,
+    deadZone: { fillColor: 0x333333, strokeColor: 0x666666 },
+    baseArea: { fillColor: 0x333333, alpha: 0.2 },
+    stick: { fillColor: 0x666666, strokeColor: 0x999999 }
+});
+
+// Minimal theme
+const minimalJoystick = new VirtualJoystick({
+    scene: this,
+    deadZone: { alpha: 0 },
+    baseArea: { alpha: 0.05, strokeWidth: 1 },
+    stick: { fillColor: 0xFFFFFF, strokeWidth: 1 }
+});
 ```
 
-## License
+## 🐛 Troubleshooting
 
-MIT
+### Joystick not appearing
+- Make sure you called `this.add.existing(joystick)`
+- Check if you're on a touch device (or set `enableWithoutTouch: true`)
+
+### Joystick not responding
+- Verify the touch is within the bounds area
+- Check if there are interactive objects blocking the touch
+
+### Performance issues
+- Make sure to call `joystick.update()` in your scene's update method
+- Consider reducing the update frequency if needed
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📞 Support
+
+If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/renatocassino/phaser-toolkit/issues).
+
+---
+
+Made with ❤️ by [CassinoDev](https://github.com/renatocassino) - Inspired by the amazing controls in Brawl Stars! 🎮

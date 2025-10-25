@@ -41,6 +41,20 @@ Practical demonstrations of the joystick usage in different modes:
   <sup>🎮 Demonstrates the joystick working as analog axes, similar to an Xbox thumbstick.</sup>
 
 
+## Useful links
+Here are some useful links:
+
+- [Documentation](https://toolkit.cassino.dev/phaser-virtual-joystick/) — Official documentation.
+
+- [Demo 1](https://stackblitz.com/edit/vitejs-vite-kj9fhdkw?ctl=1&embed=1&file=src%2Fmain.ts) — Basic usage example
+- [Demo 2](https://stackblitz.com/edit/vitejs-vite-avrduhrh?embed=1&file=index.html) — Another interactive example
+
+**It's important to have touch emulation enabled to test the joystick properly!**  
+On Chrome, you can enable it by right-clicking, selecting _Inspect_, then clicking the _Toggle device toolbar_ button (the mobile/tablet icon at the top),  
+_or_ by pressing `Ctrl+Shift+M` (Windows) or `Cmd+Shift+M` (Mac).  
+
+After changing the device mode, make sure to refresh the page for touch controls to work correctly.
+
 ## 🚀 Quick Start
 
 ```typescript

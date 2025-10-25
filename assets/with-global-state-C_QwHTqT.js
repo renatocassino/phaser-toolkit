@@ -1,1 +1,0 @@
-import{w as l}from"./with-state-def-DwlwYQgi.js";const w=(t,r,e,o)=>{if(!t)throw new Error("[withGlobalState] Scene parameter is required");const a=`phaser-hooks:global:${r}`;return l(t,a,e,{...o,global:!0})};export{w};

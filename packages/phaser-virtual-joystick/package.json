@@ -1,6 +1,6 @@
 {
   "name": "phaser-virtual-joystick",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Virtual Joystick for Phaser games",
   "type": "module",
   "main": "./dist/index.js",

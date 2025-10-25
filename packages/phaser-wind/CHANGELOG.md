@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.6.1
+
+### Patch Changes
+
+- 5d660cf: add dependency
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Toolkit UMD Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js"></script>
+</head>
+<body>
+    <div id="game-container"></div>
+    
+    <!-- Individual packages -->
+    <script src="./phaser-hooks.umd.min.js"></script>
+    <script src="./phaser-wind.umd.min.js"></script>
+    <script src="./font-awesome-for-phaser.umd.min.js"></script>
+    <script src="./hudini.umd.min.js"></script>
+    <script src="./phaser-sound-studio.umd.min.js"></script>
+    <script src="./phaser-virtual-joystick.umd.min.js"></script>
+    
+    <!-- Or use the bundle -->
+    <!-- <script src="./phaser-toolkit.umd.min.js"></script> -->
+    
+    <script>
+        // Example usage
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            scene: {
+                preload: function() {
+                    // Your preload code here
+                },
+                create: function() {
+                    // Your create code here
+                    console.log('Phaser Toolkit UMD loaded successfully!');
+                    console.log('Available packages:', {
+                        PhaserHooks: typeof PhaserHooks !== 'undefined',
+                        PhaserWind: typeof PhaserWind !== 'undefined',
+                        FontAwesome: typeof FontAwesome !== 'undefined',
+                        Hudini: typeof Hudini !== 'undefined',
+                        SoundStudio: typeof SoundStudio !== 'undefined',
+                        VirtualJoystick: typeof VirtualJoystick !== 'undefined'
+                    });
+                }
+            }
+        };
+        
+        const game = new Phaser.Game(config);
+    </script>
+</body>
+</html>

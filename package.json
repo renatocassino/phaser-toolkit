@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm clear:tsbuildinfo && pnpm -r build",
+    "build": "pnpm clear:tsbuildinfo && pnpm -r build && pnpm build:umd",
     "build:packages": "node scripts/build-packages.js",
     "build:umd": "node scripts/build-umd-rollup.js",
     "build:all": "pnpm build && pnpm build:umd",

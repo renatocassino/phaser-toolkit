@@ -10,11 +10,16 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./umd": "./dist/phaser-virtual-joystick.umd.js",
+    "./umd.min": "./dist/phaser-virtual-joystick.umd.min.js"
   },
   "files": [
     "dist"
   ],
+  "browser": "./dist/phaser-virtual-joystick.umd.js",
+  "unpkg": "./dist/phaser-virtual-joystick.umd.min.js",
+  "jsdelivr": "./dist/phaser-virtual-joystick.umd.min.js",
   "scripts": {
     "build": "tsc --build --force",
     "dev": "tsc --build --watch",

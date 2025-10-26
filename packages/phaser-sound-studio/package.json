@@ -10,11 +10,16 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./umd": "./dist/phaser-sound-studio.umd.js",
+    "./umd.min": "./dist/phaser-sound-studio.umd.min.js"
   },
   "files": [
     "dist"
   ],
+  "browser": "./dist/phaser-sound-studio.umd.js",
+  "unpkg": "./dist/phaser-sound-studio.umd.min.js",
+  "jsdelivr": "./dist/phaser-sound-studio.umd.min.js",
   "scripts": {
     "build": "tsc --build",
     "dev": "tsc --build --watch",

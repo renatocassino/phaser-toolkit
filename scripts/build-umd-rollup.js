@@ -9,7 +9,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const packagesDir = 'packages';
-const umdDir = 'umd';
 
 // Lista de packages que devem ser incluídos no build UMD
 const packagesToBuild = [
@@ -43,7 +42,7 @@ import commonjs from '@rollup/plugin-commonjs';
 export default {
   input: '${packageDir}/src/index.ts',
   output: {
-    file: '${umdDir}/${packageName}.umd.js',
+    file: '${packageDir}/dist/${packageName}.umd.js',
     format: 'umd',
     name: '${toCamelCase(packageName)}',
     globals: {
@@ -83,7 +82,7 @@ import terser from '@rollup/plugin-terser';
 export default {
   input: '${packageDir}/src/index.ts',
   output: {
-    file: '${umdDir}/${packageName}.umd.min.js',
+    file: '${packageDir}/dist/${packageName}.umd.min.js',
     format: 'umd',
     name: '${toCamelCase(packageName)}',
     globals: {
@@ -159,12 +158,12 @@ function createBundleUMD() {
     const bundleEntry = `// Phaser Toolkit Bundle - UMD Version
 // This file bundles all phaser-toolkit packages into a single UMD module
 
-import * as PhaserHooks from './packages/phaser-hooks/src/index.ts';
-import * as PhaserWind from './packages/phaser-wind/src/index.ts';
-import * as FontAwesome from './packages/font-awesome-for-phaser/src/index.ts';
-import * as Hudini from './packages/hudini/src/index.ts';
-import * as SoundStudio from './packages/phaser-sound-studio/src/index.ts';
-import * as VirtualJoystick from './packages/phaser-virtual-joystick/src/index.ts';
+import * as PhaserHooks from './packages/phaser-hooks/dist/index.js';
+import * as PhaserWind from './packages/phaser-wind/dist/index.js';
+import * as FontAwesome from './packages/font-awesome-for-phaser/dist/index.js';
+import * as Hudini from './packages/hudini/dist/index.js';
+import * as SoundStudio from './packages/phaser-sound-studio/dist/index.js';
+import * as VirtualJoystick from './packages/phaser-virtual-joystick/dist/index.js';
 
 // Export everything under PhaserToolkit namespace
 const PhaserToolkit = {
@@ -187,12 +186,12 @@ Object.assign(PhaserToolkit, {
 });
 
 export default PhaserToolkit;
-export * from './packages/phaser-hooks/src/index.ts';
-export * from './packages/phaser-wind/src/index.ts';
-export * from './packages/font-awesome-for-phaser/src/index.ts';
-export * from './packages/hudini/src/index.ts';
-export * from './packages/phaser-sound-studio/src/index.ts';
-export * from './packages/phaser-virtual-joystick/src/index.ts';`;
+export * from './packages/phaser-hooks/dist/index.js';
+export * from './packages/phaser-wind/dist/index.js';
+export * from './packages/font-awesome-for-phaser/dist/index.js';
+export * from './packages/hudini/dist/index.js';
+export * from './packages/phaser-sound-studio/dist/index.js';
+export * from './packages/phaser-virtual-joystick/dist/index.js';`;
 
     const bundleEntryPath = 'bundle-entry.ts';
     writeFileSync(bundleEntryPath, bundleEntry);
@@ -205,7 +204,7 @@ import commonjs from '@rollup/plugin-commonjs';
 export default {
   input: 'bundle-entry.ts',
   output: {
-    file: '${umdDir}/phaser-toolkit.umd.js',
+    file: 'phaser-toolkit.umd.js',
     format: 'umd',
     name: 'PhaserToolkit',
     globals: {
@@ -248,7 +247,7 @@ import terser from '@rollup/plugin-terser';
 export default {
   input: 'bundle-entry.ts',
   output: {
-    file: '${umdDir}/phaser-toolkit.umd.min.js',
+    file: 'phaser-toolkit.umd.min.js',
     format: 'umd',
     name: 'PhaserToolkit',
     globals: {
@@ -313,12 +312,12 @@ function createHTMLExample() {
     <div id="game-container"></div>
     
     <!-- Individual packages -->
-    <script src="./phaser-hooks.umd.min.js"></script>
-    <script src="./phaser-wind.umd.min.js"></script>
-    <script src="./font-awesome-for-phaser.umd.min.js"></script>
-    <script src="./hudini.umd.min.js"></script>
-    <script src="./phaser-sound-studio.umd.min.js"></script>
-    <script src="./phaser-virtual-joystick.umd.min.js"></script>
+    <script src="./packages/phaser-hooks/dist/phaser-hooks.umd.min.js"></script>
+    <script src="./packages/phaser-wind/dist/phaser-wind.umd.min.js"></script>
+    <script src="./packages/font-awesome-for-phaser/dist/font-awesome-for-phaser.umd.min.js"></script>
+    <script src="./packages/hudini/dist/hudini.umd.min.js"></script>
+    <script src="./packages/phaser-sound-studio/dist/phaser-sound-studio.umd.min.js"></script>
+    <script src="./packages/phaser-virtual-joystick/dist/phaser-virtual-joystick.umd.min.js"></script>
     
     <!-- Or use the bundle -->
     <!-- <script src="./phaser-toolkit.umd.min.js"></script> -->
@@ -354,15 +353,13 @@ function createHTMLExample() {
 </body>
 </html>`;
 
-  writeFileSync(`${umdDir}/example.html`, htmlExample);
+  writeFileSync('example.html', htmlExample);
   console.log('✅ HTML example created');
 }
 
 function main() {
   console.log('🚀 Building UMD packages with Rollup...\n');
 
-  // Garantir que o diretório UMD existe
-  mkdirSync(umdDir, { recursive: true });
 
   const packages = getPackageDirs();
 
@@ -383,7 +380,7 @@ function main() {
   createHTMLExample();
 
   console.log('\n🎉 All UMD packages built successfully!');
-  console.log(`📁 UMD files are available in: ${umdDir}/`);
+  console.log('📁 UMD files are available in each package dist/ folder');
   console.log('📄 Check example.html for usage examples');
 }
 

@@ -10,11 +10,16 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./umd": "./dist/hudini.umd.js",
+    "./umd.min": "./dist/hudini.umd.min.js"
   },
   "files": [
     "dist"
   ],
+  "browser": "./dist/hudini.umd.js",
+  "unpkg": "./dist/hudini.umd.min.js",
+  "jsdelivr": "./dist/hudini.umd.min.js",
   "scripts": {
     "build": "tsc --build --force",
     "dev": "tsc --build --watch",

@@ -1,5 +1,11 @@
 # phaser-virtual-joystick
 
+## 0.2.1
+
+### Patch Changes
+
+- 8524fcf: Fix event of release
+
 ## 0.2.0
 
 ### Minor Changes

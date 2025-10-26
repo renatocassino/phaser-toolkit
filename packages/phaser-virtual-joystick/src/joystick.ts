@@ -12,6 +12,17 @@ export enum VirtualJoystickEvents {
   PRESS = 'touchpad-joystick-press',
 }
 
+const getEventName = (event: VirtualJoystickEvents, id: string | number): string => {
+  return `${event}${id}`.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+const BASE36 = 36;
+const idGenerator = (): string => {
+  const now = performance.now().toString(BASE36);
+  const random = Math.random().toString(BASE36).substring(2);
+  return `${now}${random}`.replace(/[^a-zA-Z0-9]/g, '');
+}
+
 /**
  * Configuration parameters for creating a TouchpadJoystick instance.
  * @typedef {Object} TouchpadJoystickParams
@@ -56,6 +67,7 @@ export type VirtualJoystickParams = {
     bottomRight: { x: number; y: number };
   };
   enableWithoutTouch?: boolean;
+  id?: string | number;
 }
 
 import {
@@ -141,6 +153,8 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
     bottomRight: { x: number; y: number };
   };
 
+  id: string | number;
+
   /**
    * Creates a new TouchpadJoystick instance.
    *
@@ -175,6 +189,7 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
     stickIcon,
     bounds,
     enableWithoutTouch = false,
+    id,
   }: VirtualJoystickParams) {
     super(scene, 0, 0);
 
@@ -192,6 +207,8 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
       ...stickConfigDefault,
       ...(stick ?? {}),
     };
+
+    this.id = id ?? idGenerator();
 
     // Set default bounds if not provided (left half of screen with 20% top padding)
     this.bounds = bounds ?? getDefaultBounds(scene);
@@ -288,17 +305,20 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
    */
   override on(event: 'move' | 'release' | 'press', callback: (data: { x: number; y: number }) => void): this {
     if (event === 'move') {
-      this.scene.events.on(VirtualJoystickEvents.UPDATE, callback);
+      const eventName = getEventName(VirtualJoystickEvents.UPDATE, this.id);
+      this.scene.events.on(eventName, callback);
       return this;
     }
 
     if (event === 'release') {
-      this.scene.events.on(VirtualJoystickEvents.RELEASE, callback);
+      const eventName = getEventName(VirtualJoystickEvents.RELEASE, this.id);
+      this.scene.events.on(eventName, callback);
       return this;
     }
 
     if (event === 'press') {
-      this.scene.events.on(VirtualJoystickEvents.PRESS, callback);
+      const eventName = getEventName(VirtualJoystickEvents.PRESS, this.id);
+      this.scene.events.on(eventName, callback);
       return this;
     }
 
@@ -315,7 +335,8 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
    * @param {number} y - Normalized y position (-1 to 1)
    */
   emitMove(x: number, y: number): void {
-    this.scene.events.emit(VirtualJoystickEvents.UPDATE, { x, y });
+    const eventName = getEventName(VirtualJoystickEvents.UPDATE, this.id);
+    this.scene.events.emit(eventName, { x, y });
   }
 
   /**
@@ -324,7 +345,8 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
    * @private
    */
   emitRelease(): void {
-    this.scene.events.emit(VirtualJoystickEvents.RELEASE);
+    const eventName = getEventName(VirtualJoystickEvents.RELEASE, this.id);
+    this.scene.events.emit(eventName);
   }
 
   /**
@@ -333,7 +355,8 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
    * @private
    */
   emitPress(): void {
-    this.scene.events.emit(VirtualJoystickEvents.PRESS);
+    const eventName = getEventName(VirtualJoystickEvents.PRESS, this.id);
+    this.scene.events.emit(eventName);
   }
 
   /**

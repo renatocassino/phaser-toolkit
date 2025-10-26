@@ -9,6 +9,7 @@
     "noEmit": false,
     "composite": true,
     "allowImportingTsExtensions": false,
+    "importHelpers": true,
     "types": ["vitest/globals"]
   },
   "include": ["src/**/*", "scripts", "src/*"],

@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import * as Phaser from 'phaser';
 /**
  * Events emitted by the TouchpadJoystick component.
@@ -536,7 +537,10 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
    * @param {Phaser.Input.Pointer} pointer - The pointer that was released
    */
   private onPointerUp(pointer: Phaser.Input.Pointer): void {
-    this.emitRelease();
+    // Only emit release if this is the same pointer that started the joystick
+    if (this.touchId === pointer.id) {
+      this.emitRelease();
+    }
     this.resetJoystick(pointer);
   }
 
@@ -547,7 +551,10 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
    * @param {Phaser.Input.Pointer} pointer - The pointer that was cancelled
    */
   private onPointerCancel(pointer: Phaser.Input.Pointer): void {
-    this.emitRelease();
+    // Only emit release if this is the same pointer that started the joystick
+    if (this.touchId === pointer.id) {
+      this.emitRelease();
+    }
     this.resetJoystick(pointer);
   }
 

@@ -1,4 +1,4 @@
-import merge from 'lodash.merge';
+import { merge } from '../utils/merge';
 
 import { type DeepPartial, type StatePatchUpdater, type StateUpdater, type HookState } from './type';
 import { withLocalState } from './with-local-state';
@@ -45,7 +45,7 @@ export const withDebouncedState = <T>(
 
   const debouncedPatch = (value: DeepPartial<T> | StatePatchUpdater<T>): void => {
     const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(actualState.get()) : value;
-    debouncedSet((currentState) => merge({}, currentState, patchValue));
+    debouncedSet((currentState) => merge(currentState as any, patchValue) as T);
   };
 
   return {

@@ -47,7 +47,7 @@ class PreviewScene extends Phaser.Scene {
     private axesPosition: { x: number; y: number } = { x: 0, y: 0 };
 
     constructor() {
-        super('preview');
+        super({ key: 'preview' });
     }
 
     preload(): void { }
@@ -181,7 +181,7 @@ class PreviewScene extends Phaser.Scene {
             .setOrigin(0.5, 0.5);
     }
 
-    override update(): void {
+    update(): void {
         this.joystick?.update();
         const speed = 1.1;
         if (this.axesPosition.x !== 0 || this.axesPosition.y !== 0) {

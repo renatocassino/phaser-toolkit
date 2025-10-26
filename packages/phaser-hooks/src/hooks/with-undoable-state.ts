@@ -1,4 +1,4 @@
-import merge from 'lodash.merge';
+import { merge } from '../utils/merge';
 
 import { type DeepPartial, type StatePatchUpdater, type StateUpdater, type HookState } from './type';
 import { withLocalState } from './with-local-state';
@@ -126,7 +126,7 @@ export const withUndoableState = <T>(
     },
     patch: (value: DeepPartial<T> | StatePatchUpdater<T>): void => {
       const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(currentState.get()) : value;
-      set((currentValue) => merge({}, currentValue, patchValue) as T);
+      set((currentValue) => merge(currentValue as any, patchValue) as T);
     },
     undo,
     redo,

@@ -10,7 +10,7 @@ export const theme = createTheme({
 export type ThemeType = typeof theme;
 
 declare module 'phaser' {
-  type Scene = {
+  interface Scene {
     pw: PhaserWindPlugin<ThemeType>;
-  };
+  }
 }

@@ -17,6 +17,9 @@ importers:
       lodash.merge:
         specifier: ^4.6.2
         version: 4.6.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.6
@@ -32,7 +35,7 @@ importers:
         version: 0.4.4(rollup@4.52.5)
       '@rollup/plugin-typescript':
         specifier: ^12.3.0
-        version: 12.3.0(rollup@4.52.5)(typescript@5.9.2)
+        version: 12.3.0(rollup@4.52.5)(tslib@2.8.1)(typescript@5.9.2)
       '@types/lodash':
         specifier: ^4.17.20
         version: 4.17.20
@@ -1214,7 +1217,7 @@ packages:
       terser: 5.44.0
     dev: true
 
-  /@rollup/plugin-typescript@12.3.0(rollup@4.52.5)(typescript@5.9.2):
+  /@rollup/plugin-typescript@12.3.0(rollup@4.52.5)(tslib@2.8.1)(typescript@5.9.2):
     resolution: {integrity: sha512-7DP0/p7y3t67+NabT9f8oTBFE6gGkto4SA6Np2oudYmZE/m1dt8RB0SjL1msMxFpLo631qjRCcBlAbq1ml/Big==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1230,6 +1233,7 @@ packages:
       '@rollup/pluginutils': 5.3.0(rollup@4.52.5)
       resolve: 1.22.10
       rollup: 4.52.5
+      tslib: 2.8.1
       typescript: 5.9.2
     dev: true
 
@@ -5804,7 +5808,6 @@ packages:
 
   /tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
-    dev: true
 
   /tsx@4.20.5:
     resolution: {integrity: sha512-+wKjMNU9w/EaQayHXb7WA7ZaHY6hN8WgfvHNQ3t1PnU91/7O8TcTnIhCDYTZwnt8JsO9IBqZ30Ln1r7pPF52Aw==}

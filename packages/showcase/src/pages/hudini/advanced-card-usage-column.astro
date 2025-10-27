@@ -1,0 +1,228 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Advanced Card Usage (Column)" description="Advanced card usage with nested layout components showing how to create complex UI structures using columns.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Advanced Card Usage (Column)</h2>
+      <p class="text-gray-600 mb-4">
+        Advanced card usage with nested layout components. Shows how to create a card containing a column with a vertical stack of small icon buttons.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎨 <strong>Column Layout</strong>: Vertical stacking of components in a column</li>
+          <li>🔘 <strong>Icon Buttons</strong>: Small icon buttons arranged vertically</li>
+          <li>🎯 <strong>Alignment</strong>: Perfect vertical alignment and spacing control</li>
+          <li>⚡ <strong>Performance</strong>: Optimized for 60fps gameplay</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="hudini-advanced-card-usage-column-demo" width={600} height={400} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { Card, Column, IconButton, Color } from 'hudini';
+
+class AdvancedCardColumnScene extends Phaser.Scene {
+  create() {
+    // Create a column of small icon buttons
+    const buttonColumn = new Column({
+      scene: this,
+      x: 0,
+      y: 0,
+      gap: 10,
+      align: 'center',
+      verticalOrigin: 'center',
+      children: [
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'house',
+          size: 16,
+          color: 'blue',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'users',
+          size: 16,
+          color: 'green',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'gear',
+          size: 16,
+          color: 'purple',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'heart-circle-check',
+          size: 16,
+          color: 'red',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'star-of-david',
+          size: 16,
+          color: 'yellow',
+        })
+      ]
+    });
+
+    // Create a card with the column as content
+    const card = new Card({
+      scene: this,
+      x: 300,
+      y: 200,
+      backgroundColor: Color.rgb('slate-700'),
+      borderRadius: 12,
+      margin: 10,
+      child: buttonColumn
+    });
+
+    this.add.existing(card);
+    card.layout();
+  }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { Card, Column, IconButton, Color, createTheme, HUDINI_KEY, HudiniPlugin, SceneWithHudini } from 'hudini';
+  import { loadFont } from 'font-awesome-for-phaser';
+
+  class AdvancedCardColumnScene extends SceneWithHudini {
+    constructor() {
+      super('advanced-card-column');
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(Color.rgb('slate-100'));
+
+      this.add
+        .text(300, 50, 'Advanced Card Usage (Column)', {
+          fontSize: '24px',
+          color: Color.rgb('slate-800'),
+        })
+        .setOrigin(0.5);
+
+      // Create a column of small icon buttons
+      const buttonColumn = new Column({
+        scene: this,
+        x: 0,
+        y: 0,
+        gap: 10,
+        align: 'center',
+        verticalOrigin: 'center',
+        children: [
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'house',
+            size: 16,
+            color: 'blue',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'users',
+            size: 16,
+            color: 'green',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'gear',
+            size: 16,
+            color: 'purple',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'heart-circle-check',
+            size: 16,
+            color: 'red',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'star-of-david',
+            size: 16,
+            color: 'yellow',
+          })
+        ]
+      });
+
+      // Create a card with the column as content
+      const card = new Card({
+        scene: this,
+        x: 300,
+        y: 200,
+        backgroundColor: Color.rgb('slate-700'),
+        borderRadius: 12,
+        margin: 10,
+        child: buttonColumn
+      });
+
+      this.add.existing(card);
+      card.layout();
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Load Font Awesome font
+    await loadFont();
+    
+    const gameConfig = (window as any).__phaserGameConfigs?.['hudini-advanced-card-usage-column-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              start: true,
+              data: {
+                theme: createTheme({}),
+              },
+            },
+          ],
+        },
+        scene: [AdvancedCardColumnScene],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['hudini-advanced-card-usage-column-demo'] = game;
+    }
+  });
+</script>

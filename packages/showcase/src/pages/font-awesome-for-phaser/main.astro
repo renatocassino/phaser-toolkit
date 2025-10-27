@@ -1,0 +1,234 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Font Awesome for Phaser - Main" description="Render Font Awesome icons in Phaser via font. Load the fonts with loadFont() and use IconText.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Font Awesome Icons</h2>
+      <p class="text-gray-600 mb-4">
+        Render Font Awesome icons in Phaser via font. Load the fonts with <code>loadFont()</code> and use <code>IconText</code> 
+        to display beautiful, scalable icons in your Phaser games.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎨 <strong>Font Awesome Icons</strong>: Access to thousands of Font Awesome icons</li>
+          <li>📏 <strong>Scalable</strong>: Vector-based icons that scale perfectly at any size</li>
+          <li>🎯 <strong>Easy to Use</strong>: Simple API for adding icons to your game objects</li>
+          <li>🎨 <strong>Customizable</strong>: Full control over colors, sizes, and styling</li>
+          <li>⚡ <strong>High Performance</strong>: Optimized for 60fps gameplay with minimal overhead</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="font-awesome-for-phaser-main-demo" width={600} height={400} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { IconText, loadFont, fontIcons } from 'font-awesome-for-phaser';
+
+// Load Font Awesome fonts
+await loadFont();
+
+class MyScene extends Phaser.Scene {
+  create() {
+    // Create a house icon
+    const houseIcon = new IconText({
+      scene: this,
+      x: 300,
+      y: 200,
+      icon: 'house',
+      iconStyle: 'regular', // 'solid' | 'regular' | 'brands'
+      size: 64,
+      style: { color: '#ffffff' },
+    });
+    this.add.existing(houseIcon);
+
+    // Create a heart icon
+    const heartIcon = new IconText({
+      scene: this,
+      x: 200,
+      y: 200,
+      icon: 'heart',
+      iconStyle: 'solid',
+      size: 48,
+      style: { color: '#ff0000' },
+    });
+    this.add.existing(heartIcon);
+
+    // Create a star icon
+    const starIcon = new IconText({
+      scene: this,
+      x: 400,
+      y: 200,
+      icon: 'star',
+      iconStyle: 'solid',
+      size: 48,
+      style: { color: '#ffd700' },
+    });
+    this.add.existing(starIcon);
+  }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Icon Styles -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Icon Styles</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Solid Icons</h4>
+          <p class="text-sm text-gray-600 mb-3">
+            Filled icons with solid appearance. Most commonly used style.
+          </p>
+          <div class="bg-gray-900 rounded p-2">
+            <code class="text-sm text-gray-100">iconStyle: 'solid'</code>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Regular Icons</h4>
+          <p class="text-sm text-gray-600 mb-3">
+            Outlined icons with transparent fill. Great for subtle UI elements.
+          </p>
+          <div class="bg-gray-900 rounded p-2">
+            <code class="text-sm text-gray-100">iconStyle: 'regular'</code>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Brand Icons</h4>
+          <p class="text-sm text-gray-600 mb-3">
+            Brand-specific icons for logos and social media.
+          </p>
+          <div class="bg-gray-900 rounded p-2">
+            <code class="text-sm text-gray-100">iconStyle: 'brands'</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Icons -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Available Icons</h3>
+      <p class="text-gray-600 mb-4">
+        Font Awesome for Phaser includes thousands of icons across different categories:
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="text-center p-4 border border-gray-200 rounded-lg">
+          <div class="text-2xl mb-2">🏠</div>
+          <h4 class="font-semibold text-gray-900 mb-1">Home & Building</h4>
+          <p class="text-xs text-gray-600">house, building, home</p>
+        </div>
+        <div class="text-center p-4 border border-gray-200 rounded-lg">
+          <div class="text-2xl mb-2">❤️</div>
+          <h4 class="font-semibold text-gray-900 mb-1">Health & Life</h4>
+          <p class="text-xs text-gray-600">heart, plus, medical</p>
+        </div>
+        <div class="text-center p-4 border border-gray-200 rounded-lg">
+          <div class="text-2xl mb-2">⚙️</div>
+          <h4 class="font-semibold text-gray-900 mb-1">Settings & Tools</h4>
+          <p class="text-xs text-gray-600">gear, wrench, tools</p>
+        </div>
+        <div class="text-center p-4 border border-gray-200 rounded-lg">
+          <div class="text-2xl mb-2">🎮</div>
+          <h4 class="font-semibold text-gray-900 mb-1">Gaming & Fun</h4>
+          <p class="text-xs text-gray-600">gamepad, dice, puzzle</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { fontIcons, IconKey, IconStyle, IconText, loadFont } from 'font-awesome-for-phaser';
+  import { Color, FontSize } from 'phaser-wind';
+
+  class FontAwesomeDemoScene extends Phaser.Scene {
+    private icons: IconText[] = [];
+
+    constructor() {
+      super('font-awesome-demo');
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(Color.slate(900));
+
+      // Title
+      this.add
+        .text(300, 50, 'Font Awesome Icons', {
+          fontSize: FontSize.css('2xl'),
+          color: Color.rgb('white'),
+        })
+        .setOrigin(0.5);
+
+      // Create various icons to showcase
+      const iconConfigs = [
+        { icon: 'house' as IconKey, iconStyle: 'regular' as IconStyle, x: 150, y: 150, color: '#ffffff', size: 48 },
+        { icon: 'heart' as IconKey, iconStyle: 'solid' as IconStyle, x: 300, y: 150, color: '#ff0000', size: 48 },
+        { icon: 'star' as IconKey, iconStyle: 'solid' as IconStyle, x: 450, y: 150, color: '#ffd700', size: 48 },
+        { icon: 'gear' as IconKey, iconStyle: 'solid' as IconStyle, x: 150, y: 250, color: '#00ff00', size: 48 },
+        { icon: 'user' as IconKey, iconStyle: 'regular' as IconStyle, x: 300, y: 250, color: '#00ffff', size: 48 },
+        { icon: 'envelope' as IconKey, iconStyle: 'solid' as IconStyle, x: 450, y: 250, color: '#ff00ff', size: 48 },
+      ];
+
+      iconConfigs.forEach(config => {
+        const icon = new IconText({
+          scene: this,
+          x: config.x,
+          y: config.y,
+          icon: config.icon,
+          iconStyle: config.iconStyle,
+          size: config.size,
+          style: { color: config.color },
+        });
+        this.add.existing(icon);
+        this.icons.push(icon);
+      });
+
+      // Instructions
+      this.add
+        .text(300, 350, 'Font Awesome icons rendered in Phaser', {
+          fontSize: FontSize.css('lg'),
+          color: Color.rgb('slate-300'),
+        })
+        .setOrigin(0.5);
+
+      // Icon count info
+      this.add
+        .text(300, 380, `Available icons: ${Object.keys(fontIcons).length}`, {
+          fontSize: FontSize.css('sm'),
+          color: Color.rgb('slate-400'),
+        })
+        .setOrigin(0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Load Font Awesome font
+    await loadFont();
+    
+    const gameConfig = (window as any).__phaserGameConfigs?.['font-awesome-for-phaser-main-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        scene: [FontAwesomeDemoScene],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['font-awesome-for-phaser-main-demo'] = game;
+    }
+  });
+</script>

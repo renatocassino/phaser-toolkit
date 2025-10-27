@@ -1,0 +1,226 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Advanced Card Usage" description="Advanced card usage with nested layout components showing how to create complex UI structures.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Advanced Card Usage</h2>
+      <p class="text-gray-600 mb-4">
+        Advanced card usage with nested layout components. Shows how to create a card containing a column with a row of small icon buttons.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎨 <strong>Nested Layouts</strong>: Cards with complex nested layout structures</li>
+          <li>🔘 <strong>Icon Buttons</strong>: Small icon buttons in a row layout</li>
+          <li>🎯 <strong>Alignment</strong>: Perfect alignment and spacing control</li>
+          <li>⚡ <strong>Performance</strong>: Optimized for 60fps gameplay</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="hudini-advanced-card-usage-demo" width={600} height={400} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { Card, Row, IconButton, Color } from 'hudini';
+
+class AdvancedCardScene extends Phaser.Scene {
+  create() {
+    // Create a row of small icon buttons
+    const buttonRow = new Row({
+      scene: this,
+      x: 0,
+      y: 0,
+      gap: 10,
+      align: 'center',
+      children: [
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'house',
+          size: 16,
+          color: 'blue',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'users',
+          size: 16,
+          color: 'green',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'gear',
+          size: 16,
+          color: 'purple',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'heart-circle-check',
+          size: 16,
+          color: 'red',
+        }),
+        new IconButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          icon: 'star-of-david',
+          size: 16,
+          color: 'yellow',
+        })
+      ]
+    });
+
+    // Create a card with the row as content
+    const card = new Card({
+      scene: this,
+      x: 300,
+      y: 200,
+      backgroundColor: Color.rgb('slate-700'),
+      borderRadius: 12,
+      margin: 10,
+      child: buttonRow
+    });
+
+    this.add.existing(card);
+    card.layout();
+  }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { Card, Row, IconButton, Color, createTheme, HUDINI_KEY, HudiniPlugin, SceneWithHudini } from 'hudini';
+  import { loadFont } from 'font-awesome-for-phaser';
+
+  class AdvancedCardUsageScene extends SceneWithHudini {
+    constructor() {
+      super('advanced-card-usage');
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(Color.rgb('slate-100'));
+
+      this.add
+        .text(300, 50, 'Advanced Card Usage', {
+          fontSize: '24px',
+          color: Color.rgb('slate-800'),
+        })
+        .setOrigin(0.5);
+
+      // Create a row of small icon buttons
+      const buttonRow = new Row({
+        scene: this,
+        x: 0,
+        y: 0,
+        gap: 10,
+        align: 'center',
+        children: [
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'house',
+            size: 16,
+            color: 'blue',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'users',
+            size: 16,
+            color: 'green',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'gear',
+            size: 16,
+            color: 'purple',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'heart-circle-check',
+            size: 16,
+            color: 'red',
+          }),
+          new IconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'star-of-david',
+            size: 16,
+            color: 'yellow',
+          })
+        ]
+      });
+
+      // Create a card with the row as content
+      const card = new Card({
+        scene: this,
+        x: 300,
+        y: 200,
+        backgroundColor: Color.rgb('slate-700'),
+        borderRadius: 12,
+        margin: 10,
+        child: buttonRow
+      });
+
+      this.add.existing(card);
+      card.layout();
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Load Font Awesome font
+    await loadFont();
+    
+    const gameConfig = (window as any).__phaserGameConfigs?.['hudini-advanced-card-usage-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              start: true,
+              data: {
+                theme: createTheme({}),
+              },
+            },
+          ],
+        },
+        scene: [AdvancedCardUsageScene],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['hudini-advanced-card-usage-demo'] = game;
+    }
+  });
+</script>

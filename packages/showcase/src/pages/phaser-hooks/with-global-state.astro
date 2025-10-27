@@ -1,0 +1,261 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Phaser Hooks - With Global State" description="Basic example using Phaser Hooks for global state management that persists across scenes.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">With Global State</h2>
+      <p class="text-gray-600 mb-4">
+        Basic example using Phaser Hooks for global state management that persists across scenes. 
+        Global state allows you to share data between different scenes in your game.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🌍 <strong>Global State</strong>: Shared state across all scenes in your game</li>
+          <li>🔄 <strong>State Persistence</strong>: State persists when switching between scenes</li>
+          <li>📡 <strong>Change Listeners</strong>: React to state changes with onChange callbacks</li>
+          <li>⚡ <strong>Performance</strong>: Optimized state management for 60fps gameplay</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="phaser-hooks-global-state-demo" width={800} height={600} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { useGlobalState } from 'phaser-hooks';
+
+class GameScene extends Phaser.Scene {
+  create() {
+    // Get global state with initial value
+    const [score, setScore] = useGlobalState('score', 0);
+    const [health, setHealth] = useGlobalState('health', 100);
+    
+    // Update global state
+    setScore(score + 10);
+    setHealth(health - 5);
+    
+    // Listen to state changes
+    const [playerName, setPlayerName] = useGlobalState('playerName', 'Player', (newValue) => {
+      console.log('Player name changed to:', newValue);
+    });
+  }
+}
+
+class MenuScene extends Phaser.Scene {
+  create() {
+    // Access the same global state from another scene
+    const [score] = useGlobalState('score', 0);
+    const [health] = useGlobalState('health', 100);
+    
+    console.log('Current score:', score);
+    console.log('Current health:', health);
+  }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- State Management -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">State Management</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Basic Usage</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>useGlobalState(key, initialValue)</code> - Get/set global state</li>
+            <li>• State persists across scene changes</li>
+            <li>• Multiple scenes can access the same state</li>
+            <li>• Type-safe with TypeScript support</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Advanced Features</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>onChange</code> callbacks for state changes</li>
+            <li>• Automatic re-rendering when state changes</li>
+            <li>• Memory efficient state management</li>
+            <li>• Easy debugging and state inspection</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData } from 'hudini';
+
+  class GlobalStateScene1 extends Phaser.Scene {
+    private scoreText?: Phaser.GameObjects.Text;
+    private healthText?: Phaser.GameObjects.Text;
+
+    constructor() {
+      super('global-state-scene-1');
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(0x2c3e50);
+
+      // Title
+      this.add.text(400, 50, 'Scene 1 - Global State Demo', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '24px',
+      }).setOrigin(0.5, 0.5);
+
+      // Get global state
+      const [score, setScore] = useGlobalState('score', 0);
+      const [health, setHealth] = useGlobalState('health', 100);
+
+      // Display current state
+      this.scoreText = this.add.text(400, 150, `Score: ${score}`, {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      this.healthText = this.add.text(400, 180, `Health: ${health}`, {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      // Buttons to modify state
+      const addScoreBtn = this.add.rectangle(300, 250, 120, 40, 0x27ae60);
+      addScoreBtn.setInteractive();
+      addScoreBtn.on('pointerdown', () => {
+        setScore(score + 10);
+        this.scoreText?.setText(`Score: ${score + 10}`);
+      });
+      this.add.text(300, 250, 'Add Score', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      const loseHealthBtn = this.add.rectangle(500, 250, 120, 40, 0xe74c3c);
+      loseHealthBtn.setInteractive();
+      loseHealthBtn.on('pointerdown', () => {
+        setHealth(health - 10);
+        this.healthText?.setText(`Health: ${health - 10}`);
+      });
+      this.add.text(500, 250, 'Lose Health', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Switch scene button
+      const switchSceneBtn = this.add.rectangle(400, 350, 150, 40, 0x3498db);
+      switchSceneBtn.setInteractive();
+      switchSceneBtn.on('pointerdown', () => {
+        this.scene.start('global-state-scene-2');
+      });
+      this.add.text(400, 350, 'Switch to Scene 2', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add.text(400, 450, 'Click buttons to modify global state, then switch scenes', {
+        color: '#bdc3c7',
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  class GlobalStateScene2 extends Phaser.Scene {
+    constructor() {
+      super('global-state-scene-2');
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(0x8e44ad);
+
+      // Title
+      this.add.text(400, 50, 'Scene 2 - Global State Persists', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '24px',
+      }).setOrigin(0.5, 0.5);
+
+      // Get the same global state
+      const [score] = useGlobalState('score', 0);
+      const [health] = useGlobalState('health', 100);
+
+      // Display current state (should be the same as Scene 1)
+      this.add.text(400, 150, `Score: ${score}`, {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(400, 180, `Health: ${health}`, {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      // Switch back button
+      const switchBackBtn = this.add.rectangle(400, 300, 150, 40, 0x3498db);
+      switchBackBtn.setInteractive();
+      switchBackBtn.on('pointerdown', () => {
+        this.scene.start('global-state-scene-1');
+      });
+      this.add.text(400, 300, 'Back to Scene 1', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add.text(400, 400, 'Global state persists across scenes!', {
+        color: '#bdc3c7',
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).__phaserGameConfigs?.['phaser-hooks-global-state-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              mapping: HUDINI_KEY,
+              start: true,
+              data: {
+                theme: defaultLightTheme,
+              } as HudiniPluginData,
+            }
+          ]
+        },
+        scene: [GlobalStateScene1, GlobalStateScene2],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['phaser-hooks-global-state-demo'] = game;
+    }
+  });
+</script>

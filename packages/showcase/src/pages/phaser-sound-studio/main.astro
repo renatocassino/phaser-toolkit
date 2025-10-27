@@ -1,0 +1,258 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Phaser Sound Studio - Main" description="Advanced audio management system for Phaser 3 games with sound effects and music control.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Sound Studio Main</h2>
+      <p class="text-gray-600 mb-4">
+        Advanced audio management system for Phaser 3 games with sound effects and music control. 
+        This example demonstrates how to play sounds using the Phaser Sound Studio.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎵 <strong>Sound Management</strong>: Centralized sound loading and playback</li>
+          <li>🎚️ <strong>Channel System</strong>: Organize sounds by channels (HUD, SFX, Music, etc.)</li>
+          <li>⚡ <strong>Performance</strong>: Optimized audio loading and caching</li>
+          <li>🔧 <strong>Type Safety</strong>: Full TypeScript support with sound key validation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="phaser-sound-studio-main-demo" width={800} height={600} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { getSoundStudio, PHASER_SOUND_STUDIO_KEY, PhaserSoundStudioPlugin, SoundListConfig } from 'phaser-sound-studio';
+
+// Define sound keys and channels
+const SOUND_KEYS = {
+    MOUSE_HOVER: 'mouse-hover',
+    MOUSE_CLICK: 'mouse-click',
+} as const;
+
+const SOUND_CHANNELS = {
+    HUD: 'hud',
+    BACKGROUND: 'background',
+    SFX: 'sfx',
+    MUSIC: 'music',
+    VOICE: 'voice'
+} as const;
+
+// Configure sounds
+const soundKeys: SoundListConfig<SoundKeys, ChannelKeys> = {
+    [SOUND_KEYS.MOUSE_HOVER]: {
+        channel: SOUND_CHANNELS.HUD,
+        preload: true,
+        path: '/sounds/ui-pop.m4a',
+        loop: false,
+    },
+    [SOUND_KEYS.MOUSE_CLICK]: {
+        channel: SOUND_CHANNELS.HUD,
+        preload: true,
+        path: '/sounds/click.mp3',
+        loop: false,
+    }
+};
+
+class GameScene extends Phaser.Scene {
+    preload(): void {
+        // Load all sounds
+        getSoundStudio(this).loadAll(this);
+    }
+
+    create(): void {
+        // Play sounds
+        getSoundStudio<SoundKeys, ChannelKeys>(this).play(this, SOUND_KEYS.MOUSE_CLICK);
+    }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Configuration -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Configuration</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Sound Configuration</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>channel</code> - Audio channel for organization</li>
+            <li>• <code>preload</code> - Whether to preload the sound</li>
+            <li>• <code>path</code> - Path to the sound file</li>
+            <li>• <code>loop</code> - Whether the sound should loop</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Channels</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>HUD</code> - UI sound effects</li>
+            <li>• <code>SFX</code> - Game sound effects</li>
+            <li>• <code>MUSIC</code> - Background music</li>
+            <li>• <code>VOICE</code> - Voice/dialogue audio</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { getSoundStudio, PHASER_SOUND_STUDIO_KEY, PhaserSoundStudioPlugin, PhaserSoundStudioPluginData, SoundListConfig } from 'phaser-sound-studio';
+  import { Color, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, SceneWithHudini, TextButton } from 'hudini';
+
+  const SOUND_KEYS = {
+    MOUSE_HOVER: 'mouse-hover',
+    MOUSE_CLICK: 'mouse-click',
+  } as const;
+
+  type SoundKeys = typeof SOUND_KEYS[keyof typeof SOUND_KEYS];
+
+  const SOUND_CHANNELS = {
+    HUD: 'hud',
+    BACKGROUND: 'background',
+    SFX: 'sfx',
+    MUSIC: 'music',
+    VOICE: 'voice'
+  } as const;
+  type ChannelKeys = typeof SOUND_CHANNELS[keyof typeof SOUND_CHANNELS];
+
+  const soundKeys: SoundListConfig<SoundKeys, ChannelKeys> = {
+    [SOUND_KEYS.MOUSE_HOVER]: {
+      channel: SOUND_CHANNELS.HUD,
+      preload: true,
+      path: '/sounds/ui-pop.m4a',
+      loop: false,
+    },
+    [SOUND_KEYS.MOUSE_CLICK]: {
+      channel: SOUND_CHANNELS.HUD,
+      preload: true,
+      path: '/sounds/click.mp3',
+      loop: false,
+    }
+  };
+
+  class SoundStudioDemoScene extends SceneWithHudini {
+    constructor() {
+      super('sound-studio-demo');
+    }
+
+    preload(): void {
+      // Load all sounds
+      getSoundStudio(this).loadAll(this);
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(this.pw.color.rgb('slate-900'));
+
+      // Title
+      this.add.text(400, 100, 'Phaser Sound Studio Demo', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '32px',
+      }).setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add.text(400, 150, 'Click the button to play a sound effect', {
+        color: '#bdc3c7',
+        align: 'center',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      // Sound control buttons
+      const playClickBtn = new TextButton({
+        scene: this,
+        x: 400,
+        y: 250,
+        backgroundColor: 'blue-500',
+        textColor: 'white',
+        text: 'Play Click Sound',
+        onClick: (): void => {
+          console.log('Playing click sound...');
+          // In a real implementation, this would play the actual sound
+          // getSoundStudio<SoundKeys, ChannelKeys>(this).play(this, SOUND_KEYS.MOUSE_CLICK);
+        }
+      });
+
+      const playHoverBtn = new TextButton({
+        scene: this,
+        x: 400,
+        y: 320,
+        backgroundColor: 'green-500',
+        textColor: 'white',
+        text: 'Play Hover Sound',
+        onClick: (): void => {
+          console.log('Playing hover sound...');
+          // In a real implementation, this would play the actual sound
+          // getSoundStudio<SoundKeys, ChannelKeys>(this).play(this, SOUND_KEYS.MOUSE_HOVER);
+        }
+      });
+
+      this.add.existing(playClickBtn);
+      this.add.existing(playHoverBtn);
+
+      // Channel information
+      this.add.text(400, 450, 'Sound Channels: HUD, SFX, MUSIC, VOICE', {
+        color: '#95a5a6',
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Note about demo
+      this.add.text(400, 500, 'Note: This is a demo - actual sound files would be loaded', {
+        color: '#e74c3c',
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).__phaserGameConfigs?.['phaser-sound-studio-main-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              mapping: HUDINI_KEY,
+              start: true,
+              data: {
+                theme: defaultLightTheme,
+              } as HudiniPluginData,
+            },
+            {
+              key: PHASER_SOUND_STUDIO_KEY,
+              plugin: PhaserSoundStudioPlugin,
+              mapping: PHASER_SOUND_STUDIO_KEY,
+              start: true,
+              data: {
+                soundList: soundKeys,
+                channels: ['hud'],
+              } as PhaserSoundStudioPluginData,
+            }
+          ]
+        },
+        scene: [SoundStudioDemoScene],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['phaser-sound-studio-main-demo'] = game;
+    }
+  });
+</script>

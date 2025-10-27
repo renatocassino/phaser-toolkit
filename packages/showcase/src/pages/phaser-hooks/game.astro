@@ -1,0 +1,195 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Phaser Hooks - useGame" description="Access the Phaser game instance and scene management with the useGame hook.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">useGame Hook</h2>
+      <p class="text-gray-600 mb-4">
+        Access the Phaser game instance and scene management with the useGame hook. 
+        This hook provides easy access to game-level functionality and scene management.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎮 <strong>Game Access</strong>: Direct access to the Phaser game instance</li>
+          <li>🎬 <strong>Scene Management</strong>: Easy scene switching and management</li>
+          <li>⚡ <strong>Performance</strong>: Optimized for high-performance games</li>
+          <li>🎯 <strong>TypeScript</strong>: Full TypeScript support with type safety</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="phaser-hooks-game-demo" width={800} height={600} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { useGame } from 'phaser-hooks';
+
+class GameDemoScene extends Phaser.Scene {
+  create() {
+    // Get the game instance
+    const game = useGame(this);
+    
+    // Access game properties
+    console.log('Game width:', game.scale.width);
+    console.log('Game height:', game.scale.height);
+    console.log('Current scene:', game.scene.getActiveScene()?.scene.key);
+    
+    // Scene management
+    this.input.keyboard?.on('keydown-SPACE', () => {
+      game.scene.start('next-scene');
+    });
+    
+    // Add some interactive elements
+    this.add.text(this.cameras.main.centerX, 100, 'Press SPACE to switch scenes', {
+      color: '#ffffff',
+      align: 'center',
+      fontSize: '24px',
+    }).setOrigin(0.5, 0.5);
+  }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  class GameDemoScene extends Phaser.Scene {
+    private gameInfo?: Phaser.GameObjects.Text;
+    private sceneInfo?: Phaser.GameObjects.Text;
+
+    constructor() {
+      super('game-demo');
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(0x1f2937); // slate-800
+
+      // Get the game instance using the hook
+      const game = useGame(this);
+
+      // Title
+      this.add.text(this.cameras.main.centerX, 80, 'useGame Hook Demo', {
+        color: '#e5e7eb', // slate-200
+        align: 'center',
+        fontSize: '32px',
+      }).setOrigin(0.5, 0.5);
+
+      // Display game information
+      this.gameInfo = this.add.text(this.cameras.main.centerX, 150, '', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      this.sceneInfo = this.add.text(this.cameras.main.centerX, 200, '', {
+        color: '#ffffff',
+        align: 'center',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      // Update info display
+      this.updateInfo();
+
+      // Add interactive elements
+      this.add.text(this.cameras.main.centerX, 300, 'Game Controls:', {
+        color: '#e5e7eb',
+        align: 'center',
+        fontSize: '20px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX, 330, 'SPACE - Switch to next scene', {
+        color: '#9ca3af',
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX, 350, 'R - Restart current scene', {
+        color: '#9ca3af',
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX, 370, 'P - Pause/Resume game', {
+        color: '#9ca3af',
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Add keyboard controls
+      this.input.keyboard?.on('keydown-SPACE', () => {
+        console.log('Switching to next scene...');
+        // In a real game, you would switch to another scene
+        this.add.text(this.cameras.main.centerX, 450, 'Scene switch triggered!', {
+          color: '#10b981', // green-500
+          align: 'center',
+          fontSize: '18px',
+        }).setOrigin(0.5, 0.5);
+      });
+
+      this.input.keyboard?.on('keydown-R', () => {
+        console.log('Restarting scene...');
+        game.scene.restart();
+      });
+
+      this.input.keyboard?.on('keydown-P', () => {
+        if (game.isPaused) {
+          game.resume();
+          console.log('Game resumed');
+        } else {
+          game.pause();
+          console.log('Game paused');
+        }
+      });
+
+      // Add some visual elements to show the game is running
+      this.add.circle(this.cameras.main.centerX, 500, 20, 0x3b82f6); // blue circle
+      this.add.circle(this.cameras.main.centerX - 50, 500, 15, 0x10b981); // green circle
+      this.add.circle(this.cameras.main.centerX + 50, 500, 15, 0xf59e0b); // yellow circle
+    }
+
+    updateInfo(): void {
+      const game = useGame(this);
+      
+      if (this.gameInfo) {
+        this.gameInfo.setText(`Game Size: ${game.scale.width}x${game.scale.height}`);
+      }
+      
+      if (this.sceneInfo) {
+        const activeScene = game.scene.getActiveScene();
+        this.sceneInfo.setText(`Current Scene: ${activeScene?.scene.key || 'Unknown'}`);
+      }
+    }
+
+    update(): void {
+      // Update info every frame to show real-time changes
+      this.updateInfo();
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).__phaserGameConfigs?.['phaser-hooks-game-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        scene: [GameDemoScene],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['phaser-hooks-game-demo'] = game;
+    }
+  });
+</script>

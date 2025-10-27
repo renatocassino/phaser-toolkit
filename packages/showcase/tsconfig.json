@@ -1,0 +1,14 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "hudini": ["../hudini/src/index.ts"],
+      "phaser-wind": ["../phaser-wind/src/index.ts"],
+      "phaser-hooks": ["../phaser-hooks/src/index.ts"],
+      "phaser-sound-studio": ["../phaser-sound-studio/src/index.ts"],
+      "phaser-virtual-joystick": ["../phaser-virtual-joystick/src/index.ts"],
+      "font-awesome-for-phaser": ["../font-awesome-for-phaser/src/index.ts"]
+    }
+  }
+}

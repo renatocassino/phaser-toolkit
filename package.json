@@ -23,7 +23,7 @@
     "changeset:publish": "changeset publish",
     "release": "pnpm build:all && pnpm changeset:publish",
     "build-storybook": "pnpm -r build-storybook",
-    "storybook": "pnpm --filter \"./packages/**\" storybook & pnpm --filter \"./packages/phaser-toolkit-demo\" storybook"
+    "storybook": "pnpm --filter \"./packages/**\" storybook"
   },
   "keywords": [
     "phaser",

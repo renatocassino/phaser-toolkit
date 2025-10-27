@@ -1,0 +1,290 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Advanced Card Usage Modal" description="Advanced example showing a modal card with audio controls and action buttons, demonstrating complex layout composition.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Advanced Card Usage Modal</h2>
+      <p class="text-gray-600 mb-4">
+        Advanced example showing a modal card with audio controls and action buttons, demonstrating complex layout composition.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎨 <strong>Modal Design</strong>: Complex modal card with nested layouts</li>
+          <li>🎵 <strong>Audio Controls</strong>: Interactive volume controls for different channels</li>
+          <li>🔘 <strong>Action Buttons</strong>: Multiple action buttons with different purposes</li>
+          <li>❌ <strong>Close Button</strong>: Positioned outside the card for easy access</li>
+          <li>⚡ <strong>Performance</strong>: Optimized for 60fps gameplay</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="hudini-advanced-card-usage-modal-demo" width={800} height={600} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { Card, Column, Row, TextButton, FlatIconButton, SizedBox } from 'hudini';
+
+// Create a modal card with settings
+const modalCard = new Card({
+    scene: this,
+    x: centerX,
+    y: centerY,
+    backgroundColor: 'slate-800',
+    borderRadius: 'md',
+    width: Math.min(width * 0.8, 600),
+    child: new Column({
+        scene: this,
+        x: 0,
+        y: 0,
+        children: [
+            // Audio settings rows
+            ...['music', 'ambient', 'fx'].map((channel: string) => 
+                buildAudioControlRow(channel)
+            ),
+            // Action buttons
+            new Row({
+                scene: this,
+                x: 0,
+                y: 0,
+                children: [
+                    new TextButton({
+                        scene: this,
+                        x: 0,
+                        y: 0,
+                        text: 'Play again',
+                        backgroundColor: 'blue-600',
+                        fontSize: '2xl',
+                        onClick: () => console.log('Play again clicked'),
+                    }),
+                    new TextButton({
+                        scene: this,
+                        x: 0,
+                        y: 0,
+                        text: 'Back to Main Menu',
+                        backgroundColor: 'blue-600',
+                        fontSize: '2xl',
+                        onClick: () => console.log('Back to menu clicked'),
+                    }),
+                ],
+                gap: 20,
+            })
+        ],
+        gap: 20,
+    })
+});
+
+// Close button positioned outside the card
+const closeButton = new FlatIconButton({
+    scene: this,
+    x: centerX + Math.min(width * 0.4, 300),
+    y: centerY - 240,
+    icon: 'xmark',
+    size: 'xl',
+    onClick: () => console.log('Close modal'),
+});`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { Card, Column, Row, TextButton, FlatIconButton, SizedBox, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, SceneWithHudini } from 'hudini';
+
+  class AdvancedCardModalScene extends SceneWithHudini {
+    constructor() {
+      super('advanced-card-modal');
+    }
+
+    create(): void {
+      const { pw } = this.hudini;
+      const { width, centerY, centerX } = this.cameras.main;
+      
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+      // Create audio control rows
+      const audioControls = ['music', 'ambient', 'fx'].map((channel: string) => 
+          this.buildAudioControlRow(channel)
+      );
+
+      // Create action buttons
+      const restartButton = new TextButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          text: 'Play again',
+          backgroundColor: 'blue-600',
+          fontSize: '2xl',
+          font: 'monospace',
+          onClick: (): void => {
+              console.log('Play again clicked');
+          },
+      });
+
+      const backToMainMenuButton = new TextButton({
+          scene: this,
+          x: 0,
+          y: 0,
+          text: 'Back to Main Menu',
+          backgroundColor: 'blue-600',
+          fontSize: '2xl',
+          font: 'monospace',
+          onClick: (): void => {
+              console.log('Back to Main Menu clicked');
+          },
+      });
+
+      // Create the main modal card
+      const modalCard = new Card({
+          scene: this,
+          x: centerX,
+          y: centerY,
+          backgroundColor: 'slate-800',
+          borderRadius: 'md',
+          child: new Column({
+              scene: this,
+              x: 0,
+              y: 0,
+              children: [
+                  ...audioControls,
+                  new SizedBox({
+                      scene: this,
+                      x: 0,
+                      y: 0,
+                      width: 0,
+                      height: 10, // Extra spacing before buttons
+                  }),
+                  new Row({
+                      scene: this,
+                      x: 0,
+                      y: 0,
+                      children: [
+                          restartButton,
+                          backToMainMenuButton,
+                      ],
+                      gap: 20,
+                  })
+              ],
+              gap: 20,
+          })
+      });
+
+      // Create close button positioned outside the card
+      const closeButton = new FlatIconButton({
+          scene: this,
+          x: centerX + Math.min(width * 0.4, 300),
+          y: centerY - 240,
+          icon: 'xmark',
+          size: 'xl',
+          onClick: (): void => {
+              console.log('Close modal clicked');
+          },
+      });
+
+      // Add all elements to the scene
+      this.add.existing(modalCard);
+      this.add.existing(closeButton);
+    }
+
+    buildAudioControlRow(channel: string): Column {
+        const topLabel = this.add.text(0, 0, channel.toUpperCase(), {
+            fontSize: 24,
+            color: '#ffffff',
+            align: 'center',
+            fixedWidth: 100,
+        });
+
+        const volumeLabel = this.add.text(0, 0, '5', {
+            fontSize: 24,
+            color: '#ffffff',
+            align: 'center',
+            fixedWidth: 100,
+        });
+
+        const lessButton = new FlatIconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'minus',
+            size: 24,
+            onClick: (): void => {
+                console.log(`Decrease ${channel} volume`);
+                volumeLabel.text = Math.max(0, parseInt(volumeLabel.text as string) - 1).toString();
+            },
+        });
+
+        const plusButton = new FlatIconButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            icon: 'plus',
+            size: 24,
+            onClick: (): void => {
+                console.log(`Increase ${channel} volume`);
+                volumeLabel.text = Math.min(10, parseInt(volumeLabel.text as string) + 1).toString();
+            },
+        });
+
+        return new Column({
+            scene: this,
+            x: 0,
+            y: 0,
+            align: 'center',
+            gap: 8,
+            children: [
+                topLabel,
+                new Row({
+                    scene: this,
+                    x: 0,
+                    y: 0,
+                    children: [
+                        lessButton,
+                        volumeLabel,
+                        plusButton,
+                    ],
+                    gap: 10,
+                })
+            ],
+        });
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).__phaserGameConfigs?.['hudini-advanced-card-usage-modal-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              mapping: HUDINI_KEY,
+              start: true,
+              data: {
+                theme: defaultLightTheme,
+              } as HudiniPluginData,
+            }
+          ]
+        },
+        scene: [AdvancedCardModalScene]
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['hudini-advanced-card-usage-modal-demo'] = game;
+    }
+  });
+</script>

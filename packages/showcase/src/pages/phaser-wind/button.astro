@@ -1,0 +1,251 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Phaser Wind Button Component" description="Example of button using PhaserWind tokens with theming and design system integration.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Phaser Wind Button</h2>
+      <p class="text-gray-600 mb-4">
+        Example of button using PhaserWind tokens with theming and design system integration. 
+        Demonstrates how to create consistent, themed UI components using PhaserWind design tokens.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎨 <strong>Design Tokens</strong>: Uses PhaserWind color and spacing tokens</li>
+          <li>🖱️ <strong>Interactive</strong>: Hover and click states with smooth transitions</li>
+          <li>🎯 <strong>Consistent</strong>: Follows design system principles</li>
+          <li>⚡ <strong>Performance</strong>: Optimized for 60fps gameplay</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="phaser-wind-button-demo" width={600} height={400} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import {
+  Color,
+  ColorToken,
+  createTheme,
+  PHASER_WIND_KEY,
+  PhaserWindPlugin,
+  SceneWithPhaserWind,
+} from 'phaser-wind';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class ButtonScene extends SceneWithPhaserWind<Theme> {
+  create(): void {
+    const { pw } = this;
+    this.cameras.main.setBackgroundColor(Color.slate(900));
+
+    const createButton = (
+      x: number,
+      y: number,
+      label: string,
+      bgToken: ColorToken
+    ): Phaser.GameObjects.Container => {
+      const text = this.add.text(0, 0, label, {
+        fontSize: pw.fontSize.css('lg'),
+        color: pw.color.rgb('white'),
+      });
+
+      const padX = pw.spacing.px('6');
+      const padY = pw.spacing.px('3');
+      const width = text.width + padX * 2;
+      const height = text.height + padY * 2;
+
+      const bg = this.add.rectangle(0, 0, width, height, pw.color.hex(bgToken));
+      bg.setOrigin(0.5);
+
+      const container = this.add.container(x, y, [bg, text]);
+      text.setPosition(-text.width / 2, -text.height / 2);
+      container.setSize(width, height);
+
+      bg.setInteractive();
+
+      // Hover and click states
+      const highColor = bgToken.replace('-500', '-600') as ColorToken;
+      const lowColor = bgToken.replace('-500', '-700') as ColorToken;
+
+      bg.on('pointerover', () => (bg.fillColor = pw.color.hex(highColor)));
+      bg.on('pointerout', () => (bg.fillColor = pw.color.hex(bgToken)));
+      bg.on('pointerdown', () => (bg.fillColor = pw.color.hex(lowColor)));
+      bg.on('pointerup', () => (bg.fillColor = pw.color.hex(highColor)));
+
+      return container;
+    };
+
+    createButton(300, 120, 'Primary', 'green-500');
+    createButton(300, 200, 'Secondary', 'blue-500');
+    createButton(300, 280, 'Danger', 'red-500');
+  }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Design Tokens -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Design Tokens</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Color Tokens</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>green-500</code> - Primary button color</li>
+            <li>• <code>blue-500</code> - Secondary button color</li>
+            <li>• <code>red-500</code> - Danger button color</li>
+            <li>• <code>white</code> - Text color</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Spacing Tokens</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>px('6')</code> - Horizontal padding</li>
+            <li>• <code>px('3')</code> - Vertical padding</li>
+            <li>• <code>css('lg')</code> - Font size</li>
+            <li>• <code>slate(900)</code> - Background color</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive States -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Interactive States</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="text-center p-4 border border-gray-200 rounded-lg">
+          <div class="w-12 h-12 bg-green-500 rounded mx-auto mb-2"></div>
+          <h4 class="font-semibold text-gray-900 mb-1">Default</h4>
+          <p class="text-xs text-gray-600">Base button state</p>
+        </div>
+        <div class="text-center p-4 border border-gray-200 rounded-lg">
+          <div class="w-12 h-12 bg-green-600 rounded mx-auto mb-2"></div>
+          <h4 class="font-semibold text-gray-900 mb-1">Hover</h4>
+          <p class="text-xs text-gray-600">Mouse over state</p>
+        </div>
+        <div class="text-center p-4 border border-gray-200 rounded-lg">
+          <div class="w-12 h-12 bg-green-700 rounded mx-auto mb-2"></div>
+          <h4 class="font-semibold text-gray-900 mb-1">Pressed</h4>
+          <p class="text-xs text-gray-600">Click/press state</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import {
+    Color,
+    ColorToken,
+    createTheme,
+    PHASER_WIND_KEY,
+    PhaserWindPlugin,
+    SceneWithPhaserWind,
+  } from 'phaser-wind';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class PhaserWindButtonScene extends SceneWithPhaserWind<Theme> {
+    constructor() {
+      super('phaser-wind-button');
+    }
+
+    create(): void {
+      const { pw } = this;
+      this.cameras.main.setBackgroundColor(Color.slate(900));
+
+      // Title
+      this.add.text(300, 50, 'Phaser Wind Buttons', {
+        fontSize: pw.fontSize.css('2xl'),
+        color: pw.color.rgb('white'),
+      }).setOrigin(0.5);
+
+      const createButton = (
+        x: number,
+        y: number,
+        label: string,
+        bgToken: ColorToken
+      ): Phaser.GameObjects.Container => {
+        const text = this.add.text(0, 0, label, {
+          fontSize: pw.fontSize.css('lg'),
+          color: pw.color.rgb('white'),
+        });
+
+        const padX = pw.spacing.px('6');
+        const padY = pw.spacing.px('3');
+        const width = text.width + padX * 2;
+        const height = text.height + padY * 2;
+
+        const bg = this.add.rectangle(0, 0, width, height, pw.color.hex(bgToken));
+        bg.setOrigin(0.5);
+
+        const container = this.add.container(x, y, [bg, text]);
+        text.setPosition(-text.width / 2, -text.height / 2);
+        container.setSize(width, height);
+
+        bg.setInteractive();
+
+        const highColor = bgToken.replace('-500', '-600') as ColorToken;
+        const lowColor = bgToken.replace('-500', '-700') as ColorToken;
+
+        bg.on('pointerover', () => (bg.fillColor = pw.color.hex(highColor)));
+        bg.on('pointerout', () => (bg.fillColor = pw.color.hex(bgToken)));
+        bg.on('pointerdown', () => (bg.fillColor = pw.color.hex(lowColor)));
+        bg.on('pointerup', () => (bg.fillColor = pw.color.hex(highColor)));
+
+        return container;
+      };
+
+      createButton(300, 120, 'Primary', 'green-500');
+      createButton(300, 200, 'Secondary', 'blue-500');
+      createButton(300, 280, 'Danger', 'red-500');
+
+      // Instructions
+      this.add.text(300, 350, 'Hover and click the buttons to see PhaserWind theming in action', {
+        fontSize: pw.fontSize.css('sm'),
+        color: pw.color.rgb('slate-300'),
+      }).setOrigin(0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).__phaserGameConfigs?.['phaser-wind-button-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        plugins: {
+          global: [
+            {
+              key: PHASER_WIND_KEY,
+              plugin: PhaserWindPlugin,
+              mapping: PHASER_WIND_KEY,
+              data: {
+                theme,
+              },
+            },
+          ],
+        },
+        scene: [PhaserWindButtonScene],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['phaser-wind-button-demo'] = game;
+    }
+  });
+</script>

@@ -219,7 +219,7 @@ phaser-toolkit/
 │   ├── font-awesome-for-phaser/   # Font Awesome icons
 │   ├── phaser-hooks/             # State management hooks
 │   ├── phaser-sound-studio/      # Audio management
-│   └── phaser-toolkit-demo/      # Storybook demos
+│   └── showcase/                 # Astro showcase
 ├── package.json
 ├── pnpm-workspace.yaml
 └── README.md

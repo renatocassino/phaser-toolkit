@@ -1,4 +1,4 @@
-name: Deploy Storybook (phaser-toolkit-demo)
+name: Deploy Astro Showcase
 
 on:
   push:
@@ -41,12 +41,12 @@ jobs:
       - name: Build libs
         run: pnpm build
 
-      - name: Build Storybook (demo)
-        run: pnpm build-storybook
+      - name: Build Astro Showcase
+        run: pnpm --filter phaser-toolkit-showcase build
 
       - name: Deploy to GitHub Pages (gh-pages)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: packages/phaser-toolkit-demo/storybook-static
+          publish_dir: packages/showcase/dist

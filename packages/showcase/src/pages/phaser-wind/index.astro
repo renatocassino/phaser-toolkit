@@ -1,0 +1,166 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Phaser Wind Overview" description="A theming system and utility library for Phaser 3 games with Tailwind-inspired design tokens.">
+  <div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-green-600 to-green-800 rounded-lg p-8 text-white">
+      <h2 class="text-3xl font-bold mb-4">Phaser Wind</h2>
+      <p class="text-lg mb-6">
+        A theming system and utility library for Phaser 3 games with Tailwind-inspired design tokens. 
+        Create consistent, beautiful games with a powerful design system.
+      </p>
+      <div class="flex space-x-4">
+        <a href="/phaser-wind/button" class="bg-white text-green-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          Explore Components
+        </a>
+        <a href="https://github.com/your-org/phaser-wind" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-green-600 transition-colors">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Key Features</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎨</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Design Tokens</h4>
+          <p class="text-sm text-gray-600">Consistent color, spacing, and typography tokens inspired by Tailwind CSS</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🌪️</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Theming System</h4>
+          <p class="text-sm text-gray-600">Powerful theming system with light/dark mode support and custom themes</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">⚡</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">High Performance</h4>
+          <p class="text-sm text-gray-600">Optimized for 60fps gameplay with minimal overhead and memory usage</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🔧</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Utility Functions</h4>
+          <p class="text-sm text-gray-600">Helper functions for common game development tasks and calculations</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">📱</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Responsive Design</h4>
+          <p class="text-sm text-gray-600">Built-in responsive design utilities for different screen sizes</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">TypeScript Support</h4>
+          <p class="text-sm text-gray-600">Full TypeScript support with comprehensive type definitions</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Design Tokens Preview -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Design Tokens</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Colors -->
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Color Palette</h4>
+          <div class="space-y-2">
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-blue-500 rounded mr-3"></div>
+              <span class="text-sm">blue-500</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-green-500 rounded mr-3"></div>
+              <span class="text-sm">green-500</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-red-500 rounded mr-3"></div>
+              <span class="text-sm">red-500</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-yellow-500 rounded mr-3"></div>
+              <span class="text-sm">yellow-500</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-purple-500 rounded mr-3"></div>
+              <span class="text-sm">purple-500</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-gray-500 rounded mr-3"></div>
+              <span class="text-sm">gray-500</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spacing -->
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Spacing Scale</h4>
+          <div class="space-y-2">
+            <div class="flex items-center">
+              <div class="w-1 h-4 bg-gray-400 rounded mr-3"></div>
+              <span class="text-sm">1 (4px)</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-2 h-4 bg-gray-400 rounded mr-3"></div>
+              <span class="text-sm">2 (8px)</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-3 h-4 bg-gray-400 rounded mr-3"></div>
+              <span class="text-sm">4 (16px)</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-4 h-4 bg-gray-400 rounded mr-3"></div>
+              <span class="text-sm">6 (24px)</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-6 h-4 bg-gray-400 rounded mr-3"></div>
+              <span class="text-sm">8 (32px)</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-4 bg-gray-400 rounded mr-3"></div>
+              <span class="text-sm">12 (48px)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Components -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-6">Components</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="/phaser-wind/button" class="group p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🔘</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-green-600">Button</h4>
+          </div>
+          <p class="text-sm text-gray-600">Styled button component with hover effects and theming support</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Installation</h3>
+      <div class="bg-gray-900 rounded-lg p-4 mb-4">
+        <pre class="text-sm text-gray-100"><code>npm install phaser-wind</code></pre>
+      </div>
+      <p class="text-gray-600">
+        Phaser Wind is designed to work seamlessly with Phaser 3 and provides a complete theming solution for your games.
+      </p>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,177 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Phaser Toolkit Showcase" description="Explore the components and features of the Phaser Toolkit ecosystem">
+  <div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 text-white">
+      <h2 class="text-3xl font-bold mb-4">Welcome to Phaser Toolkit</h2>
+      <p class="text-lg mb-6">
+        A comprehensive collection of tools and components for building amazing Phaser 3 games. 
+        Explore interactive examples, copy code snippets, and see everything in action.
+      </p>
+      <div class="flex space-x-4">
+        <a href="/hudini" class="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          Explore Components
+        </a>
+        <a href="https://github.com/your-org/phaser-toolkit" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-primary-600 transition-colors">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Component Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Hudini Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-2xl">🎨</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Hudini</h3>
+        </div>
+        <p class="text-gray-600 mb-4">
+          A powerful utility library with UI components and tools built on top of PhaserWind. 
+          Create beautiful, responsive game interfaces with ease.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">UI Components</span>
+          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Theming</span>
+          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Responsive</span>
+        </div>
+        <a href="/hudini" class="text-primary-600 hover:text-primary-700 font-medium">
+          Explore Components →
+        </a>
+      </div>
+
+      <!-- Phaser Wind Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-2xl">🌪️</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Phaser Wind</h3>
+        </div>
+        <p class="text-gray-600 mb-4">
+          A theming system and utility library for Phaser 3 games with Tailwind-inspired design tokens.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Theming</span>
+          <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Design Tokens</span>
+          <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Utilities</span>
+        </div>
+        <a href="/phaser-wind" class="text-primary-600 hover:text-primary-700 font-medium">
+          Explore Components →
+        </a>
+      </div>
+
+      <!-- Phaser Hooks Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-2xl">🪝</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Phaser Hooks</h3>
+        </div>
+        <p class="text-gray-600 mb-4">
+          React-like hooks for Phaser 3 game development with state management and lifecycle hooks.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Hooks</span>
+          <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">State Management</span>
+          <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Lifecycle</span>
+        </div>
+        <a href="/phaser-hooks" class="text-primary-600 hover:text-primary-700 font-medium">
+          Explore Components →
+        </a>
+      </div>
+
+      <!-- Phaser Sound Studio Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-2xl">🎵</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Phaser Sound Studio</h3>
+        </div>
+        <p class="text-gray-600 mb-4">
+          Advanced audio management system for Phaser 3 games with sound effects and music control.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Audio</span>
+          <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Music</span>
+          <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Effects</span>
+        </div>
+        <a href="/phaser-sound-studio" class="text-primary-600 hover:text-primary-700 font-medium">
+          Explore Components →
+        </a>
+      </div>
+
+      <!-- Phaser Virtual Joystick Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-2xl">🕹️</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Phaser Virtual Joystick</h3>
+        </div>
+        <p class="text-gray-600 mb-4">
+          Touch-friendly virtual joystick component for mobile Phaser 3 games.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Mobile</span>
+          <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Touch</span>
+          <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Joystick</span>
+        </div>
+        <a href="/phaser-virtual-joystick" class="text-primary-600 hover:text-primary-700 font-medium">
+          Explore Components →
+        </a>
+      </div>
+
+      <!-- Font Awesome for Phaser Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-2xl">🎨</span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Font Awesome for Phaser</h3>
+        </div>
+        <p class="text-gray-600 mb-4">
+          Font Awesome icon integration for Phaser 3 games with easy-to-use icon components.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Icons</span>
+          <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Font Awesome</span>
+          <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Easy to Use</span>
+        </div>
+        <a href="/font-awesome-for-phaser" class="text-primary-600 hover:text-primary-700 font-medium">
+          Explore Components →
+        </a>
+      </div>
+    </div>
+
+    <!-- Getting Started Section -->
+    <div class="bg-primary-50 rounded-lg p-6">
+      <h2 class="text-xl font-semibold text-primary-900 mb-3">Getting Started</h2>
+      <p class="text-primary-700 mb-4">
+        This showcase demonstrates all the components and features available in the Phaser Toolkit ecosystem. 
+        Use the sidebar to navigate between different components and see them in action.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-medium text-primary-900 mb-2">Interactive Examples</h3>
+          <p class="text-sm text-primary-700">
+            Each component page includes interactive examples that you can interact with directly in your browser.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-medium text-primary-900 mb-2">Code Snippets</h3>
+          <p class="text-sm text-primary-700">
+            Copy-paste ready code examples for each component to get started quickly in your own projects.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

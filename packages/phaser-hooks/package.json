@@ -11,15 +11,15 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./umd": "./dist/phaser-hooks.umd.js",
-    "./umd.min": "./dist/phaser-hooks.umd.min.js"
+    "./umd": "./dist/phaser-hooks.js",
+    "./umd.min": "./dist/phaser-hooks.min.js"
   },
   "files": [
     "dist"
   ],
-  "browser": "./dist/phaser-hooks.umd.js",
-  "unpkg": "./dist/phaser-hooks.umd.min.js",
-  "jsdelivr": "./dist/phaser-hooks.umd.min.js",
+  "browser": "./dist/phaser-hooks.js",
+  "unpkg": "./dist/phaser-hooks.min.js",
+  "jsdelivr": "./dist/phaser-hooks.min.js",
   "scripts": {
     "build": "tsc --build --force",
     "dev": "tsc --build --watch",

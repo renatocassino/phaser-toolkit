@@ -11,15 +11,15 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./umd": "./dist/phaser-wind.umd.js",
-    "./umd.min": "./dist/phaser-wind.umd.min.js"
+    "./umd": "./dist/phaser-wind.js",
+    "./umd.min": "./dist/phaser-wind.min.js"
   },
   "files": [
     "dist"
   ],
-  "browser": "./dist/phaser-wind.umd.js",
-  "unpkg": "./dist/phaser-wind.umd.min.js",
-  "jsdelivr": "./dist/phaser-wind.umd.min.js",
+  "browser": "./dist/phaser-wind.js",
+  "unpkg": "./dist/phaser-wind.min.js",
+  "jsdelivr": "./dist/phaser-wind.min.js",
   "scripts": {
     "build": "tsc --build --force",
     "dev": "tsc --build --watch",

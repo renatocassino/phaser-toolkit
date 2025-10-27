@@ -172,37 +172,63 @@ class HealthBar extends Phaser.GameObjects.Container {
 **Initial value:** The initial value is only applied during the first execution. On subsequent calls, the same state instance is reused — just like in React Hooks.
 
 ### Advanced: Hooks with Custom Methods
+
+> 💡 If you’re not using TypeScript, don’t worry — all hooks work with plain JavaScript too.
+
+However, defining full types for your state object, hook return, and custom methods gives you complete end-to-end type safety with full IntelliSense for every method and return value.
+
 ```typescript
 // hooks/withPlayerState.ts
-export function withPlayerState(scene: Phaser.Scene) {
-  const state = withLocalState(scene, 'player', {
-    hp: 100,
-    maxHp: 100,
-    level: 1
-  });
+import { withLocalState, type HookState } from 'phaser-hooks';
+
+export type PlayerState = {
+  hp: number;
+  maxHp: number;
+  level: number;
+};
+
+export type PlayerHook = HookState<PlayerState> & {
+  takeDamage: (amount: number) => void;
+  heal: (amount: number) => void;
+  levelUp: () => void;
+};
+
+const initialPlayerState: PlayerState = {
+  hp: 100,
+  maxHp: 100,
+  level: 1,
+};
+
+export function withPlayerState(scene: Phaser.Scene): PlayerHook {
+  const state = withLocalState<PlayerState>(scene, 'player', initialPlayerState);
+  const takeDamage = (amount: number): void => {
+    const current = state.get();
+    state.patch({
+      hp: Math.max(0, current.hp - amount),
+    });
+  };
+
+  const heal = (amount: number): void => {
+    const current = state.get();
+    state.patch({
+      hp: Math.min(current.maxHp, current.hp + amount),
+    });
+  };
+
+  const levelUp = (): void => {
+    const current = state.get();
+    state.patch({
+      level: current.level + 1,
+      maxHp: current.maxHp + 10,
+      hp: current.maxHp + 10,
+    });
+  };
 
   return {
-    ...state,
-    
-    // Add domain-specific methods
-    takeDamage: (amount: number) => {
-      const current = state.get();
-      state.patch({ hp: Math.max(0, current.hp - amount) });
-    },
-    
-    heal: (amount: number) => {
-      const current = state.get();
-      state.patch({ hp: Math.min(current.maxHp, current.hp + amount) });
-    },
-    
-    levelUp: () => {
-      const current = state.get();
-      state.patch({ 
-        level: current.level + 1,
-        maxHp: current.maxHp + 10,
-        hp: current.maxHp + 10
-      });
-    }
+    ...state,     // get, set, patch, on, once, off, clearListeners
+    takeDamage,
+    heal,
+    levelUp,
   };
 }
 
@@ -216,8 +242,6 @@ player.levelUp();
 ### Next Steps
 
 - 📚 [Full documentation and examples](https://toolkit.cassino.dev/phaser-hooks)
-- 🎣 [See all available hooks](#features)
-- 🔧 [API reference](#hook-api-reference)
 
 ## Core Concepts
 

@@ -1,0 +1,178 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Hudini Overview" description="A powerful utility library with UI components and tools built on top of PhaserWind.">
+  <div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-8 text-white">
+      <h2 class="text-3xl font-bold mb-4">Hudini</h2>
+      <p class="text-lg mb-6">
+        A powerful utility library with UI components and tools built on top of PhaserWind. 
+        Create beautiful, responsive game interfaces with ease.
+      </p>
+      <div class="flex space-x-4">
+        <a href="/hudini/card" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          Explore Components
+        </a>
+        <a href="https://github.com/your-org/hudini" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-blue-600 transition-colors">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Key Features</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎨</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Beautiful UI Components</h4>
+          <p class="text-sm text-gray-600">Pre-built components for buttons, cards, progress bars, and more</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">📱</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Responsive Design</h4>
+          <p class="text-sm text-gray-600">Components that adapt to different screen sizes and orientations</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">⚡</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">High Performance</h4>
+          <p class="text-sm text-gray-600">Optimized for 60fps gameplay with minimal overhead</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Easy to Use</h4>
+          <p class="text-sm text-gray-600">Simple API with TypeScript support and comprehensive documentation</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🔧</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Customizable</h4>
+          <p class="text-sm text-gray-600">Extensive theming options and customization capabilities</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🌪️</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Built on PhaserWind</h4>
+          <p class="text-sm text-gray-600">Leverages PhaserWind's theming system and design tokens</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Components Grid -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-6">Components</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="/hudini/card" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🃏</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Card</h4>
+          </div>
+          <p class="text-sm text-gray-600">Flexible container component that adapts to its content</p>
+        </a>
+
+        <a href="/hudini/text-button" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🔘</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Text Button</h4>
+          </div>
+          <p class="text-sm text-gray-600">Interactive button with text content and hover effects</p>
+        </a>
+
+        <a href="/hudini/icon-button" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🎯</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Icon Button</h4>
+          </div>
+          <p class="text-sm text-gray-600">Button component with icon support and customizable styling</p>
+        </a>
+
+        <a href="/hudini/flat-icon-button" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🔲</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Flat Icon Button</h4>
+          </div>
+          <p class="text-sm text-gray-600">Minimalist icon button with flat design</p>
+        </a>
+
+        <a href="/hudini/section-header" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">📑</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Section Header</h4>
+          </div>
+          <p class="text-sm text-gray-600">Styled header component for organizing content sections</p>
+        </a>
+
+        <a href="/hudini/circular-progress" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">⭕</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Circular Progress</h4>
+          </div>
+          <p class="text-sm text-gray-600">Circular progress indicator with smooth animations</p>
+        </a>
+
+        <a href="/hudini/linear-progress" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">📊</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Linear Progress</h4>
+          </div>
+          <p class="text-sm text-gray-600">Horizontal progress bar with customizable styling</p>
+        </a>
+
+        <a href="/hudini/radial-progress" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🎯</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Radial Progress</h4>
+          </div>
+          <p class="text-sm text-gray-600">Radial progress indicator with customizable arc</p>
+        </a>
+
+        <a href="/hudini/column" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">📦</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Column</h4>
+          </div>
+          <p class="text-sm text-gray-600">Vertical layout container for organizing content</p>
+        </a>
+
+        <a href="/hudini/row" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">📋</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Row</h4>
+          </div>
+          <p class="text-sm text-gray-600">Horizontal layout container for organizing content</p>
+        </a>
+
+        <a href="/hudini/sized-box" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">📏</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Sized Box</h4>
+          </div>
+          <p class="text-sm text-gray-600">Container with specific dimensions for spacing and layout</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Installation</h3>
+      <div class="bg-gray-900 rounded-lg p-4 mb-4">
+        <pre class="text-sm text-gray-100"><code>npm install hudini</code></pre>
+      </div>
+      <p class="text-gray-600">
+        Hudini requires PhaserWind as a peer dependency. Make sure to install both packages.
+      </p>
+    </div>
+  </div>
+</Layout>

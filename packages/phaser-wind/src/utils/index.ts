@@ -1,1 +1,2 @@
-export * from './is-valid-color';
+export { merge, mergeDeep } from './merge';
+export { isValidColor } from './is-valid-color';

@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable max-lines-per-function */
-import merge from 'lodash.merge';
+import { merge } from '../utils/merge';
 import * as Phaser from 'phaser';
 
 import {

@@ -1,4 +1,4 @@
-name: Check Storybook Build
+name: Check Astro Showcase Build
 
 on:
   pull_request:
@@ -53,8 +53,8 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-      - name: Build Storybook (demo)
-        run: pnpm -w -F phaser-toolkit-demo build-storybook
+      - name: Build Astro Showcase
+        run: pnpm --filter phaser-toolkit-showcase build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -63,7 +63,7 @@ jobs:
           path: packages/*/dist
           retention-days: 1
 
-  build-storybook:
+  build-showcase:
     runs-on: ubuntu-latest
 
     steps:
@@ -78,7 +78,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
@@ -88,5 +88,5 @@ jobs:
       - name: Build libs
         run: pnpm build
 
-      - name: Build Storybook (demo)
-        run: pnpm build-storybook
+      - name: Build Astro Showcase
+        run: pnpm --filter phaser-toolkit-showcase build

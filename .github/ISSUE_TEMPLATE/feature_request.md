@@ -25,6 +25,6 @@ Which package would this feature affect?
 - [ ] hudini
 - [ ] phaser-wind
 - [ ] phaser-hooks
-- [ ] phaser-toolkit-demo
+- [ ] showcase
 - [ ] phaser-sound-studio
 - [ ] Other (please specify)

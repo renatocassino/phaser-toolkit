@@ -1,0 +1,303 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Phaser Virtual Joystick - Default" description="Basic example showing the default behavior of the Virtual Joystick component.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Default Virtual Joystick</h2>
+      <p class="text-gray-600 mb-4">
+        Basic example showing the default behavior of the Virtual Joystick component. 
+        Perfect for mobile game controls and touch-based interactions.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🕹️ <strong>Touch Controls</strong>: Intuitive touch-based joystick controls</li>
+          <li>📱 <strong>Mobile Optimized</strong>: Designed specifically for mobile devices</li>
+          <li>🎯 <strong>Precise Input</strong>: High-precision analog movement input</li>
+          <li>🎨 <strong>Customizable</strong>: Fully customizable appearance and behavior</li>
+          <li>⚡ <strong>Performance</strong>: Optimized for 60fps gameplay</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame id="phaser-virtual-joystick-default-demo" width={800} height={600} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { VirtualJoystick } from 'phaser-virtual-joystick';
+
+class GameScene extends Phaser.Scene {
+    private joystick?: VirtualJoystick;
+    private character?: Phaser.GameObjects.Arc;
+
+    create() {
+        // Create a virtual joystick with default settings
+        this.joystick = new VirtualJoystick({
+            scene: this,
+            bounds: {
+                topLeft: { x: 0, y: 40 },
+                bottomRight: { x: this.cameras.main.width / 2, y: this.cameras.main.height },
+            },
+            stickIcon: this.add.text(0, 0, '🎮', {
+                fontSize: '24px',
+                color: '#ffffff'
+            }),
+            enableWithoutTouch: true,
+        });
+
+        // Listen to joystick events
+        this.joystick.on('move', (data) => {
+            console.log(\`Joystick position: \${data.x}, \${data.y}\`);
+            // Move character based on joystick input
+            if (this.character) {
+                this.character.x += data.x * 2;
+                this.character.y += data.y * 2;
+            }
+        });
+
+        this.joystick.on('press', () => {
+            console.log('Joystick pressed');
+        });
+
+        this.joystick.on('release', () => {
+            console.log('Joystick released');
+        });
+    }
+
+    update() {
+        this.joystick?.update();
+    }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Configuration -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Configuration Options</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Basic Options</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>scene</code> - Phaser scene instance</li>
+            <li>• <code>bounds</code> - Touch area boundaries</li>
+            <li>• <code>stickIcon</code> - Custom joystick icon</li>
+            <li>• <code>enableWithoutTouch</code> - Enable on non-touch devices</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Events</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• <code>move</code> - Joystick movement</li>
+            <li>• <code>press</code> - Joystick pressed</li>
+            <li>• <code>release</code> - Joystick released</li>
+            <li>• <code>update</code> - Called every frame</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Notice -->
+    <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+      <h3 class="text-lg font-semibold text-blue-900 mb-3">📱 Mobile Device Required</h3>
+      <p class="text-blue-800 mb-4">
+        This demo works best on touch devices. If you're on a desktop, try using your browser's 
+        device emulation mode to see the joystick in action.
+      </p>
+      <div class="text-sm text-blue-700">
+        <p><strong>Instructions:</strong></p>
+        <ul class="list-disc list-inside mt-2 space-y-1">
+          <li>Touch and drag in the left half of the screen to use the joystick</li>
+          <li>Watch the character move based on joystick input</li>
+          <li>Position and status are displayed in real-time</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { VirtualJoystick } from 'phaser-virtual-joystick';
+  import { Color, FontSize } from 'phaser-wind';
+
+  class VirtualJoystickDemoScene extends Phaser.Scene {
+    private joystick?: VirtualJoystick;
+    private positionText?: Phaser.GameObjects.Text;
+    private eventText?: Phaser.GameObjects.Text;
+    private character?: Phaser.GameObjects.Arc;
+    private axesPosition: { x: number; y: number } = { x: 0, y: 0 };
+
+    constructor() {
+      super({ key: 'virtual-joystick-demo' });
+    }
+
+    create(): void {
+      this.cameras.main.setBackgroundColor(Color.rgb('slate-900'));
+
+      const centerX = this.cameras.main.centerX;
+      const centerY = this.cameras.main.centerY;
+
+      // Title
+      this.add
+        .text(centerX, 80, 'Phaser Virtual Joystick', {
+          color: Color.rgb('slate-200'),
+          align: 'center',
+          fontSize: FontSize.px('4xl'),
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add
+        .text(centerX, 140, 'Touch and drag in the left half of the screen to use the joystick', {
+          color: Color.rgb('slate-300'),
+          align: 'center',
+          fontSize: FontSize.px('lg'),
+          wordWrap: { width: 600 },
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Position display
+      this.positionText = this.add
+        .text(centerX, centerY - 100, 'Position: (0, 0)', {
+          color: Color.rgb('slate-200'),
+          align: 'center',
+          fontSize: FontSize.px('2xl'),
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Event display
+      this.eventText = this.add
+        .text(centerX, centerY - 50, 'Status: Ready', {
+          color: Color.rgb('slate-300'),
+          align: 'center',
+          fontSize: FontSize.px('lg'),
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Create a character to move with the joystick
+      const character = this.add.circle(centerX + 200, centerY, 20, 0x4F46E5, 1);
+      this.character = character;
+      character.setStrokeStyle(2, 0x312E81);
+
+      // Create joystick only on touch devices
+      if (this.sys.game.device.input.touch) {
+        this.joystick = new VirtualJoystick({
+          scene: this,
+          bounds: {
+            topLeft: { x: 0, y: 40 },
+            bottomRight: { x: this.cameras.main.width / 2, y: this.cameras.main.height },
+          },
+          stickIcon: this.add.text(0, 0, '🎮', {
+            fontSize: '24px',
+            color: '#ffffff'
+          }),
+          enableWithoutTouch: true,
+        });
+        this.add.existing(this.joystick);
+
+        // Listen to joystick events
+        this.joystick.on('move', (data) => {
+          this.axesPosition = { x: data.x, y: data.y };
+          if (this.positionText) {
+            this.positionText.setText(`Position: (${data.x.toFixed(2)}, ${data.y.toFixed(2)})`);
+          }
+        });
+
+        this.joystick.on('press', () => {
+          this.axesPosition = { x: 0, y: 0 };
+          if (this.eventText) {
+            this.eventText.setText('Status: Joystick Pressed');
+            this.eventText.setColor(Color.rgb('green-400'));
+          }
+        });
+
+        this.joystick.on('release', () => {
+          this.axesPosition = { x: 0, y: 0 };
+          if (this.eventText) {
+            this.eventText.setText('Status: Joystick Released');
+            this.eventText.setColor(Color.rgb('red-400'));
+          }
+        });
+      } else {
+        // Show message for non-touch devices
+        this.add
+          .text(centerX, centerY, 'This demo requires a touch device to work properly', {
+            color: Color.rgb('slate-400'),
+            align: 'center',
+            fontSize: FontSize.px('lg'),
+            wordWrap: { width: 500 },
+          })
+          .setOrigin(0.5, 0.5);
+      }
+
+      // Add some visual elements to show the joystick area
+      const joystickArea = this.add.rectangle(
+        this.cameras.main.width / 4,
+        this.cameras.main.height / 2,
+        this.cameras.main.width / 2,
+        this.cameras.main.height,
+        0x1E293B,
+        0.1
+      );
+      joystickArea.setStrokeStyle(2, 0x475569, 0.3);
+
+      // Add label for joystick area
+      this.add
+        .text(this.cameras.main.width / 4, 50, 'Joystick Area', {
+          color: Color.rgb('slate-400'),
+          align: 'center',
+          fontSize: FontSize.px('sm'),
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Add label for character area
+      this.add
+        .text(centerX + 200, 50, 'Character (moves with joystick)', {
+          color: Color.rgb('slate-400'),
+          align: 'center',
+          fontSize: FontSize.px('sm'),
+        })
+        .setOrigin(0.5, 0.5);
+    }
+
+    update(): void {
+      this.joystick?.update();
+      const speed = 1.1;
+      if (this.axesPosition.x !== 0 || this.axesPosition.y !== 0) {
+        this.character?.setPosition(this.character.x + this.axesPosition.x * speed, this.character.y + this.axesPosition.y * speed);
+      }
+    }
+
+    destroy(): void {
+      if (this.joystick) {
+        this.joystick.destroy();
+      }
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).__phaserGameConfigs?.['phaser-virtual-joystick-default-demo'];
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        scene: [VirtualJoystickDemoScene],
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['phaser-virtual-joystick-default-demo'] = game;
+    }
+  });
+</script>

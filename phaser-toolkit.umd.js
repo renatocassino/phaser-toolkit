@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('lodash.merge'), require('phaser'), require('webfontloader')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'lodash.merge', 'phaser', 'webfontloader'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.PhaserToolkit = {}, global._.merge, global.Phaser, global.WebFont));
-})(this, (function (exports, merge, Phaser$1, WebFont) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('phaser'), require('webfontloader')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'phaser', 'webfontloader'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.PhaserToolkit = {}, global.Phaser, global.WebFont));
+})(this, (function (exports, Phaser$1, WebFont) { 'use strict';
 
     function _interopNamespaceDefault(e) {
         var n = Object.create(null);
@@ -96,6 +96,50 @@
             return true;
         },
     };
+
+    /**
+     * Deep merge utility function that recursively merges objects
+     * Similar to lodash.merge but implemented natively
+     */
+    /**
+     * Checks if a value is a plain object (not array, null, or other types)
+     */
+    function isPlainObject$1(value) {
+        return (value !== null &&
+            typeof value === 'object' &&
+            !Array.isArray(value) &&
+            Object.prototype.toString.call(value) === '[object Object]');
+    }
+    /**
+     * Deep merge multiple objects into the first one
+     * @param target - The target object to merge into
+     * @param sources - Source objects to merge from
+     * @returns The merged object
+     */
+    function merge$1(target, ...sources) {
+        if (!isPlainObject$1(target)) {
+            return target;
+        }
+        const result = { ...target };
+        for (const source of sources) {
+            if (!isPlainObject$1(source)) {
+                continue;
+            }
+            for (const key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    const sourceValue = source[key];
+                    const targetValue = result[key];
+                    if (isPlainObject$1(sourceValue) && isPlainObject$1(targetValue)) {
+                        result[key] = merge$1(targetValue, sourceValue);
+                    }
+                    else if (sourceValue !== undefined) {
+                        result[key] = sourceValue;
+                    }
+                }
+            }
+        }
+        return result;
+    }
 
     /* eslint-disable no-console */
     /* eslint-disable sonarjs/no-duplicate-string */
@@ -307,7 +351,7 @@
         }
         // If value is a function, execute it with current state to get the patch
         const patchValue = typeof value === 'function' ? value(currentValue) : value;
-        const newValue = merge({}, currentValue, patchValue);
+        const newValue = merge$1({}, currentValue, patchValue);
         if (validator) {
             const validationResult = validator(newValue);
             if (validationResult !== true) {
@@ -768,7 +812,7 @@
         };
         const debouncedPatch = (value) => {
             const patchValue = typeof value === 'function' ? value(actualState.get()) : value;
-            debouncedSet((currentState) => merge({}, currentState, patchValue));
+            debouncedSet((currentState) => merge$1(currentState, patchValue));
         };
         return {
             ...actualState,
@@ -991,7 +1035,7 @@
             },
             patch: (value) => {
                 const patchValue = typeof value === 'function' ? value(currentState.get()) : value;
-                set((currentValue) => merge({}, currentValue, patchValue));
+                set((currentValue) => merge$1(currentValue, patchValue));
             },
             undo,
             redo,
@@ -1026,6 +1070,59 @@
         withStateDef: withStateDef,
         withUndoableState: withUndoableState
     });
+
+    /**
+     * Deep merge utility function that recursively merges objects
+     * Similar to lodash.merge but implemented natively
+     */
+    /**
+     * Checks if a value is a plain object (not array, null, or other types)
+     */
+    function isPlainObject(value) {
+        return (value !== null &&
+            typeof value === 'object' &&
+            !Array.isArray(value) &&
+            Object.prototype.toString.call(value) === '[object Object]');
+    }
+    /**
+     * Deep merge multiple objects into the first one
+     * @param target - The target object to merge into
+     * @param sources - Source objects to merge from
+     * @returns The merged object
+     */
+    function merge(target, ...sources) {
+        if (!isPlainObject(target)) {
+            return target;
+        }
+        const result = { ...target };
+        for (const source of sources) {
+            if (!isPlainObject(source)) {
+                continue;
+            }
+            for (const key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    const sourceValue = source[key];
+                    const targetValue = result[key];
+                    if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
+                        result[key] = merge(targetValue, sourceValue);
+                    }
+                    else if (sourceValue !== undefined) {
+                        result[key] = sourceValue;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    /**
+     * Deep merge that creates a new object without mutating the original
+     * @param target - The target object
+     * @param sources - Source objects to merge from
+     * @returns A new merged object
+     */
+    function mergeDeep(target, ...sources) {
+        return merge({}, target, ...sources);
+    }
 
     /* eslint-disable security/detect-unsafe-regex */
     /**
@@ -2076,6 +2173,8 @@
         fontMap: fontMap,
         fontSizeMap: fontSizeMap,
         isValidColor: isValidColor,
+        merge: merge,
+        mergeDeep: mergeDeep,
         palette: palette,
         radiusMap: radiusMap,
         spacingMap: spacingMap
@@ -6604,6 +6703,8 @@
         getHudini: getHudini,
         getPWFromScene: getPWFromScene,
         isValidColor: isValidColor,
+        merge: merge,
+        mergeDeep: mergeDeep,
         palette: palette,
         radiusMap: radiusMap,
         spacingMap: spacingMap
@@ -7191,6 +7292,7 @@
             y <= bounds.bottomRight.y);
     };
 
+    /* eslint-disable sonarjs/no-identical-functions */
     /**
      * Events emitted by the TouchpadJoystick component.
      * @enum {string}
@@ -7211,7 +7313,7 @@
     const idGenerator = () => {
         const now = performance.now().toString(BASE36);
         const random = Math.random().toString(BASE36).substring(2);
-        return `${now}-${random}`;
+        return `${now}${random}`.replace(/[^a-zA-Z0-9]/g, '');
     };
     /**
      * A virtual joystick component for touch devices that provides analog input control.
@@ -7590,7 +7692,10 @@
          * @param {Phaser.Input.Pointer} pointer - The pointer that was released
          */
         onPointerUp(pointer) {
-            this.emitRelease();
+            // Only emit release if this is the same pointer that started the joystick
+            if (this.touchId === pointer.id) {
+                this.emitRelease();
+            }
             this.resetJoystick(pointer);
         }
         /**
@@ -7600,7 +7705,10 @@
          * @param {Phaser.Input.Pointer} pointer - The pointer that was cancelled
          */
         onPointerCancel(pointer) {
-            this.emitRelease();
+            // Only emit release if this is the same pointer that started the joystick
+            if (this.touchId === pointer.id) {
+                this.emitRelease();
+            }
             this.resetJoystick(pointer);
         }
         /**
@@ -7720,6 +7828,8 @@
     exports.isValidScene = isValidScene;
     exports.isWithinBounds = isWithinBounds;
     exports.loadFont = loadFont;
+    exports.merge = merge;
+    exports.mergeDeep = mergeDeep;
     exports.palette = palette;
     exports.radiusMap = radiusMap;
     exports.spacingMap = spacingMap;

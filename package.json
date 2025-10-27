@@ -21,9 +21,7 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "release": "pnpm build:all && pnpm changeset:publish",
-    "build-storybook": "pnpm -r build-storybook",
-    "storybook": "pnpm --filter \"./packages/**\" storybook & pnpm --filter \"./packages/phaser-toolkit-demo\" storybook"
+    "release": "pnpm build:all && pnpm changeset:publish"
   },
   "keywords": [
     "phaser",
@@ -49,8 +47,6 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
-    "@types/lodash": "^4.17.20",
-    "@types/lodash.merge": "^4.6.9",
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.41.0",
@@ -73,8 +69,7 @@
   },
   "packageManager": "pnpm@8.15.0",
   "dependencies": {
-    "lodash": "^4.17.21",
-    "lodash.merge": "^4.6.2"
+    "tslib": "^2.8.1"
   },
   "pnpm": {
     "overrides": {

@@ -1,0 +1,159 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Phaser Sound Studio Overview" description="Advanced audio management system for Phaser 3 games with sound effects and music control.">
+  <div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-yellow-600 to-yellow-800 rounded-lg p-8 text-white">
+      <h2 class="text-3xl font-bold mb-4">Phaser Sound Studio</h2>
+      <p class="text-lg mb-6">
+        Advanced audio management system for Phaser 3 games with sound effects and music control. 
+        Create immersive audio experiences for your games.
+      </p>
+      <div class="flex space-x-4">
+        <a href="/phaser-sound-studio/main" class="bg-white text-yellow-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          Explore Features
+        </a>
+        <a href="https://github.com/your-org/phaser-sound-studio" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-yellow-600 transition-colors">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Key Features</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎵</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Music Management</h4>
+          <p class="text-sm text-gray-600">Advanced music playback with crossfading and looping</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🔊</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Sound Effects</h4>
+          <p class="text-sm text-gray-600">3D positional audio and dynamic sound effects</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎚️</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Audio Controls</h4>
+          <p class="text-sm text-gray-600">Volume, pitch, and effect controls for all audio</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎧</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Spatial Audio</h4>
+          <p class="text-sm text-gray-600">3D positional audio with distance attenuation</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🔄</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Audio Pools</h4>
+          <p class="text-sm text-gray-600">Efficient audio pooling for performance optimization</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">⚡</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">High Performance</h4>
+          <p class="text-sm text-gray-600">Optimized for 60fps gameplay with minimal CPU usage</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audio Features -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Audio Features</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Music -->
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Music System</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• Crossfading between tracks</li>
+            <li>• Seamless looping</li>
+            <li>• Volume and fade controls</li>
+            <li>• Playlist management</li>
+            <li>• Background music mixing</li>
+          </ul>
+        </div>
+
+        <!-- Sound Effects -->
+        <div>
+          <h4 class="font-semibold text-gray-900 mb-3">Sound Effects</h4>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li>• 3D positional audio</li>
+            <li>• Distance attenuation</li>
+            <li>• Audio pooling system</li>
+            <li>• Dynamic volume adjustment</li>
+            <li>• Effect chaining</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Components -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-6">Components</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="/phaser-sound-studio/main" class="group p-4 border border-gray-200 rounded-lg hover:border-yellow-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🎵</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-yellow-600">Main Audio Manager</h4>
+          </div>
+          <p class="text-sm text-gray-600">Central audio management system with all features</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Code Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Quick Start</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { SoundStudio } from 'phaser-sound-studio';
+
+class GameScene extends Phaser.Scene {
+  create() {
+    // Initialize sound studio
+    const soundStudio = new SoundStudio(this);
+    
+    // Load and play background music
+    soundStudio.loadMusic('background', 'assets/music/background.mp3');
+    soundStudio.playMusic('background', { loop: true, volume: 0.5 });
+    
+    // Load and play sound effects
+    soundStudio.loadSound('jump', 'assets/sounds/jump.wav');
+    soundStudio.playSound('jump', { volume: 0.8 });
+    
+    // 3D positional audio
+    soundStudio.playSound3D('explosion', {
+      x: 400,
+      y: 300,
+      volume: 1.0,
+      maxDistance: 500
+    });
+  }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Installation</h3>
+      <div class="bg-gray-900 rounded-lg p-4 mb-4">
+        <pre class="text-sm text-gray-100"><code>npm install phaser-sound-studio</code></pre>
+      </div>
+      <p class="text-gray-600">
+        Phaser Sound Studio provides a complete audio solution for your Phaser 3 games with advanced features and excellent performance.
+      </p>
+    </div>
+  </div>
+</Layout>

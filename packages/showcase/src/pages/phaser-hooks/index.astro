@@ -1,0 +1,135 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Phaser Hooks Overview" description="React-like hooks for Phaser 3 game development with state management and lifecycle hooks.">
+  <div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-purple-600 to-purple-800 rounded-lg p-8 text-white">
+      <h2 class="text-3xl font-bold mb-4">Phaser Hooks</h2>
+      <p class="text-lg mb-6">
+        React-like hooks for Phaser 3 game development with state management and lifecycle hooks. 
+        Bring the power of React's component model to your Phaser games.
+      </p>
+      <div class="flex space-x-4">
+        <a href="/phaser-hooks/game" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          Explore Hooks
+        </a>
+        <a href="https://github.com/your-org/phaser-hooks" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-purple-600 transition-colors">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Key Features</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🪝</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">React-like Hooks</h4>
+          <p class="text-sm text-gray-600">Familiar hooks API for state management and side effects</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🌍</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Global State</h4>
+          <p class="text-sm text-gray-600">Shared state management across scenes and components</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🏠</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Local State</h4>
+          <p class="text-sm text-gray-600">Component-level state management with automatic updates</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">⚡</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Lifecycle Hooks</h4>
+          <p class="text-sm text-gray-600">useEffect, useUpdate, and other lifecycle management hooks</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">TypeScript Support</h4>
+          <p class="text-sm text-gray-600">Full TypeScript support with type-safe hooks</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🔄</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-2">Automatic Updates</h4>
+          <p class="text-sm text-gray-600">Components automatically re-render when state changes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hooks Overview -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-6">Available Hooks</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="/phaser-hooks/game" class="group p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🎮</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-purple-600">useGame</h4>
+          </div>
+          <p class="text-sm text-gray-600">Access the Phaser game instance and scene management</p>
+        </a>
+
+        <a href="/phaser-hooks/with-global-state" class="group p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🌍</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-purple-600">useGlobalState</h4>
+          </div>
+          <p class="text-sm text-gray-600">Global state management across your entire game</p>
+        </a>
+
+        <a href="/phaser-hooks/with-local-state" class="group p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-md transition-all">
+          <div class="flex items-center mb-2">
+            <span class="text-2xl mr-3">🏠</span>
+            <h4 class="font-semibold text-gray-900 group-hover:text-purple-600">useLocalState</h4>
+          </div>
+          <p class="text-sm text-gray-600">Component-level state with automatic re-rendering</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Code Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Quick Start</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import { useGame, useGlobalState, useLocalState } from 'phaser-hooks';
+
+class MyScene extends Phaser.Scene {
+  create() {
+    // Use hooks in your scene
+    const game = useGame(this);
+    const [score, setScore] = useGlobalState('score', 0);
+    const [health, setHealth] = useLocalState(this, 'health', 100);
+    
+    // State updates automatically trigger re-renders
+    setScore(score + 10);
+    setHealth(health - 5);
+  }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Installation</h3>
+      <div class="bg-gray-900 rounded-lg p-4 mb-4">
+        <pre class="text-sm text-gray-100"><code>npm install phaser-hooks</code></pre>
+      </div>
+      <p class="text-gray-600">
+        Phaser Hooks brings React's powerful state management to Phaser 3, making your games more maintainable and easier to develop.
+      </p>
+    </div>
+  </div>
+</Layout>

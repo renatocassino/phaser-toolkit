@@ -149,7 +149,7 @@ class MyScene extends Phaser.Scene {
 </Layout>
 
 <script>
-  import { fontIcons, IconKey, IconStyle, IconText, loadFont } from 'font-awesome-for-phaser';
+  import { fontIcons, type IconKey, type IconStyle, IconText, loadFont } from 'font-awesome-for-phaser';
   import { Color, FontSize } from 'phaser-wind';
 
   class FontAwesomeDemoScene extends Phaser.Scene {
@@ -217,18 +217,13 @@ class MyScene extends Phaser.Scene {
     // Load Font Awesome font
     await loadFont();
     
-    const gameConfig = (window as any).__phaserGameConfigs?.['font-awesome-for-phaser-main-demo'];
+    const gameConfig = (window as any).gameConfig;
     if (gameConfig) {
-      const game = new Phaser.Game({
+      console.log(gameConfig);
+      (window as any).game = new Phaser.Game({
         ...gameConfig,
         scene: [FontAwesomeDemoScene],
       });
-      
-      // Store the game instance
-      if (!(window as any).__phaserGames) {
-        (window as any).__phaserGames = {};
-      }
-      (window as any).__phaserGames['font-awesome-for-phaser-main-demo'] = game;
     }
   });
 </script>

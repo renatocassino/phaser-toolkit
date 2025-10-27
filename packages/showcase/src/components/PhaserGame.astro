@@ -1,18 +1,19 @@
 ---
 export interface Props {
-  id: string;
   width?: number;
   height?: number;
   className?: string;
 }
 
-const { id, width = 800, height = 600, className = "" } = Astro.props;
+const { width = 800, height = 600, className = "" } = Astro.props;
 ---
 
 <div class={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${className}`}>
   <h3 class="text-lg font-semibold text-gray-900 mb-4">Live Example</h3>
   <div 
-    id={id} 
+    id={'game-container'}
+    data-width={width}
+    data-height={height}
     class="w-full bg-gray-100 rounded border flex items-center justify-center"
     style={`height: ${height}px;`}
   >
@@ -25,30 +26,24 @@ const { id, width = 800, height = 600, className = "" } = Astro.props;
 
 <script>
   // This will be executed on the client side
-  import Phaser from 'phaser';
+  import * as Phaser from 'phaser';
   
-  // Clean up any existing game with this ID
-  const existingGame = (window as any).__phaserGames?.[id];
-  if (existingGame) {
-    existingGame.destroy(true);
+  const gameContainer = document.getElementById('game-container');
+  if (gameContainer) {
+    const width = gameContainer.getAttribute('data-width') ?? 1024;
+    const height = gameContainer.getAttribute('data-height') ?? 768;
+
+    // Clear the container content before initializing Phaser
+    gameContainer.innerHTML = '';
+
+    // This will be overridden by the specific component
+    (window as any).gameContainer = {
+      type: Phaser.AUTO,
+      width: parseInt(width as string),
+      height: parseInt(height as string),
+      parent: 'game-container',
+      backgroundColor: '#f3f4f6',
+      scene: []
+    };
   }
-  
-  // Initialize games registry if it doesn't exist
-  if (!(window as any).__phaserGames) {
-    (window as any).__phaserGames = {};
-  }
-  
-  // This will be overridden by the specific component
-  const gameConfig = {
-    type: Phaser.AUTO,
-    width: width,
-    height: height,
-    backgroundColor: '#f3f4f6',
-    parent: document.getElementById(id),
-    scene: []
-  };
-  
-  // Store the config for the specific component to use
-  (window as any).__phaserGameConfigs = (window as any).__phaserGameConfigs || {};
-  (window as any).__phaserGameConfigs[id] = gameConfig;
 </script>

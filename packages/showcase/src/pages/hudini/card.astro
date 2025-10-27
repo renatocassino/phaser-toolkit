@@ -175,7 +175,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
   // Initialize the game when the page loads
   document.addEventListener('DOMContentLoaded', () => {
-    const gameConfig = (window as any).__phaserGameConfigs?.['hudini-card-demo'];
+    const gameConfig = (window as any).gameConfig;
     if (gameConfig) {
       const game = new Phaser.Game({
         ...gameConfig,

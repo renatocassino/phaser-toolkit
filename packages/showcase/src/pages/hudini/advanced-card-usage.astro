@@ -25,7 +25,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
     </div>
 
     <!-- Live Example -->
-    <PhaserGame id="hudini-advanced-card-usage-demo" width={600} height={400} />
+    <PhaserGame width={600} height={400} />
 
     <!-- Usage Example -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -197,7 +197,7 @@ class AdvancedCardScene extends Phaser.Scene {
     // Load Font Awesome font
     await loadFont();
     
-    const gameConfig = (window as any).__phaserGameConfigs?.['hudini-advanced-card-usage-demo'];
+    const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
       const game = new Phaser.Game({
         ...gameConfig,

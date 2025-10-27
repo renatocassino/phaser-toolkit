@@ -26,7 +26,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
     </div>
 
     <!-- Live Example -->
-    <PhaserGame id="hudini-install-base-scene-demo" width={600} height={400} />
+    <PhaserGame width={600} height={400} />
 
     <!-- Usage Example -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -183,7 +183,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 
   // Initialize the game when the page loads
   document.addEventListener('DOMContentLoaded', () => {
-    const gameConfig = (window as any).__phaserGameConfigs?.['hudini-install-base-scene-demo'];
+    const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
       const game = new Phaser.Game({
         ...gameConfig,

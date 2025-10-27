@@ -26,7 +26,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
     </div>
 
     <!-- Live Example -->
-    <PhaserGame id="phaser-hooks-global-state-demo" width={800} height={600} />
+    <PhaserGame width={800} height={600} />
 
     <!-- Usage Example -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -231,7 +231,7 @@ class MenuScene extends Phaser.Scene {
 
   // Initialize the game when the page loads
   document.addEventListener('DOMContentLoaded', () => {
-    const gameConfig = (window as any).__phaserGameConfigs?.['phaser-hooks-global-state-demo'];
+    const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
       const game = new Phaser.Game({
         ...gameConfig,

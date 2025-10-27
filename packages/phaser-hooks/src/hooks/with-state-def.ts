@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable max-lines-per-function */
-import { merge } from '../utils/merge';
 import * as Phaser from 'phaser';
 
 import {
@@ -13,6 +12,7 @@ import {
   logError,
   logWarning,
 } from '../utils/logger';
+import { merge } from '../utils/merge';
 
 import { type HookState, type StateChangeCallback, type StatePatchUpdater, type DeepPartial } from './type';
 
@@ -236,7 +236,7 @@ const on = (
   }
 
   // Wrapper to remove the first argument (scene)
-  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown) => {
+  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown): void => {
     callback(newValue, oldValue);
   };
 
@@ -350,7 +350,7 @@ const once = (
   }
 
   // Wrapper to remove the first argument (scene)
-  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown) => {
+  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown): void => {
     callback(newValue, oldValue);
   };
 

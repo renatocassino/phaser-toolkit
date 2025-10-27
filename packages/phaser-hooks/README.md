@@ -52,7 +52,7 @@ this.unsubscribe();
 
 ### Key Benefits
 
-- ✅ **Cleaner API** - Less boilerplate, more productivity
+- ✅ **React-like patterns** - Hooks work just like React: same key = same state
 - ✅ **Type-safe** - Full TypeScript support with inference
 - ✅ **Memory safe** - Auto-cleanup prevents memory leaks
 - ✅ **Feature-rich** - Persistence, computed state, undo/redo, validation
@@ -121,6 +121,90 @@ class GameScene extends Phaser.Scene {
 
 **That's it!** You now have reactive, type-safe state management in your Phaser game.
 
+### Recommended: Create Custom Hooks
+
+**Just like React**, the real power comes from creating reusable hooks:
+```typescript
+// hooks/withPlayerState.ts
+import { withLocalState } from 'phaser-hooks';
+
+export function withPlayerState(scene: Phaser.Scene) {
+  return withLocalState(scene, 'player', {
+    hp: 100,
+    maxHp: 100,
+    level: 1,
+    exp: 0
+  });
+}
+
+// GameScene.ts
+import { withPlayerState } from './hooks/withPlayerState';
+
+class GameScene extends Phaser.Scene {
+  create() {
+    const player = withPlayerState(this); // Clean and reusable!
+    player.patch({ hp: 90 });
+  }
+}
+
+// HealthBar.ts - Access the SAME state!
+class HealthBar extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene) {
+    super(scene, 0, 0);
+    
+    const player = withPlayerState(scene); // Same state instance!
+    
+    player.on('change', (newPlayer) => {
+      this.updateDisplay(newPlayer.hp, newPlayer.maxHp);
+    });
+  }
+}
+```
+
+**Key insight:** Using the same `key` returns the same state instance, just like React hooks! This allows you to access state from anywhere: scenes, components, systems, etc.
+
+### Advanced: Hooks with Custom Methods
+```typescript
+// hooks/withPlayerState.ts
+export function withPlayerState(scene: Phaser.Scene) {
+  const state = withLocalState(scene, 'player', {
+    hp: 100,
+    maxHp: 100,
+    level: 1
+  });
+
+  return {
+    ...state,
+    
+    // Add domain-specific methods
+    takeDamage: (amount: number) => {
+      const current = state.get();
+      state.patch({ hp: Math.max(0, current.hp - amount) });
+    },
+    
+    heal: (amount: number) => {
+      const current = state.get();
+      state.patch({ hp: Math.min(current.maxHp, current.hp + amount) });
+    },
+    
+    levelUp: () => {
+      const current = state.get();
+      state.patch({ 
+        level: current.level + 1,
+        maxHp: current.maxHp + 10,
+        hp: current.maxHp + 10
+      });
+    }
+  };
+}
+
+// Usage
+const player = withPlayerState(this);
+player.takeDamage(30); // Clean, expressive API!
+player.heal(10);
+player.levelUp();
+```
+
 ### Next Steps
 
 - 📚 [Full documentation and examples](https://toolkit.cassino.dev/phaser-hooks)
@@ -129,430 +213,61 @@ class GameScene extends Phaser.Scene {
 
 ## Hook API Reference
 
-All hooks return a `HookState` object with the following methods:
+All hooks return a `HookState<T>` object with the following methods:
 
-| Method                     | Description                                          | Parameters                                | Returns                             |
-| -------------------------- | ---------------------------------------------------- | ----------------------------------------- | ----------------------------------- |
-| `get()`                    | Gets the current state value                         | None                                      | `T` - Current state value           |
-| `set(value)`               | Sets a new state value and triggers change listeners | `value: T \| ((currentState: T) => T)` - New value to set or updater function | `void`                              |
-| `patch(value)`             | Patches object state with partial updates            | `value: Partial<T> \| ((currentState: T) => Partial<T>)` - Partial object or updater function | `void`                              |
-| `on('change', callback)`   | Registers a callback for state changes               | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
-| `once('change', callback)` | Registers a callback that fires only once            | `event: 'change'`, `callback: () => void` | `() => void` - Unsubscribe function |
-| `off('change', callback)`  | Removes an event listener                            | `event: 'change'`, `callback: () => void` | `void`                              |
-| `clearListeners()`          | Removes all event listeners for this state           | None                                      | `void`                              |
+| Method | Description | Parameters | Returns |
+|--------|-------------|------------|---------|
+| `get()` | Gets the current state value | None | `T` - Current state value |
+| `set(value)` | Sets a new state value and triggers change listeners | `value: T \| ((current: T) => T)` | `void` |
+| `patch(value)` | Patches object state with partial updates (deep merge) | `value: Partial<T> \| ((current: T) => Partial<T>)` | `void` |
+| `on('change', callback)` | Registers a callback for state changes | `callback: (newValue: T, oldValue: T) => void` | `() => void` - Unsubscribe function |
+| `once('change', callback)` | Registers a callback that fires only once | `callback: (newValue: T, oldValue: T) => void` | `() => void` - Unsubscribe function |
+| `off('change', callback)` | Removes a specific event listener | `callback: (newValue: T, oldValue: T) => void` | `void` |
+| `clearListeners()` | Removes all event listeners for this state | None | `void` |
 
-### State Updater Functions
+### Notes
 
-The `set()` method supports both direct values and updater functions, similar to React's `useState`:
+- **`set()`** accepts either a value or an updater function for safe updates
+- **`patch()`** only works with object states and performs deep merging
+- **`on()`/`once()`/`off()`** only support the `'change'` event
+- **`off()`** requires the exact same function reference passed to `on()`
 
+## Core Concepts
+
+### Updater Functions
+
+Both `set()` and `patch()` accept updater functions for race-condition-safe updates:
 ```typescript
-// Direct value assignment
-playerState.set({ hp: 100, level: 5 });
+// Direct value
+player.set({ hp: 90, level: 2 });
 
-// Using updater function (receives current state, returns new state)
-playerState.set((currentState) => ({ 
-  ...currentState, 
-  level: currentState.level + 1 
-}));
+// Updater function (recommended when based on current state)
+player.set(current => ({ ...current, hp: current.hp - 10 }));
 
-// Equivalent to:
-const newState = { ...playerState.get(), level: playerState.get().level + 1 };
-playerState.set(newState);
+// Patch with updater
+player.patch(current => ({ hp: current.hp + 20 }));
 ```
 
-**Benefits of updater functions:**
-- ✅ **Immutable updates**: Always work with the latest state
-- ✅ **Race condition safe**: No risk of using stale state
-- ✅ **Cleaner code**: No need to manually get current state
-- ✅ **Functional approach**: Encourages immutable state patterns
+**Why use updater functions?** They always work with the latest state, preventing race conditions in async scenarios.
 
-**Example with complex state updates:**
+---
 
+### `set()` vs `patch()`
+
+- **`set()`** - Full state replacement
+- **`patch()`** - Partial update with deep merge (only for objects)
 ```typescript
-// Instead of this verbose approach:
-const currentPlayer = playerState.get();
-playerState.set({
-  ...currentPlayer,
-  hp: Math.min(currentPlayer.hp + 20, currentPlayer.maxHp),
-  level: currentPlayer.exp >= 100 ? currentPlayer.level + 1 : currentPlayer.level,
-  exp: currentPlayer.exp >= 100 ? 0 : currentPlayer.exp + 10
+const player = withLocalState(this, 'player', { 
+  hp: 100, 
+  maxHp: 100, 
+  level: 1 
 });
 
-// Use this clean updater function:
-playerState.set((player) => ({
-  ...player,
-  hp: Math.min(player.hp + 20, player.maxHp),
-  level: player.exp >= 100 ? player.level + 1 : player.level,
-  exp: player.exp >= 100 ? 0 : player.exp + 10
-}));
+player.set({ hp: 90, maxHp: 100, level: 1 }); // Must provide all properties
+player.patch({ hp: 90 }); // Only updates hp, preserves maxHp and level
 ```
 
-### State Patching
-
-The `patch()` method allows you to update only specific properties of an object state, similar to React's state updates:
-
-```typescript
-// Direct partial object patching
-playerState.patch({ life: 90 });
-// Only updates 'life', preserves other properties
-
-// Using updater function for patching
-playerState.patch((currentState) => ({
-  life: currentState.life - 10,
-  level: currentState.level + 1
-}));
-// Updates multiple properties based on current state
-```
-
-**Benefits of patching:**
-- ✅ **Partial updates**: Only change the properties you need
-- ✅ **Preserves other data**: Unchanged properties remain untouched
-- ✅ **Deep merging**: Works with nested objects using lodash.merge
-- ✅ **Type safety**: TypeScript ensures you only patch valid properties
-- ✅ **Performance**: More efficient than full object replacement
-
-**Example with complex state updates:**
-
-```typescript
-// Instead of this verbose approach:
-const currentPlayer = playerState.get();
-playerState.set({
-  ...currentPlayer,
-  stats: {
-    ...currentPlayer.stats,
-    hp: currentPlayer.stats.hp - 20,
-    mp: currentPlayer.stats.mp + 10
-  },
-  position: {
-    ...currentPlayer.position,
-    x: currentPlayer.position.x + 5
-  }
-});
-
-// Use this clean patch approach:
-playerState.patch({
-  stats: {
-    hp: playerState.get().stats.hp - 20,
-    mp: playerState.get().stats.mp + 10
-  },
-  position: {
-    x: playerState.get().position.x + 5
-  }
-});
-
-// Or even cleaner with updater function:
-playerState.patch((player) => ({
-  stats: {
-    hp: player.stats.hp - 20,
-    mp: player.stats.mp + 10
-  },
-  position: {
-    x: player.position.x + 5
-  }
-}));
-```
-
-**Deep object patching:**
-
-```typescript
-// Patch deeply nested properties
-gameState.patch({
-  player: {
-    character: {
-      stats: {
-        primary: {
-          strength: 15
-        }
-      }
-    }
-  }
-});
-// Only updates the strength value, preserves all other nested properties
-```
-
-**Array property patching:**
-
-```typescript
-// Update array properties
-inventoryState.patch({
-  items: [...inventoryState.get().items, 'new-item']
-});
-
-// Or with updater function
-inventoryState.patch((inventory) => ({
-  items: [...inventory.items, 'new-item']
-}));
-```
-
-### Special Hook Methods
-
-Some hooks have additional methods beyond the standard `HookState` interface:
-
-#### `withUndoableState` Additional Methods:
-
-| Method           | Description                   | Parameters | Returns                    |
-| ---------------- | ----------------------------- | ---------- | -------------------------- |
-| `undo()`         | Reverts to the previous state | None       | `boolean` - Success status |
-| `redo()`         | Advances to the next state    | None       | `boolean` - Success status |
-| `canUndo()`      | Checks if undo is available   | None       | `boolean`                  |
-| `canRedo()`      | Checks if redo is available   | None       | `boolean`                  |
-| `clearHistory()` | Clears the undo/redo history  | None       | `void`                     |
-
-## Available Hooks
-
-### Core Hooks
-
-#### `withLocalState`
-
-Scene-specific state management that gets cleaned up when the scene is destroyed.
-
-```typescript
-type PlayerData = {
-  hp: number;
-  level: number;
-  exp: number;
-};
-
-const playerState = withLocalState<PlayerData>(scene, 'player', {
-  hp: 100,
-  level: 1,
-  exp: 0,
-});
-```
-
-#### `withGlobalState`
-
-Application-wide state that persists across all scenes.
-
-```typescript
-type GameSettings = {
-  soundVolume: number;
-  musicEnabled: true;
-};
-
-const settingsState = withGlobalState<GameSettings>(scene, 'settings', {
-  soundVolume: 0.8,
-  musicEnabled: true,
-});
-```
-
-### Enhanced Hooks
-
-#### `withPersistentState`
-
-State with automatic localStorage persistence.
-
-```typescript
-type UserSettings = {
-  volume: number;
-  difficulty: 'easy' | 'normal' | 'hard';
-};
-
-const persistentSettings = withPersistentState<UserSettings>(
-  'settings',
-  {
-    volume: 0.8,
-    difficulty: 'normal',
-  },
-  'local' // If you want only in sessionStorage, you can set 'session'
-);
-```
-
-#### `withComputedState`
-
-Derived state that automatically updates when source state changes.
-
-```typescript
-const healthPercentage = withComputedState(
-  scene,
-  'healthPercent',
-  playerState,
-  player => (player.hp / player.maxHp) * 100
-);
-```
-
-#### `withUndoableState`
-
-State with undo/redo functionality.
-
-```typescript
-const undoableText = withUndoableState<string>(scene, 'text', 'initial', 10);
-
-undoableText.set('first change');
-undoableText.set('second change');
-undoableText.undo(); // Back to 'first change'
-undoableText.redo(); // Forward to 'second change'
-```
-
-#### `withDebouncedState`
-
-State with debounced updates to prevent rapid successive changes.
-
-```typescript
-const debouncedSearch = withDebouncedState<string>(scene, 'search', '', 300);
-
-// These rapid calls will be debounced
-debouncedSearch.set('a');
-debouncedSearch.set('ab');
-debouncedSearch.set('abc'); // Only this final value will be set after 300ms
-```
-
-### Utilities
-
-#### `validators`
-
-Pre-built validation functions for common patterns.
-
-```typescript
-import { validators } from 'phaser-hooks';
-
-// Number range validation (0-1000)
-const scoreState = withGlobalState<number>(scene, 'score', 0, {
-  validator: validators.numberRange(0, 1000),
-});
-
-// Non-empty string validation
-const nameState = withGlobalState<string>(scene, 'name', '', {
-  validator: validators.nonEmptyString,
-});
-
-// Array length validation (2-4 items)
-const inventoryState = withLocalState<string[]>(scene, 'inventory', [], {
-  validator: validators.arrayLength(2, 4),
-});
-
-// One of allowed values validation
-const difficultyState = withGlobalState<'easy' | 'normal' | 'hard'>(
-  scene,
-  'difficulty',
-  'normal',
-  {
-    validator: validators.oneOf(['easy', 'normal', 'hard']),
-  }
-);
-
-// Custom validator example
-const healthState = withLocalState<number>(scene, 'health', 100, {
-  validator: value => {
-    const health = value as number;
-    if (health < 0) return 'Health cannot be negative';
-    if (health > 100) return 'Health cannot exceed 100';
-    return true; // Valid
-  },
-});
-```
-
-#### `batchStateUpdates`
-
-Utility for batching multiple state updates.
-
-```typescript
-batchStateUpdates(() => {
-  playerState.set({ ...playerState.get(), hp: 90 });
-  inventoryState.set([...inventoryState.get(), 'new-item']);
-  scoreState.set(scoreState.get() + 100);
-});
-```
-
-## Basic Usage Example
-
-```typescript
-import { withLocalState, withGlobalState } from 'phaser-hooks';
-
-export class GameScene extends Phaser.Scene {
-  create() {
-    // Local state - specific to this scene
-    const playerState = withLocalState<{ hp: number; mp: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        mp: 50,
-      }
-    );
-
-    // Global state - persists across scenes
-    const gameState = withGlobalState<{ score: number; level: number }>(
-      'game',
-      {
-        score: 0,
-        level: 1,
-      }
-    );
-
-    // Listen to changes
-    const ubsubscribe = playerState.on('change', (newPlayer, oldPlayer) => {
-      console.log('Player health changed:', newPlayer.hp);
-    });
-
-    // Update state - using patch method (recommended for partial updates)
-    playerState.patch({ hp: playerState.get().hp - 10 });
-
-    // Alternative: using updater function with set
-    // playerState.set((currentPlayer) => ({
-    //   ...currentPlayer,
-    //   hp: currentPlayer.hp - 10,
-    // }));
-
-    // Alternative: direct value assignment
-    // playerState.set({
-    //   ...playerState.get(),
-    //   hp: playerState.get().hp - 10,
-    // });
-  }
-}
-```
-
-## Advanced Example
-
-```typescript
-import {
-  withPersistentState,
-  withComputedState,
-  withUndoableState,
-  validators,
-} from 'phaser-hooks';
-
-export class AdvancedGameScene extends Phaser.Scene {
-  create() {
-    // Persistent settings
-    const settings = withPersistentState<GameSettings>('settings', {
-      soundVolume: 0.8,
-      musicVolume: 0.6,
-      difficulty: 'normal',
-    });
-
-    // Player state with validation
-    const player = withLocalState<PlayerData>(
-      this,
-      'player',
-      {
-        hp: 100,
-        maxHp: 100,
-        level: 1,
-      },
-      {
-        validator: validators.oneOf(['easy', 'normal', 'hard']),
-      }
-    );
-
-    // Computed health percentage
-    const healthPercent = withComputedState(this, 'healthPercent', player, p =>
-      Math.round((p.hp / p.maxHp) * 100)
-    );
-
-    // Undoable action system
-    const actionHistory = withUndoableState<string>(this, 'actions', 'start');
-
-    // Use the states
-    console.log('Health:', healthPercent.get() + '%');
-
-    if (healthPercent.get() < 20) {
-      console.log('Low health warning!');
-    }
-  }
-}
-```
+**Rule of thumb:** Use `patch()` for object states when you only need to update specific properties.
 
 ### Composing Hooks
 
@@ -615,307 +330,6 @@ energy.on('change', () => {
 });
 ```
 
-## Unsubscribe Events
-
-When you subscribe to state changes using `.on('change', callback)`, it's crucial to properly unsubscribe to prevent memory leaks and unexpected behavior. Phaser Hooks provides two ways for unsubscribing from events.
-
-### Method 1: Using the Return Value from `.on('change')`
-
-The `.on('change', callback)` method returns an unsubscribe function that you can call to remove the listener:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', {
-      hp: 100,
-    });
-
-    // Subscribe to changes and get unsubscribe function
-    const unsubscribe = playerState.on('change', (newPlayer, oldPlayer) => {
-      console.log('Player health changed:', newPlayer.hp);
-    });
-
-    this.add
-      .text(centerX, centerY, 'Go to another scene')
-      .setInteractive()
-      .on('pointerdown', () => {
-        // Later, unsubscribe when needed
-        unsubscribe();
-
-        // To switch to another scene in Phaser, use:
-        this.scene.start('OtherSceneKey');
-      });
-  }
-}
-```
-
-### Method 2: Using `.off('change', callback)`
-
-You can also unsubscribe by passing the same callback function to `.off('change', callback)`:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  private healthCallback?: (newPlayer: any, oldPlayer: any) => void;
-
-  create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', {
-      hp: 100,
-    });
-
-    // Define callback function
-    this.healthCallback = (newPlayer, oldPlayer) => {
-      console.log('Player health changed:', newPlayer.hp);
-    };
-
-    // Subscribe to changes
-    playerState.on('change', this.healthCallback);
-
-    this.add
-      .text(centerX, centerY, 'Go to another scene')
-      .setInteractive()
-      .on('pointerdown', () => {
-        // Later, unsubscribe when needed
-        playerState.off('change', this.healthCallback);
-
-        // To switch to another scene in Phaser, use:
-        this.scene.start('OtherSceneKey');
-      });
-  }
-}
-```
-
-> **Note:** When using `.off`, you must pass the exact same function instance that was used with `.on`. This means you cannot use an inline closure or anonymous function—use a named function or store the callback reference to unsubscribe properly.
-
-### Best Practices for Scene Cleanup
-
-**⚠️ IMPORTANT DISCLAIMER**: If you don't clean up event listeners when leaving a scene, you may encounter:
-
-- Memory leaks
-- Unexpected behavior when returning to the scene
-- Callbacks firing on destroyed or inactive scenes
-- Performance issues over time
-
-Always unsubscribe from events when transitioning between scenes:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  private unsubscribeFunctions: (() => void)[] = [];
-
-  create() {
-    const playerState = withLocalState<{ hp: number }>(this, 'player', {
-      hp: 100,
-    });
-    const scoreState = withGlobalState<number>(this, 'score', 0);
-
-    // Store unsubscribe functions
-    this.unsubscribeFunctions.push(
-      playerState.on('change', newPlayer => {
-        console.log('Player updated:', newPlayer);
-      })
-    );
-
-    this.unsubscribeFunctions.push(
-      scoreState.on('change', newScore => {
-        console.log('Score updated:', newScore);
-      })
-    );
-  }
-
-  // Clean up when scene is destroyed or when transitioning
-  shutdown() {
-    // Unsubscribe from all events
-    this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
-    this.unsubscribeFunctions = [];
-  }
-
-  // Or clean up before transitioning to another scene
-  goToNextScene() {
-    // Clean up before changing scenes
-    this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
-    this.unsubscribeFunctions = [];
-
-    // Then transition
-    this.scene.start('NextScene');
-  }
-}
-```
-
-### Using `clearListeners()` for Easy Cleanup
-
-For easier cleanup, you can use the `clearListeners()` method to remove all event listeners at once:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  private playerState: HookState<{ hp: number }>;
-  private scoreState: HookState<number>;
-
-  create() {
-    this.playerState = withLocalState<{ hp: number }>(this, 'player', { hp: 100 });
-    this.scoreState = withGlobalState<number>(this, 'score', 0);
-
-    // Add listeners
-    this.playerState.on('change', (newPlayer) => {
-      console.log('Player updated:', newPlayer);
-    });
-
-    this.scoreState.on('change', (newScore) => {
-      console.log('Score updated:', newScore);
-    });
-  }
-
-  shutdown() {
-    // Clear all listeners at once - much easier!
-    this.playerState.clearListeners();
-    this.scoreState.clearListeners();
-  }
-}
-```
-
-#### Important Notes about `clearListeners()`:
-
-- **`withLocalState`**: Automatically cleans up when the scene is destroyed, but you can still use `clearListeners()` for manual cleanup
-- **`withGlobalState`**: **Requires manual cleanup** since global state persists across scenes. Always call `clearListeners()` when the scene is destroyed:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  private globalState: HookState<GameSettings>;
-
-  create() {
-    this.globalState = withGlobalState<GameSettings>(this, 'settings', defaultSettings);
-    
-    this.globalState.on('change', (newSettings) => {
-      console.log('Settings updated:', newSettings);
-    });
-
-    // IMPORTANT: Clean up global state listeners when scene is destroyed
-    this.events.once('destroy', () => {
-      this.globalState.clearListeners();
-    });
-  }
-}
-```
-
-### Multiple Subscriptions Example
-
-You can have multiple listeners for the same state:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const playerState = withLocalState<{ hp: number; level: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        level: 1,
-      }
-    );
-
-    // Multiple listeners for the same state
-    const unsubscribeHealth = playerState.on('change', newPlayer => {
-      console.log('Health changed:', newPlayer.hp);
-    });
-
-    const unsubscribeLevel = playerState.on('change', newPlayer => {
-      console.log('Level changed:', newPlayer.level);
-    });
-
-    // Unsubscribe specific listeners
-    unsubscribeHealth(); // Only removes health listener
-    // unsubscribeLevel still active
-  }
-}
-```
-
-### Using `.once()` for One-Time Events
-
-The `.once()` method registers a callback that will only fire once, then automatically unsubscribes:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const playerState = withLocalState<{ hp: number; level: number }>(
-      this,
-      'player',
-      {
-        hp: 100,
-        level: 1,
-      }
-    );
-
-    // One-time listener - fires only once then auto-unsubscribes
-    const unsubscribeOnce = playerState.once('change', newPlayer => {
-      console.log('First level up detected!', newPlayer.level);
-      // This callback will only run once, even if the state changes multiple times
-    });
-
-    // You can still manually unsubscribe if needed before it fires
-    // unsubscribeOnce();
-
-    // Simulate level up
-    playerState.set({ hp: 100, level: 2 }); // Fires the once callback
-    playerState.set({ hp: 100, level: 3 }); // Won't fire the once callback again
-  }
-}
-```
-
-### Validation Error Handling
-
-When using validators, invalid values will throw errors. Handle them appropriately:
-
-```typescript
-export class GameScene extends Phaser.Scene {
-  create() {
-    const healthState = withLocalState<number>(this, 'health', 100, {
-      validator: validators.numberRange(0, 100),
-    });
-
-    try {
-      healthState.set(150); // This will throw an error: "Value must be between 0 and 100"
-    } catch (error) {
-      console.error('Invalid health value:', error.message);
-      // Handle the error appropriately
-    }
-
-    // Valid value
-    healthState.set(75); // This works fine
-  }
-}
-```
-
-### Why use this pattern?
-
-✅ Keeps your scene code focused on intent (e.g., energy.get()) rather than structure (player.get().energy)
-
-✅ Allows centralized validation, side effects, or formatting for specific state slices
-
-✅ Makes it easier to refactor or share logic across scenes and systems
-
-You can extend this idea to compose computed hooks, persistent hooks, undoable hooks, and more — everything works with the same API.
-
-## TypeScript Support
-
-All hooks are fully typed and provide excellent TypeScript support:
-
-```typescript
-interface PlayerData {
-  hp: number;
-  maxHp: number;
-  level: number;
-  inventory: string[];
-}
-
-const playerState = withLocalState<PlayerData>(scene, 'player', {
-  hp: 100,
-  maxHp: 100,
-  level: 1,
-  inventory: [],
-});
-
-// TypeScript knows the exact type
-const currentPlayer: PlayerData = playerState.get();
-```
-
 ## Debug Mode / Dev tool
 
 Phaser Hooks includes a built-in debug mode that provides detailed logging for state operations. This is extremely useful for development and troubleshooting state management issues.
@@ -951,26 +365,6 @@ export class GameScene extends Phaser.Scene {
   }
 }
 ```
-
-### What Debug Mode Shows
-
-When debug mode is enabled, you'll see detailed logs in your browser's developer console for:
-
-- **State Initialization**: When a state is first created
-- **State Updates**: When values are set with old and new values
-- **State Retrieval**: When values are accessed
-- **Event Listeners**: When listeners are added, removed, or cleared
-- **Validation**: When validators are applied and their results
-- **Errors**: Detailed error information with context
-
-### Viewing Debug Logs
-
-Debug logs appear in your browser's developer console. To view them:
-
-1. Open your browser's Developer Tools (F12 or right-click → Inspect)
-2. Go to the **Console** tab
-3. Run your Phaser game
-4. Look for logs prefixed with `[phaser-hooks]`
 
 ![Debug Console Screenshot](data/debug-mode.png)
 *Screenshot showing debug logs in browser console*

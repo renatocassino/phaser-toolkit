@@ -1,4 +1,4 @@
-<p align="center">
+<p align="center" style="margin: 0 auto;">
   <img src="data/image.png" alt="logo" style="max-width: 300px">
 </p>
 
@@ -6,59 +6,58 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-# Phaser Hooks (like "use" hooks in React)
+# Phaser Hooks
 
-A comprehensive state management library for Phaser games with React-like hooks pattern.
+React-like state management for Phaser 3 games. Simple, type-safe, and powerful.
 
 ## Why phaser-hooks?
 
-Phaser already gives you two ways of storing state:
-
-- `registry` → global state across the game
-- `data` → local state inside a scene or game object
-
-They work, but the API is a bit… verbose:
+Phaser gives you `registry` (global) and `data` (local) for state management. They work, but the API is verbose and error-prone:
 
 ```ts
-// Using registry (global)
-this.game.registry.set('volume', 0.5); // too boring
+// Phaser's built-in way - this == scene
+this.game.registry.set('volume', 0.5);
 const volume = this.game.registry.get('volume');
+
 this.game.registry.events.on('changedata-volume', (game, value) => {
   console.log('Volume changed to', value);
 });
 
-// Using scene.data (local)
-this.data.set('score', 42); // too boring too
+this.data.set('score', 42);
 const score = this.data.get('score');
 
-const onChangeFn = (scene, value) => {
+this.onChangeFn = (scene, value) => {
   console.log('Score updated to', value);
 };
-this.data.events.on('changedata-score', onChangeFn); // If you pass an anonymous function, you cannot unsubscribe :(
+this.data.events.on('changedata-score', this.onChangeFn); // If you pass an anonymous function, you cannot unsubscribe
 
 // when move to another scene, you must unsubscribe. Boring and easy to forget
-this.data.events.off('changeset-score', onChangeFn);
+this.data.events.off('changedata-score', this.onChangeFn);
 ```
 
-With _phaser-hooks_, you get a simple, React-like API:
+**With _phaser-hooks_, you get a simple, React-like API:**
 
 ```ts
-// Global state
-const volume = withGlobalState(scene, 'volume', 0.5); // woow! awesome
-volume.get(); // 0.5
+const volume = withGlobalState(this, 'volume', 0.5);
+volume.get(); // Returns: 0.5
 volume.set(0.8); // updates value
 
-const unsubscribe = volume.on('change', v =>
-  console.log('Volume changed →', v)
-); // Nice callback in event <3 - Return the easy unsubscribe function
+this.unsubscribe = volume.on('change', () => {
+  console.log('Volume changed →', volume.get())
+}); // Returns the easy unsubscribe function
 
-// when move to another scene, just call :)
-unsubscribe();
-
-// Persisted state (localStorage / sessionStorage)
-const score = withPersistState(scene, 'score', 0, { storage: 'local' }); // Wow! Saving in localStorage
-score.set(100); // Update localStorage!! Wow! I love this lib <3
+// When changing scenes
+this.unsubscribe();
 ```
+
+### Key Benefits
+
+- ✅ **Cleaner API** - Less boilerplate, more productivity
+- ✅ **Type-safe** - Full TypeScript support with inference
+- ✅ **Memory safe** - Auto-cleanup prevents memory leaks
+- ✅ **Feature-rich** - Persistence, computed state, undo/redo, validation
+- ✅ **Familiar** - React-like patterns for easier onboarding
+
 
 ## Installation
 
@@ -70,13 +69,7 @@ pnpm add phaser-hooks
 yarn add phaser-hooks
 ```
 
-## Why "with" instead of "use"?
-
-While React hooks traditionally use the "use" prefix (e.g., useState, useEffect), this library intentionally uses "with" to avoid linting issues. Many linting configurations, including ESLint's built-in hooks rules, expect functions starting with "use" to be used only within React components and in .jsx/.tsx files.
-
-Since this library is designed to work with Phaser games, which typically use plain TypeScript/JavaScript files (.ts/.js), using the "with" prefix helps avoid false positives from linters while maintaining a clear and consistent naming convention that indicates the hook-like pattern these functions follow.
-
-This approach allows you to use these state management utilities in your Phaser games without having to modify your linting configuration or suppress warnings.
+> **Note:** This library uses "with" prefix (e.g., `withLocalState`) instead of "use" to avoid ESLint warnings in `.ts` files.
 
 ## Hook API Reference
 

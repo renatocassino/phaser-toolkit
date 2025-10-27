@@ -15,17 +15,80 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <style>
+      .sidebar-collapsed {
+        width: 4rem !important;
+      }
+      
+      .sidebar-collapsed .sidebar-content {
+        opacity: 0;
+        transform: translateX(-100%);
+        pointer-events: none;
+      }
+      
+      .sidebar-collapsed .sidebar-toggle {
+        transform: rotate(180deg);
+      }
+      
+      .sidebar-content {
+        transition: all 0.3s ease-in-out;
+      }
+      
+      .sidebar-toggle {
+        transition: transform 0.3s ease-in-out;
+      }
+      
+      .sidebar {
+        transition: width 0.3s ease-in-out;
+      }
+
+      /* Category collapse styles */
+      .category-collapsed .category-links {
+        display: none;
+      }
+      
+      .category-toggle {
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s ease-in-out;
+      }
+      
+      .category-toggle:hover {
+        background-color: #f3f4f6;
+      }
+      
+      .category-toggle-icon {
+        transition: transform 0.2s ease-in-out;
+        display: inline-block;
+        margin-left: 0.5rem;
+      }
+      
+      .category-collapsed .category-toggle-icon {
+        transform: rotate(-90deg);
+      }
+      
+      .category-links {
+        transition: all 0.2s ease-in-out;
+      }
+    </style>
   </head>
   <body class="bg-gray-50 text-gray-900">
     <div class="flex h-screen">
       <!-- Sidebar -->
-      <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0 flex flex-col">
-        <div class="p-6 border-b border-gray-200 flex-shrink-0">
-          <h1 class="text-xl font-bold text-gray-900">Phaser Toolkit</h1>
-          <p class="text-sm text-gray-600 mt-1">Component Showcase</p>
+      <aside id="sidebar" class="sidebar w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0 flex flex-col">
+        <div class="p-6 border-b border-gray-200 flex-shrink-0 flex items-center justify-between">
+          <div class="sidebar-content">
+            <h1 id="sidebar-title" class="text-xl font-bold text-gray-900 cursor-pointer hover:text-gray-700 transition-colors duration-200">Phaser Toolkit</h1>
+            <p class="text-sm text-gray-600 mt-1">Component Showcase</p>
+          </div>
+          <button id="sidebar-toggle" class="sidebar-toggle p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200" aria-label="Toggle sidebar">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+            </svg>
+          </button>
         </div>
         
-        <nav class="p-4 space-y-2 overflow-y-auto flex-1">
+        <nav class="sidebar-content p-4 space-y-2 overflow-y-auto flex-1">
           <!-- Main Navigation -->
           <div class="mb-4">
             <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</div>
@@ -36,98 +99,128 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
 
           <!-- Hudini Components -->
           <div class="mb-4">
-            <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hudini</div>
-            <a href="/hudini" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              📋 Overview
-            </a>
-            <a href="/hudini/card" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🃏 Card
-            </a>
-            <a href="/hudini/text-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🔘 Text Button
-            </a>
-            <a href="/hudini/icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🎯 Icon Button
-            </a>
-            <a href="/hudini/flat-icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🔲 Flat Icon Button
-            </a>
-            <a href="/hudini/section-header" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              📑 Section Header
-            </a>
-            <a href="/hudini/circular-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              ⭕ Circular Progress
-            </a>
-            <a href="/hudini/linear-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              📊 Linear Progress
-            </a>
-            <a href="/hudini/radial-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🎯 Radial Progress
-            </a>
-            <a href="/hudini/column" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              📦 Column
-            </a>
-            <a href="/hudini/row" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              📋 Row
-            </a>
-            <a href="/hudini/sized-box" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              📏 Sized Box
-            </a>
+            <div class="category-toggle px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-lg" data-category="hudini">
+              Hudini
+              <span class="category-toggle-icon">▼</span>
+            </div>
+            <div class="category-links" data-category="hudini">
+              <a href="/hudini" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                📋 Overview
+              </a>
+              <a href="/hudini/card" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🃏 Card
+              </a>
+              <a href="/hudini/text-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🔘 Text Button
+              </a>
+              <a href="/hudini/icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🎯 Icon Button
+              </a>
+              <a href="/hudini/flat-icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🔲 Flat Icon Button
+              </a>
+              <a href="/hudini/section-header" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                📑 Section Header
+              </a>
+              <a href="/hudini/circular-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                ⭕ Circular Progress
+              </a>
+              <a href="/hudini/linear-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                📊 Linear Progress
+              </a>
+              <a href="/hudini/radial-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🎯 Radial Progress
+              </a>
+              <a href="/hudini/column" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                📦 Column
+              </a>
+              <a href="/hudini/row" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                📋 Row
+              </a>
+              <a href="/hudini/sized-box" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                📏 Sized Box
+              </a>
+            </div>
           </div>
 
           <!-- Phaser Wind Components -->
           <div class="mb-4">
-            <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Phaser Wind</div>
-            <a href="/phaser-wind" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🌪️ Overview
-            </a>
-            <a href="/phaser-wind/button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🔘 Button
-            </a>
+            <div class="category-toggle px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-lg" data-category="phaser-wind">
+              Phaser Wind
+              <span class="category-toggle-icon">▼</span>
+            </div>
+            <div class="category-links" data-category="phaser-wind">
+              <a href="/phaser-wind" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🌪️ Overview
+              </a>
+              <a href="/phaser-wind/button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🔘 Button
+              </a>
+            </div>
           </div>
 
           <!-- Phaser Hooks -->
           <div class="mb-4">
-            <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Phaser Hooks</div>
-            <a href="/phaser-hooks" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🪝 Overview
-            </a>
-            <a href="/phaser-hooks/game" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🎮 Game
-            </a>
-            <a href="/phaser-hooks/with-global-state" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🌍 Global State
-            </a>
-            <a href="/phaser-hooks/with-local-state" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🏠 Local State
-            </a>
+            <div class="category-toggle px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-lg" data-category="phaser-hooks">
+              Phaser Hooks
+              <span class="category-toggle-icon">▼</span>
+            </div>
+            <div class="category-links" data-category="phaser-hooks">
+              <a href="/phaser-hooks" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🪝 Overview
+              </a>
+              <a href="/phaser-hooks/game" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🎮 Game
+              </a>
+              <a href="/phaser-hooks/with-global-state" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🌍 Global State
+              </a>
+              <a href="/phaser-hooks/with-local-state" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🏠 Local State
+              </a>
+            </div>
           </div>
 
           <!-- Phaser Sound Studio -->
           <div class="mb-4">
-            <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Sound Studio</div>
-            <a href="/phaser-sound-studio" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🎵 Overview
-            </a>
+            <div class="category-toggle px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-lg" data-category="sound-studio">
+              Sound Studio
+              <span class="category-toggle-icon">▼</span>
+            </div>
+            <div class="category-links" data-category="sound-studio">
+              <a href="/phaser-sound-studio" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🎵 Overview
+              </a>
+            </div>
           </div>
 
           <!-- Phaser Virtual Joystick -->
           <div class="mb-4">
-            <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Virtual Joystick</div>
-            <a href="/phaser-virtual-joystick" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🕹️ Overview
-            </a>
-            <a href="/phaser-virtual-joystick/default" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🎮 Default
-            </a>
+            <div class="category-toggle px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-lg" data-category="virtual-joystick">
+              Virtual Joystick
+              <span class="category-toggle-icon">▼</span>
+            </div>
+            <div class="category-links" data-category="virtual-joystick">
+              <a href="/phaser-virtual-joystick" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🕹️ Overview
+              </a>
+              <a href="/phaser-virtual-joystick/default" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🎮 Default
+              </a>
+            </div>
           </div>
 
           <!-- Font Awesome for Phaser -->
           <div class="mb-4">
-            <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Font Awesome</div>
-            <a href="/font-awesome-for-phaser" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
-              🎨 Overview
-            </a>
+            <div class="category-toggle px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-lg" data-category="font-awesome">
+              Font Awesome
+              <span class="category-toggle-icon">▼</span>
+            </div>
+            <div class="category-links" data-category="font-awesome">
+              <a href="/font-awesome-for-phaser" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+                🎨 Overview
+              </a>
+            </div>
           </div>
         </nav>
       </aside>
@@ -144,5 +237,60 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
         </div>
       </main>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const toggleButton = document.getElementById('sidebar-toggle');
+        const titleButton = document.getElementById('sidebar-title');
+        
+        // Função para alternar o estado da sidebar
+        function toggleSidebar() {
+          sidebar.classList.toggle('sidebar-collapsed');
+          
+          // Salvar estado no localStorage
+          const isNowCollapsed = sidebar.classList.contains('sidebar-collapsed');
+          localStorage.setItem('sidebar-collapsed', isNowCollapsed.toString());
+        }
+        
+        // Verificar se há estado salvo no localStorage
+        const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+        if (isCollapsed) {
+          sidebar.classList.add('sidebar-collapsed');
+        }
+        
+        // Event listeners para sidebar
+        toggleButton.addEventListener('click', toggleSidebar);
+        titleButton.addEventListener('click', toggleSidebar);
+
+        // Função para alternar categoria
+        function toggleCategory(categoryName) {
+          const categoryDiv = document.querySelector(`[data-category="${categoryName}"]`).parentElement;
+          const isCollapsed = categoryDiv.classList.contains('category-collapsed');
+          
+          if (isCollapsed) {
+            categoryDiv.classList.remove('category-collapsed');
+            localStorage.setItem(`category-${categoryName}-collapsed`, 'false');
+          } else {
+            categoryDiv.classList.add('category-collapsed');
+            localStorage.setItem(`category-${categoryName}-collapsed`, 'true');
+          }
+        }
+
+        // Adicionar event listeners para todos os toggles de categoria
+        document.querySelectorAll('.category-toggle').forEach(toggle => {
+          const categoryName = toggle.getAttribute('data-category');
+          
+          // Verificar estado salvo no localStorage
+          const isCollapsed = localStorage.getItem(`category-${categoryName}-collapsed`) === 'true';
+          if (isCollapsed) {
+            toggle.parentElement.classList.add('category-collapsed');
+          }
+          
+          // Adicionar event listener
+          toggle.addEventListener('click', () => toggleCategory(categoryName));
+        });
+      });
+    </script>
   </body>
 </html>

@@ -217,7 +217,7 @@ class MyScene extends Phaser.Scene {
     // Load Font Awesome font
     await loadFont();
     
-    const gameConfig = (window as any).gameConfig;
+    const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
       console.log(gameConfig);
       (window as any).game = new Phaser.Game({

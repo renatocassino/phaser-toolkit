@@ -21,9 +21,7 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "release": "pnpm build:all && pnpm changeset:publish",
-    "build-storybook": "pnpm -r build-storybook",
-    "storybook": "pnpm --filter \"./packages/**\" storybook"
+    "release": "pnpm build:all && pnpm changeset:publish"
   },
   "keywords": [
     "phaser",

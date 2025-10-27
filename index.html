@@ -1,169 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-
-    <title>@storybook/core - Storybook</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
-    
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    
-    <style>
-      @font-face {
-        font-family: 'Nunito Sans';
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url('./sb-common-assets/nunito-sans-regular.woff2') format('woff2');
-      }
-
-      @font-face {
-        font-family: 'Nunito Sans';
-        font-style: italic;
-        font-weight: 400;
-        font-display: swap;
-        src: url('./sb-common-assets/nunito-sans-italic.woff2') format('woff2');
-      }
-
-      @font-face {
-        font-family: 'Nunito Sans';
-        font-style: normal;
-        font-weight: 700;
-        font-display: swap;
-        src: url('./sb-common-assets/nunito-sans-bold.woff2') format('woff2');
-      }
-
-      @font-face {
-        font-family: 'Nunito Sans';
-        font-style: italic;
-        font-weight: 700;
-        font-display: swap;
-        src: url('./sb-common-assets/nunito-sans-bold-italic.woff2') format('woff2');
-      }
-    </style>
-
-    <link href="./sb-manager/runtime.js" rel="modulepreload" />
-
-    
-    <link href="./sb-addons/storybook-core-core-server-presets-0/common-manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-controls-1/manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-actions-2/manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-docs-3/manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-backgrounds-4/manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-viewport-5/manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-toolbars-6/manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-measure-7/manager-bundle.js" rel="modulepreload" />
-    
-    <link href="./sb-addons/essentials-outline-8/manager-bundle.js" rel="modulepreload" />
-       
-
-    <style>
-      #storybook-root[hidden] {
-        display: none !important;
-      }
-    </style>
-
-    
-  </head>
-  <body>
-    <div id="root"></div>
-
-    
-    <script>
-      
-        
-          window['FEATURES'] = {
-  "argTypeTargetsV7": true,
-  "legacyDecoratorFileOrder": false,
-  "disallowImplicitActionsInRenderV8": true
-};
-        
-      
-        
-          window['REFS'] = {};
-        
-      
-        
-          window['LOGLEVEL'] = "info";
-        
-      
-        
-          window['DOCS_OPTIONS'] = {
-  "defaultName": "Docs",
-  "autodocs": true
-};
-        
-      
-        
-          window['CONFIG_TYPE'] = "PRODUCTION";
-        
-      
-        
-      
-        
-      
-        
-          window['TAGS_OPTIONS'] = {
-  "dev-only": {
-    "excludeFromDocsStories": true
-  },
-  "docs-only": {
-    "excludeFromSidebar": true
-  },
-  "test-only": {
-    "excludeFromSidebar": true,
-    "excludeFromDocsStories": true
-  }
-};
-        
-      
-        
-          window['STORYBOOK_RENDERER'] = "html";
-        
-      
-        
-          window['STORYBOOK_BUILDER'] = "@storybook/builder-vite";
-        
-      
-        
-          window['STORYBOOK_FRAMEWORK'] = "@storybook/html-vite";
-        
-      
-    </script>
-    
-
-    <script type="module">
-      import './sb-manager/globals-runtime.js';
-      
-      
-        import './sb-addons/storybook-core-core-server-presets-0/common-manager-bundle.js';
-      
-        import './sb-addons/essentials-controls-1/manager-bundle.js';
-      
-        import './sb-addons/essentials-actions-2/manager-bundle.js';
-      
-        import './sb-addons/essentials-docs-3/manager-bundle.js';
-      
-        import './sb-addons/essentials-backgrounds-4/manager-bundle.js';
-      
-        import './sb-addons/essentials-viewport-5/manager-bundle.js';
-      
-        import './sb-addons/essentials-toolbars-6/manager-bundle.js';
-      
-        import './sb-addons/essentials-measure-7/manager-bundle.js';
-      
-        import './sb-addons/essentials-outline-8/manager-bundle.js';
-      
-      
-      import './sb-manager/runtime.js';
-    </script>
-  </body>
-</html>
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Explore the components and features of the Phaser Toolkit ecosystem"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Phaser Toolkit Showcase</title><link rel="stylesheet" href="/_astro/index.DnpijAWT.css"></head> <body class="bg-gray-50 text-gray-900"> <div class="flex h-screen"> <!-- Sidebar --> <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0"> <div class="p-6 border-b border-gray-200"> <h1 class="text-xl font-bold text-gray-900">Phaser Toolkit</h1> <p class="text-sm text-gray-600 mt-1">Component Showcase</p> </div> <nav class="p-4 space-y-2"> <!-- Main Navigation --> <div class="mb-4"> <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</div> <a href="/" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🏠 Home
+</a> </div> <!-- Hudini Components --> <div class="mb-4"> <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hudini</div> <a href="/hudini" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+📋 Overview
+</a> <a href="/hudini/card" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🃏 Card
+</a> <a href="/hudini/text-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🔘 Text Button
+</a> <a href="/hudini/icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🎯 Icon Button
+</a> <a href="/hudini/flat-icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🔲 Flat Icon Button
+</a> <a href="/hudini/section-header" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+📑 Section Header
+</a> <a href="/hudini/circular-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+⭕ Circular Progress
+</a> <a href="/hudini/linear-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+📊 Linear Progress
+</a> <a href="/hudini/radial-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🎯 Radial Progress
+</a> <a href="/hudini/column" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+📦 Column
+</a> <a href="/hudini/row" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+📋 Row
+</a> <a href="/hudini/sized-box" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+📏 Sized Box
+</a> </div> <!-- Phaser Wind Components --> <div class="mb-4"> <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Phaser Wind</div> <a href="/phaser-wind" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🌪️ Overview
+</a> <a href="/phaser-wind/button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🔘 Button
+</a> </div> <!-- Phaser Hooks --> <div class="mb-4"> <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Phaser Hooks</div> <a href="/phaser-hooks" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🪝 Overview
+</a> <a href="/phaser-hooks/game" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🎮 Game
+</a> <a href="/phaser-hooks/with-global-state" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🌍 Global State
+</a> <a href="/phaser-hooks/with-local-state" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🏠 Local State
+</a> </div> <!-- Phaser Sound Studio --> <div class="mb-4"> <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Sound Studio</div> <a href="/phaser-sound-studio" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🎵 Overview
+</a> </div> <!-- Phaser Virtual Joystick --> <div class="mb-4"> <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Virtual Joystick</div> <a href="/phaser-virtual-joystick" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🕹️ Overview
+</a> <a href="/phaser-virtual-joystick/default" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🎮 Default
+</a> </div> <!-- Font Awesome for Phaser --> <div class="mb-4"> <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Font Awesome</div> <a href="/font-awesome-for-phaser" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+🎨 Overview
+</a> </div> </nav> </aside> <!-- Main Content --> <main class="flex-1 overflow-auto"> <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4"> <h1 class="text-2xl font-bold text-gray-900">Phaser Toolkit Showcase</h1> <p class="text-gray-600 mt-1">Explore the components and features of the Phaser Toolkit ecosystem</p> </div> <div class="p-6">  <div class="space-y-8"> <!-- Hero Section --> <div class="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 text-white"> <h2 class="text-3xl font-bold mb-4">Welcome to Phaser Toolkit</h2> <p class="text-lg mb-6">
+A comprehensive collection of tools and components for building amazing Phaser 3 games. 
+        Explore interactive examples, copy code snippets, and see everything in action.
+</p> <div class="flex space-x-4"> <a href="/hudini" class="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+Explore Components
+</a> <a href="https://github.com/your-org/phaser-toolkit" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-primary-600 transition-colors">
+View on GitHub
+</a> </div> </div> <!-- Component Overview --> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> <!-- Hudini Card --> <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"> <div class="flex items-center mb-4"> <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4"> <span class="text-2xl">🎨</span> </div> <h3 class="text-lg font-semibold text-gray-900">Hudini</h3> </div> <p class="text-gray-600 mb-4">
+A powerful utility library with UI components and tools built on top of PhaserWind. 
+          Create beautiful, responsive game interfaces with ease.
+</p> <div class="flex flex-wrap gap-2 mb-4"> <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">UI Components</span> <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Theming</span> <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Responsive</span> </div> <a href="/hudini" class="text-primary-600 hover:text-primary-700 font-medium">
+Explore Components →
+</a> </div> <!-- Phaser Wind Card --> <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"> <div class="flex items-center mb-4"> <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4"> <span class="text-2xl">🌪️</span> </div> <h3 class="text-lg font-semibold text-gray-900">Phaser Wind</h3> </div> <p class="text-gray-600 mb-4">
+A theming system and utility library for Phaser 3 games with Tailwind-inspired design tokens.
+</p> <div class="flex flex-wrap gap-2 mb-4"> <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Theming</span> <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Design Tokens</span> <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Utilities</span> </div> <a href="/phaser-wind" class="text-primary-600 hover:text-primary-700 font-medium">
+Explore Components →
+</a> </div> <!-- Phaser Hooks Card --> <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"> <div class="flex items-center mb-4"> <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4"> <span class="text-2xl">🪝</span> </div> <h3 class="text-lg font-semibold text-gray-900">Phaser Hooks</h3> </div> <p class="text-gray-600 mb-4">
+React-like hooks for Phaser 3 game development with state management and lifecycle hooks.
+</p> <div class="flex flex-wrap gap-2 mb-4"> <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Hooks</span> <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">State Management</span> <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Lifecycle</span> </div> <a href="/phaser-hooks" class="text-primary-600 hover:text-primary-700 font-medium">
+Explore Components →
+</a> </div> <!-- Phaser Sound Studio Card --> <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"> <div class="flex items-center mb-4"> <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4"> <span class="text-2xl">🎵</span> </div> <h3 class="text-lg font-semibold text-gray-900">Phaser Sound Studio</h3> </div> <p class="text-gray-600 mb-4">
+Advanced audio management system for Phaser 3 games with sound effects and music control.
+</p> <div class="flex flex-wrap gap-2 mb-4"> <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Audio</span> <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Music</span> <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Effects</span> </div> <a href="/phaser-sound-studio" class="text-primary-600 hover:text-primary-700 font-medium">
+Explore Components →
+</a> </div> <!-- Phaser Virtual Joystick Card --> <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"> <div class="flex items-center mb-4"> <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4"> <span class="text-2xl">🕹️</span> </div> <h3 class="text-lg font-semibold text-gray-900">Phaser Virtual Joystick</h3> </div> <p class="text-gray-600 mb-4">
+Touch-friendly virtual joystick component for mobile Phaser 3 games.
+</p> <div class="flex flex-wrap gap-2 mb-4"> <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Mobile</span> <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Touch</span> <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Joystick</span> </div> <a href="/phaser-virtual-joystick" class="text-primary-600 hover:text-primary-700 font-medium">
+Explore Components →
+</a> </div> <!-- Font Awesome for Phaser Card --> <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"> <div class="flex items-center mb-4"> <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4"> <span class="text-2xl">🎨</span> </div> <h3 class="text-lg font-semibold text-gray-900">Font Awesome for Phaser</h3> </div> <p class="text-gray-600 mb-4">
+Font Awesome icon integration for Phaser 3 games with easy-to-use icon components.
+</p> <div class="flex flex-wrap gap-2 mb-4"> <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Icons</span> <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Font Awesome</span> <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Easy to Use</span> </div> <a href="/font-awesome-for-phaser" class="text-primary-600 hover:text-primary-700 font-medium">
+Explore Components →
+</a> </div> </div> <!-- Getting Started Section --> <div class="bg-primary-50 rounded-lg p-6"> <h2 class="text-xl font-semibold text-primary-900 mb-3">Getting Started</h2> <p class="text-primary-700 mb-4">
+This showcase demonstrates all the components and features available in the Phaser Toolkit ecosystem. 
+        Use the sidebar to navigate between different components and see them in action.
+</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <div> <h3 class="font-medium text-primary-900 mb-2">Interactive Examples</h3> <p class="text-sm text-primary-700">
+Each component page includes interactive examples that you can interact with directly in your browser.
+</p> </div> <div> <h3 class="font-medium text-primary-900 mb-2">Code Snippets</h3> <p class="text-sm text-primary-700">
+Copy-paste ready code examples for each component to get started quickly in your own projects.
+</p> </div> </div> </div> </div>  </div> </main> </div> </body></html>

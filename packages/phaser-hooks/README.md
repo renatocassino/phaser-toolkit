@@ -232,11 +232,22 @@ export function withPlayerState(scene: Phaser.Scene): PlayerHook {
   };
 }
 
-// Usage
+// Usage in your scene
 const player = withPlayerState(this);
-player.takeDamage(30); // Clean, Expressive API!
+console.log(player.get());
+player.takeDamage(30);
+console.log(player.get());
 player.heal(10);
+console.log(player.get());
 player.levelUp();
+console.log(player.get());
+/**
+ * Output:
+ * {hp: 100, maxHp: 100, level: 1}
+ * {hp: 70, maxHp: 100, level: 1} 
+ * {hp: 80, maxHp: 100, level: 1}
+ * {hp: 110, maxHp: 110, level: 2}
+ */
 ```
 
 ### Next Steps

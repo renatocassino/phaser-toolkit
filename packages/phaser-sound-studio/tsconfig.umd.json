@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "UMD",
+    "outDir": "./dist/umd",
+    "rootDir": "./src",
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": true,
+    "noEmit": false,
+    "composite": false,
+    "allowImportingTsExtensions": false,
+    "types": []
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "dist", 
+    "node_modules", 
+    "src/**/*.test.ts", 
+    "src/**/*.spec.ts", 
+    "src/test/**/*",
+    "src/**/__tests__/**/*"
+  ]
+}

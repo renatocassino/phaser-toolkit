@@ -1,0 +1,18 @@
+---
+export interface Props {
+  code: string;
+  language?: string;
+  title?: string;
+}
+
+const { code, language = 'typescript', title } = Astro.props;
+---
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  {title && <h3 class="text-lg font-semibold text-gray-900 mb-3">{title}</h3>}
+  <div class="code-block-container">
+    <div class="code-block">
+      <pre><code class={`language-${language}`}>{code}</code></pre>
+    </div>
+  </div>
+</div>

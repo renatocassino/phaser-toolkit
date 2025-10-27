@@ -34,6 +34,11 @@ function toCamelCase(str) {
   return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 }
 
+function toCapitalizedCamelCase(str) {
+  const camelCase = toCamelCase(str);
+  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+}
+
 function createRollupConfig(packageDir, packageName) {
   const config = `import typescript from '@rollup/plugin-typescript';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -42,16 +47,15 @@ import commonjs from '@rollup/plugin-commonjs';
 export default {
   input: '${packageDir}/src/index.ts',
   output: {
-    file: '${packageDir}/dist/${packageName}.umd.js',
+    file: '${packageDir}/dist/${packageName}.js',
     format: 'umd',
-    name: '${toCamelCase(packageName)}',
+    name: '${toCapitalizedCamelCase(packageName)}',
     globals: {
       'phaser': 'Phaser',
-      'lodash.merge': '_.merge',
       'webfontloader': 'WebFont'
     }
   },
-  external: ['phaser', 'lodash.merge', 'webfontloader'],
+  external: ['phaser', 'webfontloader'],
   plugins: [
     nodeResolve({
       preferBuiltins: false,
@@ -82,16 +86,15 @@ import terser from '@rollup/plugin-terser';
 export default {
   input: '${packageDir}/src/index.ts',
   output: {
-    file: '${packageDir}/dist/${packageName}.umd.min.js',
+    file: '${packageDir}/dist/${packageName}.min.js',
     format: 'umd',
-    name: '${toCamelCase(packageName)}',
+    name: '${toCapitalizedCamelCase(packageName)}',
     globals: {
       'phaser': 'Phaser',
-      'lodash.merge': '_.merge',
       'webfontloader': 'WebFont'
     }
   },
-  external: ['phaser', 'lodash.merge', 'webfontloader'],
+  external: ['phaser', 'webfontloader'],
   plugins: [
     nodeResolve({
       preferBuiltins: false,
@@ -150,150 +153,6 @@ function buildPackageUMD(packageDir) {
   }
 }
 
-function createBundleUMD() {
-  console.log('🔨 Creating bundle UMD with all packages...');
-  
-  try {
-    // Criar arquivo de entrada que importa todos os packages
-    const bundleEntry = `// Phaser Toolkit Bundle - UMD Version
-// This file bundles all phaser-toolkit packages into a single UMD module
-
-import * as PhaserHooks from './packages/phaser-hooks/dist/index.js';
-import * as PhaserWind from './packages/phaser-wind/dist/index.js';
-import * as FontAwesome from './packages/font-awesome-for-phaser/dist/index.js';
-import * as Hudini from './packages/hudini/dist/index.js';
-import * as SoundStudio from './packages/phaser-sound-studio/dist/index.js';
-import * as VirtualJoystick from './packages/phaser-virtual-joystick/dist/index.js';
-
-// Export everything under PhaserToolkit namespace
-const PhaserToolkit = {
-  PhaserHooks,
-  PhaserWind,
-  FontAwesome,
-  Hudini,
-  SoundStudio,
-  VirtualJoystick
-};
-
-// Also export individual packages for convenience
-Object.assign(PhaserToolkit, {
-  ...PhaserHooks,
-  ...PhaserWind,
-  ...FontAwesome,
-  ...Hudini,
-  ...SoundStudio,
-  ...VirtualJoystick
-});
-
-export default PhaserToolkit;
-export * from './packages/phaser-hooks/dist/index.js';
-export * from './packages/phaser-wind/dist/index.js';
-export * from './packages/font-awesome-for-phaser/dist/index.js';
-export * from './packages/hudini/dist/index.js';
-export * from './packages/phaser-sound-studio/dist/index.js';
-export * from './packages/phaser-virtual-joystick/dist/index.js';`;
-
-    const bundleEntryPath = 'bundle-entry.ts';
-    writeFileSync(bundleEntryPath, bundleEntry);
-
-    // Configuração do Rollup para o bundle
-    const bundleConfig = `import typescript from '@rollup/plugin-typescript';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-
-export default {
-  input: 'bundle-entry.ts',
-  output: {
-    file: 'phaser-toolkit.umd.js',
-    format: 'umd',
-    name: 'PhaserToolkit',
-    globals: {
-      'phaser': 'Phaser',
-      'lodash.merge': '_.merge',
-      'webfontloader': 'WebFont'
-    }
-  },
-  external: ['phaser', 'lodash.merge', 'webfontloader'],
-  plugins: [
-    nodeResolve({
-      preferBuiltins: false,
-      browser: true
-    }),
-    commonjs(),
-    typescript({
-      declaration: false,
-      declarationMap: false,
-      sourceMap: false,
-      exclude: ['**/*.test.ts', '**/*.spec.ts']
-    })
-  ]
-};`;
-
-    const bundleConfigPath = 'rollup.bundle.config.js';
-    writeFileSync(bundleConfigPath, bundleConfig);
-
-    // Executar Rollup para o bundle
-    execSync(`npx rollup -c ${bundleConfigPath}`, {
-      cwd: process.cwd(),
-      stdio: 'inherit',
-    });
-
-    // Configuração minificada do bundle
-    const bundleMinConfig = `import typescript from '@rollup/plugin-typescript';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import terser from '@rollup/plugin-terser';
-
-export default {
-  input: 'bundle-entry.ts',
-  output: {
-    file: 'phaser-toolkit.umd.min.js',
-    format: 'umd',
-    name: 'PhaserToolkit',
-    globals: {
-      'phaser': 'Phaser',
-      'lodash.merge': '_.merge',
-      'webfontloader': 'WebFont'
-    }
-  },
-  external: ['phaser', 'lodash.merge', 'webfontloader'],
-  plugins: [
-    nodeResolve({
-      preferBuiltins: false,
-      browser: true
-    }),
-    commonjs(),
-    typescript({
-      declaration: false,
-      declarationMap: false,
-      sourceMap: false,
-      exclude: ['**/*.test.ts', '**/*.spec.ts']
-    }),
-    terser()
-  ]
-};`;
-
-    const bundleMinConfigPath = 'rollup.bundle.min.config.js';
-    writeFileSync(bundleMinConfigPath, bundleMinConfig);
-
-    // Executar Rollup minificado para o bundle
-    execSync(`npx rollup -c ${bundleMinConfigPath}`, {
-      cwd: process.cwd(),
-      stdio: 'inherit',
-    });
-
-    // Limpar arquivos temporários
-    execSync(`rm ${bundleEntryPath} ${bundleConfigPath} ${bundleMinConfigPath}`, {
-      cwd: process.cwd(),
-      stdio: 'inherit',
-    });
-
-    console.log('✅ Successfully created bundle UMD');
-  } catch (error) {
-    console.error('❌ Failed to create bundle UMD');
-    throw error;
-  }
-}
 
 function createHTMLExample() {
   console.log('📄 Creating HTML example...');
@@ -305,22 +164,18 @@ function createHTMLExample() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phaser Toolkit UMD Example</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js"></script>
 </head>
 <body>
     <div id="game-container"></div>
     
     <!-- Individual packages -->
-    <script src="./packages/phaser-hooks/dist/phaser-hooks.umd.min.js"></script>
-    <script src="./packages/phaser-wind/dist/phaser-wind.umd.min.js"></script>
-    <script src="./packages/font-awesome-for-phaser/dist/font-awesome-for-phaser.umd.min.js"></script>
-    <script src="./packages/hudini/dist/hudini.umd.min.js"></script>
-    <script src="./packages/phaser-sound-studio/dist/phaser-sound-studio.umd.min.js"></script>
-    <script src="./packages/phaser-virtual-joystick/dist/phaser-virtual-joystick.umd.min.js"></script>
-    
-    <!-- Or use the bundle -->
-    <!-- <script src="./phaser-toolkit.umd.min.js"></script> -->
+    <script src="./packages/phaser-hooks/dist/phaser-hooks.min.js"></script>
+    <script src="./packages/phaser-wind/dist/phaser-wind.min.js"></script>
+    <script src="./packages/font-awesome-for-phaser/dist/font-awesome-for-phaser.min.js"></script>
+    <script src="./packages/hudini/dist/hudini.min.js"></script>
+    <script src="./packages/phaser-sound-studio/dist/phaser-sound-studio.min.js"></script>
+    <script src="./packages/phaser-virtual-joystick/dist/phaser-virtual-joystick.min.js"></script>
     
     <script>
         // Example usage
@@ -339,10 +194,10 @@ function createHTMLExample() {
                     console.log('Available packages:', {
                         PhaserHooks: typeof PhaserHooks !== 'undefined',
                         PhaserWind: typeof PhaserWind !== 'undefined',
-                        FontAwesome: typeof FontAwesome !== 'undefined',
+                        FontAwesomeForPhaser: typeof FontAwesomeForPhaser !== 'undefined',
                         Hudini: typeof Hudini !== 'undefined',
-                        SoundStudio: typeof SoundStudio !== 'undefined',
-                        VirtualJoystick: typeof VirtualJoystick !== 'undefined'
+                        PhaserSoundStudio: typeof PhaserSoundStudio !== 'undefined',
+                        PhaserVirtualJoystick: typeof PhaserVirtualJoystick !== 'undefined'
                     });
                 }
             }
@@ -372,9 +227,6 @@ function main() {
   for (const pkg of packages) {
     buildPackageUMD(pkg);
   }
-
-  // Build bundle
-  createBundleUMD();
 
   // Criar exemplo HTML
   createHTMLExample();

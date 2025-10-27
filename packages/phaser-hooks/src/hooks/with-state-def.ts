@@ -17,6 +17,12 @@ import {
 import { type HookState, type StateChangeCallback, type StatePatchUpdater, type DeepPartial } from './type';
 
 /**
+ * Map of callbacks to their wrapped versions
+ * @type {WeakMap<Function, Function>}
+ */
+const callbackMap = new WeakMap<Function, Function>();
+
+/**
  * Configuration options for state definition
  * @typedef {Object} StateDefOptions
  * @property {boolean} [persistent] Whether to persist state across scene changes. @default true
@@ -212,7 +218,7 @@ const onChange = <T>(
  * @param {string | symbol} event - The event name ('change')
  * @param {string} key - The key to listen for changes
  * @param {boolean} debug - Whether to log debug info
- * @param {Function} callback - The callback to invoke on event
+ * @param {Function} callback - The callback to invoke on event - receives the new value and the old value
  * @returns {() => void} Unsubscribe function to remove the listener
  * @throws {Error} If event is not 'change'
  */
@@ -229,16 +235,25 @@ const on = (
     );
   }
 
-  if (debug) {
-    logEventListenerAdd(key, event as string, callback);
+  // Wrapper to remove the first argument (scene)
+  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown) => {
+    callback(newValue, oldValue);
+  };
+
+  if (!callbackMap.has(callback)) {
+    callbackMap.set(callback, wrappedCallback);
   }
-  registry.events.on(`changedata-${key}`, callback);
+
+  if (debug) {
+    logEventListenerAdd(key, event as string, wrappedCallback);
+  }
+  registry.events.on(`changedata-${key}`, wrappedCallback);
 
   return () => {
     if (debug) {
-      logEventListenerRemove(key, event as string, callback);
+      logEventListenerRemove(key, event as string, wrappedCallback);
     }
-    registry.events.off(`changedata-${key}`, callback);
+    registry.events.off(`changedata-${key}`, wrappedCallback);
   };
 };
 
@@ -334,16 +349,25 @@ const once = (
     );
   }
 
-  if (debug) {
-    logEventListenerAdd(key, event as string, callback);
+  // Wrapper to remove the first argument (scene)
+  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown) => {
+    callback(newValue, oldValue);
+  };
+
+  if (!callbackMap.has(callback)) {
+    callbackMap.set(callback, wrappedCallback);
   }
-  registry.events.once(`changedata-${key}`, callback);
+
+  if (debug) {
+    logEventListenerAdd(key, event as string, wrappedCallback);
+  }
+  registry.events.once(`changedata-${key}`, wrappedCallback);
 
   return () => {
     if (debug) {
-      logEventListenerRemove(key, event as string, callback);
+      logEventListenerRemove(key, event as string, wrappedCallback);
     }
-    registry.events.off(`changedata-${key}`, callback);
+    registry.events.off(`changedata-${key}`, wrappedCallback);
   };
 };
 
@@ -370,10 +394,17 @@ const off = (
     );
   }
 
-  registry.events.off(`changedata-${key}`, callback);
+  // Get the wrapped callback from the map
+  const callbackToRemove = callbackMap.get(callback);
+  if (!callbackToRemove) {
+    logWarning('CALLBACK_NOT_FOUND', `Callback not found for key "${key}"`, { key });
+    return;
+  }
+
+  registry.events.off(`changedata-${key}`, callbackToRemove);
 
   if (debug) {
-    logEventListenerRemove(key, event as string, callback);
+    logEventListenerRemove(key, event as string, callbackToRemove);
   }
 };
 

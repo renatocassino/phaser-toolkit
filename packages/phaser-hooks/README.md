@@ -71,6 +71,62 @@ yarn add phaser-hooks
 
 > **Note:** This library uses "with" prefix (e.g., `withLocalState`) instead of "use" to avoid ESLint warnings in `.ts` files.
 
+## Quick Start
+
+Here's a complete example showing the basics:
+
+```typescript
+import { withLocalState, withGlobalState } from 'phaser-hooks';
+// or const { withLocalState, withGlobalState } = require('phaser-hooks');
+
+class GameScene extends Phaser.Scene {
+  private unsubscribe?: () => void;
+
+  create() {
+    // 1. Local state (scene-specific, auto-cleanup)
+    const player = withLocalState(this, 'player', { 
+      hp: 100, 
+      maxHp: 100,
+      level: 1 
+    });
+
+    // 2. Global state (persists across scenes)
+    const settings = withGlobalState(this, 'settings', { 
+      volume: 0.8,
+      difficulty: 'normal' 
+    });
+
+    // 3. Update state
+    player.patch({ hp: 90 }); // Partial update
+    settings.set({ volume: 0.5, difficulty: 'hard' }); // Full update
+
+    // 4. Read state
+    console.log(player.get().hp); // 90
+    console.log(settings.get().volume); // 0.5
+
+    // 5. Listen to changes
+    this.unsubscribe = player.on('change', (newPlayer, _oldPlayer) => {
+      if (newPlayer.hp < 20) {
+        console.warn('Low health!');
+      }
+    });
+  }
+
+  shutdown() {
+    // 6. Clean up (local state auto-cleans, but good practice)
+    this.unsubscribe?.();
+  }
+}
+```
+
+**That's it!** You now have reactive, type-safe state management in your Phaser game.
+
+### Next Steps
+
+- 📚 [Full documentation and examples](https://toolkit.cassino.dev/phaser-hooks)
+- 🎣 [See all available hooks](#features)
+- 🔧 [API reference](#hook-api-reference)
+
 ## Hook API Reference
 
 All hooks return a `HookState` object with the following methods:

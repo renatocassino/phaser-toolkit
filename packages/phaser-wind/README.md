@@ -78,6 +78,30 @@ yarn add phaser-wind
 pnpm add phaser-wind
 ```
 
+## 🌐 UMD/CDN (JavaScript)
+
+If you prefer not to use TypeScript or want to include the library via CDN, you can use the UMD build:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/phaser-wind@0.7.0/dist/phaser-wind.min.js"></script>
+```
+
+The library will be available globally as `window.PhaserWind`. You can use it like this:
+
+```javascript
+// Use color utilities
+const blueColor = window.PhaserWind.Color.rgb('blue-500');
+const fontSize = window.PhaserWind.FontSize.css('lg');
+
+// Create styled text
+const text = scene.add.text(100, 50, 'Hello World', {
+  fontSize: fontSize,
+  fill: blueColor
+});
+```
+
+> **⚠️ Note**: While UMD builds are available, we **strongly recommend using TypeScript** for better type safety, IntelliSense, and development experience. The TypeScript version provides better error detection and autocomplete features.
+
 ---
 
 ## 🎨 Color System (no theme)

@@ -32,6 +32,40 @@ yarn add hudini
 pnpm add hudini
 ```
 
+## 🌐 UMD/CDN (JavaScript)
+
+If you prefer not to use TypeScript or want to include the library via CDN, you can use the UMD build:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/hudini@0.17.0/dist/hudini.min.js"></script>
+```
+
+The library will be available globally as `window.Hudini`. You can use it like this:
+
+```javascript
+// Create a theme
+const theme = window.Hudini.createTheme({
+  colors: {
+    primary: 'red-300',
+    secondary: 'blue-300',
+  }
+});
+
+// Add Hudini plugin to Phaser config
+const config = {
+  plugins: {
+    global: [{
+      key: window.Hudini.HUDINI_KEY,
+      plugin: window.Hudini.HudiniPlugin,
+      mapping: window.Hudini.HUDINI_KEY,
+      data: { theme }
+    }]
+  }
+};
+```
+
+> **⚠️ Note**: While UMD builds are available, we **strongly recommend using TypeScript** for better type safety, IntelliSense, and development experience. The TypeScript version provides better error detection and autocomplete features.
+
 ## 🔌 Installation (Plugin Setup)
 
 Hudini is built on top of `phaser-wind` for theming and UI primitives. The Hudini plugin will automatically install the `phaser-wind` plugin if it is not already registered. You only need to add Hudini to your Phaser game configuration.

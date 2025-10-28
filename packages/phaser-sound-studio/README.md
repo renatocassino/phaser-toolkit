@@ -50,6 +50,29 @@ yarn add phaser-sound-studio
 pnpm add phaser-sound-studio
 ```
 
+## 🌐 UMD/CDN (JavaScript)
+
+If you prefer not to use TypeScript or want to include the library via CDN, you can use the UMD build:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/phaser-sound-studio@0.5.0/dist/phaser-sound-studio.min.js"></script>
+```
+
+The library will be available globally as `window.PhaserSoundStudio`. You can use it like this:
+
+```javascript
+// Get sound studio instance
+const soundStudio = window.PhaserSoundStudio.getSoundStudio(scene);
+
+// Play a sound
+soundStudio.play('ui-click', 'ui');
+
+// Set channel volume
+soundStudio.setChannelVolume('music', 0.5);
+```
+
+> **⚠️ Note**: While UMD builds are available, we **strongly recommend using TypeScript** for better type safety, IntelliSense, and development experience. The TypeScript version provides better error detection and autocomplete features.
+
 ## 🔥 Quick Start
 
 1. Define Your Audio Configuration

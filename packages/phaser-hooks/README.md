@@ -68,8 +68,24 @@ pnpm add phaser-hooks
 # or
 yarn add phaser-hooks
 ```
-
 > **Note:** This library uses "with" prefix (e.g., `withLocalState`) instead of "use" to avoid ESLint warnings in `.ts` files.
+
+## 🌐 UMD/CDN (JavaScript)
+
+If you prefer not to use TypeScript or want to include the library via CDN, you can use the UMD build:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/phaser-hooks@0.6.0/dist/phaser-hooks.min.js"></script>
+```
+
+The library will be available globally as `window.PhaserHooks`. You can use it like this:
+
+```javascript
+// Create local state
+const playerState = window.PhaserHooks.withLocalState(scene, 'player', { hp: 100 });
+```
+
+> **⚠️ Note**: While UMD builds are available, we **strongly recommend using TypeScript** for better type safety, IntelliSense, and development experience. The TypeScript version provides better error detection and autocomplete features.
 
 ## Quick Start
 

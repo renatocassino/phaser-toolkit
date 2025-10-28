@@ -30,6 +30,23 @@ yarn add phaser-virtual-joystick
 pnpm add phaser-virtual-joystick
 ```
 
+## 🌐 UMD/CDN (JavaScript)
+
+If you prefer not to use TypeScript or want to include the library via CDN, you can use the UMD build:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/phaser-virtual-joystick@0.3.0/dist/phaser-virtual-joystick.min.js"></script>
+```
+
+The library will be available globally as `window.PhaserVirtualJoystick`. You can use it like this:
+
+```javascript
+// Create a virtual joystick
+const joystick = new window.PhaserVirtualJoystick.VirtualJoystick(params);
+```
+
+> **⚠️ Note**: While UMD builds are available, we **strongly recommend using TypeScript** for better type safety, IntelliSense, and development experience. The TypeScript version provides better error detection and autocomplete features.
+
 ## 📺 Demos
 
 Practical demonstrations of the joystick usage in different modes:

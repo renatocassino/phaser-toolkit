@@ -23,10 +23,6 @@ yarn add font-awesome-for-phaser
 If you prefer not to use TypeScript or want to include the library via CDN, you can use the UMD build:
 
 ```html
-<!-- Using unpkg -->
-<script src="https://unpkg.com/font-awesome-for-phaser@0.9.0/dist/font-awesome-for-phaser.min.js"></script>
-
-<!-- Or using jsDelivr -->
 <script src="https://cdn.jsdelivr.net/npm/font-awesome-for-phaser@0.9.0/dist/font-awesome-for-phaser.min.js"></script>
 ```
 
@@ -35,12 +31,6 @@ The library will be available globally as `window.FontAwesomeForPhaser`. You can
 ```javascript
 // Load the font
 await window.FontAwesomeForPhaser.loadFont();
-
-// Get icon character
-const iconChar = window.FontAwesomeForPhaser.getIconChar('gamepad');
-
-// Create icon text
-const iconText = new window.FontAwesomeForPhaser.IconText(scene, x, y, 'gamepad', size, options);
 ```
 
 > **⚠️ Note**: While UMD builds are available, we **strongly recommend using TypeScript** for better type safety, IntelliSense, and development experience. The TypeScript version provides better error detection and autocomplete features.

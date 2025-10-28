@@ -4,16 +4,48 @@
  */
 
 /**
+ * Type for plain objects (not arrays, null, or other types)
+ */
+type PlainObject = Record<string, unknown>;
+
+/**
  * Checks if a value is a plain object (not array, null, or other types)
  */
-function isPlainObject(value: any): value is Record<string, any> {
+const isPlainObject = (value: unknown): value is PlainObject => {
   return (
     value !== null &&
     typeof value === 'object' &&
     !Array.isArray(value) &&
     Object.prototype.toString.call(value) === '[object Object]'
   );
-}
+};
+
+/**
+ * Deep clone utility function that creates new references for all nested objects
+ * @param obj - The object to clone
+ * @returns A deep clone of the object with new references
+ */
+const deepClone = <T>(obj: T): T => {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepClone(item)) as T;
+  }
+
+  if (isPlainObject(obj)) {
+    const cloned = {} as Record<string, unknown>;
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        cloned[key] = deepClone(obj[key]);
+      }
+    }
+    return cloned as T;
+  }
+
+  return obj;
+};
 
 /**
  * Deep merge multiple objects into the first one
@@ -21,24 +53,28 @@ function isPlainObject(value: any): value is Record<string, any> {
  * @param sources - Source objects to merge from
  * @returns The merged object
  */
-export function merge<T extends Record<string, any>>(
+export const merge = <T extends PlainObject>(
   target: T,
-  ...sources: any[]
-): T {
+  ...sources: PlainObject[]
+): T => {
   if (!isPlainObject(target)) {
     return target;
   }
 
-  const result = { ...target } as any;
+  // Start with a deep clone of the target
+  let result = deepClone(target) as Record<string, unknown>;
 
   for (const source of sources) {
     if (!isPlainObject(source)) {
       continue;
     }
 
-    for (const key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        const sourceValue = source[key];
+    // Deep clone the source to ensure we create new references
+    const clonedSource = deepClone(source);
+    
+    for (const key in clonedSource) {
+      if (Object.prototype.hasOwnProperty.call(clonedSource, key)) {
+        const sourceValue = clonedSource[key];
         const targetValue = result[key];
 
         if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
@@ -51,7 +87,7 @@ export function merge<T extends Record<string, any>>(
   }
 
   return result as T;
-}
+};
 
 /**
  * Deep merge that creates a new object without mutating the original
@@ -59,9 +95,9 @@ export function merge<T extends Record<string, any>>(
  * @param sources - Source objects to merge from
  * @returns A new merged object
  */
-export function mergeDeep<T extends Record<string, any>>(
+export const mergeDeep = <T extends PlainObject>(
   target: T,
-  ...sources: any[]
-): T {
+  ...sources: PlainObject[]
+): T => {
   return merge({} as T, target, ...sources);
-}
+};

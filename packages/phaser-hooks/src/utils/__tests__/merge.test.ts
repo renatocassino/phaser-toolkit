@@ -3,7 +3,7 @@
 /* eslint-disable max-lines-per-function */
 import { describe, expect, it } from 'vitest';
 
-import { merge, mergeDeep } from '../merge';
+import { merge } from '../merge';
 
 describe('merge', () => {
   describe('basic functionality', () => {
@@ -445,57 +445,5 @@ describe('merge', () => {
       expect(result['key0']).not.toBe(target['key0']);
       expect((result['key0'] as Record<string, unknown>)['nested']).not.toBe((target['key0'] as Record<string, unknown>)['nested']);
     });
-  });
-});
-
-describe('mergeDeep', () => {
-  it('should create a new object without mutating original', () => {
-    const target = { a: 1, b: { c: 2 } };
-    const source = { b: { d: 3 } };
-    const originalTarget = JSON.parse(JSON.stringify(target));
-    
-    const result = mergeDeep(target, source);
-
-    expect(result).toEqual({
-      a: 1,
-      b: {
-        c: 2,
-        d: 3
-      }
-    });
-
-    // Original should not be mutated
-    expect(target).toEqual(originalTarget);
-  });
-
-  it('should handle empty target', () => {
-    const target = {};
-    const source = { a: 1, b: { c: 2 } };
-    const result = mergeDeep(target, source);
-
-    expect(result).toEqual({ a: 1, b: { c: 2 } });
-  });
-
-  it('should create new references for all nested objects', () => {
-    const target = {
-      life: 100,
-      nested: {
-        value: 10
-      }
-    };
-    const source = { life: 90 };
-    const result = mergeDeep(target, source);
-
-    expect(result).toEqual({
-      life: 90,
-      nested: {
-        value: 10
-      }
-    });
-
-    // Critical test: nested objects should have new references
-    expect(result).not.toBe(target);
-    expect(result.nested).not.toBe(target.nested);
-    expect(result.nested).toEqual(target.nested);
   });
 });

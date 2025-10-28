@@ -150,7 +150,7 @@ const patch = <T>(
 
   // If value is a function, execute it with current state to get the patch
   const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(currentValue) : value;
-  const newValue = merge({}, currentValue, patchValue) as T;
+  const newValue = merge({}, currentValue as Record<string, unknown>, patchValue as Record<string, unknown>) as T;
   if (validator) {
     const validationResult = validator(newValue);
     if (validationResult !== true) {

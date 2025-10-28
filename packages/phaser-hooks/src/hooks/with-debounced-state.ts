@@ -45,7 +45,7 @@ export const withDebouncedState = <T>(
 
   const debouncedPatch = (value: DeepPartial<T> | StatePatchUpdater<T>): void => {
     const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(actualState.get()) : value;
-    debouncedSet((currentState) => merge(currentState as any, patchValue) as T);
+    debouncedSet((currentState) => merge(currentState as Record<string, T>, patchValue) as T);
   };
 
   return {

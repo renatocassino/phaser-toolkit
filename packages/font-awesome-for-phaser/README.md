@@ -8,7 +8,7 @@ Main utilities and types for game development with Phaser.
 
 You can check a small demo [clicking here](https://stackblitz.com/edit/vitejs-vite-i6wesnmm?ctl=1&embed=1&file=src%2Fmain.ts&view=preview&startScript=dev).
 
-## 📦 Instalação
+## 📦 Installation
 
 ```bash
 npm install font-awesome-for-phaser

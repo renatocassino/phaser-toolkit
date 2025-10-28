@@ -1,5 +1,11 @@
 # font-awesome-for-phaser
 
+## 0.9.0
+
+### Minor Changes
+
+- 56d38e1: add umd build to all packages
+
 ## 0.8.0
 
 ### Minor Changes

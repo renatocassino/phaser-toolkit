@@ -1,5 +1,16 @@
 # phaser-sound-studio
 
+## 0.5.0
+
+### Minor Changes
+
+- 56d38e1: add umd build to all packages
+
+### Patch Changes
+
+- Updated dependencies [56d38e1]
+  - phaser-hooks@0.6.0
+
 ## 0.4.4
 
 ### Patch Changes

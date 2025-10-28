@@ -1,5 +1,11 @@
 # phaser-virtual-joystick
 
+## 0.3.0
+
+### Minor Changes
+
+- 56d38e1: add umd build to all packages
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # phaser-wind
 
+## 0.17.0
+
+### Minor Changes
+
+- 56d38e1: add umd build to all packages
+
+### Patch Changes
+
+- Updated dependencies [56d38e1]
+  - font-awesome-for-phaser@0.9.0
+  - phaser-wind@0.7.0
+
 ## 0.16.1
 
 ### Patch Changes

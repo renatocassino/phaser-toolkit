@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.7.0
+
+### Minor Changes
+
+- 56d38e1: add umd build to all packages
+
 ## 0.6.1
 
 ### Patch Changes

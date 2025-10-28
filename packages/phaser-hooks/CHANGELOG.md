@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.6.0
+
+### Minor Changes
+
+- 56d38e1: add umd build to all packages
+
 ## 0.5.0
 
 ### Minor Changes

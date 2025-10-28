@@ -11,15 +11,15 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./umd": "./dist/hudini.umd.js",
-    "./umd.min": "./dist/hudini.umd.min.js"
+    "./umd": "./dist/hudini.js",
+    "./umd.min": "./dist/hudini.min.js"
   },
   "files": [
     "dist"
   ],
-  "browser": "./dist/hudini.umd.js",
-  "unpkg": "./dist/hudini.umd.min.js",
-  "jsdelivr": "./dist/hudini.umd.min.js",
+  "browser": "./dist/hudini.js",
+  "unpkg": "./dist/hudini.min.js",
+  "jsdelivr": "./dist/hudini.min.js",
   "scripts": {
     "build": "tsc --build --force",
     "dev": "tsc --build --watch",

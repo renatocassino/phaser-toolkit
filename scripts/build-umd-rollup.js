@@ -67,7 +67,7 @@ export default {
       declaration: false,
       declarationMap: false,
       sourceMap: false,
-      exclude: ['**/*.test.ts', '**/*.spec.ts']
+      exclude: ['**/*.test.ts', '**/*.spec.ts', '**/test/**/*', '**/tests/**/*']
     })
   ]
 };`;
@@ -106,7 +106,7 @@ export default {
       declaration: false,
       declarationMap: false,
       sourceMap: false,
-      exclude: ['**/*.test.ts', '**/*.spec.ts']
+      exclude: ['**/*.test.ts', '**/*.spec.ts', '**/test/**/*', '**/tests/**/*']
     }),
     terser()
   ]

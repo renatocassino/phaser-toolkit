@@ -126,7 +126,7 @@ export const withUndoableState = <T>(
     },
     patch: (value: DeepPartial<T> | StatePatchUpdater<T>): void => {
       const patchValue = typeof value === 'function' ? (value as StatePatchUpdater<T>)(currentState.get()) : value;
-      set((currentValue) => merge(currentValue as any, patchValue) as T);
+      set((currentValue) => merge(currentValue as Record<string, T>, patchValue) as T);
     },
     undo,
     redo,

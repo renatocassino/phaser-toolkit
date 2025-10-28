@@ -178,7 +178,6 @@ describe('withLocalState', () => {
         }));
 
         expect(callback).toHaveBeenCalledWith(
-          expect.anything(), // Phaser adds an extra parameter
           { ...baseState, life: 85 },
           { ...baseState, life: 100 }
         );
@@ -502,7 +501,6 @@ describe('withLocalState', () => {
         hook.patch({ life: 90 });
 
         expect(callback).toHaveBeenCalledWith(
-          expect.anything(), // Phaser adds an extra parameter
           { life: 90, mana: 50, level: 1 },
           { life: 100, mana: 50, level: 1 }
         );

@@ -11,15 +11,15 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./umd": "./dist/font-awesome-for-phaser.umd.js",
-    "./umd.min": "./dist/font-awesome-for-phaser.umd.min.js"
+    "./umd": "./dist/font-awesome-for-phaser.js",
+    "./umd.min": "./dist/font-awesome-for-phaser.min.js"
   },
   "files": [
     "dist"
   ],
-  "browser": "./dist/font-awesome-for-phaser.umd.js",
-  "unpkg": "./dist/font-awesome-for-phaser.umd.min.js",
-  "jsdelivr": "./dist/font-awesome-for-phaser.umd.min.js",
+  "browser": "./dist/font-awesome-for-phaser.js",
+  "unpkg": "./dist/font-awesome-for-phaser.min.js",
+  "jsdelivr": "./dist/font-awesome-for-phaser.min.js",
   "scripts": {
     "build": "tsc --build --force",
     "dev": "tsc --build --watch",

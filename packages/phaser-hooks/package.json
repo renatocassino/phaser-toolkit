@@ -1,6 +1,6 @@
 {
   "name": "phaser-hooks",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Hooks in react-style for Phaser games",
   "type": "module",
   "main": "./dist/index.js",

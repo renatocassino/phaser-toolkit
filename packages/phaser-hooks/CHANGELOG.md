@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.6.1
+
+### Patch Changes
+
+- f7f205f: Fix types in on change or once change
+
 ## 0.6.0
 
 ### Minor Changes

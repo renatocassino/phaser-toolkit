@@ -222,12 +222,12 @@ const onChange = <T>(
  * @returns {() => void} Unsubscribe function to remove the listener
  * @throws {Error} If event is not 'change'
  */
-const on = (
+const on = <T>(
   registry: Phaser.Data.DataManager,
   event: string | symbol,
   key: string,
   debug: boolean,
-  callback: Function
+  callback: (newValue: T, oldValue: T) => void
 ): (() => void) => {
   if (event !== 'change') {
     throw new Error(
@@ -236,7 +236,7 @@ const on = (
   }
 
   // Wrapper to remove the first argument (scene)
-  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown): void => {
+  const wrappedCallback = (_scene: Phaser.Scene, newValue: T, oldValue: T): void => {
     callback(newValue, oldValue);
   };
 
@@ -332,16 +332,16 @@ const initializeState = <T>(
  * @param {string | symbol} event - The event name ('change')
  * @param {string} key - The key to listen for changes
  * @param {boolean} debug - Whether to log debug info
- * @param {Function} callback - The callback to invoke on event
+ * @param {(newValue: T, oldValue: T) => void} callback - The callback to invoke on event - receives the new value and the old value
  * @returns {() => void} Unsubscribe function to remove the listener
  * @throws {Error} If event is not 'change'
  */
-const once = (
+const once = <T>(
   registry: Phaser.Data.DataManager,
   event: string | symbol,
   key: string,
   debug: boolean,
-  callback: Function
+  callback: (newValue: T, oldValue: T) => void
 ): (() => void) => {
   if (event !== 'change') {
     throw new Error(
@@ -350,7 +350,7 @@ const once = (
   }
 
   // Wrapper to remove the first argument (scene)
-  const wrappedCallback = (_scene: Phaser.Scene, newValue: unknown, oldValue: unknown): void => {
+  const wrappedCallback = (_scene: Phaser.Scene, newValue: T, oldValue: T): void => {
     callback(newValue, oldValue);
   };
 
@@ -378,15 +378,15 @@ const once = (
  * @param {string | symbol} event - The event name ('change')
  * @param {string} key - The key to remove the listener from
  * @param {boolean} debug - Whether to log debug info
- * @param {Function} callback - The callback to remove
+ * @param {(newValue: T, oldValue: T) => void} callback - The callback to remove
  * @throws {Error} If event is not 'change'
  */
-const off = (
+const off = <T>(
   registry: Phaser.Data.DataManager,
   event: string | symbol,
   key: string,
   debug: boolean,
-  callback: Function
+  callback: (newValue: T, oldValue: T) => void
 ): void => {
   if (event !== 'change') {
     throw new Error(
@@ -431,7 +431,7 @@ const clearListeners = (
  * This is the foundation for all other state hooks and provides direct access to
  * Phaser's scene registry with additional safety and TypeScript support.
  *
- * ⚠️ **Note**: This is a low-level hook. Consider using `withLocalState` or `withGlobalState`
+ * ?? **Note**: This is a low-level hook. Consider using `withLocalState` or `withGlobalState`
  * for most use cases unless you need specific registry control.
  *
  * @template T The type of the state value
@@ -549,7 +549,7 @@ export const withStateDef = <T>(
      * @param {Function} fn
      * @returns {() => void} Unsubscribe function
      */
-    on: (event: string | symbol, fn: Function) =>
+    on: (event: string | symbol, fn: (newValue: T, oldValue: T) => void) =>
       on(registry, event, key, debug, fn),
     /**
      * Registers a callback to be called once when the state changes.
@@ -558,7 +558,7 @@ export const withStateDef = <T>(
      * @param {Function} fn
      * @returns {() => void} Unsubscribe function
      */
-    once: (event: string | symbol, fn: Function) =>
+    once: (event: string | symbol, fn: (newValue: T, oldValue: T) => void) =>
       once(registry, event, key, debug, fn),
     /**
      * Removes an event listener for the state.
@@ -566,7 +566,7 @@ export const withStateDef = <T>(
      * @param {'change'} event
      * @param {Function} fn
      */
-    off: (event: string | symbol, fn: Function) =>
+    off: (event: string | symbol, fn: (newValue: T, oldValue: T) => void) =>
       off(registry, event, key, debug, fn),
     /**
      * Removes all event listeners for this state.

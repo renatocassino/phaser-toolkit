@@ -913,6 +913,7 @@ describe('withLocalState', () => {
         const hook = withLocalState<FakeState>(scene, key, initialState);
         hook.once('change', callback);
         hook.set({ ...baseState, life: 90 });
+        expect(callback).toHaveBeenCalledWith({ ...baseState, life: 90 }, initialState);
         expect(callback).toHaveBeenCalled();
         hook.set({ ...baseState, life: 100 });
         expect(callback).toHaveBeenCalledTimes(1);
@@ -930,6 +931,48 @@ describe('withLocalState', () => {
         hook.set({ ...baseState, life: 90 });
         hook.set({ ...baseState, life: 100 });
         expect(callback).not.toHaveBeenCalled();
+      });
+
+      it('should validate TypeScript types for newValue and oldValue parameters after calling .set', () => {
+        const scene = buildSceneMock();
+        const key = `test-state-${Date.now()}`;
+        const initialState: FakeState = { ...baseState, life: 100 };
+        const hook = withLocalState<FakeState>(scene, key, initialState);
+
+        // Test that callbacks receive correctly typed newValue and oldValue
+        let capturedNewValue: FakeState | undefined;
+        let capturedOldValue: FakeState | undefined;
+
+        const onCallback = (newValue: FakeState, oldValue: FakeState): void => {
+          capturedNewValue = newValue;
+          capturedOldValue = oldValue;
+        };
+
+        const onceCallback = (newValue: FakeState, oldValue: FakeState): void => {
+          // Type check: newValue and oldValue should be FakeState
+          expect(newValue).toBeDefined();
+          expect(oldValue).toBeDefined();
+        };
+
+        // Register listeners with typed callbacks
+        hook.on('change', onCallback);
+        hook.once('change', onceCallback);
+
+        // Call .set and verify types are correct
+        const newState: FakeState = { ...baseState, life: 90 };
+        hook.set(newState);
+
+        // Verify that callbacks received the correct typed values
+        expect(capturedNewValue).toEqual(newState);
+        expect(capturedOldValue).toEqual(initialState);
+
+        // Remove listener using .off with typed callback
+        hook.off('change', onCallback);
+
+        // Verify .off worked by setting again and checking offCallback wasn't called
+        hook.set({ ...baseState, life: 80 });
+        // onCallback should still be called
+        expect(capturedNewValue).toEqual({ ...baseState, life: 90 });
       });
     });
   });

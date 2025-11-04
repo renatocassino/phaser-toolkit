@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { copyFileSync, mkdirSync, existsSync, readdirSync, statSync, unlinkSync, rmdirSync } from 'fs';
+import { copyFileSync, mkdirSync, existsSync, readdirSync, statSync, unlinkSync, rmdirSync, readFileSync, writeFileSync } from 'fs';
 
 export default defineConfig({
   build: {
@@ -12,10 +12,13 @@ export default defineConfig({
         background: resolve(__dirname, 'src/background.ts'),
         content: resolve(__dirname, 'src/content.ts'),
         devtools: resolve(__dirname, 'src/devtools.html'),
+        'injected-script': resolve(__dirname, 'src/injected-script.ts'),
       },
       output: {
         entryFileNames: (chunkInfo) => {
-          return chunkInfo.name === 'background' || chunkInfo.name === 'content'
+          return chunkInfo.name === 'background' || 
+                 chunkInfo.name === 'content' || 
+                 chunkInfo.name === 'injected-script'
             ? '[name].js'
             : 'assets/[name]-[hash].js';
         },
@@ -37,6 +40,20 @@ export default defineConfig({
   plugins: [
     {
       name: 'copy-public-assets',
+      buildStart() {
+        // Copy pico.min.css from node_modules to public at build start
+        const picoCssPath = resolve(__dirname, 'node_modules/@picocss/pico/css/pico.min.css');
+        const publicDir = resolve(__dirname, 'public');
+        const publicPicoPath = resolve(publicDir, 'pico.min.css');
+        
+        if (!existsSync(publicDir)) {
+          mkdirSync(publicDir, { recursive: true });
+        }
+        
+        if (existsSync(picoCssPath)) {
+          copyFileSync(picoCssPath, publicPicoPath);
+        }
+      },
       writeBundle() {
         const publicDir = resolve(__dirname, 'public');
         const distDir = resolve(__dirname, 'dist');
@@ -83,6 +100,20 @@ export default defineConfig({
           } catch (e) {
             // Ignore if directory not empty or can't be removed
           }
+        }
+        
+        // Transform injected-script.js to IIFE format (wrap in IIFE)
+        const injectedScriptPath = resolve(distDir, 'injected-script.js');
+        if (existsSync(injectedScriptPath)) {
+          let content = readFileSync(injectedScriptPath, 'utf-8');
+          
+          // Remove any module exports/imports and wrap in IIFE if not already
+          if (!content.includes('(function()')) {
+            // Wrap entire content in IIFE
+            content = `(function() {\n'use strict';\n${content}\n})();`;
+          }
+          
+          writeFileSync(injectedScriptPath, content);
         }
       },
     },

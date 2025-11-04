@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "alpinejs": "^3.14.1"
+    "@picocss/pico": "^2.1.1"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",

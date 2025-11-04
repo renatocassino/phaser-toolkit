@@ -1,41 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phaser Data Inspector</title>
+  <link rel="stylesheet" href="./pico.min.css">
   <style>
     body {
       width: 400px;
       min-height: 300px;
       margin: 0;
       padding: 16px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: #fff;
     }
     /* DevTools panel - full width */
     body.devtools-panel {
       width: 100%;
       height: 100%;
     }
-    h1 {
-      margin: 0 0 16px 0;
-      font-size: 20px;
-      color: #333;
-      font-weight: 600;
+    .key-press-item {
+      padding: 8px;
+      margin: 4px 0;
+      background: var(--pico-card-background-color);
+      border-radius: 4px;
+    }
+    #loading {
+      display: block;
+    }
+    #content {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div x-data="inspector">
+  <div>
     <h1>🎮 Phaser Data Inspector</h1>
-    <div x-show="loading">
+    
+    <div id="loading">
       <p>Loading...</p>
     </div>
-    <div x-show="!loading">
-      <p x-text="message"></p>
+
+    <div id="content">
+      <p id="message"></p>
+      
+      <div style="margin-top: 16px;">
+        <p><strong>Press 'P' key on any page to test!</strong></p>
+        <p style="font-size: 0.875rem; color: var(--pico-muted-color);">
+          Key presses: <span id="count">0</span>
+        </p>
+        
+        <div id="key-press-list" style="max-height: 300px; overflow-y: auto;">
+          <!-- Key presses will be added here dynamically -->
+        </div>
+      </div>
     </div>
-    Maoooeee
   </div>
 
   <script type="module" src="./inspector.ts"></script>

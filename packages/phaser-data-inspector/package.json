@@ -1,0 +1,22 @@
+{
+  "name": "phaser-data-inspector",
+  "version": "0.1.0",
+  "description": "Chrome extension for inspecting Phaser game data",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "alpinejs": "^3.14.1"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.3",
+    "vite": "^6.3.5",
+    "vite-plugin-static-copy": "^1.0.4"
+  }
+}

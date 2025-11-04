@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phaser Data Inspector</title>
+  <style>
+    body {
+      width: 400px;
+      min-height: 300px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #fff;
+    }
+    /* DevTools panel - full width */
+    body.devtools-panel {
+      width: 100%;
+      height: 100%;
+    }
+    h1 {
+      margin: 0 0 16px 0;
+      font-size: 20px;
+      color: #333;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div x-data="inspector">
+    <h1>🎮 Phaser Data Inspector</h1>
+    <div x-show="loading">
+      <p>Loading...</p>
+    </div>
+    <div x-show="!loading">
+      <p x-text="message"></p>
+    </div>
+    Maoooeee
+  </div>
+
+  <script type="module" src="./inspector.ts"></script>
+</body>
+</html>

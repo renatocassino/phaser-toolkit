@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phaser Data Inspector - DevTools</title>
+</head>
+<body>
+  <script>
+    // DevTools panel creation - runs in DevTools context
+    chrome.devtools.panels.create(
+      'Phaser', // Title of the panel (appears in the tab)
+      'icon16.png', // Icon path (relative to extension root)
+      'popup.html', // HTML file for the panel content (same as popup)
+      (panel) => {
+        console.log('Phaser Data Inspector panel created');
+        
+        panel.onShown.addListener((window) => {
+          console.log('Phaser panel shown');
+        });
+        
+        panel.onHidden.addListener(() => {
+          console.log('Phaser panel hidden');
+        });
+      }
+    );
+  </script>
+</body>
+</html>

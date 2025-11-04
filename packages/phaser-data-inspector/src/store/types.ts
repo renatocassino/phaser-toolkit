@@ -40,4 +40,12 @@ withDevtoolsContext({
   registry.set(key, nextValue); // aqui seu patch real
 });
  Usar no ctx valores como path: stats.hp
+
+ declare global { interface Window { __PHX_CTX__?: any[] } }
+
+export function withDevtoolsContext<T>(meta: any, fn: () => T): T {
+  const stack = (window.__PHX_CTX__ ||= []);
+  stack.push(meta);
+  try { return fn(); } finally { stack.pop(); }
+}
  */

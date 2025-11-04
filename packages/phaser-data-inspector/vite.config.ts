@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { copyFileSync, mkdirSync, existsSync, readdirSync, statSync, unlinkSync, rmdirSync, readFileSync, writeFileSync } from 'fs';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   build: {
@@ -38,6 +39,7 @@ export default defineConfig({
     watch: process.argv.includes('--watch') ? {} : null,
   },
   plugins: [
+    react(),
     {
       name: 'copy-public-assets',
       buildStart() {

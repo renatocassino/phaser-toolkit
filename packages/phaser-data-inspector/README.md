@@ -29,7 +29,8 @@ pnpm build
 phaser-data-inspector/
 ├── src/
 │   ├── popup.html          # Interface compartilhada (popup e DevTools)
-│   ├── inspector.ts        # Lógica compartilhada (vanilla JavaScript)
+│   ├── App.tsx             # Componente principal (React)
+│   ├── main.tsx            # Entry point do React
 │   ├── devtools.html       # Página que cria o painel no DevTools
 │   ├── background.ts       # Service Worker (background)
 │   └── content.ts          # Script injetado nas páginas web
@@ -77,16 +78,25 @@ O `manifest.json` é o arquivo principal que define como o plugin funciona. Ele 
 
 **Contexto**: Roda no contexto da página, mas isolado do código JavaScript da página (não pode acessar variáveis diretamente, mas pode se comunicar via `postMessage`).
 
-### `inspector.ts` - Lógica da Interface
+### `App.tsx` - Componente Principal
 
-**Função**: Lógica compartilhada entre popup e DevTools panel.
+**Função**: Componente React compartilhado entre popup e DevTools panel.
 
 **O que faz**:
-- Gerencia a UI usando vanilla JavaScript (sem frameworks devido a CSP)
+- Gerencia a UI usando React (hooks e estado reativo)
 - Conecta com o background via `chrome.runtime.connect`
 - Detecta se está rodando no popup ou no DevTools panel
-- Atualiza a UI dinamicamente quando recebe mensagens
-- Escuta mensagens do background
+- Atualiza a UI reativamente quando recebe mensagens
+- Usa `useEffect` para inicializar e limpar conexões
+
+### `main.tsx` - Entry Point
+
+**Função**: Inicializa o componente React.
+
+**O que faz**:
+- Importa e renderiza o componente `App.tsx`
+- Usa `createRoot` do React 18+ para renderizar na DOM
+- Envolve o app em `StrictMode` para desenvolvimento
 
 **Contexto**: Roda tanto no popup quanto no painel do DevTools.
 
@@ -269,10 +279,10 @@ setInterval(() => {
 - **DevTools Tab**: Aba customizada no Chrome DevTools (como Redux DevTools)
 - **Popup Button**: Botão clicável na toolbar que abre popup
 - **TypeScript**: Type safety completo
-- **Vanilla JavaScript**: UI reativa sem frameworks (compatível com CSP)
+- **React**: Framework reativo amplamente usado (compatível com CSP)
 
 ## Technologies
 
 - **TypeScript** - Desenvolvimento type-safe
 - **Vite** - Build tool rápido com watch mode
-- **Vanilla JavaScript** - UI reativa sem frameworks (compatível com CSP do Chrome)
+- **React** - Framework reativo amplamente usado (compatível com CSP do Chrome)

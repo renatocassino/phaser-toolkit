@@ -14,7 +14,7 @@
 - ✅ **Envia mensagens** para content scripts e popup
 - ✅ **Pode usar `chrome.tabs.sendMessage()`** para enviar para content scripts
 
-### 3. **Popup/DevTools Panel** (`inspector.ts` / `popup.html`)
+### 3. **Popup/DevTools Panel** (`App.tsx` / `popup.html`)
 - ✅ **Contexto da UI da extensão** - Não tem acesso ao DOM da página
 - ✅ **Comunica via mensagens** - Não pode acessar diretamente a página
 - ✅ **Recebe mensagens** via `chrome.runtime.onMessage` ou `chrome.runtime.connect()`
@@ -53,7 +53,7 @@ chrome.runtime.sendMessage({ type: 'UPDATE_DATA', data: data });
 ```
 
 ```typescript
-// inspector.ts
+// App.tsx
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === 'UPDATE_DATA') {
     // Atualizar UI
@@ -69,7 +69,7 @@ port.postMessage({ type: 'UPDATE_DATA', data: data });
 ```
 
 ```typescript
-// inspector.ts
+// App.tsx
 const port = chrome.runtime.connect({ name: 'phaser-devtools' });
 port.onMessage.addListener((message) => {
   if (message.type === 'UPDATE_DATA') {

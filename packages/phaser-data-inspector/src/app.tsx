@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
-
-interface KeyPress {
-  timestamp: string;
-  datetime: string;
-}
+import type { PhaserDataInspectorMessage } from './store/types';
+import { EVENT_NAME } from './constants';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
-  const [keyPresses, setKeyPresses] = useState<KeyPress[]>([]);
+  const [messages, setMessages] = useState<PhaserDataInspectorMessage[]>([]);
   const [isDevTools, setIsDevTools] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [port, setPort] = useState<any>(null);
@@ -31,31 +28,14 @@ function App() {
     setPort(newPort);
 
     // Listen for messages from background
-    newPort.onMessage.addListener((payload: any) => {
+    newPort.onMessage.addListener((payload: PhaserDataInspectorMessage) => {
       console.log('Received message:', payload);
 
-      if (payload.type === 'KEY_PRESSED') {
-        const now = new Date();
-        setKeyPresses((prev) => [
+      if (payload.source === EVENT_NAME) {
+        setMessages((prev) => [
           ...prev,
-          {
-            timestamp: payload.timestamp,
-            datetime: now.toLocaleString()
-          }
+          payload
         ]);
-      } else {
-        console.log('Received unknown message:', payload);
-        const now = new Date();
-
-        setKeyPresses((prev) => {
-          return [
-            ...prev,
-            {
-              timestamp: now.toISOString(),
-              datetime: JSON.stringify(payload)
-            }
-          ]
-        })
       }
     });
 
@@ -64,7 +44,7 @@ function App() {
     });
 
     // Cleanup on unmount
-    return () => {
+    return (): void => {
       if (newPort) {
         newPort.disconnect();
       }
@@ -74,7 +54,7 @@ function App() {
   return (
     <main className="container">
       <h1>🎮 Phaser Data Inspector</h1>
-      
+
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -84,22 +64,34 @@ function App() {
           <div style={{ marginTop: '16px' }}>
             <p><strong>Press 'P' key on any page to test!</strong></p>
             <p style={{ fontSize: '0.875rem', color: 'var(--pico-muted-color)' }}>
-              Key presses: {keyPresses.length}
+              Messages: {messages.length}
             </p>
           </div>
 
           <table role="grid">
             <thead>
               <tr>
-                <th>Timestamp</th>
                 <th>Datetime</th>
+                <th>Game ID</th>
+                <th>Scene Key</th>
+                <th>Registry</th>
+                <th>Scope</th>
+                <th>Key</th>
+                <th>Old Value</th>
+                <th>New Value</th>
               </tr>
             </thead>
             <tbody>
-              {keyPresses.map((press) => (
-                <tr key={press.timestamp}>
-                  <td>{press.timestamp}</td>
-                  <td>{press.datetime}</td>
+              {messages.map((message) => (
+                <tr key={message.datetime}>
+                  <td>{message.datetime}</td>
+                  <td>{message.gameId}</td>
+                  <td>{message.sceneKey}</td>
+                  <td>{message.registry}</td>
+                  <td>{message.scope}</td>
+                  <td>{message.key}</td>
+                  <td>{message.oldValue ? JSON.stringify(message.oldValue) : ''}</td>
+                  <td>{message.newValue ? JSON.stringify(message.newValue) : ''}</td>
                 </tr>
               ))}
             </tbody>

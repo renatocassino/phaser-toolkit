@@ -116,8 +116,8 @@ O `manifest.json` é o arquivo principal que define como o plugin funciona. Ele 
 **Função**: Interface visual compartilhada entre popup e DevTools.
 
 **O que faz**:
-- Carrega `inspector.ts` para adicionar funcionalidade
-- Usa vanilla JavaScript para UI reativa (compatível com CSP)
+- Carrega `main.tsx` que renderiza o componente React `App.tsx`
+- Usa React para UI reativa (compatível com CSP)
 - Pode ser aberto como popup (botão na toolbar) ou como painel do DevTools
 
 **Contexto**: Roda tanto no popup quanto no painel do DevTools.
@@ -149,7 +149,7 @@ O `manifest.json` é o arquivo principal que define como o plugin funciona. Ele 
          │ ou chrome.runtime.sendMessage()
          ▼
 ┌─────────────────┐
-│  inspector.ts   │ ◄─── UI (popup ou DevTools)
+│  App.tsx        │ ◄─── UI (popup ou DevTools) - Componente React
 │  (popup.html)   │
 └─────────────────┘
 ```
@@ -188,9 +188,9 @@ window.addEventListener('message', (e) => {
 });
 ```
 
-#### 3. Para receber no popup/DevTools (`inspector.ts`):
+#### 3. Para receber no popup/DevTools (`App.tsx`):
 
-Você precisa adicionar um listener no `background.ts` e depois enviar para o `inspector.ts`:
+Você precisa adicionar um listener no `background.ts` e depois enviar para o `App.tsx`:
 
 **Exemplo completo de comunicação**:
 
@@ -212,10 +212,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// 3. No inspector.ts (já conectado via port)
+// 3. No App.tsx (já conectado via port)
 port.onMessage.addListener((payload) => {
   console.log('Received in UI:', payload);
-  // Atualizar UI com JavaScript vanilla
+  // Atualizar UI com React (setState)
 });
 ```
 
@@ -233,7 +233,7 @@ port.onMessage.addListener((payload) => {
 3. **`chrome.runtime.connect()`** - Comunicação bidirecional (porta)
    - Mantém conexão aberta entre componentes
    - Permite enviar múltiplas mensagens
-   - Usado no `inspector.ts` para conectar com background
+   - Usado no `App.tsx` para conectar com background
 
 4. **`chrome.runtime.onMessage.addListener()`** - Escutar mensagens
    - Usado no background para receber mensagens de qualquer componente

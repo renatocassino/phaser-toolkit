@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    rollupOptions: {
+      rollupOptions: {
       input: {
         popup: resolve(__dirname, 'src/popup.html'),
         background: resolve(__dirname, 'src/background.ts'),
@@ -18,7 +18,7 @@ export default defineConfig({
       output: {
         entryFileNames: (chunkInfo) => {
           return chunkInfo.name === 'background' || 
-                 chunkInfo.name === 'content' || 
+                 chunkInfo.name === 'content' ||
                  chunkInfo.name === 'injected-script'
             ? '[name].js'
             : 'assets/[name]-[hash].js';
@@ -104,14 +104,27 @@ export default defineConfig({
           }
         }
         
-        // Transform injected-script.js to IIFE format (wrap in IIFE)
+        // Transform injected-script.js to IIFE format
+        // Vite compiles it as ES module, but we need pure IIFE for page injection
         const injectedScriptPath = resolve(distDir, 'injected-script.js');
         if (existsSync(injectedScriptPath)) {
           let content = readFileSync(injectedScriptPath, 'utf-8');
           
-          // Remove any module exports/imports and wrap in IIFE if not already
-          if (!content.includes('(function()')) {
-            // Wrap entire content in IIFE
+          // Remove any import/export statements (including type imports)
+          content = content.replace(/^import\s+(?:type\s+)?.*?from\s+['"].*?['"];?\s*$/gm, '');
+          content = content.replace(/^export\s+.*?;?\s*$/gm, '');
+          
+          // Remove module wrapper if present (e.g., "var injected_script = {}; ... export {}")
+          content = content.replace(/var\s+\w+\s*=\s*\{\};?\s*/g, '');
+          content = content.replace(/export\s*\{\s*\};?\s*/g, '');
+          
+          // Remove any remaining export statements at the end
+          content = content.replace(/export\s+.*$/gm, '');
+          
+          // Ensure it's wrapped in IIFE if not already
+          // Check if content already starts with IIFE
+          const trimmedContent = content.trim();
+          if (!trimmedContent.startsWith('(function') && !trimmedContent.startsWith('!function')) {
             content = `(function() {\n'use strict';\n${content}\n})();`;
           }
           

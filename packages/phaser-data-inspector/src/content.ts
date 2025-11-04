@@ -1,7 +1,5 @@
-// Content script for Phaser Data Inspector
-// Runs in isolated context - injects script into page to access page's JavaScript
-
-console.log('Phaser Data Inspector content script loaded');
+// Must repeat to avoid import
+const EVENT_NAME = 'phaser-data-inspector';
 
 // Wait for page to load
 if (document.readyState === 'loading') {
@@ -10,9 +8,7 @@ if (document.readyState === 'loading') {
   init();
 }
 
-function init(): void {
-  console.log('Content script initialized');
-  
+function init(): void {  
   // Inject script into page context to detect keypress
   // Use external file instead of inline script to avoid CSP violations
   const script = document.createElement('script');
@@ -25,13 +21,9 @@ function init(): void {
   // Listen for messages from injected script
   window.addEventListener('message', (event) => {
     // Only accept messages from our injected script
-    if (event.source !== window || event.data?.source !== 'phaser-data-inspector') {
+    if (event.source !== window || event.data?.source !== EVENT_NAME) {
       return;
-    } else {
-      console.log('Received from page:', event.data);
     }
-
-    console.log('Received from page:', event.data);
 
     // Check if extension context is still valid
     try {
@@ -44,7 +36,7 @@ function init(): void {
       // Send to background service worker
       chrome.runtime.sendMessage(
         {
-          type: 'PHX_EVENT',
+          source: EVENT_NAME,
           payload: event.data
         },
         (_response) => {

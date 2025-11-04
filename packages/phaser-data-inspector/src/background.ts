@@ -33,6 +33,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
     
     sendResponse({ success: true });
+  } else {
+    console.log('Received unknown message:', message);
   }
   
   return true;

@@ -25,8 +25,10 @@ function init(): void {
   // Listen for messages from injected script
   window.addEventListener('message', (event) => {
     // Only accept messages from our injected script
-    if (event.source !== window || event.data?.source !== 'phaser-inspector') {
+    if (event.source !== window || event.data?.source !== 'phaser-data-inspector') {
       return;
+    } else {
+      console.log('Received from page:', event.data);
     }
 
     console.log('Received from page:', event.data);
@@ -38,6 +40,7 @@ function init(): void {
         return;
       }
 
+      console.log('Sending to background:', event.data);
       // Send to background service worker
       chrome.runtime.sendMessage(
         {

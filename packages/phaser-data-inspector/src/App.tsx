@@ -43,6 +43,19 @@ function App() {
             datetime: now.toLocaleString()
           }
         ]);
+      } else {
+        console.log('Received unknown message:', payload);
+        const now = new Date();
+
+        setKeyPresses((prev) => {
+          return [
+            ...prev,
+            {
+              timestamp: now.toISOString(),
+              datetime: JSON.stringify(payload)
+            }
+          ]
+        })
       }
     });
 

@@ -42,6 +42,8 @@ class Inspector {
           datetime: now.toLocaleString()
         });
         this.updateUI();
+      } else {
+        console.log('Received unknown message:', payload);
       }
     });
 

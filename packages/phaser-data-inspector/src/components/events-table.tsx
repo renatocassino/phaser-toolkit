@@ -43,9 +43,10 @@ export const EventsTable = ({ events, onSelectEvent, hasPreview }: EventsTablePr
       {
         accessorKey: 'key',
         header: 'Key',
-        cell: (info): string => {
+        cell: (info): ReactElement => {
           const value = info.getValue<string>() ?? '';
-          return value.replace(/^phaser-hooks:(global|local):/, '');
+          const displayValue = value.replace(/^phaser-hooks:(global|local):/, '');
+          return <span title={value}>{displayValue}</span>;
         },
       },
       {

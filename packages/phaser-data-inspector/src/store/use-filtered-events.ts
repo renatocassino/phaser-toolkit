@@ -41,7 +41,7 @@ export const useFilteredEvents = (): FilteredEvents => {
             }
 
             if (filters.search && filters.search.length > 0) {
-                if (!event.key.includes(filters.search)) {
+                if (!event.key.toLowerCase().trim().includes(filters.search.toLowerCase())) {
                     return false;
                 }
             }

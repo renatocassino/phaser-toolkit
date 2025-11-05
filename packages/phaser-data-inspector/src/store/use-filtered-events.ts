@@ -18,12 +18,21 @@ type FilteredEvents = {
 
 export const useFilteredEvents = (): FilteredEvents => {
     const { filters } = useFilters();
-    const { events } = useEvents();
+    const { eventsByGameId, selectedGameId } = useEvents();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(50);
 
     const filteredEvents = useMemo(() => {
-        return events.filter((event) => {
+        // Se não há gameId selecionado, retorna array vazio
+        if (!selectedGameId) {
+            return [];
+        }
+        
+        // Pega os eventos do gameId selecionado
+        const gameEvents = eventsByGameId[selectedGameId] || [];
+        
+        // Aplica os filtros
+        return gameEvents.filter((event) => {
             if (filters.onlyPhaserHooks) {
                 if (!event.key.includes(filters.search)) {
                     return false;
@@ -38,7 +47,7 @@ export const useFilteredEvents = (): FilteredEvents => {
             }
             return true;
         });
-    }, [events, filters]);
+    }, [eventsByGameId, selectedGameId, filters]);
 
     const totalPages = useMemo(() => {
         return Math.max(1, Math.ceil(filteredEvents.length / itemsPerPage));
@@ -50,10 +59,10 @@ export const useFilteredEvents = (): FilteredEvents => {
         return filteredEvents.slice(startIndex, endIndex);
     }, [filteredEvents, currentPage, itemsPerPage]);
 
-    // Reset to page 1 when filters change or itemsPerPage changes
+    // Reset to page 1 when filters change, itemsPerPage changes, or selectedGameId changes
     useEffect(() => {
         setCurrentPage(1);
-    }, [filters.search, filters.onlyPhaserHooks, itemsPerPage]);
+    }, [filters.search, filters.onlyPhaserHooks, itemsPerPage, selectedGameId]);
 
     const goToNextPage = (): void => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));

@@ -22,6 +22,36 @@ const FiltersContainer = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
+`;
+
+const TabsContainer = styled.div`
+  display: flex;
+  gap: 5px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+`;
+
+const Tab = styled.button<{ $active?: boolean }>`
+  padding: 8px 16px;
+  border: none;
+  background: ${(props): string => props.$active ? '#e0e0e0' : 'transparent'};
+  border-bottom: ${(props): string => props.$active ? '2px solid #007bff' : '2px solid transparent'};
+  cursor: pointer;
+  font-weight: ${(props): string => props.$active ? 'bold' : 'normal'};
+  color: ${(props): string => props.$active ? '#000' : '#666'};
+  font-size: 14px;
+  border-radius: 4px 4px 0 0;
+  
+  &:hover {
+    background: ${(props): string => props.$active ? '#e0e0e0' : '#e8e8e8'};
+    color: ${(props): string => props.$active ? '#000' : '#333'};
+  }
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `;
 
 const ClearButton = styled.button`
@@ -72,7 +102,8 @@ function App(): ReactElement {
     setCurrentPage,
     setItemsPerPage,
   } = useFilteredEvents();
-  const { addEvent, clearEvents } = useEvents();
+  const { addEvent, clearEvents, selectedGameId, setSelectedGameId, getGameIds } = useEvents();
+  const gameIds = getGameIds();
   const [selectedEvent, setSelectedEvent] = useState<PhaserDataInspectorMessage | null>(null);
   const closePreview = (): void => setSelectedEvent(null);
 
@@ -118,6 +149,28 @@ function App(): ReactElement {
       ) : (
         <>          
           <div className="container-fluid">
+            {gameIds.length > 1 && (
+              <TabsContainer>
+                {gameIds.map((gameId) => {
+                  const isActive = selectedGameId === gameId;
+                  return (
+                    <Tab
+                      key={gameId}
+                      $active={isActive}
+                      disabled={isActive}
+                      onClick={(): void => {
+                        if (!isActive) {
+                          setSelectedGameId(gameId);
+                          setSelectedEvent(null);
+                        }
+                      }}
+                    >
+                      {gameId}
+                    </Tab>
+                  );
+                })}
+              </TabsContainer>
+            )}
             <FiltersContainer>
               <input type="text" placeholder="Search" value={filters.search} onChange={(e) => setSearch(e.target.value)} />
               <ClearButton 

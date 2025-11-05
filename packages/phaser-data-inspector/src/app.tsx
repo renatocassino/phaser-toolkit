@@ -7,6 +7,7 @@ import { useFilters } from './store/use-filters';
 import { useFilteredEvents } from './store/use-filtered-events';
 import { PreviewStateEvent } from './components/preview-state-event';
 import { EventsTable } from './components/events-table';
+import { PaginationControls } from './components/pagination-controls';
 
 const MainContainer = styled.main`
   height: 100vh;
@@ -14,6 +15,7 @@ const MainContainer = styled.main`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-top: 1rem;
 `;
 
 const FiltersContainer = styled.div`
@@ -40,7 +42,15 @@ const FieldsetContainer = styled.fieldset`
 function App(): ReactElement {
   const [loading, setLoading] = useState(true);
   const { filters, toggleOnlyPhaserHooks, setSearch } = useFilters();
-  const { events } = useFilteredEvents();
+  const {
+    paginatedEvents,
+    currentPage,
+    totalPages,
+    itemsPerPage,
+    totalItems,
+    setCurrentPage,
+    setItemsPerPage,
+  } = useFilteredEvents();
   const { addEvent, clearEvents } = useEvents();
   const [selectedEvent, setSelectedEvent] = useState<PhaserDataInspectorMessage | null>(null);
   const closePreview = (): void => setSelectedEvent(null);
@@ -87,18 +97,19 @@ function App(): ReactElement {
       ) : (
         <>          
           <div className="container-fluid">
-            <p>
-              Events: {events.length}
-            </p>
             <FiltersContainer>
               <input type="text" placeholder="Search" value={filters.search} onChange={(e) => setSearch(e.target.value)} />
-              <button onClick={() => clearEvents()}>Clear</button>
+              <button onClick={(): void => {
+                clearEvents();
+                setCurrentPage(1);
+                setSelectedEvent(null);
+              }}>Clear</button>
             </FiltersContainer>
           </div>
 
           <ContentContainer>
             <EventsTable 
-              events={events} 
+              events={paginatedEvents} 
               onSelectEvent={setSelectedEvent}
               hasPreview={!!selectedEvent}
             />
@@ -120,6 +131,17 @@ function App(): ReactElement {
               Show only Phaser Hooks
             </label>
           </FieldsetContainer>
+
+          <div className="container-fluid">
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={itemsPerPage}
+              totalItems={totalItems}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={setItemsPerPage}
+            />
+          </div>
         </>
       )}
     </MainContainer>

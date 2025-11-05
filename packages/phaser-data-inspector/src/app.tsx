@@ -40,6 +40,12 @@ const TableRow = styled.tr`
   cursor: pointer;
 `;
 
+const FieldsetContainer = styled.fieldset`
+  margin: 0;
+  padding: 1rem;
+  border: none;
+`;
+
 function App(): ReactElement {
   const [loading, setLoading] = useState(true);
   const { filters, toggleOnlyPhaserHooks, setSearch } = useFilters();
@@ -88,7 +94,7 @@ function App(): ReactElement {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div>          
+        <>          
           <div className="container-fluid">
             <p>
               Events: {events.length}
@@ -129,21 +135,21 @@ function App(): ReactElement {
               <PreviewStateEvent event={selectedEvent} onClose={closePreview} />
             )}
           </ContentContainer>
-        </div>
-      )}
 
-      <fieldset className="container-fluid">
-        <label>
-          <input
-            type="checkbox"
-            name="only-phaser-hooks"
-            role="switch"
-            checked={filters.onlyPhaserHooks}
-            onChange={() => toggleOnlyPhaserHooks()}
-          />
-          Show only Phaser Hooks
-        </label>
-      </fieldset>
+          <FieldsetContainer className="container-fluid">
+            <label>
+              <input
+                type="checkbox"
+                name="only-phaser-hooks"
+                role="switch"
+                checked={filters.onlyPhaserHooks}
+                onChange={() => toggleOnlyPhaserHooks()}
+              />
+              Show only Phaser Hooks
+            </label>
+          </FieldsetContainer>
+        </>
+      )}
     </MainContainer>
   );
 }

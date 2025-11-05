@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
+import styled from 'styled-components';
 import type { PhaserDataInspectorMessage } from './store/types';
 import { EVENT_NAME } from './constants';
 import { useEvents } from './store/use-events';
@@ -6,21 +7,50 @@ import { useFilters } from './store/use-filters';
 import { useFilteredEvents } from './store/use-filtered-events';
 import { PreviewStateEvent } from './components/preview-state-event';
 
-function App() {
+const MainContainer = styled.main`
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const FiltersContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+`;
+
+const TableContainer = styled.div<{ $hasPreview?: boolean }>`
+  flex: ${(props): string => props.$hasPreview ? '0 0 calc(50% - 5px)' : '1 1 100%'};
+  overflow: auto;
+  box-sizing: border-box;
+`;
+
+const TableRow = styled.tr`
+  cursor: pointer;
+`;
+
+function App(): ReactElement {
   const [loading, setLoading] = useState(true);
-  const [isDevTools, setIsDevTools] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [port, setPort] = useState<any>(null);
   const { filters, toggleOnlyPhaserHooks, setSearch } = useFilters();
   const { events } = useFilteredEvents();
   const { addEvent, clearEvents } = useEvents();
   const [selectedEvent, setSelectedEvent] = useState<PhaserDataInspectorMessage | null>(null);
-  const closePreview = () => setSelectedEvent(null);
+  const closePreview = (): void => setSelectedEvent(null);
 
   useEffect(() => {
     // Detect if we're in DevTools panel
     const devTools = window.location.href.includes('devtools-panel');
-    setIsDevTools(devTools);
 
     if (devTools) {
       document.body.classList.add('devtools-panel');
@@ -31,7 +61,6 @@ function App() {
 
     // Connect to background service worker
     const newPort = chrome.runtime.connect({ name: 'phaser-devtools' });
-    setPort(newPort);
 
     // Listen for messages from background
     newPort.onMessage.addListener((payload: PhaserDataInspectorMessage) => {
@@ -55,7 +84,7 @@ function App() {
   }, []);
 
   return (
-    <main style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+    <MainContainer>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -64,14 +93,14 @@ function App() {
             <p>
               Events: {events.length}
             </p>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <FiltersContainer>
               <input type="text" placeholder="Search" value={filters.search} onChange={(e) => setSearch(e.target.value)} />
               <button onClick={() => clearEvents()}>Clear</button>
-            </div>
+            </FiltersContainer>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', height: '100%', overflow: 'hidden', flex: 1 }}>
-            <div className="overflow-auto" style={{ flex: 1 }}>
+          <ContentContainer>
+            <TableContainer className="overflow-auto" $hasPreview={!!selectedEvent}>
               <table role="grid" className="table-row striped">
                 <thead>
                   <tr>
@@ -84,22 +113,22 @@ function App() {
                 </thead>
                 <tbody>
                   {events.map((message) => (
-                    <tr style={{cursor: 'pointer'}} onClick={() => setSelectedEvent(message)} key={`${message.datetime}-${message.sceneKey}-${message.registry}-${message.scope}-${message.key}`}>
+                    <TableRow onClick={() => setSelectedEvent(message)} key={`${message.datetime}-${message.sceneKey}-${message.registry}-${message.scope}-${message.key}`}>
                       <td>{message.datetime.split('T')[1]}</td>
                       <td>{message.sceneKey}</td>
                       <td>{message.registry}</td>
                       <td>{message.scope}</td>
                       <td>{message.key.replace(/^phaser-hooks:(global|local):/, '')}</td>
-                    </tr>
+                    </TableRow>
                   ))}
                 </tbody>
               </table>
-            </div>
+            </TableContainer>
 
             {selectedEvent && (
               <PreviewStateEvent event={selectedEvent} onClose={closePreview} />
             )}
-          </div>
+          </ContentContainer>
         </div>
       )}
 
@@ -115,7 +144,7 @@ function App() {
           Show only Phaser Hooks
         </label>
       </fieldset>
-    </main>
+    </MainContainer>
   );
 }
 

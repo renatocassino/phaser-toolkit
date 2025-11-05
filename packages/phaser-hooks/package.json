@@ -21,7 +21,9 @@
   "unpkg": "./dist/phaser-hooks.min.js",
   "jsdelivr": "./dist/phaser-hooks.min.js",
   "scripts": {
+    "prebuild": "node scripts/generate-version.js",
     "build": "tsc --build --force",
+    "predev": "node scripts/generate-version.js",
     "dev": "tsc --build --watch",
     "clean": "rm -rf dist",
     "test": "vitest run",

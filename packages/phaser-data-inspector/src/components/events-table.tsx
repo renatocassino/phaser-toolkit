@@ -41,14 +41,6 @@ export const EventsTable = ({ events, onSelectEvent, hasPreview }: EventsTablePr
         header: 'Scene Key',
       },
       {
-        accessorKey: 'registry',
-        header: 'Registry',
-      },
-      {
-        accessorKey: 'scope',
-        header: 'Scope',
-      },
-      {
         accessorKey: 'key',
         header: 'Key',
         cell: (info): string => {
@@ -56,8 +48,16 @@ export const EventsTable = ({ events, onSelectEvent, hasPreview }: EventsTablePr
           return value.replace(/^phaser-hooks:(global|local):/, '');
         },
       },
+      {
+        accessorKey: 'registry',
+        header: 'Registry',
+      },
+      {
+        accessorKey: 'scope',
+        header: 'Scope',
+      },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({

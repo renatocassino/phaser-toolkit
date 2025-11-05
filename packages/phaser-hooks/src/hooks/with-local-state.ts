@@ -78,8 +78,7 @@ export const withLocalState = <T>(
   }
 
   // Prefix the key with scene key to ensure locality
-  const sceneKey = scene.scene?.key || 'unknown-scene';
-  const localKey = `phaser-hooks:local:${sceneKey}:${key}`;
+  const localKey = `phaser-hooks:local:${key}`;
 
   return withStateDef(scene, localKey, initialValue, {
     ...options,

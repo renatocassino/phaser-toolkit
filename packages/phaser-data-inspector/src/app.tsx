@@ -207,7 +207,7 @@ function App(): ReactElement {
                 checked={filters.onlyPhaserHooks}
                 onChange={() => toggleOnlyPhaserHooks()}
               />
-              Show only Phaser Hooks
+              Show only <a href="https://www.npmjs.com/package/phaser-hooks/" target="_blank" rel="noopener noreferrer">Phaser Hooks</a>
             </label>
           </FieldsetContainer>
 

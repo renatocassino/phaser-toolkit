@@ -1,5 +1,8 @@
 // This script is injected into the page context
 // It runs in the actual page, not in the content script isolated context
+
+import { ContextParams } from "./store/types";
+
 // Must be standalone - no imports allowed (will be compiled to IIFE)
 const EVENT_NAME = 'phaser-data-inspector';
 
@@ -8,8 +11,8 @@ interface PhaserDataInspectorMessage {
   datetime: string;
   gameId: string;
   sceneKey: string;
-  registry: 'data' | 'registry';
-  scope: 'set';
+  registry: 'data' | 'registry' | 'global' | 'local';
+  scope: 'set' | 'patch';
   key: string;
   oldValue?: unknown;
   newValue: unknown;
@@ -58,6 +61,15 @@ interface PhaserDataInspectorMessage {
     return this?.parent?.scene?.key || this?.parent?.sys?.settings?.key || undefined;
   }
 
+  function getContextParams(): ContextParams | undefined {
+    const windowContext = window as unknown as { __PHASER_HOOKS_CTX__: unknown[] };
+    const ctx = windowContext.__PHASER_HOOKS_CTX__;
+    if (!ctx || !Array.isArray(ctx)) {
+      return undefined;
+    }
+    return ctx[ctx.length - 1] as ContextParams;
+  }
+
   function replacePhaserSet(): void {
     const globalWindow = window as typeof window & { Phaser?: any };
     if (!globalWindow.Phaser?.Data?.DataManager?.prototype) {
@@ -71,16 +83,17 @@ interface PhaserDataInspectorMessage {
       const game = getGame.call(this);
       const gameId = getGameId(game);
       const sceneKey = getSceneKeyFromDM.call(this);
+      const ctx = getContextParams();
 
       const message: PhaserDataInspectorMessage = {
         source: EVENT_NAME,
         datetime: new Date().toISOString(),
         gameId: gameId,
         sceneKey: sceneKey ?? '-',
-        registry: sceneKey ? 'data' : 'registry',
-        scope: 'set',
+        registry: ctx?.registryType ?? (sceneKey ? 'data' : 'registry'),
+        scope: ctx?.op ?? 'set',
         key: key,
-        oldValue: undefined, // TODO: get old value
+        oldValue: ctx?.oldValue,
         newValue: val
       };
 

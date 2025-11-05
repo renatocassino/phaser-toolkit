@@ -124,87 +124,89 @@ const DiffLine = styled.div<{ $added?: boolean; $removed?: boolean }>`
 type TabType = 'new' | 'old' | 'diff';
 
 export const PreviewStateEvent = ({ event, onClose }: { event: PhaserDataInspectorMessage, onClose: () => void }): ReactElement => {
-    const [activeTab, setActiveTab] = useState<TabType>('new');
+  const [activeTab, setActiveTab] = useState<TabType>('new');
 
-    const newValueStr = JSON.stringify(event.newValue, null, 2);
-    const oldValueStr = event.oldValue ? JSON.stringify(event.oldValue, null, 2) : '';
+  const newValueStr = JSON.stringify(event.newValue, null, 2);
+  const oldValueStr = event.oldValue ? JSON.stringify(event.oldValue, null, 2) : '';
 
-    const renderDiff = (): ReactElement => {
-        if (!event.oldValue) {
-            return <div>No old value to compare</div>;
-        }
+  const renderDiff = (): ReactElement => {
+    if (!event.oldValue) {
+      return <CodeContainer><div>No old value to compare. Available only using Phaser Hooks</div></CodeContainer>;
+    }
 
-        const differences = diffWords(oldValueStr, newValueStr);
-        
-        return (
-            <DiffContainer>
-                {differences.flatMap((part, index) => {
-                    const lines = part.value.split('\n');
-                    return lines.map((line, lineIndex) => (
-                        <DiffLine
-                            key={`${index}-${lineIndex}`}
-                            $added={part.added}
-                            $removed={part.removed}
-                        >
-                            {line || ' '}
-                        </DiffLine>
-                    ));
-                })}
-            </DiffContainer>
-        );
-    };
+    const differences = diffWords(oldValueStr, newValueStr);
 
     return (
-        <PreviewContainer>
-            <KeyHeader>
-                <KeyLabel>Key:</KeyLabel>
-                <KeyValue>{event.key}</KeyValue>
-                <CloseButton onClick={() => onClose()} title="Close">
-                  <i className="fas fa-times"></i>
-                </CloseButton>
-            </KeyHeader>
-            
-            <TabsContainer>
-                <Tab $active={activeTab === 'new'} onClick={() => setActiveTab('new')}>
-                    New Value
-                </Tab>
-                <Tab $active={activeTab === 'old'} onClick={() => setActiveTab('old')}>
-                    Old Value
-                </Tab>
-                <Tab $active={activeTab === 'diff'} onClick={() => setActiveTab('diff')}>
-                    Diff
-                </Tab>
-            </TabsContainer>
-
-            <TabContent>
-                {activeTab === 'new' && (
-                    <CodeContainer>
-                        <SyntaxHighlighter
-                            language="json"
-                            style={vscDarkPlus}
-                            customStyle={{ margin: 0, padding: 0 }}
-                        >
-                            {newValueStr}
-                        </SyntaxHighlighter>
-                    </CodeContainer>
-                )}
-                {activeTab === 'old' && (
-                    <CodeContainer>
-                        {oldValueStr ? (
-                            <SyntaxHighlighter
-                                language="json"
-                                style={vscDarkPlus}
-                                customStyle={{ margin: 0, padding: 0 }}
-                            >
-                                {oldValueStr}
-                            </SyntaxHighlighter>
-                        ) : (
-                            <div>No old value</div>
-                        )}
-                    </CodeContainer>
-                )}
-                {activeTab === 'diff' && renderDiff()}
-            </TabContent>
-        </PreviewContainer>
+      <CodeContainer>
+        <DiffContainer>
+          {differences.flatMap((part, index) => {
+            const lines = part.value.split('\n');
+            return lines.map((line, lineIndex) => (
+              <DiffLine
+                key={`${index}-${lineIndex}`}
+                $added={part.added}
+                $removed={part.removed}
+              >
+                {line || ' '}
+              </DiffLine>
+            ));
+          })}
+        </DiffContainer>
+      </CodeContainer>
     );
+  };
+
+  return (
+    <PreviewContainer>
+      <KeyHeader>
+        <KeyLabel>Key:</KeyLabel>
+        <KeyValue>{event.key}</KeyValue>
+        <CloseButton onClick={() => onClose()} title="Close">
+          <i className="fas fa-times"></i>
+        </CloseButton>
+      </KeyHeader>
+
+      <TabsContainer>
+        <Tab $active={activeTab === 'new'} onClick={() => setActiveTab('new')}>
+          New Value
+        </Tab>
+        <Tab $active={activeTab === 'old'} onClick={() => setActiveTab('old')}>
+          Old Value
+        </Tab>
+        <Tab $active={activeTab === 'diff'} onClick={() => setActiveTab('diff')}>
+          Diff
+        </Tab>
+      </TabsContainer>
+
+      <TabContent>
+        {activeTab === 'new' && (
+          <CodeContainer>
+            <SyntaxHighlighter
+              language="json"
+              style={vscDarkPlus}
+              customStyle={{ margin: 0, padding: 0 }}
+            >
+              {newValueStr}
+            </SyntaxHighlighter>
+          </CodeContainer>
+        )}
+        {activeTab === 'old' && (
+          <CodeContainer>
+            {oldValueStr ? (
+              <SyntaxHighlighter
+                  language="json"
+                  style={vscDarkPlus}
+                  customStyle={{ margin: 0, padding: 0 }}
+              >
+                {oldValueStr}
+              </SyntaxHighlighter>
+            ) : (
+              <div>No old value. Available only using Phaser Hooks.</div>
+            )}
+          </CodeContainer>
+        )}
+        {activeTab === 'diff' && renderDiff()}
+      </TabContent>
+    </PreviewContainer>
+  );
 };

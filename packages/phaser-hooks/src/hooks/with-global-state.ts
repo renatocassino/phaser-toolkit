@@ -78,9 +78,9 @@ export const withGlobalState = <T>(
   }
 
   // Prefix the key with scene key to ensure locality
-  const localKey = `phaser-hooks:global:${key}`;
+  const globalKey = `phaser-hooks:global:${key}`;
 
-  return withStateDef(scene, localKey, initialValue, {
+  return withStateDef(scene, globalKey, initialValue, {
     ...options,
     persistent: false, // Local state shouldn't persist across scene changes
     global: true,

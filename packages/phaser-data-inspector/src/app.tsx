@@ -24,6 +24,27 @@ const FiltersContainer = styled.div`
   align-items: center;
 `;
 
+const ClearButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #666;
+  
+  &:hover {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  i {
+    font-size: 14px;
+  }
+`;
+
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -99,11 +120,16 @@ function App(): ReactElement {
           <div className="container-fluid">
             <FiltersContainer>
               <input type="text" placeholder="Search" value={filters.search} onChange={(e) => setSearch(e.target.value)} />
-              <button onClick={(): void => {
-                clearEvents();
-                setCurrentPage(1);
-                setSelectedEvent(null);
-              }}>Clear</button>
+              <ClearButton 
+                onClick={(): void => {
+                  clearEvents();
+                  setCurrentPage(1);
+                  setSelectedEvent(null);
+                }}
+                title="Clear events"
+              >
+                <i className="fas fa-trash"></i>
+              </ClearButton>
             </FiltersContainer>
           </div>
 

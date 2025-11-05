@@ -20,12 +20,46 @@ const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  font-size: 12px;
-  font-weight: bold;
+  border: none;
+  background: transparent;
   cursor: pointer;
+  color: #666;
+  
+  &:hover {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  i {
+    font-size: 14px;
+  }
+`;
+
+const KeyHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 8px;
+`;
+
+const KeyLabel = styled.span`
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+`;
+
+const KeyValue = styled.code`
+  font-family: monospace;
+  font-size: 12px;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #333;
 `;
 
 const TabsContainer = styled.div`
@@ -122,7 +156,13 @@ export const PreviewStateEvent = ({ event, onClose }: { event: PhaserDataInspect
 
     return (
         <PreviewContainer>
-            <CloseButton onClick={() => onClose()}>X</CloseButton>
+            <KeyHeader>
+                <KeyLabel>Key:</KeyLabel>
+                <KeyValue>{event.key}</KeyValue>
+                <CloseButton onClick={() => onClose()} title="Close">
+                  <i className="fas fa-times"></i>
+                </CloseButton>
+            </KeyHeader>
             
             <TabsContainer>
                 <Tab $active={activeTab === 'new'} onClick={() => setActiveTab('new')}>

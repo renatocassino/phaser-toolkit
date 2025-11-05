@@ -43,17 +43,63 @@ export default defineConfig({
     {
       name: 'copy-public-assets',
       buildStart() {
-        // Copy pico.min.css from node_modules to public at build start
-        const picoCssPath = resolve(__dirname, 'node_modules/@picocss/pico/css/pico.min.css');
         const publicDir = resolve(__dirname, 'public');
-        const publicPicoPath = resolve(publicDir, 'pico.min.css');
         
         if (!existsSync(publicDir)) {
           mkdirSync(publicDir, { recursive: true });
         }
         
+        // Copy pico.min.css from node_modules to public at build start
+        const picoCssPath = resolve(__dirname, 'node_modules/@picocss/pico/css/pico.min.css');
+        const publicPicoPath = resolve(publicDir, 'pico.min.css');
+        
         if (existsSync(picoCssPath)) {
           copyFileSync(picoCssPath, publicPicoPath);
+        }
+        
+        // Copy Font Awesome files from node_modules to public
+        const fontAwesomeSource = resolve(__dirname, 'node_modules/@fortawesome/fontawesome-free');
+        const fontAwesomeDest = resolve(publicDir, 'fontawesome');
+        
+        if (existsSync(fontAwesomeSource)) {
+          // Create fontawesome directory if it doesn't exist
+          if (!existsSync(fontAwesomeDest)) {
+            mkdirSync(fontAwesomeDest, { recursive: true });
+          }
+          
+          // Copy CSS directory
+          const cssSource = resolve(fontAwesomeSource, 'css');
+          const cssDest = resolve(fontAwesomeDest, 'css');
+          if (existsSync(cssSource)) {
+            if (!existsSync(cssDest)) {
+              mkdirSync(cssDest, { recursive: true });
+            }
+            const cssFiles = readdirSync(cssSource);
+            cssFiles.forEach((file) => {
+              const srcPath = resolve(cssSource, file);
+              const destPath = resolve(cssDest, file);
+              if (statSync(srcPath).isFile()) {
+                copyFileSync(srcPath, destPath);
+              }
+            });
+          }
+          
+          // Copy webfonts directory
+          const webfontsSource = resolve(fontAwesomeSource, 'webfonts');
+          const webfontsDest = resolve(fontAwesomeDest, 'webfonts');
+          if (existsSync(webfontsSource)) {
+            if (!existsSync(webfontsDest)) {
+              mkdirSync(webfontsDest, { recursive: true });
+            }
+            const fontFiles = readdirSync(webfontsSource);
+            fontFiles.forEach((file) => {
+              const srcPath = resolve(webfontsSource, file);
+              const destPath = resolve(webfontsDest, file);
+              if (statSync(srcPath).isFile()) {
+                copyFileSync(srcPath, destPath);
+              }
+            });
+          }
         }
       },
       writeBundle() {
@@ -65,17 +111,27 @@ export default defineConfig({
           mkdirSync(distDir, { recursive: true });
         }
         
-        // Copy all files from public directory
-        if (existsSync(publicDir)) {
-          const files = readdirSync(publicDir);
-          files.forEach((file) => {
-            const srcPath = resolve(publicDir, file);
-            const destPath = resolve(distDir, file);
+        // Copy all files and directories from public directory
+        const copyRecursive = (src: string, dest: string): void => {
+          if (!existsSync(dest)) {
+            mkdirSync(dest, { recursive: true });
+          }
+          
+          const entries = readdirSync(src);
+          entries.forEach((entry) => {
+            const srcPath = resolve(src, entry);
+            const destPath = resolve(dest, entry);
             
-            if (statSync(srcPath).isFile()) {
+            if (statSync(srcPath).isDirectory()) {
+              copyRecursive(srcPath, destPath);
+            } else {
               copyFileSync(srcPath, destPath);
             }
           });
+        };
+        
+        if (existsSync(publicDir)) {
+          copyRecursive(publicDir, distDir);
         }
         
         // Move HTML files from dist/src/ to dist/ root

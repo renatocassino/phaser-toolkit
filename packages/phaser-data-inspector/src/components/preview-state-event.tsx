@@ -1,6 +1,8 @@
 import { useState, type ReactElement } from 'react';
 import styled from 'styled-components';
 import { diffWords } from 'diff';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { PhaserDataInspectorMessage } from '../store/types';
 
 const PreviewContainer = styled.div`
@@ -54,10 +56,16 @@ const TabContent = styled.div`
   padding: 10px 0;
 `;
 
-const JsonPre = styled.pre`
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+const CodeContainer = styled.div`
+  padding: 12px;
+  border-radius: 4px;
+  background: #1e1e1e;
+  overflow: auto;
+  
+  pre {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 const DiffContainer = styled.div`
@@ -130,10 +138,30 @@ export const PreviewStateEvent = ({ event, onClose }: { event: PhaserDataInspect
 
             <TabContent>
                 {activeTab === 'new' && (
-                    <JsonPre>{newValueStr}</JsonPre>
+                    <CodeContainer>
+                        <SyntaxHighlighter
+                            language="json"
+                            style={vscDarkPlus}
+                            customStyle={{ margin: 0, padding: 0 }}
+                        >
+                            {newValueStr}
+                        </SyntaxHighlighter>
+                    </CodeContainer>
                 )}
                 {activeTab === 'old' && (
-                    <JsonPre>{oldValueStr || 'No old value'}</JsonPre>
+                    <CodeContainer>
+                        {oldValueStr ? (
+                            <SyntaxHighlighter
+                                language="json"
+                                style={vscDarkPlus}
+                                customStyle={{ margin: 0, padding: 0 }}
+                            >
+                                {oldValueStr}
+                            </SyntaxHighlighter>
+                        ) : (
+                            <div>No old value</div>
+                        )}
+                    </CodeContainer>
                 )}
                 {activeTab === 'diff' && renderDiff()}
             </TabContent>

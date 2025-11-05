@@ -6,6 +6,7 @@ import { useEvents } from './store/use-events';
 import { useFilters } from './store/use-filters';
 import { useFilteredEvents } from './store/use-filtered-events';
 import { PreviewStateEvent } from './components/preview-state-event';
+import { EventsTable } from './components/events-table';
 
 const MainContainer = styled.main`
   height: 100vh;
@@ -28,16 +29,6 @@ const ContentContainer = styled.div`
   height: 100%;
   overflow: hidden;
   width: 100%;
-`;
-
-const TableContainer = styled.div<{ $hasPreview?: boolean }>`
-  flex: ${(props): string => props.$hasPreview ? '0 0 calc(50% - 5px)' : '1 1 100%'};
-  overflow: auto;
-  box-sizing: border-box;
-`;
-
-const TableRow = styled.tr`
-  cursor: pointer;
 `;
 
 const FieldsetContainer = styled.fieldset`
@@ -106,30 +97,11 @@ function App(): ReactElement {
           </div>
 
           <ContentContainer>
-            <TableContainer className="overflow-auto" $hasPreview={!!selectedEvent}>
-              <table role="grid" className="table-row striped">
-                <thead>
-                  <tr>
-                    <th>Datetime</th>
-                    <th>Scene Key</th>
-                    <th>Registry</th>
-                    <th>Scope</th>
-                    <th>Key</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {events.map((message) => (
-                    <TableRow onClick={() => setSelectedEvent(message)} key={`${message.datetime}-${message.sceneKey}-${message.registry}-${message.scope}-${message.key}`}>
-                      <td>{message.datetime.split('T')[1]}</td>
-                      <td>{message.sceneKey}</td>
-                      <td>{message.registry}</td>
-                      <td>{message.scope}</td>
-                      <td>{message.key.replace(/^phaser-hooks:(global|local):/, '')}</td>
-                    </TableRow>
-                  ))}
-                </tbody>
-              </table>
-            </TableContainer>
+            <EventsTable 
+              events={events} 
+              onSelectEvent={setSelectedEvent}
+              hasPreview={!!selectedEvent}
+            />
 
             {selectedEvent && (
               <PreviewStateEvent event={selectedEvent} onClose={closePreview} />

@@ -1,288 +1,254 @@
-# Phaser Data Inspector
+# Phaser Data Inspector 🔍
 
-Chrome extension para inspecionar dados e estado de jogos Phaser.
+> The DevTools for Phaser games state - Inspect, debug, and understand your game state in real-time
 
-## Development
+[![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://chrome.google.com/webstore)
+[![React](https://img.shields.io/badge/React-19.2-blue.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+**Phaser Data Inspector** is a powerful Chrome DevTools extension that brings state inspection capabilities to Phaser game development. Just like Redux DevTools revolutionized React debugging, this extension provides game developers with comprehensive insights into their Phaser game state management.
+
+## ✨ Features
+
+### 🎯 **Real-Time State Monitoring**
+- Track state changes across **Phaser Registry** (global) and **Scene Data** (per-scene)
+- Monitor state managed by **[phaser-hooks](https://www.npmjs.com/package/phaser-hooks)** library
+- View state changes as they happen in your game
+
+### 🔍 **Powerful Search & Filter**
+- **Search by state key** - Quickly find specific state variables
+- **Filter by source** - Toggle to show only phaser-hooks states
+- Real-time filtering as you type
+
+### 📊 **State Diff Visualization**
+- **Side-by-side comparison** - View old vs new values
+- **Visual diff highlighting** - See exactly what changed
+- Syntax-highlighted JSON preview for easy reading
+- Available when using phaser-hooks for enhanced debugging
+
+### 📄 **Pagination & Performance**
+- Handle large event logs efficiently
+- Configurable items per page (10, 50, 100, 1000)
+- Smooth navigation through state history
+
+### 🎮 **Multi-Game Support**
+- Switch between multiple Phaser game instances
+- Separate state tracking per game ID
+- Perfect for testing multiple game instances simultaneously
+
+### 🎨 **Modern UI**
+- Built with React and styled-components
+- Clean, intuitive interface
+- Responsive layout with split-pane preview
+- Dark theme code highlighting
+
+## 📸 Screenshots
+
+<div align="center">
+
+![Preview 1](data/preview-01.png)
+*State events table with search and filtering*
+
+![Preview 2](data/preview-02.png)
+*Detailed state preview with diff visualization*
+
+</div>
+
+## 🚀 Installation
+
+### Option 1: Load Unpacked Extension (Development)
+
+1. Clone this repository:
 ```bash
-# Install dependencies
+git clone https://github.com/your-org/phaser-toolkit.git
+cd phaser-toolkit/packages/phaser-data-inspector
+```
+
+2. Install dependencies:
+```bash
 pnpm install
+```
 
-# Run dev mode with watch (builds to dist continuously)
-pnpm dev
-
-# Build for production
+3. Build the extension:
+```bash
 pnpm build
 ```
 
-## Loading the Extension in Chrome
+4. Load in Chrome:
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked"
+   - Select the `dist` folder from the phaser-data-inspector package
 
-1. Open Chrome and go to `chrome://extensions/`
-2. Enable "Developer mode" (toggle in top right)
-3. Click "Load unpacked"
-4. Select the `dist` folder from this project
-5. The extension should now appear in your extensions list
+### Option 2: Chrome Web Store (Coming Soon)
 
-## Estrutura do Projeto
+The extension will be available on the Chrome Web Store soon. Stay tuned!
+
+## 📖 Usage
+
+### Basic Setup
+
+1. **Install the extension** (see Installation above)
+
+2. **Open Chrome DevTools** on your Phaser game page (F12)
+
+3. **Navigate to the "Phaser" tab** in DevTools
+
+4. **Start your game** - State changes will automatically appear in the inspector
+
+### Using with Phaser Registry
+
+The extension automatically tracks changes to Phaser's global registry:
+
+```javascript
+// In your Phaser game
+this.registry.set('score', 100);
+this.registry.set('lives', 3);
+```
+
+### Using with Scene Data
+
+Track per-scene state changes:
+
+```javascript
+// In your Phaser scene
+this.data.set('playerHealth', 100);
+this.data.set('enemyCount', 5);
+```
+
+### Using with Phaser Hooks (Recommended)
+
+For the best experience with diff visualization, use **[phaser-hooks](https://www.npmjs.com/package/phaser-hooks)**:
+
+```javascript
+import { withLocalState } from 'phaser-hooks';
+
+// In your scene
+const { set, get, on } = withLocalState(this, 'score', 0);
+
+// When score changes, you'll see the diff in the inspector
+set(100);
+
+get(); // Returns 100
+
+// Reactive events
+on('change', (newValue) => {
+  this.textScore.setText(newValue);
+});
+```
+
+### Features Guide
+
+#### 🔍 **Searching States**
+- Type in the search box to filter events by state key
+- Search is case-insensitive and matches partial keys
+- Clear search to show all events
+
+#### 🎯 **Filtering Phaser Hooks**
+- Check "Show only Phaser Hooks" to focus on state managed by phaser-hooks
+- Useful when debugging complex state management scenarios
+
+#### 📊 **Viewing State Changes**
+- Click any event row to view detailed state information
+- Switch between tabs:
+  - **New Value**: Current state value with syntax highlighting
+  - **Old Value**: Previous state value (requires phaser-hooks)
+  - **Diff**: Visual comparison showing exactly what changed
+
+#### 📄 **Navigating Events**
+- Use pagination controls at the bottom
+- Adjust items per page for better performance
+- Navigate through pages with Previous/Next buttons
+
+#### 🗑️ **Clearing Events**
+- Click the trash icon to clear all captured events
+- Useful when starting a new debugging session
+
+## 🛠️ Development
+
+### Prerequisites
+
+- Node.js 18+ 
+- pnpm 8+
+
+### Build Commands
+
+```bash
+# Development build with watch mode
+pnpm dev
+
+# Production build
+pnpm build
+```
+
+### Project Structure
 
 ```
 phaser-data-inspector/
 ├── src/
-│   ├── popup.html          # Interface compartilhada (popup e DevTools)
-│   ├── App.tsx             # Componente principal (React)
-│   ├── main.tsx            # Entry point do React
-│   ├── devtools.html       # Página que cria o painel no DevTools
-│   ├── background.ts       # Service Worker (background)
-│   └── content.ts          # Script injetado nas páginas web
-├── public/
-│   └── manifest.json       # Manifest do Chrome Extension
-└── dist/                   # Build output (para carregar no Chrome)
+│   ├── app.tsx                 # Main React application
+│   ├── background.ts            # Background service worker
+│   ├── content.ts              # Content script
+│   ├── injected-script.ts     # Script injected into page
+│   ├── devtools.ts             # DevTools panel setup
+│   ├── components/             # React components
+│   │   ├── events-table.tsx
+│   │   ├── preview-state-event.tsx
+│   │   └── pagination-controls.tsx
+│   └── store/                  # State management (Zustand)
+│       ├── use-events.ts
+│       ├── use-filters.ts
+│       └── use-filtered-events.ts
+├── public/                     # Static assets
+├── dist/                       # Build output
+└── data/                       # Preview images
 ```
 
-## Arquivos e suas Funções
+### Architecture
 
-### `manifest.json` - Configuração do Plugin
+The extension uses a multi-context architecture:
 
-O `manifest.json` é o arquivo principal que define como o plugin funciona. Ele contém:
+- **Content Script** (`content.ts`): Injected into game pages to detect Phaser instances
+- **Background Service Worker** (`background.ts`): Routes messages between contexts
+- **Injected Script** (`injected-script.ts`): Runs in page context to intercept Phaser state changes
+- **DevTools Panel** (`app.tsx`): React UI displayed in Chrome DevTools
 
-- **`manifest_version: 3`** - Versão do Manifest V3 (padrão atual do Chrome)
-- **`permissions`** - Permissões necessárias:
-  - `activeTab`: Acesso à aba ativa
-  - `scripting`: Permite injetar scripts
-- **`host_permissions`** - Permissão para acessar todas as URLs (`<all_urls>`)
-- **`background`** - Define o service worker (`background.js`)
-- **`content_scripts`** - Scripts injetados automaticamente em todas as páginas
-- **`devtools_page`** - Página que cria o painel no DevTools
-- **`action`** - Configuração do botão na toolbar do Chrome
+## 🤝 Contributing
 
-### `background.ts` - Service Worker (Background)
+Contributions are welcome! Please read our [Contributing Guide](../../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-**Função**: Roda em background, independente das páginas abertas. É o "cérebro" central do plugin.
+### Development Setup
 
-**O que faz**:
-- Escuta eventos globais do plugin (instalação, cliques no ícone)
-- Atua como intermediário na comunicação entre componentes
-- Pode receber mensagens de qualquer parte do plugin
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Build and test locally
+5. Commit your changes (`git commit -m 'Add some amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-**Contexto**: Roda em um ambiente isolado, não tem acesso ao DOM das páginas.
+## 📝 License
 
-### `content.ts` - Content Script
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
 
-**Função**: Script injetado diretamente nas páginas web que o usuário visita.
+## 🙏 Acknowledgments
 
-**O que faz**:
-- Tem acesso ao DOM da página (pode ler/modificar elementos)
-- Escuta mensagens do código da página usando `window.postMessage`
-- Envia dados para o `background.ts` via `chrome.runtime.sendMessage`
-- Detecta se Phaser está disponível na página
+- Inspired by [Redux DevTools](https://github.com/reduxjs/redux-devtools)
+- Built with [Phaser](https://phaser.io/)
+- Compatible with [phaser-hooks](https://www.npmjs.com/package/phaser-hooks)
 
-**Contexto**: Roda no contexto da página, mas isolado do código JavaScript da página (não pode acessar variáveis diretamente, mas pode se comunicar via `postMessage`).
+## 📚 Related Projects
 
-### `App.tsx` - Componente Principal
+- [phaser-hooks](https://www.npmjs.com/package/phaser-hooks) - State management library for Phaser
+- [Phaser](https://phaser.io/) - The fast, fun, and free open source HTML5 game framework
 
-**Função**: Componente React compartilhado entre popup e DevTools panel.
+## 💬 Support
 
-**O que faz**:
-- Gerencia a UI usando React (hooks e estado reativo)
-- Conecta com o background via `chrome.runtime.connect`
-- Detecta se está rodando no popup ou no DevTools panel
-- Atualiza a UI reativamente quando recebe mensagens
-- Usa `useEffect` para inicializar e limpar conexões
+Found a bug or have a feature request? Please [open an issue](https://github.com/your-org/phaser-toolkit/issues).
 
-### `main.tsx` - Entry Point
+---
 
-**Função**: Inicializa o componente React.
-
-**O que faz**:
-- Importa e renderiza o componente `App.tsx`
-- Usa `createRoot` do React 18+ para renderizar na DOM
-- Envolve o app em `StrictMode` para desenvolvimento
-
-**Contexto**: Roda tanto no popup quanto no painel do DevTools.
-
-### `devtools.html` - Criador do Painel DevTools
-
-**Função**: Criar a aba customizada no Chrome DevTools.
-
-**O que faz**:
-- Usa `chrome.devtools.panels.create()` para criar uma nova aba "Phaser"
-- Define qual HTML usar (`popup.html`) como conteúdo da aba
-- Escuta eventos de quando a aba é mostrada/escondida
-
-**Contexto**: Roda no contexto do DevTools quando o DevTools é aberto.
-
-### `popup.html` - Interface do Plugin
-
-**Função**: Interface visual compartilhada entre popup e DevTools.
-
-**O que faz**:
-- Carrega `main.tsx` que renderiza o componente React `App.tsx`
-- Usa React para UI reativa (compatível com CSP)
-- Pode ser aberto como popup (botão na toolbar) ou como painel do DevTools
-
-**Contexto**: Roda tanto no popup quanto no painel do DevTools.
-
-## Como Funciona a Comunicação
-
-### Fluxo de Comunicação: Página Web → Plugin
-
-```
-┌─────────────────┐
-│  Página Web     │
-│  (seu jogo)     │
-└────────┬────────┘
-         │ window.postMessage()
-         │ { source: 'phaser-data-hook', ... }
-         ▼
-┌─────────────────┐
-│  content.ts     │ ◄─── Injeta scripts na página
-│  (content.js)   │
-└────────┬────────┘
-         │ chrome.runtime.sendMessage()
-         │ { type: 'PHX_EVENT', payload: ... }
-         ▼
-┌─────────────────┐
-│  background.ts  │ ◄─── Service Worker central
-│  (background.js)│
-└────────┬────────┘
-         │ chrome.runtime.connect()
-         │ ou chrome.runtime.sendMessage()
-         ▼
-┌─────────────────┐
-│  App.tsx        │ ◄─── UI (popup ou DevTools) - Componente React
-│  (popup.html)   │
-└─────────────────┘
-```
-
-### Como Enviar Dados da Página HTML para o Plugin
-
-Para enviar dados da sua página HTML/jogo Phaser para o plugin, você precisa usar `window.postMessage()`:
-
-#### 1. Na sua página HTML (onde roda o jogo Phaser):
-
-```javascript
-// Enviar dados para o plugin
-window.postMessage({
-  source: 'phaser-data-hook',  // IMPORTANTE: deve ter este campo
-  type: 'GAME_STATE',
-  data: {
-    scene: 'MenuScene',
-    score: 100,
-    player: { x: 100, y: 200 }
-  }
-}, '*'); // '*' permite enviar para qualquer origem
-```
-
-#### 2. O `content.ts` já está configurado para escutar:
-
-```typescript
-// content.ts já tem este listener:
-window.addEventListener('message', (e) => {
-  if (e.data?.source === 'phaser-data-hook') {
-    // Envia para o background
-    chrome.runtime.sendMessage({ 
-      type: 'PHX_EVENT', 
-      payload: e.data 
-    });
-  }
-});
-```
-
-#### 3. Para receber no popup/DevTools (`App.tsx`):
-
-Você precisa adicionar um listener no `background.ts` e depois enviar para o `App.tsx`:
-
-**Exemplo completo de comunicação**:
-
-```typescript
-// 1. Na sua página HTML
-window.postMessage({
-  source: 'phaser-data-hook',
-  type: 'SCENE_CHANGED',
-  sceneName: 'GameScene',
-  timestamp: Date.now()
-}, '*');
-
-// 2. No background.ts (adicionar listener)
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'PHX_EVENT') {
-    // Enviar para todas as conexões abertas (popup/DevTools)
-    // Você precisaria manter um registro das conexões
-    console.log('Received from content:', message.payload);
-  }
-});
-
-// 3. No App.tsx (já conectado via port)
-port.onMessage.addListener((payload) => {
-  console.log('Received in UI:', payload);
-  // Atualizar UI com React (setState)
-});
-```
-
-### Tipos de Comunicação Disponíveis
-
-1. **`window.postMessage()`** - Comunicação entre página e content script
-   - Usado quando a página quer enviar dados para o plugin
-   - O content script escuta no `window`
-
-2. **`chrome.runtime.sendMessage()`** - Comunicação unidirecional
-   - Content script → Background
-   - Popup → Background
-   - Não mantém conexão aberta
-
-3. **`chrome.runtime.connect()`** - Comunicação bidirecional (porta)
-   - Mantém conexão aberta entre componentes
-   - Permite enviar múltiplas mensagens
-   - Usado no `App.tsx` para conectar com background
-
-4. **`chrome.runtime.onMessage.addListener()`** - Escutar mensagens
-   - Usado no background para receber mensagens de qualquer componente
-
-### Exemplo Prático: Enviar Estado do Phaser
-
-```javascript
-// No seu código Phaser (página HTML)
-function sendPhaserDataToInspector(gameInstance) {
-  const data = {
-    source: 'phaser-data-hook',  // OBRIGATÓRIO
-    type: 'PHASER_STATE',
-    phaser: {
-      version: Phaser.VERSION,
-      scenes: gameInstance.scene.scenes.map(s => ({
-        key: s.scene.key,
-        active: s.scene.isActive(),
-        visible: s.scene.isVisible()
-      })),
-      gameObjects: gameInstance.scene.scenes
-        .filter(s => s.scene.isActive())
-        .flatMap(s => s.children.list.map(child => ({
-          type: child.constructor.name,
-          active: child.active,
-          visible: child.visible
-        })))
-    }
-  };
-  
-  window.postMessage(data, '*');
-}
-
-// Chamar periodicamente ou em eventos específicos
-setInterval(() => {
-  if (window.game) { // assumindo que você expõe a instância do Phaser
-    sendPhaserDataToInspector(window.game);
-  }
-}, 1000); // a cada segundo
-```
-
-## Features
-
-- **DevTools Tab**: Aba customizada no Chrome DevTools (como Redux DevTools)
-- **Popup Button**: Botão clicável na toolbar que abre popup
-- **TypeScript**: Type safety completo
-- **React**: Framework reativo amplamente usado (compatível com CSP)
-
-## Technologies
-
-- **TypeScript** - Desenvolvimento type-safe
-- **Vite** - Build tool rápido com watch mode
-- **React** - Framework reativo amplamente usado (compatível com CSP do Chrome)
+<div align="center">
+  Made with ❤️ for the Phaser community
+</div>

@@ -143,7 +143,7 @@ export const PreviewStateEvent = ({ event, onClose }: { event: PhaserDataInspect
             const lines = part.value.split('\n');
             return lines.map((line, lineIndex) => (
               <DiffLine
-                key={`${index}-${lineIndex}`}
+                key={`diff-${index}-${lineIndex}-${line.substring(0, 10)}`}
                 $added={part.added}
                 $removed={part.removed}
               >

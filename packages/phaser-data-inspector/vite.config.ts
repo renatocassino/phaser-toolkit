@@ -39,7 +39,16 @@ export default defineConfig({
     watch: process.argv.includes('--watch') ? {} : null,
   },
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [
+          ['babel-plugin-styled-components', {
+            displayName: true,
+            ssr: false,
+          }],
+        ],
+      },
+    }),
     {
       name: 'copy-public-assets',
       buildStart() {

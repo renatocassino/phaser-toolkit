@@ -4,6 +4,7 @@ import { EVENT_NAME } from './constants';
 import { useEvents } from './store/use-events';
 import { useFilters } from './store/use-filters';
 import { useFilteredEvents } from './store/use-filtered-events';
+import { PreviewStateEvent } from './components/preview-state-event';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -13,6 +14,8 @@ function App() {
   const { filters, toggleOnlyPhaserHooks, setSearch } = useFilters();
   const { events } = useFilteredEvents();
   const { addEvent, clearEvents } = useEvents();
+  const [selectedEvent, setSelectedEvent] = useState<PhaserDataInspectorMessage | null>(null);
+  const closePreview = () => setSelectedEvent(null);
 
   useEffect(() => {
     // Detect if we're in DevTools panel
@@ -56,7 +59,7 @@ function App() {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="overflow-auto">          
+        <div>          
           <div className="container-fluid">
             <p>
               Events: {events.length}
@@ -67,29 +70,35 @@ function App() {
             </div>
           </div>
 
-          <div className="overflow-auto">
-            <table role="grid" className="table-row striped">
-              <thead>
-                <tr>
-                  <th>Datetime</th>
-                  <th>Scene Key</th>
-                  <th>Registry</th>
-                  <th>Scope</th>
-                  <th>Key</th>
-                </tr>
-              </thead>
-              <tbody>
-                {events.map((message) => (
-                  <tr style={{cursor: 'pointer'}} onClick={() => {}} key={`${message.datetime}-${message.sceneKey}-${message.registry}-${message.scope}-${message.key}`}>
-                    <td>{message.datetime.split('T')[1]}</td>
-                    <td>{message.sceneKey}</td>
-                    <td>{message.registry}</td>
-                    <td>{message.scope}</td>
-                    <td>{message.key.replace(/^phaser-hooks:(global|local):/, '')}</td>
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', height: '100%', overflow: 'hidden', flex: 1 }}>
+            <div className="overflow-auto" style={{ flex: 1 }}>
+              <table role="grid" className="table-row striped">
+                <thead>
+                  <tr>
+                    <th>Datetime</th>
+                    <th>Scene Key</th>
+                    <th>Registry</th>
+                    <th>Scope</th>
+                    <th>Key</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {events.map((message) => (
+                    <tr style={{cursor: 'pointer'}} onClick={() => setSelectedEvent(message)} key={`${message.datetime}-${message.sceneKey}-${message.registry}-${message.scope}-${message.key}`}>
+                      <td>{message.datetime.split('T')[1]}</td>
+                      <td>{message.sceneKey}</td>
+                      <td>{message.registry}</td>
+                      <td>{message.scope}</td>
+                      <td>{message.key.replace(/^phaser-hooks:(global|local):/, '')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {selectedEvent && (
+              <PreviewStateEvent event={selectedEvent} onClose={closePreview} />
+            )}
           </div>
         </div>
       )}

@@ -6,7 +6,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   padding: 2rem;
   text-align: center;
   font-family: system-ui, -apple-system, sans-serif;
@@ -128,7 +128,7 @@ export function ActivationInstructions(): ReactElement {
               Click on the <strong>Phaser Data Inspector extension icon</strong> in your browser toolbar (top-right corner, next to the address bar)
             </li>
             <li>
-              In the popup that appears, click the <strong>"Ativar Inspeção"</strong> button
+              In the popup that appears, click the <strong>"Activate inspect"</strong> button
             </li>
             <li>
               Wait a moment and this panel will automatically update
@@ -139,6 +139,8 @@ export function ActivationInstructions(): ReactElement {
         <ScreenshotPlaceholder>
           <span>🖱️</span>
           Look for the extension icon in your toolbar
+          <img src="./how-to-activate.png" alt="How to activate" />
+
         </ScreenshotPlaceholder>
 
         <Tip>

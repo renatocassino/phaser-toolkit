@@ -3,9 +3,13 @@ import { resolve } from 'path';
 import { copyFileSync, mkdirSync, existsSync, readdirSync, statSync, unlinkSync, rmdirSync, readFileSync, writeFileSync } from 'fs';
 import react from '@vitejs/plugin-react';
 
+// Check if building for Firefox (via environment variable)
+const isFirefox = process.env.BUILD_TARGET === 'firefox';
+const outDir = isFirefox ? 'dist-firefox' : 'dist';
+
 export default defineConfig({
   build: {
-    outDir: 'dist',
+    outDir,
     emptyOutDir: true,
       rollupOptions: {
       input: {
@@ -117,7 +121,7 @@ export default defineConfig({
       },
       writeBundle() {
         const publicDir = resolve(__dirname, 'public');
-        const distDir = resolve(__dirname, 'dist');
+        const distDir = resolve(__dirname, outDir);
         const distSrcDir = resolve(distDir, 'src');
         
         if (!existsSync(distDir)) {
@@ -132,6 +136,11 @@ export default defineConfig({
           
           const entries = readdirSync(src);
           entries.forEach((entry) => {
+            // Skip .gitignore and other hidden files
+            if (entry.startsWith('.') && entry !== '.') {
+              return;
+            }
+            
             const srcPath = resolve(src, entry);
             const destPath = resolve(dest, entry);
             
@@ -146,6 +155,37 @@ export default defineConfig({
         if (existsSync(publicDir)) {
           copyRecursive(publicDir, distDir);
         }
+        
+        // Copy appropriate manifest (Firefox or Chrome)
+        // Override the manifest.json that was copied from public/ with the correct one
+        const manifestSource = isFirefox 
+          ? resolve(__dirname, 'public', 'manifest-firefox.json')
+          : resolve(__dirname, 'public', 'manifest.json');
+        const distManifestPath = resolve(distDir, 'manifest.json');
+        if (existsSync(manifestSource)) {
+          copyFileSync(manifestSource, distManifestPath);
+        }
+        
+        // Remove manifest-firefox.json from dist if it was copied (not needed)
+        if (isFirefox) {
+          const firefoxManifestInDist = resolve(distDir, 'manifest-firefox.json');
+          if (existsSync(firefoxManifestInDist)) {
+            unlinkSync(firefoxManifestInDist);
+          }
+        }
+        
+        // Remove .gitignore and other unwanted files from dist
+        const unwantedFiles = ['.gitignore', 'manifest-firefox.json'];
+        unwantedFiles.forEach((file) => {
+          const filePath = resolve(distDir, file);
+          if (existsSync(filePath)) {
+            try {
+              unlinkSync(filePath);
+            } catch (e) {
+              // Ignore errors
+            }
+          }
+        });
         
         // Move HTML files from dist/src/ to dist/ root
         if (existsSync(distSrcDir)) {

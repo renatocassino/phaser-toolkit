@@ -8,7 +8,26 @@ btn.addEventListener('click', async () => {
   statusEl.className = '';
 
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    // Helper to get current tab (works in both Chrome and Firefox)
+    const getCurrentTab = async (): Promise<chrome.tabs.Tab> => {
+      // Try chrome.tabs first (Chrome)
+      if (chrome.tabs && chrome.tabs.query) {
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (tabs[0]) return tabs[0];
+      }
+      
+      // Try browser.tabs (Firefox standard)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const browser = (globalThis as any).browser || (globalThis as any).chrome;
+      if (browser?.tabs?.query) {
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+        if (tabs[0]) return tabs[0];
+      }
+      
+      throw new Error('Could not access tabs API');
+    };
+    
+    const tab = await getCurrentTab();
     
     if (!tab?.id) {
       throw new Error('No tab found');

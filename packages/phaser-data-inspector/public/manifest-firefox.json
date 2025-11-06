@@ -3,9 +3,10 @@
   "name": "Phaser Data Inspector",
   "version": "0.2.0",
   "description": "Inspect Phaser game data and state",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "tabs"],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"],
+    "type": "module"
   },
   "action": {
     "default_popup": "action-popup.html",
@@ -20,5 +21,12 @@
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "phaser-data-inspector@cassino.dev",
+      "strict_min_version": "109.0"
+    }
   }
 }
+

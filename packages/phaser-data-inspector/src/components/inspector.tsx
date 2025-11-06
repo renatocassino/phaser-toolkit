@@ -145,9 +145,42 @@ export const Inspector = (): ReactElement => {
       }
     } else {
       // For popup, get current tab ID
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]?.id) {
-          const tabId = tabs[0].id;
+      // Firefox may not have chrome.tabs available in popup, so we use a helper function
+      const getCurrentTabId = (callback: (tabId: number | null) => void): void => {
+        // Try chrome.tabs first (Chrome)
+        if (chrome.tabs && chrome.tabs.query) {
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            const tabId = tabs[0]?.id;
+            callback(typeof tabId === 'number' ? tabId : null);
+          });
+          return;
+        }
+        
+        // Try browser.tabs (Firefox standard)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const browser = (globalThis as any).browser || (globalThis as any).chrome;
+        if (browser?.tabs?.query) {
+          browser.tabs.query({ active: true, currentWindow: true }, (tabs: chrome.tabs.Tab[]) => {
+            const tabId = tabs[0]?.id;
+            callback(typeof tabId === 'number' ? tabId : null);
+          });
+          return;
+        }
+        
+        // Fallback: ask background script to get tabId
+        chrome.runtime.sendMessage({ type: 'GET_CURRENT_TAB_ID' }, (response: { tabId?: number | null }) => {
+          if (chrome.runtime.lastError) {
+            console.warn('Could not get tabId:', chrome.runtime.lastError);
+            callback(null);
+          } else {
+            const tabId = response?.tabId;
+            callback(tabId ? tabId : null);
+          }
+        });
+      };
+      
+      getCurrentTabId((tabId) => {
+        if (tabId) {
           // Send tabId to background so it can associate this port with the tab
           newPort.postMessage({ type: 'REGISTER_TAB_ID', tabId });
           

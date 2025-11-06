@@ -63,6 +63,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
   
+  // Get current tab ID (fallback for Firefox popup)
+  if (message?.type === 'GET_CURRENT_TAB_ID') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]?.id) {
+        sendResponse({ tabId: tabs[0].id });
+      } else {
+        sendResponse({ tabId: null });
+      }
+    });
+    return true; // Keep channel open for async response
+  }
+  
   return false;
 });
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phaser Inspector</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 16px;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+    }
+    h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+    }
+    p {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      color: #666;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1557b0;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+    .success { color: #0d9488; }
+    .error { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <h3>🎮 Phaser Data Inspector</h3>
+  <p>Click to inspect the current page.</p>
+  <button id="inject-btn">Activate inspect</button>
+  <div id="status"></div>
+  <script src="action-popup.js"></script>
+</body>
+</html>

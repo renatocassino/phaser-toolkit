@@ -5,7 +5,6 @@ chrome.runtime.onConnect.addListener((port) => {
   if (port.name === "phaser-devtools") {
     let tabId: number | undefined;
     
-    // Listen for tabId registration from popup/devtools
     port.onMessage.addListener((msg) => {
       if (msg?.type === 'REGISTER_TAB_ID' && msg.tabId) {
         tabId = msg.tabId;
@@ -13,8 +12,6 @@ chrome.runtime.onConnect.addListener((port) => {
       }
     });
 
-    // Try to get tabId from sender (works for devtools via inspectedWindow)
-    // @ts-expect-error - tabId is not typed
     const senderTabId: number | undefined = port.sender?.tab?.id || port.sender?.tabId || port.sender?.id;
     if (senderTabId) {
       tabId = senderTabId;
@@ -29,7 +26,7 @@ chrome.runtime.onConnect.addListener((port) => {
   }
 });
 
-// Messages from injected script and popup
+// Messages from injected script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.source === 'phaser-data-inspector') {
     const tabId: number | undefined = sender.tab?.id;
@@ -42,32 +39,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     }
     return true;
-  } else if (message?.type === 'INJECT_CONTENT_SCRIPT') {
-    // Inject content script when popup requests it (using activeTab permission)
-    const tabId = message.tabId || sender.tab?.id;
-    if (tabId) {
-      // Inject both content.js and injected-script.js
-      Promise.all([
-        chrome.scripting.executeScript({
-          target: { tabId },
-          files: ['content.js'],
-        }),
-        chrome.scripting.executeScript({
-          target: { tabId },
-          files: ['injected-script.js'],
-          world: 'MAIN', // Inject into page context, not isolated world
-        }),
-      ]).then(() => {
-        sendResponse({ success: true });
-      }).catch((error) => {
-        console.error('Failed to inject scripts:', error);
-        sendResponse({ success: false, error: error.message });
-      });
-      return true; // Keep channel open for async response
-    } else {
-      sendResponse({ success: false, error: 'No tab ID available' });
-      return false;
-    }
   }
+  
+  // Verifica se a aba já foi injetada
+  if (message?.type === 'CHECK_INJECTED') {
+    const tabId = message.tabId;
+    chrome.storage.session.get([`injected_${tabId}`]).then((result) => {
+      sendResponse({ injected: !!result[`injected_${tabId}`] });
+    });
+    return true;
+  }
+  
   return false;
+});
+
+// Limpa o storage quando a aba é fechada
+chrome.tabs.onRemoved.addListener((tabId) => {
+  chrome.storage.session.remove([`injected_${tabId}`]);
+  connections.delete(tabId.toString());
 });

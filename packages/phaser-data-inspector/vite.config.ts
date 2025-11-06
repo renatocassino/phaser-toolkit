@@ -9,6 +9,8 @@ export default defineConfig({
     emptyOutDir: true,
       rollupOptions: {
       input: {
+        actionPopup: resolve(__dirname, 'src/action-popup.html'),
+        actionPopupJs: resolve(__dirname, 'src/action-popup.ts'),
         popup: resolve(__dirname, 'src/popup.html'),
         background: resolve(__dirname, 'src/background.ts'),
         content: resolve(__dirname, 'src/content.ts'),
@@ -19,15 +21,17 @@ export default defineConfig({
         entryFileNames: (chunkInfo) => {
           return chunkInfo.name === 'background' || 
                  chunkInfo.name === 'content' ||
-                 chunkInfo.name === 'injected-script'
-            ? '[name].js'
+                 chunkInfo.name === 'injected-script' ||
+                 chunkInfo.name === 'actionPopupJs'
+            ? chunkInfo.name === 'actionPopupJs' ? 'action-popup.js' : '[name].js'
             : 'assets/[name]-[hash].js';
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
           // Keep HTML files at root level (needed for Chrome extension)
           if (assetInfo.name === 'popup.html' || 
-              assetInfo.name === 'devtools.html') {
+              assetInfo.name === 'devtools.html' ||
+              assetInfo.name === 'action-popup.html') {
             return '[name][extname]';
           }
           return 'assets/[name]-[hash].[ext]';
@@ -158,6 +162,30 @@ export default defineConfig({
             }
           });
           
+          // Also check for action-popup.html in dist root (it might be there already)
+          const actionPopupHtmlPath = resolve(distDir, 'action-popup.html');
+          if (!existsSync(actionPopupHtmlPath)) {
+            // Try to find it in dist/src or any subdirectory
+            const findHtmlFile = (dir: string, filename: string): string | null => {
+              if (!existsSync(dir)) return null;
+              const entries = readdirSync(dir);
+              for (const entry of entries) {
+                const fullPath = resolve(dir, entry);
+                if (statSync(fullPath).isDirectory()) {
+                  const found = findHtmlFile(fullPath, filename);
+                  if (found) return found;
+                } else if (entry === filename) {
+                  return fullPath;
+                }
+              }
+              return null;
+            };
+            const foundPath = findHtmlFile(distDir, 'action-popup.html');
+            if (foundPath && foundPath !== actionPopupHtmlPath) {
+              copyFileSync(foundPath, actionPopupHtmlPath);
+            }
+          }
+          
           // Remove empty src directory if it exists
           try {
             const remainingFiles = readdirSync(distSrcDir);
@@ -194,6 +222,23 @@ export default defineConfig({
           }
           
           writeFileSync(injectedScriptPath, content);
+        }
+        
+        // Ensure action-popup.html references action-popup.js correctly
+        const actionPopupHtmlPath = resolve(distDir, 'action-popup.html');
+        if (existsSync(actionPopupHtmlPath)) {
+          let htmlContent = readFileSync(actionPopupHtmlPath, 'utf-8');
+          // Replace any hashed references with the actual filename
+          htmlContent = htmlContent.replace(/action-popup-[a-f0-9]+\.js/g, 'action-popup.js');
+          htmlContent = htmlContent.replace(/assets\/action-popup.*?\.js/g, 'action-popup.js');
+          // Ensure it references action-popup.js
+          if (!htmlContent.includes('action-popup.js')) {
+            htmlContent = htmlContent.replace(
+              /<script[^>]*src=["'][^"']*["'][^>]*><\/script>/i,
+              '<script src="action-popup.js"></script>'
+            );
+          }
+          writeFileSync(actionPopupHtmlPath, htmlContent);
         }
       },
     },

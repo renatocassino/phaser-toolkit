@@ -3,20 +3,19 @@
   "name": "Phaser Data Inspector",
   "version": "0.1.0",
   "description": "Inspect Phaser game data and state",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "background": {
     "service_worker": "background.js"
   },
-  "devtools_page": "devtools.html",
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "Phaser Data Inspector",
+    "default_popup": "action-popup.html",
     "default_icon": {
       "16": "icon16.png",
       "48": "icon48.png",
       "128": "icon128.png"
     }
   },
+  "devtools_page": "devtools.html",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",

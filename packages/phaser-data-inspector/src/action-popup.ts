@@ -11,13 +11,13 @@ btn.addEventListener('click', async (): Promise<void> => {
     // Pega a aba ativa
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    if (!tab.id) {
-      throw new Error('Nenhuma aba encontrada');
+    if (!tab?.id) {
+      throw new Error('No tab found');
     }
 
     // Verifica se é http/https
     if (!tab.url?.startsWith('http://') && !tab.url?.startsWith('https://')) {
-      throw new Error('Só funciona em páginas http/https');
+      throw new Error('Only works on http/https pages');
     }
 
     // Injeta os scripts (activeTab está ativo agora!)
@@ -35,15 +35,15 @@ btn.addEventListener('click', async (): Promise<void> => {
     // Salva no storage que essa aba foi injetada
     await chrome.storage.session.set({ [`injected_${tab.id}`]: true });
 
-    statusEl.textContent = '✓ Scripts injetados! Abra o DevTools agora.';
+    statusEl.textContent = '✓ Scripts injected! Open DevTools now.';
     statusEl.className = 'success';
 
-    // Fecha o popup após 2 segundos
+    // Close the popup after 2 seconds
     setTimeout(() => window.close(), 2000);
 
-  } catch (error) {
-    console.error('Erro ao injetar:', error);
-    statusEl.textContent = `✗ Erro: ${(error as Error).message}`;
+  } catch (error: unknown) {
+    console.error('Error injecting:', error);
+    statusEl.textContent = `✗ Error: ${(error as Error).message}`;
     statusEl.className = 'error';
     btn.disabled = false;
   }

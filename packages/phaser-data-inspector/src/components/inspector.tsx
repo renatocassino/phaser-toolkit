@@ -166,7 +166,7 @@ export const Inspector = (): ReactElement => {
           });
           return;
         }
-        
+
         // Fallback: ask background script to get tabId
         chrome.runtime.sendMessage({ type: 'GET_CURRENT_TAB_ID' }, (response: { tabId?: number | null }) => {
           if (chrome.runtime.lastError) {

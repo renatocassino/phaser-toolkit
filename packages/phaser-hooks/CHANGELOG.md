@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.7.0
+
+### Minor Changes
+
+- 0d8f9af: add methods to send to new chrome extension
+
 ## 0.6.1
 
 ### Patch Changes

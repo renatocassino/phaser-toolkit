@@ -21,12 +21,16 @@ interface PhaserDataInspectorMessage {
 (function() {
   'use strict';
 
-  (function tryGetPhaser(): void {
-    const globalWindow = window as typeof window & { Phaser?: any };
+  (function tryGetPhaser(times: number = 0): void {
+    if (times > 1000) {
+      console.warn('Phaser not found');
+      return;
+    }
+    const globalWindow = window as typeof window & { Phaser?: unknown };
     if (typeof globalWindow.Phaser !== 'undefined') {
       __initDevTools();
     } else {
-      setTimeout(tryGetPhaser, 100);
+      setTimeout(() => tryGetPhaser(times + 1), 100);
     }
   })();
 

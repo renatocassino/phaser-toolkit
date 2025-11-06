@@ -1,39 +1,73 @@
-// Must repeat to avoid import
-const EVENT_NAME = 'phaser-data-inspector';
-
 // Store connections from popup/devtools
 const connections = new Map<string, chrome.runtime.Port>();
 
-// Listen for connections from popup/devtools
-chrome.runtime.onConnect.addListener((port: chrome.runtime.Port) => {
-  if (port.name === 'phaser-devtools') {
-    console.log('Popup/DevTools connected');
-    connections.set(port.name as string, port);
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name === "phaser-devtools") {
+    let tabId: number | undefined;
     
+    // Listen for tabId registration from popup/devtools
+    port.onMessage.addListener((msg) => {
+      if (msg?.type === 'REGISTER_TAB_ID' && msg.tabId) {
+        tabId = msg.tabId;
+        connections.set(tabId.toString(), port);
+      }
+    });
+
+    // Try to get tabId from sender (works for devtools via inspectedWindow)
+    // @ts-expect-error - tabId is not typed
+    const senderTabId: number | undefined = port.sender?.tab?.id || port.sender?.tabId || port.sender?.id;
+    if (senderTabId) {
+      tabId = senderTabId;
+      connections.set(tabId.toString(), port);
+    }
+
     port.onDisconnect.addListener(() => {
-      console.log('Popup/DevTools disconnected');
-      connections.delete(port.name as string);
+      if (tabId) {
+        connections.delete(tabId.toString());
+      }
     });
   }
 });
 
-// Listen for messages from content scripts
+// Messages from injected script and popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.source === EVENT_NAME) {
-    const payload: PhaserDataInspectorMessage = message.payload;
-    console.log('Received from content script:', message.payload);
-
-    // Forward to all connected popup/devtools
-    connections.forEach((port) => {
+  if (message?.source === 'phaser-data-inspector') {
+    const tabId: number | undefined = sender.tab?.id;
+    const port = tabId ? connections.get(tabId.toString()) : null;
+    if (port) {
       try {
-        port.postMessage(payload);
+        port.postMessage(message.payload);
       } catch (error) {
-        console.error('Error sending to popup/devtools:', error);
+        console.error('Error sending message to popup/devtools:', error);
       }
-    });
-  } else {
-    console.log('Received unknown message:', message);
+    }
+    return true;
+  } else if (message?.type === 'INJECT_CONTENT_SCRIPT') {
+    // Inject content script when popup requests it (using activeTab permission)
+    const tabId = message.tabId || sender.tab?.id;
+    if (tabId) {
+      // Inject both content.js and injected-script.js
+      Promise.all([
+        chrome.scripting.executeScript({
+          target: { tabId },
+          files: ['content.js'],
+        }),
+        chrome.scripting.executeScript({
+          target: { tabId },
+          files: ['injected-script.js'],
+          world: 'MAIN', // Inject into page context, not isolated world
+        }),
+      ]).then(() => {
+        sendResponse({ success: true });
+      }).catch((error) => {
+        console.error('Failed to inject scripts:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+      return true; // Keep channel open for async response
+    } else {
+      sendResponse({ success: false, error: 'No tab ID available' });
+      return false;
+    }
   }
-
-  return true;
+  return false;
 });

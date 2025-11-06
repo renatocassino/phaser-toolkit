@@ -9,14 +9,8 @@ if (document.readyState === 'loading') {
 }
 
 function init(): void {  
-  // Inject script into page context to detect keypress
-  // Use external file instead of inline script to avoid CSP violations
-  const script = document.createElement('script');
-  script.src = chrome.runtime.getURL('injected-script.js');
-  script.onload = (): void => {
-    script.remove();
-  };
-  (document.head || document.documentElement).appendChild(script);
+  // The injected-script.js is now injected directly via chrome.scripting.executeScript
+  // with world: 'MAIN', so we don't need to inject it here via script tag
   
   // Listen for messages from injected script
   window.addEventListener('message', (event) => {
@@ -32,7 +26,6 @@ function init(): void {
         return;
       }
 
-      console.log('Sending to background:', event.data);
       // Send to background service worker
       chrome.runtime.sendMessage(
         {

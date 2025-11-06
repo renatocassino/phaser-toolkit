@@ -115,23 +115,52 @@ function App(): ReactElement {
       document.body.classList.add('devtools-panel');
     }
 
-    console.log('Phaser Data Inspector initialized', devTools ? '(DevTools)' : '(Popup)');
     setLoading(false);
 
     // Connect to background service worker
     const newPort = chrome.runtime.connect({ name: 'phaser-devtools' });
 
+    // Inject content script when popup/devtools opens (using activeTab permission)
+    if (devTools) {
+      // For DevTools, get tabId from inspectedWindow
+      try {
+        const tabId = chrome.devtools.inspectedWindow.tabId;
+        if (tabId) {
+          newPort.postMessage({ type: 'REGISTER_TAB_ID', tabId });
+        }
+      } catch (error) {
+        console.warn('Could not get tabId from devtools:', error);
+      }
+    } else {
+      // For popup, get current tab ID
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.id) {
+          const tabId = tabs[0].id;
+          // Send tabId to background so it can associate this port with the tab
+          newPort.postMessage({ type: 'REGISTER_TAB_ID', tabId });
+          
+          // Request background to inject content script
+          chrome.runtime.sendMessage(
+            { type: 'INJECT_CONTENT_SCRIPT', tabId },
+            () => {
+              if (chrome.runtime.lastError) {
+                console.error('Failed to request injection:', chrome.runtime.lastError);
+              }
+            }
+          );
+        }
+      });
+    }
+
     // Listen for messages from background
     newPort.onMessage.addListener((payload: PhaserDataInspectorMessage) => {
-      console.log('Received message:', payload);
-
       if (payload.source === EVENT_NAME) {
         addEvent(payload);
       }
     });
 
     newPort.onDisconnect.addListener(() => {
-      console.log('Disconnected from background');
+      // Connection closed
     });
 
     // Cleanup on unmount

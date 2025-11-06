@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 // Store connections from popup/devtools
 const connections = new Map<string, chrome.runtime.Port>();
+
+// Store injection status in memory (substitui chrome.storage.session)
+const injectedTabs = new Set<number>();
 
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name === "phaser-devtools") {
@@ -8,10 +12,11 @@ chrome.runtime.onConnect.addListener((port) => {
     port.onMessage.addListener((msg) => {
       if (msg?.type === 'REGISTER_TAB_ID' && msg.tabId) {
         tabId = msg.tabId;
-        connections.set(tabId.toString(), port);
+        connections.set(tabId?.toString() || '', port);
       }
     });
 
+    // @ts-expect-error - port.sender is not typed
     const senderTabId: number | undefined = port.sender?.tab?.id || port.sender?.tabId || port.sender?.id;
     if (senderTabId) {
       tabId = senderTabId;
@@ -41,20 +46,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
   
-  // Verifica se a aba já foi injetada
+  // Verifica se a aba já foi injetada (usando Set em memória)
   if (message?.type === 'CHECK_INJECTED') {
     const tabId = message.tabId;
-    chrome.storage.session.get([`injected_${tabId}`]).then((result) => {
-      sendResponse({ injected: !!result[`injected_${tabId}`] });
-    });
+    sendResponse({ injected: injectedTabs.has(tabId as number) });
+    return true;
+  }
+  
+  // Marca que a aba foi injetada
+  if (message?.type === 'MARK_INJECTED') {
+    const tabId = message.tabId;
+    if (tabId) {
+      injectedTabs.add(tabId as number);
+    }
+    sendResponse({ success: true });
     return true;
   }
   
   return false;
 });
 
-// Limpa o storage quando a aba é fechada
+// Limpa quando a aba é fechada
 chrome.tabs.onRemoved.addListener((tabId) => {
-  chrome.storage.session.remove([`injected_${tabId}`]);
-  connections.delete(tabId.toString());
+  injectedTabs.delete(tabId as number);
+  connections.delete(tabId?.toString() || '');
 });

@@ -3,7 +3,7 @@
   "name": "Phaser Data Inspector",
   "version": "0.1.0",
   "description": "Inspect Phaser game data and state",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": ["activeTab", "scripting"],
   "background": {
     "service_worker": "background.js"
   },

@@ -59,7 +59,7 @@ describe('withLocalState', () => {
 
       // withLocalState uses scene.data, not scene.registry, for local state
       expect(setSpy).toHaveBeenCalledWith(
-        `phaser-hooks:local:test-scene:${key}`,
+        `phaser-hooks:local:${key}`,
         initialState
       );
 
@@ -76,7 +76,7 @@ describe('withLocalState', () => {
       withLocalState<FakeState>(scene, key, initialState);
 
       expect(setSpy).toHaveBeenCalledWith(
-        `phaser-hooks:local:test-scene:${key}`,
+        `phaser-hooks:local:${key}`,
         initialState
       );
 

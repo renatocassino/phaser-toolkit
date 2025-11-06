@@ -21,6 +21,7 @@ Briefly describe the changes in this PR.
 - [ ] phaser-wind
 - [ ] hudini
 - [ ] phaser-sound-studio
+- [ ] phaser-data-studio
 - [ ] showcase
 - [ ] virtual-joystick
 - [ ] Other (please specify): **\*\***\_\_\_**\*\***
@@ -55,7 +56,3 @@ Briefly describe the changes in this PR.
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] I have created a changeset to document this change (`pnpm changeset`)
-
-## Additional Context
-
-Add any additional context about the PR here.

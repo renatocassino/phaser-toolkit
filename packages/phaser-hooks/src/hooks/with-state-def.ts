@@ -14,6 +14,7 @@ import {
 } from '../utils/logger';
 import { merge } from '../utils/merge';
 
+import { withDevtoolsContext } from './devtools-context';
 import { type HookState, type StateChangeCallback, type StatePatchUpdater, type DeepPartial } from './type';
 
 /**
@@ -94,10 +95,11 @@ const set = <T>(
   key: string,
   value: T | ((currentState: T) => T),
   debug: boolean,
+  registryType: 'global' | 'local',
   validator?: (value: unknown) => boolean | string
 ): void => {
   const currentValue = registry.get(key) as T;
-  
+
   // If value is a function, execute it with current state
   const newValue = typeof value === 'function' ? (value as (currentState: T) => T)(currentValue) : value;
 
@@ -112,7 +114,14 @@ const set = <T>(
     }
   }
 
-  registry.set(key, newValue);
+  withDevtoolsContext({
+    op: 'set',
+    oldValue: currentValue,
+    store: key,
+    registryType,
+  }, () => {
+    registry.set(key, newValue);
+  });
 
   if (debug) {
     logStateSet(key, currentValue, newValue);
@@ -120,9 +129,9 @@ const set = <T>(
 };
 
 /**
- * Applies a shallow merge ("patch") to an object state in the registry.
+ * Applies a deep merge ("patch") to an object state in the registry.
  * 
- * This method attempts to update the current state associated with the given key by performing a shallow merge
+ * This method attempts to update the current state associated with the given key by performing a deep merge
  * between the existing state and the provided value or the result of an updater function. 
  * The function will throw an error if the current state is not an object.
  * An optional validator function can be provided to ensure the new value is valid before committing the patch.
@@ -140,7 +149,8 @@ const patch = <T>(
   key: string,
   value: DeepPartial<T> | StatePatchUpdater<T>,
   debug: boolean,
-  validator?: (value: unknown) => boolean | string
+  registryType: 'global' | 'local',
+  validator?: (value: unknown) => boolean | string,
 ): void => {
   const currentValue = registry.get(key) as T;
 
@@ -162,7 +172,14 @@ const patch = <T>(
     }
   }
 
-  registry.set(key, newValue);
+  withDevtoolsContext({
+    op: 'patch',
+    oldValue: currentValue,
+    store: key,
+    registryType,
+  }, () => {
+    registry.set(key, newValue);
+  });
 
   if (debug) {
     logStateSet(key, currentValue, newValue);
@@ -516,6 +533,7 @@ export const withStateDef = <T>(
 
   const { validator, debug = false, global = false } = options;
   const registry = global ? scene.registry : scene.data;
+  const registryType = global ? 'global' : 'local';
 
   // Fix: move debug and validator before initialValue to match required params before optional
   initializeState(registry, key, debug, validator, initialValue);
@@ -530,12 +548,12 @@ export const withStateDef = <T>(
      * Sets a new state value and triggers change listeners.
      * @param {T | ((currentState: T) => T)} value - The new value to set or a function that receives current state and returns new state
      */
-    set: (value: T | ((currentState: T) => T)) => set<T>(registry, key, value, debug, validator),
+    set: (value: T | ((currentState: T) => T)) => set<T>(registry, key, value, debug, registryType, validator),
     /**
      * Patches the current state value with a new value.
      * @param {DeepPartial<T> | StatePatchUpdater<T>} value - The new value to patch or a function that receives current state and returns new state
      */
-    patch: (value: DeepPartial<T> | StatePatchUpdater<T>) => patch<T>(registry, key, value, debug, validator),
+    patch: (value: DeepPartial<T> | StatePatchUpdater<T>) => patch<T>(registry, key, value, debug, registryType, validator),
     /**
      * Registers a callback to be called whenever the state changes (DEPRECATED).
      * @param {StateChangeCallback<T>} callback

@@ -48,9 +48,9 @@ describe('withUndoableState', () => {
       withUndoableState<FakeState>(scene, key, initialState, 10);
 
       // withUndoableState uses scene.data for current state, history, and historyIndex
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}`, initialState);
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}:history`, [initialState]);
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}:historyIndex`, 0);
+      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:${key}`, initialState);
+      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:${key}:history`, [initialState]);
+      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:${key}:historyIndex`, 0);
 
       setSpy.mockRestore();
     });
@@ -64,9 +64,9 @@ describe('withUndoableState', () => {
 
       withUndoableState<FakeState>(scene, key, initialState, 10);
 
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}`, initialState);
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}:history`, [initialState]);
-      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:test-scene:${key}:historyIndex`, 0);
+      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:${key}`, initialState);
+      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:${key}:history`, [initialState]);
+      expect(setSpy).toHaveBeenCalledWith(`phaser-hooks:local:${key}:historyIndex`, 0);
 
       // second call should not set state
       const hook = withUndoableState<FakeState>(scene, key, { ...baseState, life: 100 }, 10);

@@ -1,0 +1,212 @@
+import { useState, type ReactElement } from 'react';
+import styled from 'styled-components';
+import { diffWords } from 'diff';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import type { PhaserDataInspectorMessage } from '../store/types';
+
+const PreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 0 calc(50% - 5px);
+  box-sizing: border-box;
+  border-left: 1px solid #ccc;
+  padding: 1rem;
+`;
+
+const CloseButton = styled.button`
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #666;
+  
+  &:hover {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  i {
+    font-size: 14px;
+  }
+`;
+
+const KeyHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 8px;
+`;
+
+const KeyLabel = styled.span`
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+`;
+
+const KeyValue = styled.code`
+  font-family: monospace;
+  font-size: 12px;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #333;
+`;
+
+const TabsContainer = styled.div`
+  display: flex;
+  gap: 5px;
+  border-bottom: 1px solid #ccc;
+`;
+
+const Tab = styled.button<{ $active?: boolean }>`
+  padding: 4px 12px;
+  border: none;
+  background: ${(props): string => props.$active ? '#e0e0e0' : 'transparent'};
+  border-bottom: ${(props): string => props.$active ? '2px solid #007bff' : '2px solid transparent'};
+  cursor: pointer;
+  font-weight: ${(props): string => props.$active ? 'bold' : 'normal'};
+  color: ${(props): string => props.$active ? '#000' : '#666'};
+  font-size: 14px;
+  
+  &:hover {
+    background: ${(props): string => props.$active ? '#e0e0e0' : '#e8e8e8'};
+    color: ${(props): string => props.$active ? '#000' : '#333'};
+  }
+`;
+
+const TabContent = styled.div`
+  flex: 1;
+  overflow: auto;
+  padding: 10px 0;
+`;
+
+const CodeContainer = styled.div`
+  padding: 12px;
+  border-radius: 4px;
+  background: #1e1e1e;
+  overflow: auto;
+  
+  pre {
+    margin: 0;
+    padding: 0;
+  }
+`;
+
+const DiffContainer = styled.div`
+  font-family: monospace;
+  font-size: 12px;
+`;
+
+const DiffLine = styled.div<{ $added?: boolean; $removed?: boolean }>`
+  padding: 2px 4px;
+  background: ${(props): string => 
+    props.$added ? '#d4edda' : 
+    props.$removed ? '#f8d7da' : 
+    'transparent'
+  };
+  color: ${(props): string => 
+    props.$added ? '#155724' : 
+    props.$removed ? '#721c24' : 
+    'inherit'
+  };
+`;
+
+type TabType = 'new' | 'old' | 'diff';
+
+export const PreviewStateEvent = ({ event, onClose }: { event: PhaserDataInspectorMessage, onClose: () => void }): ReactElement => {
+  const [activeTab, setActiveTab] = useState<TabType>('new');
+
+  const newValueStr = JSON.stringify(event.newValue, null, 2);
+  const oldValueStr = event.oldValue ? JSON.stringify(event.oldValue, null, 2) : '';
+
+  const renderDiff = (): ReactElement => {
+    if (!event.oldValue) {
+      return <CodeContainer><div>No old value to compare. Available only using Phaser Hooks</div></CodeContainer>;
+    }
+
+    const differences = diffWords(oldValueStr, newValueStr);
+
+    return (
+      <CodeContainer>
+        <DiffContainer>
+          {differences.flatMap((part, index) => {
+            const lines = part.value.split('\n');
+            return lines.map((line, lineIndex) => (
+              <DiffLine
+                key={`diff-${index}-${lineIndex}-${line.substring(0, 10)}`}
+                $added={part.added}
+                $removed={part.removed}
+              >
+                {line || ' '}
+              </DiffLine>
+            ));
+          })}
+        </DiffContainer>
+      </CodeContainer>
+    );
+  };
+
+  return (
+    <PreviewContainer>
+      <KeyHeader>
+        <KeyLabel>Key:</KeyLabel>
+        <KeyValue>{event.key}</KeyValue>
+        <CloseButton onClick={() => onClose()} title="Close">
+          <i className="fas fa-times"></i>
+        </CloseButton>
+      </KeyHeader>
+
+      <TabsContainer>
+        <Tab $active={activeTab === 'new'} onClick={() => setActiveTab('new')}>
+          New Value
+        </Tab>
+        <Tab $active={activeTab === 'old'} onClick={() => setActiveTab('old')}>
+          Old Value
+        </Tab>
+        <Tab $active={activeTab === 'diff'} onClick={() => setActiveTab('diff')}>
+          Diff
+        </Tab>
+      </TabsContainer>
+
+      <TabContent>
+        {activeTab === 'new' && (
+          <CodeContainer>
+            <SyntaxHighlighter
+              language="json"
+              style={vscDarkPlus}
+              customStyle={{ margin: 0, padding: 0 }}
+            >
+              {newValueStr}
+            </SyntaxHighlighter>
+          </CodeContainer>
+        )}
+        {activeTab === 'old' && (
+          <CodeContainer>
+            {oldValueStr ? (
+              <SyntaxHighlighter
+                  language="json"
+                  style={vscDarkPlus}
+                  customStyle={{ margin: 0, padding: 0 }}
+              >
+                {oldValueStr}
+              </SyntaxHighlighter>
+            ) : (
+              <div>No old value. Available only using Phaser Hooks.</div>
+            )}
+          </CodeContainer>
+        )}
+        {activeTab === 'diff' && renderDiff()}
+      </TabContent>
+    </PreviewContainer>
+  );
+};

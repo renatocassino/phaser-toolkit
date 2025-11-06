@@ -1,0 +1,37 @@
+{
+  "name": "phaser-data-inspector",
+  "version": "0.1.0",
+  "description": "Chrome extension for inspecting Phaser game data",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@picocss/pico": "^2.1.1",
+    "@tanstack/react-table": "^8.21.3",
+    "diff": "^8.0.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-syntax-highlighter": "^16.1.0",
+    "styled-components": "^6.1.19",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/styled-components": "^5.1.35",
+    "@vitejs/plugin-react": "^5.1.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "phaser": "*",
+    "typescript": "^5.9.3",
+    "vite": "^6.3.5",
+    "vite-plugin-static-copy": "^1.0.4"
+  }
+}

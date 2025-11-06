@@ -177,6 +177,39 @@ studio.setChannelVolume(this, 'music', 0.1); // Lower background music
 - 📖 [Documentation](packages/phaser-sound-studio/README.md)
 - 🎮 [Showcase Games](https://games.cassino.dev)
 
+---
+
+### 🔍 phaser-data-inspector — DevTools for Phaser state
+
+<p align="center">
+  <img src="packages/phaser-data-inspector/data/preview-01.png" alt="Phaser Data Inspector" style="max-width: 600px">
+</p>
+
+A powerful Chrome DevTools extension that brings state inspection capabilities to Phaser game development. Just like Redux DevTools revolutionized React debugging, this extension provides game developers with comprehensive insights into their Phaser game state management.
+
+**Key Features:**
+- 🎯 **Real-Time State Monitoring** - Track state changes across Phaser Registry and Scene Data
+- 🔍 **Powerful Search & Filter** - Search by state key and filter by source
+- 📊 **State Diff Visualization** - Side-by-side comparison with visual diff highlighting
+- 📄 **Pagination & Performance** - Handle large event logs efficiently
+- 🎮 **Multi-Game Support** - Switch between multiple Phaser game instances
+- 🎨 **Modern UI** - Built with React and styled-components
+
+**Example:**
+```typescript
+import { withLocalState } from 'phaser-hooks';
+
+// In your scene
+const { set, get } = withLocalState(this, 'score', 0);
+
+// When score changes, you'll see the diff in the inspector
+set(100);
+```
+
+**Links:**
+- 📖 [Documentation](packages/phaser-data-inspector/README.md)
+- 🔧 [Development Guide](packages/phaser-data-inspector/DEVTOOLS_SETUP.md)
+
 ## 🚀 Getting started
 
 ### Prerequisites
@@ -219,6 +252,7 @@ phaser-toolkit/
 │   ├── font-awesome-for-phaser/   # Font Awesome icons
 │   ├── phaser-hooks/             # State management hooks
 │   ├── phaser-sound-studio/      # Audio management
+│   ├── phaser-data-inspector/    # Chrome DevTools extension
 │   └── showcase/                 # Astro showcase
 ├── package.json
 ├── pnpm-workspace.yaml

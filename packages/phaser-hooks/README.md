@@ -336,6 +336,34 @@ export const withPlayer = (scene: Phaser.Scene) => {
 playerState.patch((current) => ({ hp: current.hp - 10 })); // Log here
 ```
 
+## Phaser Data Inspector Extension 🔍
+
+For an even better debugging experience, use the **Phaser Data Inspector** Chrome extension! It provides a visual interface similar to Redux DevTools, allowing you to inspect and debug your Phaser Hooks state in real-time.
+
+<p align="center">
+  <img src="data/extension.png" alt="Phaser Data Inspector Extension" style="max-width: 800px">
+</p>
+
+### Features
+
+- 🎯 **Real-Time State Monitoring** - Track all state changes from your Phaser Hooks
+- 📊 **Visual Diff Comparison** - See exactly what changed between state updates
+- 🔍 **Search & Filter** - Quickly find specific state keys
+- 📄 **Event History** - Browse through all state changes with pagination
+- 🎨 **Modern UI** - Clean, intuitive interface in Chrome DevTools
+
+### Installation
+
+🛒 [Download Phaser Data Inspector from Chrome Web Store](https://chromewebstore.google.com/detail/phaser-data-inspector/jjcogkkooficbbdhfcamcojmepbjnpdk)
+
+### Usage
+
+1. Install the extension from the Chrome Web Store
+2. Open Chrome DevTools (F12) on your Phaser game
+3. Navigate to the **"Phaser"** tab in DevTools
+4. All state changes from `phaser-hooks` will automatically appear in the inspector
+
+The extension works seamlessly with all Phaser Hooks (`withLocalState`, `withGlobalState`, etc.) and provides enhanced debugging capabilities with visual diffs and state history.
 
 ## Hook API Reference
 

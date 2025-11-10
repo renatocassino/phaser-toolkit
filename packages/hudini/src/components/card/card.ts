@@ -219,6 +219,8 @@ export class Card extends GameObjects.Container {
       childOrigin
     );
 
+    this.setDisplaySize(cardWidth, cardHeight);
+
     // Position child in the center of the card
     (
       this.child as unknown as { setPosition: (x: number, y: number) => void }
@@ -330,6 +332,7 @@ export class Card extends GameObjects.Container {
       width  = cw + this.marginPx * 2;
       height = ch + this.marginPx * 2;
     }
+    this.setSize(width, height);
     this.backgroundGraphics.clear();
 
     // Limit radius to maximum possible for the card dimensions

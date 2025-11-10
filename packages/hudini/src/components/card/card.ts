@@ -5,10 +5,11 @@ import {
   type ColorKey,
   type RadiusKey,
   type SpacingKey,
+  getDisplayHeightOf,
+  getDisplayWidthOf
 } from 'phaser-wind';
 
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
-import { getDisplayHeightOf, getDisplayWidthOf } from '../layout/layout-utils';
 
 export type CardParams = {
   /** The Phaser scene to add the card to */

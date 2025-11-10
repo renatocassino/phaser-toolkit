@@ -3,14 +3,6 @@
 import { Scene } from 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 
-// Mock phaser-wind
-vi.mock('phaser-wind', () => ({
-    Color: {
-        rgb: vi.fn((color: string) => `rgb-${color}`),
-        hex: vi.fn((color: string) => `hex-${color}`),
-    },
-}));
-
 // Mock the getPWFromScene utility
 vi.mock('../../utils/get-pw-from-scene', () => ({
     getPWFromScene: vi.fn(() => ({

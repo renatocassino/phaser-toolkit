@@ -1,0 +1,279 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Column Component" description="Vertical layout container that stacks children with spacing, horizontal alignment, and configurable vertical origin.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Column Component</h2>
+      <p class="text-gray-600 mb-4">
+        Vertical layout container that stacks children vertically with spacing, horizontal alignment, and configurable vertical origin.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>📦 <strong>Vertical Stacking</strong>: Arranges children vertically with customizable gap</li>
+          <li>↔️ <strong>Horizontal Alignment</strong>: Align children left, center, or right</li>
+          <li>📍 <strong>Vertical Origin</strong>: Control where content starts (top, center, bottom)</li>
+          <li>🔄 <strong>Dynamic Layout</strong>: Automatically updates when children are added or removed</li>
+          <li>⚡ <strong>Performance</strong>: Efficient layout calculations</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">scene</code> - The Phaser scene instance</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">x</code> - X coordinate of the column center</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">y</code> - Y coordinate of the column center</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">gap</code> - Gap between elements in pixels (default: 8)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">align</code> - Horizontal alignment: 'left' | 'center' | 'right' (default: 'center')</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">verticalOrigin</code> - Vertical origin: 'top' | 'center' | 'bottom' (default: 'top')</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">children</code> - Initial array of GameObjects to add</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={600} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    Column
+} from 'hudini';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class ColumnDemoScene extends SceneWithHudini<Theme> {
+    constructor() {
+        super('column-demo');
+    }
+
+    create(): void {
+        const { pw } = this.hudini;
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+        // Create sprites
+        const spriteA = this.add.sprite(0, 0, 'player');
+        const spriteB = this.add.sprite(0, 0, 'enemy');
+
+        // Create a column with default settings
+        const column = new Column({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: this.cameras.main.centerY,
+            gap: 12,
+            align: 'center',
+            verticalOrigin: 'top',
+            children: [spriteA, spriteB],
+        });
+        this.add.existing(column);
+
+        // Update layout options later
+        column.setGap(20);
+        column.setAlign('left');
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    Column,
+    Card
+  } from 'hudini';
+
+  // Create theme
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class ColumnDemoScene extends SceneWithHudini<Theme> {
+    private columns: Column[] = [];
+
+    constructor() {
+      super('column-demo');
+    }
+
+    create(): void {
+      const { pw } = this.hudini;
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+      // Title
+      this.add.text(this.cameras.main.centerX, 40, 'Column Layout Examples', {
+        color: pw.color.slate(200),
+        align: 'center',
+        fontSize: '32px',
+      }).setOrigin(0.5, 0.5);
+
+      // Create example cards/sprites for demonstration
+      const createCard = (text: string, color: string) => {
+        const cardText = this.add.text(0, 0, text, {
+          color: pw.color.rgb('white'),
+          align: 'center',
+          fontSize: '18px',
+        }).setOrigin(0.5, 0.5);
+
+        const card = new Card({
+          scene: this,
+          x: 0,
+          y: 0,
+          backgroundColor: color,
+          borderRadius: 'md',
+          margin: '4',
+          child: cardText,
+        });
+        return card;
+      };
+
+      // Example 1: Center aligned column
+      const centerColumn = new Column({
+        scene: this,
+        x: 200,
+        y: 200,
+        gap: 12,
+        align: 'center',
+        verticalOrigin: 'top',
+        children: [
+          createCard('Item 1', 'blue-500'),
+          createCard('Item 2', 'blue-600'),
+          createCard('Item 3', 'blue-700'),
+        ],
+      });
+      this.add.existing(centerColumn);
+      this.columns.push(centerColumn);
+
+      this.add.text(200, 120, 'Center Aligned', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 2: Left aligned column
+      const leftColumn = new Column({
+        scene: this,
+        x: 400,
+        y: 200,
+        gap: 12,
+        align: 'left',
+        verticalOrigin: 'top',
+        children: [
+          createCard('Item A', 'green-500'),
+          createCard('Item B', 'green-600'),
+          createCard('Item C', 'green-700'),
+        ],
+      });
+      this.add.existing(leftColumn);
+      this.columns.push(leftColumn);
+
+      this.add.text(400, 120, 'Left Aligned', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 3: Right aligned column
+      const rightColumn = new Column({
+        scene: this,
+        x: 600,
+        y: 200,
+        gap: 12,
+        align: 'right',
+        verticalOrigin: 'top',
+        children: [
+          createCard('Item X', 'purple-500'),
+          createCard('Item Y', 'purple-600'),
+          createCard('Item Z', 'purple-700'),
+        ],
+      });
+      this.add.existing(rightColumn);
+      this.columns.push(rightColumn);
+
+      this.add.text(600, 120, 'Right Aligned', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 4: Column with different gap
+      const largeGapColumn = new Column({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 450,
+        gap: 24,
+        align: 'center',
+        verticalOrigin: 'top',
+        children: [
+          createCard('Wide', 'orange-500'),
+          createCard('Gap', 'orange-600'),
+        ],
+      });
+      this.add.existing(largeGapColumn);
+      this.columns.push(largeGapColumn);
+
+      this.add.text(this.cameras.main.centerX, 380, 'Large Gap (24px)', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add.text(this.cameras.main.centerX, 550, 'Columns automatically arrange children vertically', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        scene: [ColumnDemoScene],
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              mapping: HUDINI_KEY,
+              data: {
+                theme,
+              },
+            },
+          ],
+        },
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['hudini-column-demo'] = game;
+    }
+  });
+</script>

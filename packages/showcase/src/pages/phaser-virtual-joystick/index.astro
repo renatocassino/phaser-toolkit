@@ -1,5 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+// Helper function para criar URLs com base path
+const getUrl = (path: string) => {
+  const base = import.meta.env.BASE_URL;
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${cleanBase}${cleanPath}`;
+};
 ---
 
 <Layout title="Phaser Virtual Joystick Overview" description="Touch-friendly virtual joystick component for mobile Phaser 3 games.">
@@ -102,7 +110,7 @@ import Layout from '../../layouts/Layout.astro';
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-xl font-semibold text-gray-900 mb-6">Components</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <a href="/phaser-virtual-joystick/default" class="group p-4 border border-gray-200 rounded-lg hover:border-red-300 hover:shadow-md transition-all">
+        <a href={getUrl('/phaser-virtual-joystick/default')} class="group p-4 border border-gray-200 rounded-lg hover:border-red-300 hover:shadow-md transition-all">
           <div class="flex items-center mb-2">
             <span class="text-2xl mr-3">🎮</span>
             <h4 class="font-semibold text-gray-900 group-hover:text-red-600">Default Joystick</h4>

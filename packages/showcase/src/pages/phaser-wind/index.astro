@@ -1,5 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+// Helper function para criar URLs com base path
+const getUrl = (path: string) => {
+  const base = import.meta.env.BASE_URL;
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${cleanBase}${cleanPath}`;
+};
 ---
 
 <Layout title="Phaser Wind Overview" description="A theming system and utility library for Phaser 3 games with Tailwind-inspired design tokens.">
@@ -12,7 +20,7 @@ import Layout from '../../layouts/Layout.astro';
         Create consistent, beautiful games with a powerful design system.
       </p>
       <div class="flex space-x-4">
-        <a href="/phaser-wind/button" class="bg-white text-green-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+        <a href={getUrl('/phaser-wind/button')} class="bg-white text-green-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
           Explore Components
         </a>
         <a href="https://github.com/your-org/phaser-wind" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-green-600 transition-colors">

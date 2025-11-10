@@ -1,5 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+// Helper function para criar URLs com base path
+const getUrl = (path: string) => {
+  const base = import.meta.env.BASE_URL;
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${cleanBase}${cleanPath}`;
+};
 ---
 
 <Layout title="Phaser Hooks Overview" description="React-like hooks for Phaser 3 game development with state management and lifecycle hooks.">
@@ -12,7 +20,7 @@ import Layout from '../../layouts/Layout.astro';
         Bring the power of React's component model to your Phaser games.
       </p>
       <div class="flex space-x-4">
-        <a href="/phaser-hooks/game" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+        <a href={getUrl('/phaser-hooks/game')} class="bg-white text-purple-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
           Explore Hooks
         </a>
         <a href="https://github.com/your-org/phaser-hooks" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-purple-600 transition-colors">
@@ -74,7 +82,7 @@ import Layout from '../../layouts/Layout.astro';
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-xl font-semibold text-gray-900 mb-6">Available Hooks</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <a href="/phaser-hooks/game" class="group p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-md transition-all">
+        <a href={getUrl('/phaser-hooks/game')} class="group p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-md transition-all">
           <div class="flex items-center mb-2">
             <span class="text-2xl mr-3">🎮</span>
             <h4 class="font-semibold text-gray-900 group-hover:text-purple-600">useGame</h4>

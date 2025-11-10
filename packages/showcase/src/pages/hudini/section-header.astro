@@ -1,0 +1,360 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Section Header Component" description="A stylized section header component with shadow, text stroke and auto-sizing, perfect for menus, panels and sections.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Section Header Component</h2>
+      <p class="text-gray-600 mb-4">
+        A stylized section header component with shadow, text stroke and auto-sizing, perfect for menus, panels and sections.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>📏 <strong>Auto-sizing</strong>: Automatically adjusts to text size + margin</li>
+          <li>🌑 <strong>Vertical Shadow</strong>: Shadow that projects only downward, ideal for headers</li>
+          <li>✍️ <strong>Text Stroke</strong>: Text borders for better readability and visual impact</li>
+          <li>🎨 <strong>Phaser Wind Integration</strong>: Uses design tokens for colors, sizes, borders and spacing</li>
+          <li>⚙️ <strong>Fully Customizable</strong>: Control over font, colors, borders, stroke and spacing</li>
+          <li>🔗 <strong>Fluent API</strong>: Method chaining support for easy customization</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">text</code> - Header text content</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">fontSize</code> - Font size token ('xs', 'sm', 'base', 'lg', 'xl'...) or pixel value - default: 'lg'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">font</code> - Font family token ('primary', 'secondary', 'monospace', 'display') or CSS string - default: 'display'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">backgroundColor</code> - Background color token or CSS color - default: 'blue-600'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">textColor</code> - Text color token or CSS color - default: 'white'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">strokeColor</code> - Text stroke color (auto-calculated if not provided)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius token ('none', 'sm', 'md', 'lg', 'xl', 'full') or pixel value - default: 'md'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">margin</code> - Internal padding using spacing tokens ('0', '1', '2', '3', '4'...) or pixel value - default: '4'</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={700} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    Color,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    SectionHeader
+} from 'hudini';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class PreviewScene extends SceneWithHudini<Theme> {
+    constructor() {
+        super('preview');
+    }
+
+    create(): void {
+        const { pw } = this.hudini;
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+        // Create a simple section header
+        const header = new SectionHeader({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: 150,
+            text: 'Game Settings',
+        });
+        this.add.existing(header);
+
+        // Create a custom styled header
+        const customHeader = new SectionHeader({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: 250,
+            text: 'Audio Settings',
+            fontSize: 'xl',
+            backgroundColor: 'green-600',
+            textColor: 'white',
+            borderRadius: 'lg',
+            margin: '6',
+        });
+        this.add.existing(customHeader);
+    }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Advanced Examples -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Advanced Examples</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Main Menu Header</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const mainHeader = new SectionHeader({
+    scene: this,
+    x: 400,
+    y: 80,
+    text: 'MAIN MENU',
+    fontSize: 'xl',
+    font: 'display',
+    backgroundColor: 'slate-700',
+    textColor: 'white',
+    strokeColor: 'slate-900',
+    borderRadius: 'lg',
+    margin: '6',
+});`}</code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Pill Style Header</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const pillHeader = new SectionHeader({
+    scene: this,
+    x: 300,
+    y: 200,
+    text: '🏆 Achievements',
+    fontSize: 'lg',
+    backgroundColor: 'yellow-600',
+    textColor: 'white',
+    strokeColor: 'yellow-800',
+    borderRadius: 'full',
+    margin: '5',
+});`}</code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Dynamic Updates with Method Chaining</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const dynamicHeader = new SectionHeader({
+    scene: this,
+    x: 400,
+    y: 250,
+    text: 'Dynamic Header',
+});
+
+// Customize using method chaining
+dynamicHeader
+    .setText('Updated Title')
+    .setFontSize('2xl')
+    .setBackgroundColor('purple-600')
+    .setTextColor('white')
+    .setStrokeColor('purple-800')
+    .setBorderRadius('full')
+    .setMargin('8');`}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    SectionHeader
+  } from 'hudini';
+
+  // Create theme
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class SectionHeaderDemoScene extends SceneWithHudini<Theme> {
+    private headers: SectionHeader[] = [];
+
+    constructor() {
+      super('section-header-demo');
+    }
+
+    create(): void {
+      const { pw } = this.hudini;
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+      // Title
+      this.add.text(this.cameras.main.centerX, 30, 'Section Header Examples', {
+        color: pw.color.slate(200),
+        align: 'center',
+        fontSize: '32px',
+        fontStyle: 'bold',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 1: Default header
+      const defaultHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 90,
+        text: 'Default Header',
+      });
+      this.add.existing(defaultHeader);
+      this.headers.push(defaultHeader);
+
+      // Example 2: Main menu style
+      const mainMenuHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 160,
+        text: 'MAIN MENU',
+        fontSize: 'xl',
+        font: 'display',
+        backgroundColor: 'slate-700',
+        textColor: 'white',
+        strokeColor: 'slate-900',
+        borderRadius: 'lg',
+        margin: '6',
+      });
+      this.add.existing(mainMenuHeader);
+      this.headers.push(mainMenuHeader);
+
+      // Example 3: Audio settings
+      const audioHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 230,
+        text: 'Audio Settings',
+        fontSize: 'lg',
+        backgroundColor: 'green-600',
+        textColor: 'white',
+        borderRadius: 'md',
+        margin: '4',
+      });
+      this.add.existing(audioHeader);
+      this.headers.push(audioHeader);
+
+      // Example 4: Pill style with emoji
+      const pillHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 300,
+        text: '🏆 Achievements',
+        fontSize: 'lg',
+        backgroundColor: 'yellow-600',
+        textColor: 'white',
+        strokeColor: 'yellow-800',
+        borderRadius: 'full',
+        margin: '5',
+      });
+      this.add.existing(pillHeader);
+      this.headers.push(pillHeader);
+
+      // Example 5: Purple with custom styling
+      const purpleHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 370,
+        text: 'Player Stats',
+        fontSize: 'xl',
+        backgroundColor: 'purple-600',
+        textColor: 'white',
+        strokeColor: 'purple-800',
+        borderRadius: 'xl',
+        margin: '6',
+      });
+      this.add.existing(purpleHeader);
+      this.headers.push(purpleHeader);
+
+      // Example 6: Red danger style
+      const dangerHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 440,
+        text: '⚠️ Warning',
+        fontSize: 'lg',
+        backgroundColor: 'red-600',
+        textColor: 'white',
+        strokeColor: 'red-900',
+        borderRadius: 'md',
+        margin: '4',
+      });
+      this.add.existing(dangerHeader);
+      this.headers.push(dangerHeader);
+
+      // Example 7: Cyan info style
+      const infoHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 510,
+        text: 'ℹ️ Information',
+        fontSize: 'base',
+        backgroundColor: 'cyan-600',
+        textColor: 'white',
+        borderRadius: 'lg',
+        margin: '4',
+      });
+      this.add.existing(infoHeader);
+      this.headers.push(infoHeader);
+
+      // Example 8: Small compact header
+      const compactHeader = new SectionHeader({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 570,
+        text: 'Compact',
+        fontSize: 'sm',
+        backgroundColor: 'indigo-600',
+        textColor: 'white',
+        borderRadius: 'sm',
+        margin: '2',
+      });
+      this.add.existing(compactHeader);
+      this.headers.push(compactHeader);
+
+      // Add instructions
+      this.add.text(this.cameras.main.centerX, 640, 'Various section header styles and configurations', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        scene: [SectionHeaderDemoScene],
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              mapping: HUDINI_KEY,
+              data: {
+                theme,
+              },
+            },
+          ],
+        },
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['hudini-section-header-demo'] = game;
+    }
+  });
+</script>

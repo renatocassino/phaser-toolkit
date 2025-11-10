@@ -16,7 +16,7 @@ export type CircularProgressParams = {
   y: number;
   icon?: IconKey;
   size?: FontSizeKey | number;
-  color?: ColorKey;
+  color?: ColorKey | ColorToken;
   rotationsPerSecond?: number;
 };
 
@@ -131,8 +131,18 @@ export class CircularProgress extends GameObjects.Container {
     scene: Scene,
     icon: IconKey,
     size: number,
-    color: ColorKey
+    color: ColorKey | ColorToken
   ): void {
+    // Convert color to ColorToken if it's just a ColorKey
+    // 'black' and 'white' are already ColorTokens, and colors with '-' are already ColorTokens
+    let colorToken: ColorToken;
+    if (color === 'black' || color === 'white' || color.includes('-')) {
+      colorToken = color as ColorToken;
+    } else {
+      // Default to -500 shade for ColorKey
+      colorToken = `${color}-500` as ColorToken;
+    }
+    
     this.iconText = new IconText({
       scene,
       x: 0,
@@ -140,7 +150,7 @@ export class CircularProgress extends GameObjects.Container {
       icon,
       size,
       style: {
-        color: Color.rgb(color),
+        color: this.pw.color.rgb(colorToken),
       },
     });
     this.iconText.setOrigin(0.5, 0.5);

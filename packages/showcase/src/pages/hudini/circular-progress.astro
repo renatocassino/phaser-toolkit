@@ -125,6 +125,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
     SceneWithHudini,
     CircularProgress
   } from 'hudini';
+  import { loadFont } from 'font-awesome-for-phaser';
 
   // Create theme
   const theme = createTheme({});
@@ -172,7 +173,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         scene: this,
         x: this.cameras.main.centerX,
         y: 150,
-        color: 'green',
+        color: 'green-500',
         size: 'lg',
       });
       this.add.existing(greenProgress);
@@ -189,7 +190,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         x: this.cameras.main.centerX + 200,
         y: 150,
         icon: 'gear',
-        color: 'red',
+        color: 'red-500',
         size: 'xl',
       });
       this.add.existing(redProgress);
@@ -206,7 +207,8 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         x: this.cameras.main.centerX - 200,
         y: 300,
         icon: 'rotate',
-        color: 'purple',
+        color: 'purple-500',
+        size: 'lg',
         rotationsPerSecond: 0.5,
       });
       this.add.existing(slowProgress);
@@ -223,7 +225,8 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         x: this.cameras.main.centerX,
         y: 300,
         icon: 'arrows-rotate',
-        color: 'yellow',
+        color: 'yellow-500',
+        size: 'lg',
         rotationsPerSecond: 4,
       });
       this.add.existing(fastProgress);
@@ -257,7 +260,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         x: this.cameras.main.centerX,
         y: 450,
         icon: 'gear',
-        color: 'pink',
+        color: 'pink-500',
         size: 'lg',
       });
       this.add.existing(controllableProgress);

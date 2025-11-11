@@ -2,7 +2,7 @@
 
 > The DevTools for Phaser games state - Inspect, debug, and understand your game state in real-time
 
-[![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://chrome.google.com/webstore)
+[![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://chromewebstore.google.com/detail/phaser-data-inspector/jjcogkkooficbbdhfcamcojmepbjnpdk)
 [![React](https://img.shields.io/badge/React-19.2-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -81,9 +81,11 @@ pnpm build
    - Click "Load unpacked"
    - Select the `dist` folder from the phaser-data-inspector package
 
-### Option 2: Chrome Web Store (Coming Soon)
+### Option 2: Chrome Web Store
 
-The extension will be available on the Chrome Web Store soon. Stay tuned!
+Install the extension directly from the Chrome Web Store:
+
+🛒 [Download Phaser Data Inspector](https://chromewebstore.google.com/detail/phaser-data-inspector/jjcogkkooficbbdhfcamcojmepbjnpdk)
 
 ## 📖 Usage
 

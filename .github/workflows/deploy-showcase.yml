@@ -43,6 +43,8 @@ jobs:
 
       - name: Build Astro Showcase
         run: pnpm --filter phaser-toolkit-showcase build
+        env:
+          ASTRO_BASE: /phaser-toolkit/
 
       - name: Deploy to GitHub Pages (gh-pages)
         uses: peaceiris/actions-gh-pages@v4

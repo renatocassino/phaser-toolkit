@@ -207,6 +207,7 @@ set(100);
 ```
 
 **Links:**
+- 🛒 [Download Chrome Extension](https://chromewebstore.google.com/detail/phaser-data-inspector/jjcogkkooficbbdhfcamcojmepbjnpdk)
 - 📖 [Documentation](packages/phaser-data-inspector/README.md)
 - 🔧 [Development Guide](packages/phaser-data-inspector/DEVTOOLS_SETUP.md)
 

@@ -7,7 +7,7 @@ import { SectionHeader } from '../section-header';
 // Constants for default values
 const DEFAULT_BORDER_RADIUS = 8;
 const DEFAULT_MARGIN = 16;
-const DEFAULT_BACKGROUND_COLOR = 'white';
+const DEFAULT_BACKGROUND_COLOR = 'red-500';
 const DEFAULT_HEADER_HEIGHT = 60;
 const CLOSE_BUTTON_SIZE = 32;
 const CLOSE_BUTTON_MARGIN = 8;
@@ -79,7 +79,7 @@ export class Panel extends GameObjects.Container {
             x: 0,
             y: 0,
             text: this.title,
-            backgroundColor: 'transparent',
+            backgroundColor: DEFAULT_BACKGROUND_COLOR,
             borderRadius: 0
         });
 
@@ -180,6 +180,9 @@ export class Panel extends GameObjects.Container {
      */
     setBackgroundColor(color: string): this {
         this.card.setBackgroundColor(color);
+        if (this.sectionHeader) {
+            this.sectionHeader.setBackgroundColor(color);
+        }
         return this;
     }
 

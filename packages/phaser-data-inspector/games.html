@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Data Inspector Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .game-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 8px;
+        }
+        .game-container h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        #game01, #game02 {
+            border: 2px solid #4CAF50;
+            border-radius: 4px;
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phaser Data Inspector Test Page</h1>
+    
+    <div class="game-container">
+        <h2>Game 01</h2>
+        <div id="game01"></div>
+    </div>
+    
+    <div class="game-container">
+        <h2>Game 02</h2>
+        <div id="game02"></div>
+    </div>
+
+    <script>
+        // Game 01
+        const game01Config = {
+            type: Phaser.AUTO,
+            width: 400,
+            height: 300,
+            parent: 'game01',
+            backgroundColor: '#2d2d2d',
+            scene: {
+                create: function() {
+                    // Initialize counter in registry
+                    this.registry.set('counter', 0);
+                    
+                    // Create button
+                    const button = this.add.rectangle(200, 150, 150, 50, 0x4CAF50);
+                    button.setInteractive({ useHandCursor: true });
+                    
+                    // Create text
+                    const buttonText = this.add.text(200, 150, 'Increment', {
+                        fontSize: '20px',
+                        color: '#ffffff',
+                        align: 'center'
+                    }).setOrigin(0.5);
+                    
+                    // Counter display
+                    const counterText = this.add.text(200, 100, 'Counter: 0', {
+                        fontSize: '24px',
+                        color: '#ffffff',
+                        align: 'center'
+                    }).setOrigin(0.5);
+                    
+                    // Update counter display
+                    const updateCounter = () => {
+                        const value = this.registry.get('counter');
+                        counterText.setText(`Counter: ${value}`);
+                    };
+                    
+                    // Button click handler
+                    button.on('pointerdown', () => {
+                        const current = this.registry.get('counter');
+                        this.registry.set('counter', current + 1);
+                        updateCounter();
+                    });
+                    
+                    // Listen to registry changes
+                    this.registry.events.on('changedata-counter', () => {
+                        updateCounter();
+                    });
+                    
+                    updateCounter();
+                }
+            }
+        };
+        
+        // Game 02
+        const game02Config = {
+            type: Phaser.AUTO,
+            width: 400,
+            height: 300,
+            parent: 'game02',
+            backgroundColor: '#2d2d2d',
+            scene: {
+                create: function() {
+                    // Initialize counter in registry
+                    this.registry.set('score', 0);
+                    
+                    // Create button
+                    const button = this.add.rectangle(200, 150, 150, 50, 0x2196F3);
+                    button.setInteractive({ useHandCursor: true });
+                    
+                    // Create text
+                    const buttonText = this.add.text(200, 150, 'Add Score', {
+                        fontSize: '20px',
+                        color: '#ffffff',
+                        align: 'center'
+                    }).setOrigin(0.5);
+                    
+                    // Score display
+                    const scoreText = this.add.text(200, 100, 'Score: 0', {
+                        fontSize: '24px',
+                        color: '#ffffff',
+                        align: 'center'
+                    }).setOrigin(0.5);
+                    
+                    // Update score display
+                    const updateScore = () => {
+                        const value = this.registry.get('score');
+                        scoreText.setText(`Score: ${value}`);
+                    };
+                    
+                    // Button click handler
+                    button.on('pointerdown', () => {
+                        const current = this.registry.get('score');
+                        this.registry.set('score', current + 1);
+                        updateScore();
+                    });
+                    
+                    // Listen to registry changes
+                    this.registry.events.on('changedata-score', () => {
+                        updateScore();
+                    });
+                    
+                    updateScore();
+                }
+            }
+        };
+        
+        // Start both games
+        const game1 = new Phaser.Game(game01Config);
+        const game2 = new Phaser.Game(game02Config);
+    </script>
+</body>
+</html>

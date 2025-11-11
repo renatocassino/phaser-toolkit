@@ -5,6 +5,15 @@ export interface Props {
 }
 
 const { title, description = "Phaser Toolkit Showcase - Interactive component demonstrations" } = Astro.props;
+
+// Helper function para criar URLs com base path
+const getUrl = (path: string) => {
+  const base = import.meta.env.BASE_URL;
+  // Remove trailing slash from base if present, and ensure path starts with /
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${cleanBase}${cleanPath}`;
+};
 ---
 
 <!DOCTYPE html>
@@ -13,7 +22,7 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={getUrl('/favicon.svg')} />
     <title>{title}</title>
     <style>
       .sidebar-collapsed {
@@ -92,7 +101,7 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
           <!-- Main Navigation -->
           <div class="mb-4">
             <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</div>
-            <a href="/" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+            <a href={getUrl('/')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
               🏠 Home
             </a>
           </div>
@@ -104,40 +113,40 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
               <span class="category-toggle-icon">▼</span>
             </div>
             <div class="category-links" data-category="hudini">
-              <a href="/hudini" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 📋 Overview
               </a>
-              <a href="/hudini/card" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/card')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🃏 Card
               </a>
-              <a href="/hudini/text-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/text-button')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🔘 Text Button
               </a>
-              <a href="/hudini/icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/icon-button')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🎯 Icon Button
               </a>
-              <a href="/hudini/flat-icon-button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/flat-icon-button')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🔲 Flat Icon Button
               </a>
-              <a href="/hudini/section-header" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/section-header')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 📑 Section Header
               </a>
-              <a href="/hudini/circular-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/circular-progress')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 ⭕ Circular Progress
               </a>
-              <a href="/hudini/linear-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/linear-progress')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 📊 Linear Progress
               </a>
-              <a href="/hudini/radial-progress" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/radial-progress')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🎯 Radial Progress
               </a>
-              <a href="/hudini/column" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/column')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 📦 Column
               </a>
-              <a href="/hudini/row" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/row')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 📋 Row
               </a>
-              <a href="/hudini/sized-box" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/hudini/sized-box')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 📏 Sized Box
               </a>
             </div>
@@ -150,10 +159,10 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
               <span class="category-toggle-icon">▼</span>
             </div>
             <div class="category-links" data-category="phaser-wind">
-              <a href="/phaser-wind" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/phaser-wind')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🌪️ Overview
               </a>
-              <a href="/phaser-wind/button" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/phaser-wind/button')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🔘 Button
               </a>
             </div>
@@ -188,7 +197,7 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
               <span class="category-toggle-icon">▼</span>
             </div>
             <div class="category-links" data-category="sound-studio">
-              <a href="/phaser-sound-studio" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/phaser-sound-studio')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🎵 Overview
               </a>
             </div>
@@ -217,7 +226,7 @@ const { title, description = "Phaser Toolkit Showcase - Interactive component de
               <span class="category-toggle-icon">▼</span>
             </div>
             <div class="category-links" data-category="font-awesome">
-              <a href="/font-awesome-for-phaser" class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
+              <a href={getUrl('/font-awesome-for-phaser')} class="block px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900">
                 🎨 Overview
               </a>
             </div>

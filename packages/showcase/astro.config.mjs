@@ -1,9 +1,17 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 
+// Base path para GitHub Pages
+// Por padrão usa /phaser-toolkit/ para funcionar com GitHub Pages padrão
+// Se o domínio customizado estiver apontando para a raiz, sobrescreva com ASTRO_BASE=/
+// Exemplo: ASTRO_BASE=/ pnpm build
+// Em localhost, não defina ASTRO_BASE para usar a raiz (/)
+const base = process.env.ASTRO_BASE || '/';
+
 export default defineConfig({
   output: 'static',
   site: 'https://phaser-toolkit.dev',
+  base: base,
   integrations: [tailwind()],
   vite: {
     resolve: {

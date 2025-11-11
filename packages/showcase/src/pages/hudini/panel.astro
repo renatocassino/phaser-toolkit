@@ -1,0 +1,535 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Panel Component" description="A panel component that combines Card, SectionHeader, and optional close button for creating modal-like UI elements.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Panel Component</h2>
+      <p class="text-gray-600 mb-4">
+        A panel component that combines Card, SectionHeader, and optional close button for creating modal-like UI elements. Perfect for settings panels, information dialogs, and popup windows.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎴 <strong>Card-based</strong>: Built on top of Card component for consistent styling</li>
+          <li>📑 <strong>Optional Header</strong>: SectionHeader for panel titles</li>
+          <li>❌ <strong>Close Button</strong>: Optional close button with custom callback</li>
+          <li>🎨 <strong>Customizable</strong>: Full control over colors, border radius, and margins</li>
+          <li>🔄 <strong>Dynamic Updates</strong>: Update title, child, and styling dynamically</li>
+          <li>⚡ <strong>Auto Layout</strong>: Automatically positions header and close button</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">scene</code> - Phaser scene where the Panel will be added</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">x</code> - X position of the Panel - default: 0</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">y</code> - Y position of the Panel - default: 0</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">title</code> - Optional title text for the panel header</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">backgroundColor</code> - Background color token or CSS color - default: 'white'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius in pixels - default: 8</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">margin</code> - Internal margin in pixels - default: 16</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">showCloseButton</code> - Whether to show close button - default: false</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onClose</code> - Optional callback function when close button is clicked</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">child</code> - Any Phaser GameObject to be contained within the panel (required)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Methods -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Methods</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setTitle(title)</code> - Set or update the panel title</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setShowCloseButton(show)</code> - Show or hide the close button</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setOnClose(callback)</code> - Set the close button callback</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setBackgroundColor(color)</code> - Change background color</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setBorderRadius(radius)</code> - Change border radius</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setMargin(margin)</code> - Change internal margin</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setChild(child)</code> - Replace the panel content</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">getCard()</code> - Get the underlying Card component</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">getSectionHeader()</code> - Get the SectionHeader component (if exists)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">getCloseButton()</code> - Get the close button component (if exists)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={750} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    Panel,
+    Column,
+    TextButton
+} from 'hudini';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class PanelDemoScene extends SceneWithHudini<Theme> {
+    constructor() {
+        super('panel-demo');
+    }
+
+    create(): void {
+        const { pw } = this.hudini;
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+        // Create content for the panel
+        const button1 = new TextButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            text: 'Button 1',
+            backgroundColor: 'blue-500',
+            textColor: 'white',
+        });
+
+        const button2 = new TextButton({
+            scene: this,
+            x: 0,
+            y: 0,
+            text: 'Button 2',
+            backgroundColor: 'green-500',
+            textColor: 'white',
+        });
+
+        const content = new Column({
+            scene: this,
+            x: 0,
+            y: 0,
+            gap: 12,
+            children: [button1, button2]
+        });
+
+        // Create panel with title and close button
+        const panel = new Panel({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: this.cameras.main.centerY,
+            title: 'Settings Panel',
+            backgroundColor: 'white',
+            borderRadius: 12,
+            margin: 20,
+            showCloseButton: true,
+            onClose: () => {
+                console.log('Panel closed!');
+            },
+            child: content,
+        });
+        this.add.existing(panel);
+    }
+}`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Advanced Examples -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Advanced Examples</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Panel with Title Only</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const panel = new Panel({
+    scene: this,
+    x: 400,
+    y: 300,
+    title: 'Information',
+    backgroundColor: 'white',
+    child: content,
+});`}</code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Panel with Close Button</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const panel = new Panel({
+    scene: this,
+    x: 400,
+    y: 300,
+    title: 'Settings',
+    showCloseButton: true,
+    onClose: () => {
+        panel.destroy();
+    },
+    child: content,
+});`}</code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Dynamic Updates</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const panel = new Panel({
+    scene: this,
+    x: 400,
+    y: 300,
+    title: 'Panel',
+    child: initialContent,
+});
+
+// Update title
+panel.setTitle('Updated Title');
+
+// Show close button
+panel.setShowCloseButton(true);
+panel.setOnClose(() => console.log('Closed!'));
+
+// Update content
+panel.setChild(newContent);
+
+// Update styling
+panel.setBackgroundColor('gray-100');
+panel.setBorderRadius(16);
+panel.setMargin(24);`}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    Panel,
+    Column,
+    Row,
+    TextButton,
+    IconButton,
+    SizedBox,
+  } from 'hudini';
+import { loadFont } from 'font-awesome-for-phaser';
+
+  // Create theme
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class PanelDemoScene extends SceneWithHudini<Theme> {
+    private panels: Panel[] = [];
+
+    constructor() {
+      super('panel-demo');
+    }
+
+    create(): void {
+      const { pw } = this.hudini;
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+      // Title
+      this.add.text(this.cameras.main.centerX, 40, 'Panel Examples', {
+        color: pw.color.slate(200),
+        align: 'center',
+        fontSize: '32px',
+        fontStyle: 'bold',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 1: Simple panel with title
+      const button1 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Click Me',
+        backgroundColor: 'blue-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        margin: '4',
+      });
+
+      const content1 = new Column({
+        scene: this,
+        x: 0,
+        y: 0,
+        gap: 12,
+        children: [button1]
+      });
+
+      const panel1 = new Panel({
+        scene: this,
+        x: 200,
+        y: 150,
+        title: 'Simple Panel',
+        backgroundColor: 'white',
+        borderRadius: 12,
+        margin: 20,
+        child: content1,
+      });
+      this.add.existing(panel1);
+      this.panels.push(panel1);
+
+      // Label for panel 1
+      this.add.text(200, 250, 'With Title', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 2: Panel with close button
+      const button2 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Save',
+        backgroundColor: 'green-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        margin: '4',
+      });
+
+      const button3 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Cancel',
+        backgroundColor: 'gray-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        margin: '4',
+      });
+
+      const content2 = new Row({
+        scene: this,
+        x: 0,
+        y: 0,
+        gap: 12,
+        children: [button2, button3]
+      });
+
+      const panel2 = new Panel({
+        scene: this,
+        x: 600,
+        y: 150,
+        title: 'Settings',
+        backgroundColor: 'white',
+        borderRadius: 12,
+        margin: 20,
+        showCloseButton: true,
+        onClose: () => {
+          console.log('Settings panel closed!');
+        },
+        child: content2,
+      });
+      this.add.existing(panel2);
+      this.panels.push(panel2);
+
+      // Label for panel 2
+      this.add.text(600, 250, 'With Close Button', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 3: Panel with multiple buttons
+      const btn1 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Option 1',
+        backgroundColor: 'purple-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        margin: '3',
+      });
+
+      const btn2 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Option 2',
+        backgroundColor: 'indigo-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        margin: '3',
+      });
+
+      const btn3 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Option 3',
+        backgroundColor: 'pink-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        margin: '3',
+      });
+
+      const content3 = new Column({
+        scene: this,
+        x: 0,
+        y: 0,
+        gap: 8,
+        children: [btn1, btn2, btn3]
+      });
+
+      const panel3 = new Panel({
+        scene: this,
+        x: 200,
+        y: 400,
+        title: 'Menu',
+        backgroundColor: 'white',
+        borderRadius: 12,
+        margin: 20,
+        child: content3,
+      });
+      this.add.existing(panel3);
+      this.panels.push(panel3);
+
+      // Label for panel 3
+      this.add.text(200, 500, 'Multiple Options', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 4: Panel with icons
+      const icon1 = new IconButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        icon: 'heart',
+        size: 'base',
+        color: 'red',
+      });
+
+      const icon2 = new IconButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        icon: 'star',
+        size: 'base',
+        color: 'yellow',
+      });
+
+      const icon3 = new IconButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        icon: 'gear',
+        size: 'base',
+        color: 'gray',
+      });
+
+      const content4 = new Row({
+        scene: this,
+        x: 0,
+        y: 0,
+        gap: 12,
+        children: [icon1, icon2, icon3]
+      });
+
+      const panel4 = new Panel({
+        scene: this,
+        x: 600,
+        y: 400,
+        title: 'Actions',
+        backgroundColor: 'white',
+        borderRadius: 12,
+        margin: 20,
+        showCloseButton: true,
+        onClose: () => {
+          console.log('Actions panel closed!');
+        },
+        child: content4,
+      });
+      this.add.existing(panel4);
+      this.panels.push(panel4);
+
+      // Label for panel 4
+      this.add.text(600, 500, 'With Icons', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 5: Panel with custom styling
+      const text = this.add.text(0, 0, 'Custom styled panel\nwith larger margin\nand rounded corners', {
+        color: pw.color.rgb('black'),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      const panel5 = new Panel({
+        scene: this,
+        x: 400,
+        y: 600,
+        title: 'Custom Style',
+        backgroundColor: 'gray-100',
+        borderRadius: 20,
+        margin: 30,
+        child: text,
+      });
+      this.add.existing(panel5);
+      this.panels.push(panel5);
+
+      // Label for panel 5
+      this.add.text(400, 680, 'Custom Styling', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add.text(this.cameras.main.centerX, 720, 'Panels combine Card, SectionHeader, and optional close button', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    loadFont().then(() => {
+      if (gameConfig) {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [PanelDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: {
+                  theme,
+                },
+              },
+            ],
+          },
+        });
+        
+        // Store the game instance
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-panel-demo'] = game;
+      }
+    });
+  });
+</script>

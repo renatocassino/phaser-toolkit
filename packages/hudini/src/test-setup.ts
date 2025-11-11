@@ -1,7 +1,7 @@
 // Global mock for Phaser in tests
 import { vi } from 'vitest';
 
-// Mock Phaser globally
+// Mock Phaser globally first (must be before phaser-wind mock)
 vi.mock('phaser', () => {
   class Scene { }
 
@@ -36,5 +36,29 @@ vi.mock('phaser', () => {
   }
 
   const GameObjects = { Container } as const;
-  return { GameObjects, Scene };
+  return { GameObjects, Scene, default: { GameObjects, Scene } };
+});
+
+// Mock phaser-wind globally (after Phaser mock)
+vi.mock('phaser-wind', () => {
+  return {
+    Color: {
+      rgb: vi.fn((color: string) => `rgb-${color}`),
+      hex: vi.fn((color: string) => `hex-${color}`),
+    },
+    getDisplayWidthOf: vi.fn((child: { displayWidth?: number; width?: number; getBounds?: () => { width: number } }) => {
+      if (typeof child.displayWidth === 'number') return child.displayWidth;
+      if (typeof child.width === 'number') return child.width;
+      const bounds = child.getBounds?.();
+      return bounds ? bounds.width : 0;
+    }),
+    getDisplayHeightOf: vi.fn((child: { displayHeight?: number; height?: number; getBounds?: () => { height: number } }) => {
+      if (typeof child.displayHeight === 'number') return child.displayHeight;
+      if (typeof child.height === 'number') return child.height;
+      const bounds = child.getBounds?.();
+      return bounds ? bounds.height : 0;
+    }),
+    PhaserWindPlugin: class PhaserWindPlugin { },
+    SceneWithPhaserWind: class SceneWithPhaserWind { },
+  };
 });

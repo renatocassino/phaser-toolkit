@@ -135,25 +135,29 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 
       // Create different button styles
       const buttonConfigs = [
-        { text: 'Primary', bg: 'blue-500', textColor: 'white', y: 150 },
-        { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800', y: 200 },
-        { text: 'Success', bg: 'green-500', textColor: 'white', y: 250 },
-        { text: 'Warning', bg: 'yellow-500', textColor: 'black', y: 300 },
-        { text: 'Danger', bg: 'red-500', textColor: 'white', y: 350 },
-        { text: 'Info', bg: 'cyan-500', textColor: 'white', y: 400 },
+        { text: 'Primary', bg: 'blue-500', textColor: 'white' },
+        { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800' },
+        { text: 'Success', bg: 'green-500', textColor: 'white' },
+        { text: 'Warning', bg: 'yellow-500', textColor: 'black' },
+        { text: 'Danger', bg: 'red-500', textColor: 'white' },
+        { text: 'Info', bg: 'cyan-500', textColor: 'white' },
       ];
 
+      let y = 150;
       buttonConfigs.forEach((config, index) => {
         const button = new TextButton({
           scene: this,
           x: this.cameras.main.centerX,
-          y: config.y,
+          y: y,
           text: config.text,
           backgroundColor: config.bg,
           textColor: config.textColor,
           borderRadius: 'md',
           margin: '4',
+          fontSize: 'base',
         });
+
+        y += 60;
         
         // Add click interaction
         button.setInteractive();

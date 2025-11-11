@@ -96,7 +96,7 @@ export class TextButton extends GameObjects.Container {
     x,
     y,
     text,
-    fontSize,
+    fontSize = 'base',
     font,
     backgroundColor = 'blue',
     textColor = 'white',

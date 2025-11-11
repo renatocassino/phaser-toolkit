@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.8.0
+
+### Minor Changes
+
+- ef9483c: Add components column and row in phaser-wind. In Hudini, small fixes to sizes and use Column and Row from phaser-wind.
+
 ## 0.7.0
 
 ### Minor Changes

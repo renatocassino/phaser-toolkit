@@ -3,6 +3,7 @@ export * from './circular-progress';
 export * from './flat-icon-button';
 export * from './icon-button';
 export * from './linear-progress';
+export * from './panel';
 export * from './radial-progress';
 export * from './section-header';
 export * from './sized-box';

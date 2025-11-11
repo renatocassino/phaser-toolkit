@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.17.2
+
+### Patch Changes
+
+- 47b0a86: Add default size to text button
+
 ## 0.17.1
 
 ### Patch Changes

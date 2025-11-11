@@ -69,6 +69,8 @@ vi.mock('phaser', () => {
     }
 
     class Container {
+        public width = 0;
+        public height = 0;
         // eslint-disable-next-line no-unused-vars
         constructor(_scene: Scene, _x: number, _y: number) { }
         add(): this {

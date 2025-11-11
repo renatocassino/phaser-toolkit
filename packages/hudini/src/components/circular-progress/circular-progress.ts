@@ -1,7 +1,6 @@
 import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
-  Color,
   ColorToken,
   PhaserWindPlugin,
   type ColorKey,

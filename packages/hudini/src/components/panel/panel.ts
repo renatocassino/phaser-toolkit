@@ -179,7 +179,6 @@ export class Panel extends GameObjects.Container {
      * Sets the background color
      */
     setBackgroundColor(color: string): this {
-        this.backgroundColor = color;
         this.card.setBackgroundColor(color);
         if (this.sectionHeader) {
             this.sectionHeader.setBackgroundColor(color);

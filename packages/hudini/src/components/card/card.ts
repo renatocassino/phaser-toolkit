@@ -50,6 +50,9 @@ export class Card extends GameObjects.Container {
   /** Background color value */
   private backgroundColorValue!: string;
 
+  /** Whether we have an explicit size set (width and height provided) */
+  private hasExplicitSize: boolean = false;
+
   /**
    * Creates a new Card
    * @param params Configuration parameters for the card
@@ -82,10 +85,30 @@ export class Card extends GameObjects.Container {
     // Store child reference
     this.child = child;
 
+    // Check if explicit size was provided
+    this.hasExplicitSize = width !== undefined && height !== undefined;
+
     // Create background and setup container
     this.createBackgroundGraphics(scene, width, height);
     this.setupContainer();
   }
+  /**
+   * Override setSize to redraw background when size changes
+   * @param width Width in pixels
+   * @param height Height in pixels
+   * @returns this for chaining
+   */
+  public override setSize(width: number, height: number): this {
+    // Mark that we now have explicit size
+    this.hasExplicitSize = true;
+    // Set size directly on the container to avoid recursion
+    this.width = width;
+    this.height = height;
+    // Redraw background with new size
+    this.drawBackground(width, height);
+    return this;
+  }
+
   /**
    * Sets the width of the card. Useful when you want to set a fixed width without a child component.
    * @param width Width in pixels
@@ -182,7 +205,10 @@ export class Card extends GameObjects.Container {
     if (this.child) {
       this.add([this.child]);
     }
-    this.layout();
+    // Only call layout if we don't have explicit size
+    if (!this.hasExplicitSize) {
+      this.layout();
+    }
   }
 
   /**
@@ -219,15 +245,16 @@ export class Card extends GameObjects.Container {
       childOrigin
     );
 
-    this.setDisplaySize(cardWidth, cardHeight);
+    // Set size directly (don't use setSize to avoid marking as explicit size)
+    this.width = cardWidth;
+    this.height = cardHeight;
+    // Redraw background with new dimensions
+    this.drawBackground(cardWidth, cardHeight);
 
     // Position child in the center of the card
     (
       this.child as unknown as { setPosition: (x: number, y: number) => void }
     ).setPosition(childX, childY);
-
-    // Redraw background with new dimensions
-    this.drawBackground();
   }
 
   /**
@@ -328,11 +355,20 @@ export class Card extends GameObjects.Container {
       width = w;
       height = h;
     } else {
-      const { w: cw, h: ch } = this.measureChild(this.child as GameObjects.GameObject);
-      width  = cw + this.marginPx * 2;
-      height = ch + this.marginPx * 2;
+      // If no explicit size provided and we have a child, measure it
+      if (this.child) {
+        const { w: cw, h: ch } = this.measureChild(this.child as GameObjects.GameObject);
+        width  = cw + this.marginPx * 2;
+        height = ch + this.marginPx * 2;
+      } else {
+        // If no child and no explicit size, use current size
+        width = this.width;
+        height = this.height;
+      }
     }
-    this.setSize(width, height);
+    // Set size directly to avoid recursion (since we override setSize)
+    this.width = width;
+    this.height = height;
     this.backgroundGraphics.clear();
 
     // Limit radius to maximum possible for the card dimensions

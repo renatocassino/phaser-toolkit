@@ -502,7 +502,7 @@ export class VirtualJoystick extends Phaser.GameObjects.Container {
       return;
     }
 
-    if (!this.touchId || this.touchId !== pointer.id) {
+    if (this.touchId == undefined || this.touchId !== pointer.id) {
       return;
     }
 

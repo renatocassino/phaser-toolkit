@@ -189,55 +189,44 @@ class GameScene extends Phaser.Scene {
       character.setStrokeStyle(2, 0x312E81);
 
       // Create joystick only on touch devices
-      if (this.sys.game.device.input.touch) {
-        this.joystick = new VirtualJoystick({
-          scene: this,
-          bounds: {
-            topLeft: { x: 0, y: 40 },
-            bottomRight: { x: this.cameras.main.width / 2, y: this.cameras.main.height },
-          },
-          stickIcon: this.add.text(0, 0, '🎮', {
-            fontSize: '24px',
-            color: '#ffffff'
-          }),
-          enableWithoutTouch: true,
-        });
-        this.add.existing(this.joystick);
+      this.joystick = new VirtualJoystick({
+        scene: this,
+        bounds: {
+          topLeft: { x: 0, y: 40 },
+          bottomRight: { x: this.cameras.main.width / 2, y: this.cameras.main.height },
+        },
+        stickIcon: this.add.text(0, 0, '🎮', {
+          fontSize: '24px',
+          color: '#ffffff'
+        }),
+        enableWithoutTouch: true,
+      });
+      this.add.existing(this.joystick);
 
-        // Listen to joystick events
-        this.joystick.on('move', (data) => {
-          this.axesPosition = { x: data.x, y: data.y };
-          if (this.positionText) {
-            this.positionText.setText(`Position: (${data.x.toFixed(2)}, ${data.y.toFixed(2)})`);
-          }
-        });
+      // Listen to joystick events
+      this.joystick.on('move', (data) => {
+        this.axesPosition = { x: data.x, y: data.y };
+        if (this.positionText) {
+          this.positionText.setText(`Position: (${data.x.toFixed(2)}, ${data.y.toFixed(2)})`);
+        }
+      });
 
-        this.joystick.on('press', () => {
-          this.axesPosition = { x: 0, y: 0 };
-          if (this.eventText) {
-            this.eventText.setText('Status: Joystick Pressed');
-            this.eventText.setColor(Color.rgb('green-400'));
-          }
-        });
+      this.joystick.on('press', () => {
+        this.axesPosition = { x: 0, y: 0 };
+        if (this.eventText) {
+          this.eventText.setText('Status: Joystick Pressed');
+          this.eventText.setColor(Color.rgb('green-400'));
+        }
+      });
 
-        this.joystick.on('release', () => {
-          this.axesPosition = { x: 0, y: 0 };
-          if (this.eventText) {
-            this.eventText.setText('Status: Joystick Released');
-            this.eventText.setColor(Color.rgb('red-400'));
-          }
-        });
-      } else {
-        // Show message for non-touch devices
-        this.add
-          .text(centerX, centerY, 'This demo requires a touch device to work properly', {
-            color: Color.rgb('slate-400'),
-            align: 'center',
-            fontSize: FontSize.px('lg'),
-            wordWrap: { width: 500 },
-          })
-          .setOrigin(0.5, 0.5);
-      }
+      this.joystick.on('release', () => {
+        this.axesPosition = { x: 0, y: 0 };
+        if (this.eventText) {
+          this.eventText.setText('Status: Joystick Released');
+          this.eventText.setColor(Color.rgb('red-400'));
+        }
+      });
+
 
       // Add some visual elements to show the joystick area
       const joystickArea = this.add.rectangle(

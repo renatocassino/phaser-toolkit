@@ -1,6 +1,6 @@
 {
   "name": "phaser-wind",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Wind theme like Tailwind CSS for Phaser games",
   "type": "module",
   "main": "./dist/index.js",

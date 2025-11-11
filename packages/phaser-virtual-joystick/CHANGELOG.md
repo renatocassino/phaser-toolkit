@@ -1,5 +1,11 @@
 # phaser-virtual-joystick
 
+## 0.3.1
+
+### Patch Changes
+
+- 64ba749: fix bug when move with mouse
+
 ## 0.3.0
 
 ### Minor Changes

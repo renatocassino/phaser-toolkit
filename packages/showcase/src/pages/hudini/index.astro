@@ -1,5 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+// Helper function para criar URLs com base path
+const getUrl = (path: string) => {
+  const base = import.meta.env.BASE_URL;
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${cleanBase}${cleanPath}`;
+};
 ---
 
 <Layout title="Hudini Overview" description="A powerful utility library with UI components and tools built on top of PhaserWind.">
@@ -74,7 +82,7 @@ import Layout from '../../layouts/Layout.astro';
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-xl font-semibold text-gray-900 mb-6">Components</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <a href="/hudini/card" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+        <a href={getUrl('/hudini/card')} class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
           <div class="flex items-center mb-2">
             <span class="text-2xl mr-3">🃏</span>
             <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Card</h4>
@@ -98,7 +106,7 @@ import Layout from '../../layouts/Layout.astro';
           <p class="text-sm text-gray-600">Button component with icon support and customizable styling</p>
         </a>
 
-        <a href="/hudini/flat-icon-button" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+        <a href={getUrl('/hudini/flat-icon-button')} class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
           <div class="flex items-center mb-2">
             <span class="text-2xl mr-3">🔲</span>
             <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Flat Icon Button</h4>
@@ -146,7 +154,7 @@ import Layout from '../../layouts/Layout.astro';
           <p class="text-sm text-gray-600">Vertical layout container for organizing content</p>
         </a>
 
-        <a href="/hudini/row" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+        <a href={getUrl('/hudini/row')} class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
           <div class="flex items-center mb-2">
             <span class="text-2xl mr-3">📋</span>
             <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Row</h4>
@@ -154,7 +162,7 @@ import Layout from '../../layouts/Layout.astro';
           <p class="text-sm text-gray-600">Horizontal layout container for organizing content</p>
         </a>
 
-        <a href="/hudini/sized-box" class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+        <a href={getUrl('/hudini/sized-box')} class="group p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
           <div class="flex items-center mb-2">
             <span class="text-2xl mr-3">📏</span>
             <h4 class="font-semibold text-gray-900 group-hover:text-blue-600">Sized Box</h4>

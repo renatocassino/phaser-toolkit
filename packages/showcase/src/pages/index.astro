@@ -1,5 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Helper function para criar URLs com base path
+const getUrl = (path: string) => {
+  const base = import.meta.env.BASE_URL;
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${cleanBase}${cleanPath}`;
+};
 ---
 
 <Layout title="Phaser Toolkit Showcase" description="Explore the components and features of the Phaser Toolkit ecosystem">
@@ -12,7 +20,7 @@ import Layout from '../layouts/Layout.astro';
         Explore interactive examples, copy code snippets, and see everything in action.
       </p>
       <div class="flex space-x-4">
-        <a href="/hudini" class="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+        <a href={getUrl('/hudini')} class="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
           Explore Components
         </a>
         <a href="https://github.com/your-org/phaser-toolkit" class="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-primary-600 transition-colors">
@@ -61,7 +69,7 @@ import Layout from '../layouts/Layout.astro';
           <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Design Tokens</span>
           <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Utilities</span>
         </div>
-        <a href="/phaser-wind" class="text-primary-600 hover:text-primary-700 font-medium">
+        <a href={getUrl('/phaser-wind')} class="text-primary-600 hover:text-primary-700 font-medium">
           Explore Components →
         </a>
       </div>
@@ -82,7 +90,7 @@ import Layout from '../layouts/Layout.astro';
           <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">State Management</span>
           <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Lifecycle</span>
         </div>
-        <a href="/phaser-hooks" class="text-primary-600 hover:text-primary-700 font-medium">
+        <a href={getUrl('/phaser-hooks')} class="text-primary-600 hover:text-primary-700 font-medium">
           Explore Components →
         </a>
       </div>
@@ -103,7 +111,7 @@ import Layout from '../layouts/Layout.astro';
           <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Music</span>
           <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Effects</span>
         </div>
-        <a href="/phaser-sound-studio" class="text-primary-600 hover:text-primary-700 font-medium">
+        <a href={getUrl('/phaser-sound-studio')} class="text-primary-600 hover:text-primary-700 font-medium">
           Explore Components →
         </a>
       </div>
@@ -124,7 +132,7 @@ import Layout from '../layouts/Layout.astro';
           <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Touch</span>
           <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Joystick</span>
         </div>
-        <a href="/phaser-virtual-joystick" class="text-primary-600 hover:text-primary-700 font-medium">
+        <a href={getUrl('/phaser-virtual-joystick')} class="text-primary-600 hover:text-primary-700 font-medium">
           Explore Components →
         </a>
       </div>
@@ -145,7 +153,7 @@ import Layout from '../layouts/Layout.astro';
           <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Font Awesome</span>
           <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded">Easy to Use</span>
         </div>
-        <a href="/font-awesome-for-phaser" class="text-primary-600 hover:text-primary-700 font-medium">
+        <a href={getUrl('/font-awesome-for-phaser')} class="text-primary-600 hover:text-primary-700 font-medium">
           Explore Components →
         </a>
       </div>

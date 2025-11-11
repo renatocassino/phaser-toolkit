@@ -1,0 +1,279 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Row Component" description="Horizontal layout container that arranges children horizontally with spacing, vertical alignment, and configurable horizontal origin.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Row Component</h2>
+      <p class="text-gray-600 mb-4">
+        Horizontal layout container that arranges children horizontally with spacing, vertical alignment, and configurable horizontal origin.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>📋 <strong>Horizontal Arrangement</strong>: Arranges children horizontally with customizable gap</li>
+          <li>↕️ <strong>Vertical Alignment</strong>: Align children top, center, or bottom</li>
+          <li>📍 <strong>Horizontal Origin</strong>: Control where content starts (left, center, right)</li>
+          <li>🔄 <strong>Dynamic Layout</strong>: Automatically updates when children are added or removed</li>
+          <li>⚡ <strong>Performance</strong>: Efficient layout calculations</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">scene</code> - The Phaser scene instance</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">x</code> - X coordinate of the row center</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">y</code> - Y coordinate of the row center</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">gap</code> - Gap between elements in pixels (default: 8)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">align</code> - Vertical alignment: 'top' | 'center' | 'bottom' (default: 'center')</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">horizontalOrigin</code> - Horizontal origin: 'left' | 'center' | 'right' (default: 'center')</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">children</code> - Initial array of GameObjects to add</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={600} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    Row
+} from 'hudini';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class RowDemoScene extends SceneWithHudini<Theme> {
+    constructor() {
+        super('row-demo');
+    }
+
+    create(): void {
+        const { pw } = this.hudini;
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+        // Create sprites
+        const heart = this.add.sprite(0, 0, 'heart');
+        const gem = this.add.sprite(0, 0, 'gem');
+
+        // Create a row with default settings
+        const row = new Row({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: this.cameras.main.centerY,
+            gap: 10,
+            align: 'center',
+            horizontalOrigin: 'center',
+            children: [heart, gem],
+        });
+        this.add.existing(row);
+
+        // Update layout options later
+        row.setGap(16);
+        row.setAlign('top');
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    Row,
+    Card
+  } from 'hudini';
+
+  // Create theme
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class RowDemoScene extends SceneWithHudini<Theme> {
+    private rows: Row[] = [];
+
+    constructor() {
+      super('row-demo');
+    }
+
+    create(): void {
+      const { pw } = this.hudini;
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+      // Title
+      this.add.text(this.cameras.main.centerX, 40, 'Row Layout Examples', {
+        color: pw.color.slate(200),
+        align: 'center',
+        fontSize: '32px',
+      }).setOrigin(0.5, 0.5);
+
+      // Create example cards/sprites for demonstration
+      const createCard = (text: string, color: string) => {
+        const cardText = this.add.text(0, 0, text, {
+          color: pw.color.rgb('white'),
+          align: 'center',
+          fontSize: '18px',
+        }).setOrigin(0.5, 0.5).setName(`card-text-with-color-${color}`);
+
+        const card = new Card({
+          scene: this,
+          x: 0,
+          y: 0,
+          backgroundColor: color,
+          borderRadius: 'md',
+          margin: '4',
+          child: cardText,
+        });
+        return card;
+      };
+
+      // Example 1: Center aligned row
+      const centerRow = new Row({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 150,
+        gap: 12,
+        align: 'center',
+        horizontalOrigin: 'center',
+        children: [
+          createCard('1', 'blue-500'),
+          createCard('2', 'blue-600'),
+          createCard('3', 'blue-700'),
+        ],
+      });
+      this.add.existing(centerRow);
+      this.rows.push(centerRow);
+
+      this.add.text(this.cameras.main.centerX, 100, 'Center Aligned', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 2: Top aligned row
+      const topRow = new Row({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 250,
+        gap: 12,
+        align: 'top',
+        horizontalOrigin: 'center',
+        children: [
+          createCard('A', 'green-500'),
+          createCard('B', 'green-600'),
+          createCard('C', 'green-700'),
+        ],
+      });
+      this.add.existing(topRow);
+      this.rows.push(topRow);
+
+      this.add.text(this.cameras.main.centerX, 200, 'Top Aligned', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 3: Bottom aligned row
+      const bottomRow = new Row({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 350,
+        gap: 12,
+        align: 'bottom',
+        horizontalOrigin: 'center',
+        children: [
+          createCard('X', 'purple-500'),
+          createCard('Y', 'purple-600'),
+          createCard('Z', 'purple-700'),
+        ],
+      });
+      this.add.existing(bottomRow);
+      this.rows.push(bottomRow);
+
+      this.add.text(this.cameras.main.centerX, 300, 'Bottom Aligned', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 4: Row with different gap
+      const largeGapRow = new Row({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 450,
+        gap: 24,
+        align: 'center',
+        horizontalOrigin: 'center',
+        children: [
+          createCard('Wide', 'orange-500'),
+          createCard('Gap', 'orange-600'),
+        ],
+      });
+      this.add.existing(largeGapRow);
+      this.rows.push(largeGapRow);
+
+      this.add.text(this.cameras.main.centerX, 400, 'Large Gap (24px)', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add.text(this.cameras.main.centerX, 550, 'Rows automatically arrange children horizontally', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      const game = new Phaser.Game({
+        ...gameConfig,
+        scene: [RowDemoScene],
+        plugins: {
+          global: [
+            {
+              key: HUDINI_KEY,
+              plugin: HudiniPlugin,
+              mapping: HUDINI_KEY,
+              data: {
+                theme,
+              },
+            },
+          ],
+        },
+      });
+      
+      // Store the game instance
+      if (!(window as any).__phaserGames) {
+        (window as any).__phaserGames = {};
+      }
+      (window as any).__phaserGames['hudini-row-demo'] = game;
+    }
+  });
+</script>

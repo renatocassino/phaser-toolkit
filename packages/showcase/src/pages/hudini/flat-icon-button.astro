@@ -1,0 +1,711 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Flat Icon Button Component" description="A flat-style icon button with customizable colors, opacity, and border radius, built on top of phaser-wind and font-awesome-for-phaser.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Flat Icon Button Component</h2>
+      <p class="text-gray-600 mb-4">
+        A flat-style icon button with customizable colors, opacity, and border radius, built on top of phaser-wind and font-awesome-for-phaser.
+      </p>
+      
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎨 <strong>Flat Design</strong>: Clean, minimalist design without shadows</li>
+          <li>🖱️ <strong>Interactive</strong>: Click animations with smooth press/release effects</li>
+          <li>🎯 <strong>Customizable Colors</strong>: Separate control over background and icon colors</li>
+          <li>👁️ <strong>Opacity Control</strong>: Independent opacity for background and icon</li>
+          <li>🎨 <strong>Icon Styles</strong>: Support for solid, regular, and brands icon styles</li>
+          <li>⚡ <strong>Performance</strong>: Optimized animations for smooth 60fps gameplay</li>
+          <li>🔗 <strong>Event API</strong>: Direct access to interactive methods for advanced event handling</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">icon</code> - IconKey from font-awesome-for-phaser (e.g., 'heart', 'user', 'play')</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">iconStyle</code> - Icon style ('solid', 'regular', 'brands') - default: 'solid'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">size</code> - Font size token ('xs', 'sm', 'base', 'lg', 'xl'...) or pixel value - default: 'md'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">backgroundColor</code> - Background color token or CSS color - default: 'gray-600'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">iconColor</code> - Icon color token or CSS color - default: 'white'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius token ('none', 'sm', 'md', 'lg', 'xl', 'full') or pixel value - default: 'md'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">backgroundOpacity</code> - Background opacity (0-1) - default: 1</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">iconOpacity</code> - Icon opacity (0-1) - default: 1</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onClick</code> - Optional click handler function</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Methods -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Methods</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setButtonSize(size)</code> - Change button size</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setBorderRadius(radius)</code> - Change border radius</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setBackgroundColor(color)</code> - Change background color</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setIconColor(color)</code> - Change icon color</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setBackgroundOpacity(opacity)</code> - Change background opacity</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setIconOpacity(opacity)</code> - Change icon opacity</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setIcon(icon, opts?)</code> - Change icon and optionally icon style</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">interactive</code> - Access to Phaser interactive methods (on, off, once, setInteractive)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">getBounds()</code> - Get button bounds for layout calculations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={750} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    FlatIconButton
+} from 'hudini';
+import { loadFont } from 'font-awesome-for-phaser';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class ButtonDemoScene extends SceneWithHudini<Theme> {
+    constructor() {
+        super('button-demo');
+    }
+
+    create(): void {
+        const { pw } = this.hudini;
+        this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+        // Create a flat icon button
+        const playButton = new FlatIconButton({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: 200,
+            icon: 'play',
+            size: 'lg',
+            backgroundColor: 'blue-600',
+            iconColor: 'white',
+            borderRadius: 'md',
+            onClick: () => {
+                console.log('Play clicked!');
+            },
+        });
+        this.add.existing(playButton);
+
+        // Create a button with custom opacity
+        const heartButton = new FlatIconButton({
+            scene: this,
+            x: this.cameras.main.centerX - 100,
+            y: 300,
+            icon: 'heart',
+            backgroundColor: 'red-600',
+            iconColor: 'white',
+            backgroundOpacity: 0.8,
+            borderRadius: 'lg',
+        });
+        this.add.existing(heartButton);
+    }
+}
+
+// Don't forget to load fonts before creating the game
+loadFont().then(() => {
+    // Initialize your Phaser game here
+});`}</code></pre>
+      </div>
+    </div>
+
+    <!-- Advanced Examples -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Advanced Examples</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Using Interactive API</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const button = new FlatIconButton({ 
+    scene: this, 
+    x: 100, 
+    y: 100, 
+    icon: 'play',
+    onClick: () => console.log('Basic click')
+});
+
+// Access interactive methods directly
+button.interactive.on('pointerover', () => console.log('Hover'));
+button.interactive.on('pointerdown', () => console.log('Press'));
+button.interactive.once('pointerup', () => console.log('Release once'));`}</code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Different Border Radius</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`// Rounded button (default)
+const roundedBtn = new FlatIconButton({
+    scene: this,
+    x: 200,
+    y: 200,
+    icon: 'star',
+    borderRadius: 'md',
+});
+
+// Circular button
+const circularBtn = new FlatIconButton({
+    scene: this,
+    x: 300,
+    y: 200,
+    icon: 'heart',
+    borderRadius: 'full',
+});
+
+// Square button
+const squareBtn = new FlatIconButton({
+    scene: this,
+    x: 400,
+    y: 200,
+    icon: 'gear',
+    borderRadius: 'none',
+});`}</code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Opacity Control</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`// Semi-transparent background
+const transparentBtn = new FlatIconButton({
+    scene: this,
+    x: 200,
+    y: 200,
+    icon: 'heart',
+    backgroundColor: 'red-600',
+    iconColor: 'white',
+    backgroundOpacity: 0.5,
+    iconOpacity: 1,
+});
+
+// Update opacity dynamically
+transparentBtn.setBackgroundOpacity(0.8);
+transparentBtn.setIconOpacity(0.9);`}</code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Dynamic Updates</h4>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-sm text-gray-100"><code>{`const button = new FlatIconButton({
+    scene: this,
+    x: 400,
+    y: 300,
+    icon: 'gear',
+    size: 'base',
+});
+
+// Update size dynamically
+button.setButtonSize('xl');
+
+// Update colors
+button.setBackgroundColor('purple-600');
+button.setIconColor('yellow');
+
+// Update icon
+button.setIcon('heart', { iconStyle: 'solid' });
+
+// Update border radius
+button.setBorderRadius('full');`}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    SceneWithHudini,
+    FlatIconButton,
+  } from 'hudini';
+import { type IconKey, loadFont } from 'font-awesome-for-phaser';
+import { type ColorKey, type FontSizeKey } from 'phaser-wind';
+
+  // Create theme
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class FlatIconButtonDemoScene extends SceneWithHudini<Theme> {
+    private buttons: FlatIconButton[] = [];
+    private clickCount = 0;
+    private clickText?: Phaser.GameObjects.Text;
+
+    constructor() {
+      super('flat-icon-button-demo');
+    }
+
+    create(): void {
+      const { pw } = this.hudini;
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+
+      // Title
+      this.add.text(this.cameras.main.centerX, 40, 'Flat Icon Button Examples', {
+        color: pw.color.slate(200),
+        align: 'center',
+        fontSize: '32px',
+        fontStyle: 'bold',
+      }).setOrigin(0.5, 0.5);
+
+      // Click counter text
+      this.clickText = this.add.text(this.cameras.main.centerX, 80, 'Clicks: 0', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '16px',
+      }).setOrigin(0.5, 0.5);
+
+      // Example 1: Heart (red)
+      const heartButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX - 240,
+        y: 150,
+        icon: 'heart',
+        size: 'lg',
+        backgroundColor: 'red-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(heartButton);
+      this.buttons.push(heartButton);
+
+      // Example 2: Star (yellow)
+      const starButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX - 120,
+        y: 150,
+        icon: 'star',
+        size: 'lg',
+        backgroundColor: 'yellow-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(starButton);
+      this.buttons.push(starButton);
+
+      // Example 3: Play (green)
+      const playButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 150,
+        icon: 'play',
+        size: 'lg',
+        backgroundColor: 'green-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(playButton);
+      this.buttons.push(playButton);
+
+      // Example 4: Pause (blue)
+      const pauseButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX + 120,
+        y: 150,
+        icon: 'pause',
+        size: 'lg',
+        backgroundColor: 'blue-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(pauseButton);
+      this.buttons.push(pauseButton);
+
+      // Example 5: Gear (gray)
+      const gearButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX + 240,
+        y: 150,
+        icon: 'gear',
+        size: 'lg',
+        backgroundColor: 'gray-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(gearButton);
+      this.buttons.push(gearButton);
+
+      // Example 6: Trash (red, smaller)
+      const trashButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX - 180,
+        y: 280,
+        icon: 'trash',
+        size: 'base',
+        backgroundColor: 'red-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(trashButton);
+      this.buttons.push(trashButton);
+
+      // Example 7: User (purple)
+      const userButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX - 60,
+        y: 280,
+        icon: 'user',
+        size: 'base',
+        backgroundColor: 'purple-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(userButton);
+      this.buttons.push(userButton);
+
+      // Example 8: Home (indigo)
+      const homeButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX + 60,
+        y: 280,
+        icon: 'house',
+        size: 'base',
+        backgroundColor: 'indigo-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(homeButton);
+      this.buttons.push(homeButton);
+
+      // Example 9: Envelope (cyan)
+      const envelopeButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX + 180,
+        y: 280,
+        icon: 'envelope',
+        size: 'base',
+        backgroundColor: 'cyan-600',
+        iconColor: 'white',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(envelopeButton);
+      this.buttons.push(envelopeButton);
+
+      // Example 10: Different sizes row
+      const sizes: { size: FontSizeKey | number, icon: IconKey, backgroundColor: ColorKey, x: number }[] = [
+        { size: 'sm' as const, icon: 'circle', backgroundColor: 'blue-600' as const, x: this.cameras.main.centerX - 180 },
+        { size: 'base' as const, icon: 'square', backgroundColor: 'green-600' as const, x: this.cameras.main.centerX - 60 },
+        { size: 'lg' as const, icon: 'diamond', backgroundColor: 'purple-600' as const, x: this.cameras.main.centerX + 60 },
+        { size: 'xl' as const, icon: 'triangle-exclamation', backgroundColor: 'red-600' as const, x: this.cameras.main.centerX + 180 },
+      ];
+
+      sizes.forEach((config, index) => {
+        const sizeButton = new FlatIconButton({
+          scene: this,
+          x: config.x,
+          y: 410,
+          icon: config.icon as IconKey,
+          size: config.size as FontSizeKey,
+          backgroundColor: config.backgroundColor,
+          iconColor: 'white',
+          onClick: () => {
+            this.clickCount++;
+            if (this.clickText) {
+              this.clickText.setText(`Clicks: ${this.clickCount}`);
+            }
+          },
+        });
+        this.add.existing(sizeButton);
+        this.buttons.push(sizeButton);
+      });
+
+      // Example 11: Different border radius
+      const roundedButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX - 120,
+        y: 540,
+        icon: 'check',
+        size: 'lg',
+        backgroundColor: 'green-600',
+        iconColor: 'white',
+        borderRadius: 'lg',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(roundedButton);
+      this.buttons.push(roundedButton);
+
+      const circularButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 540,
+        icon: 'star',
+        size: 'lg',
+        backgroundColor: 'yellow-600',
+        iconColor: 'white',
+        borderRadius: 'full',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(circularButton);
+      this.buttons.push(circularButton);
+
+      const squareButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX + 120,
+        y: 540,
+        icon: 'xmark',
+        size: 'lg',
+        backgroundColor: 'red-600',
+        iconColor: 'white',
+        borderRadius: 'none',
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(squareButton);
+      this.buttons.push(squareButton);
+
+      // Example 12: Opacity examples
+      const transparentButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX - 60,
+        y: 620,
+        icon: 'heart',
+        size: 'base',
+        backgroundColor: 'pink-600',
+        iconColor: 'white',
+        backgroundOpacity: 0.5,
+        iconOpacity: 1,
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(transparentButton);
+      this.buttons.push(transparentButton);
+
+      const semiTransparentButton = new FlatIconButton({
+        scene: this,
+        x: this.cameras.main.centerX + 60,
+        y: 620,
+        icon: 'star',
+        size: 'base',
+        backgroundColor: 'blue-600',
+        iconColor: 'white',
+        backgroundOpacity: 0.7,
+        iconOpacity: 0.9,
+        onClick: () => {
+          this.clickCount++;
+          if (this.clickText) {
+            this.clickText.setText(`Clicks: ${this.clickCount}`);
+          }
+        },
+      });
+      this.add.existing(semiTransparentButton);
+      this.buttons.push(semiTransparentButton);
+
+      // Add labels
+      this.add.text(this.cameras.main.centerX - 240, 200, 'Heart', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX - 120, 200, 'Star', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX, 200, 'Play', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX + 120, 200, 'Pause', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX + 240, 200, 'Gear', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX - 180, 330, 'Trash', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX - 60, 330, 'User', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX + 60, 330, 'Home', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX + 180, 330, 'Mail', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX, 460, 'Different Sizes', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX - 120, 590, 'Rounded', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX, 590, 'Circular', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX + 120, 590, 'Square', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX - 60, 670, '50% Opacity', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(this.cameras.main.centerX + 60, 670, '70% Opacity', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
+
+      // Add instructions
+      this.add.text(this.cameras.main.centerX, 700, 'Click the buttons to see interactions', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+    }
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    loadFont().then(() => {
+      if (gameConfig) {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [FlatIconButtonDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: {
+                  theme,
+                },
+              },
+            ],
+          },
+        });
+        
+        // Store the game instance
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-flat-icon-button-demo'] = game;
+      }
+    });
+  });
+</script>

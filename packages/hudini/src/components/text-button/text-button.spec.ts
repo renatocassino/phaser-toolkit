@@ -182,7 +182,7 @@ describe('TextButton', () => {
       color: 'red',
       textColor: 'white',
       borderRadius: 'lg',
-      margin: '4',
+      padding: '4',
     });
 
     expect(textButton).toBeInstanceOf(TextButton);

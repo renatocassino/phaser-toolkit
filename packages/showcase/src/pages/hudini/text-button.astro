@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import PhaserGame from '../../components/PhaserGame.astro';
 ---
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <Layout title="Hudini Text Button Component" description="Interactive button with text content and hover effects, built with PhaserWind theming.">
   <div class="space-y-8">
@@ -103,7 +106,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 <script>
   import Phaser from 'phaser';
   import {
-    Color,
+    type RadiusKey,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -134,14 +137,14 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
       }).setOrigin(0.5, 0.5);
 
       // Create different button styles
-      const buttonConfigs = [
-        // { text: 'Primary', bg: 'blue-500', textColor: 'white' },
-        // { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800' },
-        // { text: 'Success', bg: 'green-500', textColor: 'white' },
-        // { text: 'Warning', bg: 'yellow-500', textColor: 'black' },
-        // { text: 'Danger', bg: 'red-500', textColor: 'white' },
-        // { text: 'Info', bg: 'cyan-500', textColor: 'white' },
-        { text: 'Custom', bg: '#3B82F6', textColor: 'white' },
+      const buttonConfigs: { text: string, bg: string, textColor: string, borderRadius: RadiusKey }[] = [
+        { text: 'Primary', bg: 'blue-500', textColor: 'white', borderRadius: 'md' },
+        { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800', borderRadius: 'lg' },
+        { text: 'Success', bg: 'green-500', textColor: 'white', borderRadius: 'xl' },
+        { text: 'Warning', bg: 'yellow-500', textColor: 'black', borderRadius: 'full' },
+        { text: 'Danger', bg: 'red-500', textColor: 'white', borderRadius: 'sm' },
+        { text: 'Info', bg: 'cyan-500', textColor: 'white', borderRadius: 'none' },
+        { text: 'Custom', bg: '#3B82F6', textColor: 'white', borderRadius: 'md' },
       ];
 
       let x = this.cameras.main.width / 4;
@@ -154,9 +157,8 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
           text: config.text,
           color: config.bg,
           textColor: config.textColor,
-          borderRadius: 'md',
-          margin: '4',
-          fontSize: 'base',
+          borderRadius: config.borderRadius,
+          padding: '4',
         });
 
         y += 80;
@@ -205,7 +207,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
           ],
         },
       });
-      
+
       // Store the game instance
       if (!(window as any).__phaserGames) {
         (window as any).__phaserGames = {};

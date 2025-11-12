@@ -9,6 +9,7 @@ export * from './panel';
 export * from './radial-progress';
 export * from './section-header';
 export * from './sized-box';
+export * from './text';
 export * from './text-button';
 
 // Re-export Row and Column from phaser-wind

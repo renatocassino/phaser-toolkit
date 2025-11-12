@@ -2,6 +2,7 @@ export * from './card';
 export * from './circular-progress';
 export * from './container-interactive';
 export * from './flat-icon-button';
+export * from './flat-text-button';
 export * from './icon-button';
 export * from './linear-progress';
 export * from './panel';

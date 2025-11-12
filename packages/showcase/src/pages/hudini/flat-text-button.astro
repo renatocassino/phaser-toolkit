@@ -3,13 +3,13 @@ import Layout from '../../layouts/Layout.astro';
 import PhaserGame from '../../components/PhaserGame.astro';
 ---
 
-<Layout title="Hudini Text Button Component" description="Interactive button with text content and hover effects, built with PhaserWind theming.">
+<Layout title="Hudini Flat Text Button Component" description="Interactive flat button with text content and hover effects, built with PhaserWind theming.">
   <div class="space-y-8">
     <!-- Description -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Text Button Component</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Flat Text Button Component</h2>
       <p class="text-gray-600 mb-4">
-        Interactive button with text content and hover effects, built with PhaserWind theming system.
+        Interactive flat button with text content and hover effects, built with PhaserWind theming system.
       </p>
       
       <!-- Features -->
@@ -53,7 +53,7 @@ import {
     HUDINI_KEY,
     HudiniPlugin,
     SceneWithHudini,
-    TextButton
+    FlatTextButton
 } from 'hudini';
 
 const theme = createTheme({});
@@ -69,7 +69,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         // Create a primary button
-        const primaryButton = new TextButton({
+        const primaryButton = new FlatTextButton({
             scene: this,
             x: this.cameras.main.centerX,
             y: this.cameras.main.centerY - 50,
@@ -82,7 +82,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
         this.add.existing(primaryButton);
 
         // Create a secondary button
-        const secondaryButton = new TextButton({
+        const secondaryButton = new FlatTextButton({
             scene: this,
             x: this.cameras.main.centerX,
             y: this.cameras.main.centerY + 50,
@@ -108,18 +108,18 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
     HUDINI_KEY,
     HudiniPlugin,
     SceneWithHudini,
-    TextButton
+    FlatTextButton
   } from 'hudini';
 
   // Create theme
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class TextButtonDemoScene extends SceneWithHudini<Theme> {
-    private buttons: TextButton[] = [];
+  class FlatTextButtonDemoScene extends SceneWithHudini<Theme> {
+    private buttons: FlatTextButton[] = [];
 
     constructor() {
-      super('text-button-demo');
+      super('flat-text-button-demo');
     }
 
     create(): void {
@@ -127,7 +127,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title
-      this.add.text(this.cameras.main.centerX, 80, 'Text Button Examples', {
+      this.add.text(this.cameras.main.centerX, 80, 'Flat Text Button Examples', {
         color: pw.color.slate(200),
         align: 'center',
         fontSize: '32px',
@@ -141,17 +141,16 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
         { text: 'Warning', bg: 'yellow-500', textColor: 'black' },
         { text: 'Danger', bg: 'red-500', textColor: 'white' },
         { text: 'Info', bg: 'cyan-500', textColor: 'white' },
-        { text: 'Custom', bg: '#3B82F6', textColor: 'white' },
       ];
 
       let y = 150;
       buttonConfigs.forEach((config, index) => {
-        const button = new TextButton({
+        const button = new FlatTextButton({
           scene: this,
           x: this.cameras.main.centerX,
           y: y,
           text: config.text,
-          color: config.bg,
+          backgroundColor: config.bg,
           textColor: config.textColor,
           borderRadius: 'md',
           margin: '4',
@@ -196,7 +195,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
     if (gameConfig) {
       const game = new Phaser.Game({
         ...gameConfig,
-        scene: [TextButtonDemoScene],
+        scene: [FlatTextButtonDemoScene],
         plugins: {
           global: [
             {
@@ -215,7 +214,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
       if (!(window as any).__phaserGames) {
         (window as any).__phaserGames = {};
       }
-      (window as any).__phaserGames['hudini-text-button-demo'] = game;
+      (window as any).__phaserGames['hudini-flat-text-button-demo'] = game;
     }
   });
 </script>

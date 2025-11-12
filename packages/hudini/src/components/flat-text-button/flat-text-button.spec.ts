@@ -154,43 +154,43 @@ vi.mock('phaser', () => {
   return { GameObjects, Scene, Plugins };
 });
 
-import { TextButton } from './text-button';
+import { FlatTextButton } from './flat-text-button';
 
-describe('TextButton', () => {
-  it('should create a TextButton instance', () => {
+describe('FlatTextButton', () => {
+  it('should create a FlatTextButton instance', () => {
     const scene = new Scene();
 
-    const textButton = new TextButton({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
       text: 'Click Me',
     });
 
-    expect(textButton).toBeInstanceOf(TextButton);
+    expect(textButton).toBeInstanceOf(FlatTextButton);
   });
 
   it('should create with custom properties', () => {
     const scene = new Scene();
 
-    const textButton = new TextButton({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
       text: 'Custom Button',
       fontSize: 'lg',
-      color: 'red',
+      backgroundColor: 'red',
       textColor: 'white',
       borderRadius: 'lg',
       margin: '4',
     });
 
-    expect(textButton).toBeInstanceOf(TextButton);
+    expect(textButton).toBeInstanceOf(FlatTextButton);
   });
 
   it('should support method chaining', () => {
     const scene = new Scene();
-    const textButton = new TextButton({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
@@ -200,7 +200,7 @@ describe('TextButton', () => {
     const result = textButton
       .setText('Chained')
       .setFontSize('lg')
-      .setColor('green')
+      .setBackgroundColor('green')
       .setBorderRadius('lg')
       .setMargin('4');
 
@@ -210,7 +210,7 @@ describe('TextButton', () => {
   it('should handle borderRadius full correctly', () => {
     const scene = new Scene();
 
-    const textButton = new TextButton({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
@@ -218,7 +218,7 @@ describe('TextButton', () => {
       borderRadius: 'full',
     });
 
-    expect(textButton).toBeInstanceOf(TextButton);
+    expect(textButton).toBeInstanceOf(FlatTextButton);
 
     // Test setBorderRadius with 'full'
     const result = textButton.setBorderRadius('full');

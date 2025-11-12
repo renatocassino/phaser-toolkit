@@ -10,6 +10,7 @@ import {
 } from 'phaser-wind';
 
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
+import { ContainerInteractive } from '../container-interactive';
 
 /**
  * Parameters for creating a TextButton.
@@ -67,10 +68,10 @@ const SHADOW_OFFSET = 4;
 const SHADOW_OPACITY = 0.15;
 
 /**
- * A customizable text button component for Phaser, supporting auto-sizing, 
+ * A customizable text button component for Phaser, supporting auto-sizing,
  * design tokens, and interactive effects.
  */
-export class TextButton extends GameObjects.Container {
+export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   /** The background sprite of the button. */
   public backgroundSprite!: GameObjects.Sprite;
   /** The shadow sprite of the button. */
@@ -104,7 +105,7 @@ export class TextButton extends GameObjects.Container {
     margin = '4',
     onClick,
   }: TextButtonParams) {
-    super(scene, x, y);
+    super({ scene, x, y });
     this.pw = getPWFromScene(scene);
 
     // Store values
@@ -134,6 +135,8 @@ export class TextButton extends GameObjects.Container {
     this.createBackgroundSprite(scene);
     this.setupContainer();
     this.setupInteractivity(onClick);
+
+    this.hitArea = this.backgroundSprite;
   }
 
   // API Methods

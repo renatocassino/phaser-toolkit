@@ -8,9 +8,9 @@ import {
   type FontSizeKey,
   type RadiusKey,
   type SpacingKey,
-  ShadeKey,
 } from 'phaser-wind';
 
+import { getColorVariant } from '../../utils/color-variants';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { ContainerInteractive } from '../container-interactive';
 
@@ -70,6 +70,10 @@ const SHADOW_OFFSET = 4;
 const SHADOW_OPACITY = 0.15;
 const WHITE_OVERLAY_OPACITY = 0.2;
 const BLACK_OVERLAY_OPACITY = 0.2;
+const TOKEN_LIGHTER_DIFF = -400;
+const TOKEN_DARKER_DIFF = 400;
+const COLOR_LIGHTER_AMOUNT = 90;
+const COLOR_DARKER_AMOUNT = -90;
 
 /**
  * A customizable text button component for Phaser, supporting auto-sizing,
@@ -132,24 +136,8 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
         : this.pw.radius.px(borderRadius ?? ('md' as RadiusKey));
 
     this.colorButton = Color.rgb(color as ColorKey);
-    if (Color.isValidColorToken(color as string)) {
-      const parts: [string, string] = color.split('-') as [string, string];
-      const colorShade = parseInt(parts[1].toString(), 10);
-      const shadeDiff = 400;
-      const shadeMin = 100;
-      const shadeMax = 900;
-      const lightShade = Math.max(colorShade - shadeDiff, shadeMin).toString() as ShadeKey;
-      const darkShade = Math.min(colorShade + shadeDiff, shadeMax).toString() as ShadeKey;
-
-      this.lightColorButton = Color.hex(`${parts[0]}-${lightShade}`);
-      this.darkColorButton = Color.hex(`${parts[0]}-${darkShade}`);
-    } else {
-      const baseColor = Phaser.Display.Color.ValueToColor(this.colorButton);
-      const lightAmount = 90;
-      const darkAmount = 90;
-      this.lightColorButton = baseColor.clone().lighten(lightAmount).color;
-      this.darkColorButton = baseColor.clone().darken(darkAmount).color;
-    }
+    this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
+    this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
 
     this.textColorValue = Color.rgb(textColor as ColorKey);
     this.fontFamily =
@@ -215,6 +203,8 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
    */
   public setColor(color: ColorKey | string): this {
     this.colorButton = Color.rgb(color as ColorKey);
+    this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
+    this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
     this.regenerateSprites();
     return this;
   }

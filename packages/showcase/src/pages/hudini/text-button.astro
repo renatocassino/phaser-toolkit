@@ -29,7 +29,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
         <div class="bg-gray-50 rounded-lg p-4">
           <ul class="space-y-2 text-sm">
             <li><code class="bg-gray-200 px-2 py-1 rounded">text</code> - Button text content</li>
-            <li><code class="bg-gray-200 px-2 py-1 rounded">backgroundColor</code> - Background color token or CSS color</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - Button color token or CSS color</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">textColor</code> - Text color token or CSS color</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius token or pixel value</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">margin</code> - Internal padding using spacing tokens</li>
@@ -124,7 +124,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 
     create(): void {
       const { pw } = this.hudini;
-      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+      this.cameras.main.setBackgroundColor(pw.color.white());
 
       // Title
       this.add.text(this.cameras.main.centerX, 80, 'Text Button Examples', {
@@ -135,20 +135,21 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 
       // Create different button styles
       const buttonConfigs = [
-        { text: 'Primary', bg: 'blue-500', textColor: 'white' },
-        { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800' },
-        { text: 'Success', bg: 'green-500', textColor: 'white' },
-        { text: 'Warning', bg: 'yellow-500', textColor: 'black' },
-        { text: 'Danger', bg: 'red-500', textColor: 'white' },
-        { text: 'Info', bg: 'cyan-500', textColor: 'white' },
+        // { text: 'Primary', bg: 'blue-500', textColor: 'white' },
+        // { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800' },
+        // { text: 'Success', bg: 'green-500', textColor: 'white' },
+        // { text: 'Warning', bg: 'yellow-500', textColor: 'black' },
+        // { text: 'Danger', bg: 'red-500', textColor: 'white' },
+        // { text: 'Info', bg: 'cyan-500', textColor: 'white' },
         { text: 'Custom', bg: '#3B82F6', textColor: 'white' },
       ];
 
+      let x = this.cameras.main.width / 4;
       let y = 150;
       buttonConfigs.forEach((config, index) => {
         const button = new TextButton({
           scene: this,
-          x: this.cameras.main.centerX,
+          x: x,
           y: y,
           text: config.text,
           color: config.bg,
@@ -158,27 +159,21 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
           fontSize: 'base',
         });
 
-        y += 60;
+        y += 80;
 
         // Add click interaction
         button.setInteractive();
         button.on('pointerdown', () => {
           console.log(`${config.text} button clicked!`);
-          // Add a simple click effect
-          button.setScale(0.95);
-        });
-        button.on('pointerup', () => {
-          button.setScale(1);
-        });
-        button.on('pointerover', () => {
-          button.setScale(1.05);
-        });
-        button.on('pointerout', () => {
-          button.setScale(1);
         });
 
         this.add.existing(button);
         this.buttons.push(button);
+
+        if ((index + 1) % 4 === 0) {
+          y = 150;
+          x += this.cameras.main.width / 2;
+        }
       });
 
       // Add instructions

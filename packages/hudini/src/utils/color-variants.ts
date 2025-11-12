@@ -55,16 +55,18 @@ export const getColorVariant = (
     ).toString() as ShadeKey;
 
     return Color.hex(`${parts[0]}-${newShade}`);
-  } else {
-    // CSS color calculation
-    const baseColor = Phaser.Display.Color.ValueToColor(colorRgb);
-
-    if (colorDiff > 0) {
-      return baseColor.clone().lighten(colorDiff).color;
-    } else if (colorDiff < 0) {
-      return baseColor.clone().darken(Math.abs(colorDiff)).color;
-    } else {
-      return baseColor.color;
-    }
   }
+
+  // CSS color calculation
+  const baseColor = Phaser.Display.Color.ValueToColor(colorRgb);
+
+  if (colorDiff === 0) {
+    return baseColor.color;
+  }
+
+  if (colorDiff > 0) {
+    return baseColor.clone().lighten(colorDiff).color;
+  }
+
+  return baseColor.clone().darken(Math.abs(colorDiff)).color;
 };

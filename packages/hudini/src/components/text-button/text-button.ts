@@ -64,16 +64,15 @@ const durations = {
   hover: 150,
 };
 
-const HOVER_SCALE = 1.05;
-const CLICK_OFFSET = 2;
-const SHADOW_OFFSET = 4;
-const SHADOW_OPACITY = 0.15;
-const WHITE_OVERLAY_OPACITY = 0.2;
-const BLACK_OVERLAY_OPACITY = 0.2;
-const TOKEN_LIGHTER_DIFF = -400;
-const TOKEN_DARKER_DIFF = 400;
+const DARK_OVERLAY_OPACITY = 0.5;
+const CLICK_OFFSET = 4;
+const SHADOW_OFFSET = 6;
+const TOKEN_LIGHTER_DIFF = -100;
+const TOKEN_DARKER_DIFF = 100;
 const COLOR_LIGHTER_AMOUNT = 90;
-const COLOR_DARKER_AMOUNT = -90;
+const COLOR_DARKER_AMOUNT = -30;
+const TOKEN_SHADOW_DIFF = 400;
+const COLOR_SHADOW_AMOUNT = 240;
 
 /**
  * A customizable text button component for Phaser, supporting auto-sizing,
@@ -97,7 +96,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   private textColorValue!: string;
   private fontFamily!: string;
   private textValue!: string;
-
+  private shadowColor!: number;
   /**
    * Creates a new TextButton instance.
    * @param params TextButtonParams
@@ -138,6 +137,9 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.colorButton = Color.rgb(color as ColorKey);
     this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
     this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
+    this.shadowColor = getColorVariant(color, TOKEN_SHADOW_DIFF, COLOR_SHADOW_AMOUNT);
+
+    console.log(this.lightColorButton, this.darkColorButton, this.shadowColor);
 
     this.textColorValue = Color.rgb(textColor as ColorKey);
     this.fontFamily =
@@ -205,6 +207,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.colorButton = Color.rgb(color as ColorKey);
     this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
     this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
+    this.shadowColor = getColorVariant(color, TOKEN_SHADOW_DIFF, COLOR_SHADOW_AMOUNT);
     this.regenerateSprites();
     return this;
   }
@@ -328,10 +331,10 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
 
     // Shadow
-    graphics.fillStyle(Color.blackHex(), SHADOW_OPACITY);
+    graphics.fillStyle(this.shadowColor, 1);
     graphics.fillRoundedRect(
       shadowPadding,
-      shadowPadding + SHADOW_OFFSET,
+      shadowPadding,
       width,
       height,
       effectiveRadius
@@ -388,11 +391,11 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     // Top lighter overlay (white with alpha)
     const PERCENT_HEIGHT = 0.1;
     const overlayHeight = height * PERCENT_HEIGHT;
-    graphics.fillStyle(this.lightColorButton, WHITE_OVERLAY_OPACITY);
+    graphics.fillStyle(this.lightColorButton, 1);
     graphics.fillRoundedRect(padding, padding, width, overlayHeight, effectiveRadius);
 
     // Bottom darker overlay (black with alpha)
-    graphics.fillStyle(this.darkColorButton, BLACK_OVERLAY_OPACITY);
+    graphics.fillStyle(this.darkColorButton, DARK_OVERLAY_OPACITY);
     graphics.fillRoundedRect(
       padding,
       padding + height - overlayHeight,
@@ -417,25 +420,21 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.backgroundSprite.setInteractive({ useHandCursor: true });
 
     // Hover effects
-    this.backgroundSprite.on('pointerover', () => {
-      this.scene.tweens.add({
-        targets: this,
-        scaleX: HOVER_SCALE,
-        scaleY: HOVER_SCALE,
-        duration: durations.hover,
-        ease: 'Back.easeOut',
-      });
-    });
+    // this.backgroundSprite.on('pointerover', () => {
+    //   this.scene.tweens.add({
+    //     targets: this,
+    //     duration: durations.hover,
+    //     ease: 'Back.easeOut',
+    //   });
+    // });
 
-    this.backgroundSprite.on('pointerout', () => {
-      this.scene.tweens.add({
-        targets: this,
-        scaleX: 1,
-        scaleY: 1,
-        duration: durations.hover,
-        ease: 'Back.easeOut',
-      });
-    });
+    // this.backgroundSprite.on('pointerout', () => {
+    //   this.scene.tweens.add({
+    //     targets: this,
+    //     duration: durations.hover,
+    //     ease: 'Back.easeOut',
+    //   });
+    // });
 
     // Click effects
     this.backgroundSprite.on('pointerdown', () => {

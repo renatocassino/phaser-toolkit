@@ -11,6 +11,7 @@ import {
 
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { ContainerInteractive } from '../container-interactive';
+import { Text } from '../text';
 
 /**
  * Parameters for creating a FlatTextButton.
@@ -26,17 +27,17 @@ export type FlatTextButtonParams = {
   text: string;
   /** 
    * Font size in px (number) or a Phaser Wind font size token (string). 
-   * Defaults to 'md'.
+   * Defaults to 'lg'.
    */
   fontSize?: FontSizeKey | number;
   /** 
-   * Font family. Defaults to 'sans'.
+   * Font family. Defaults to 'Bebas Neue'.
    */
   font?: FontKey | string;
   /** 
    * Background color. Defaults to 'blue'.
    */
-  backgroundColor?: ColorKey | string;
+  color?: ColorKey | string;
   /** 
    * Text color. Defaults to 'white'.
    */
@@ -47,10 +48,10 @@ export type FlatTextButtonParams = {
    */
   borderRadius?: RadiusKey | number;
   /** 
-   * Margin/padding in px (number) or a Phaser Wind spacing token (string). 
-   * Defaults to 'md'.
+   * Padding in px (number) or a Phaser Wind spacing token (string). 
+   * Defaults to '4'.
    */
-  margin?: SpacingKey | number;
+  padding?: SpacingKey | number;
   /** 
    * Callback function for click event.
    */
@@ -58,14 +59,12 @@ export type FlatTextButtonParams = {
 };
 
 const durations = {
-  click: 100,
-  hover: 150,
+  click: 60,
+  hover: 100,
 };
 
 const HOVER_SCALE = 1.05;
-const CLICK_OFFSET = 2;
-const SHADOW_OFFSET = 4;
-const SHADOW_OPACITY = 0.15;
+const POINTER_DOWN_SCALE = 0.95;
 
 /**
  * A customizable flat text button component for Phaser, supporting auto-sizing,
@@ -74,18 +73,16 @@ const SHADOW_OPACITY = 0.15;
 export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   /** The background sprite of the button. */
   public backgroundSprite!: GameObjects.Sprite;
-  /** The shadow sprite of the button. */
-  public shadowSprite!: GameObjects.Sprite;
   /** The text object of the button. */
   public buttonText!: GameObjects.Text;
 
   private pw: PhaserWindPlugin<{}>;
   private fontSizePx!: number;
-  private marginPx!: number;
+  private paddingPx!: number;
   private borderRadiusPx!: number;
-  private backgroundColorValue!: string;
+  private colorButton!: string;
   private textColorValue!: string;
-  private fontValue!: string;
+  private fontFamily!: string;
   private textValue!: string;
 
   /**
@@ -97,12 +94,12 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
     x,
     y,
     text,
-    fontSize = 'base',
+    fontSize = 'lg',
     font,
-    backgroundColor = 'blue',
+    color = 'blue',
     textColor = 'white',
     borderRadius = 'md',
-    margin = '4',
+    padding = '4',
     onClick,
   }: FlatTextButtonParams) {
     super({ scene, x, y });
@@ -114,24 +111,21 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
       typeof fontSize === 'number'
         ? fontSize
         : this.pw.fontSize.px(fontSize ?? ('md' as FontSizeKey));
-    this.marginPx =
-      typeof margin === 'number'
-        ? margin
-        : this.pw.spacing.px(margin ?? ('4' as SpacingKey));
+
+    this.paddingPx =
+      typeof padding === 'number'
+        ? padding
+        : this.pw.spacing.px(padding ?? ('4' as SpacingKey));
     this.borderRadiusPx =
       typeof borderRadius === 'number'
         ? borderRadius
         : this.pw.radius.px(borderRadius ?? ('md' as RadiusKey));
 
-    this.backgroundColorValue = Color.rgb(backgroundColor as ColorKey);
+    this.colorButton = Color.rgb(color as ColorKey);
     this.textColorValue = Color.rgb(textColor as ColorKey);
-    this.fontValue =
-      typeof font === 'string'
-        ? font
-        : this.pw.font.family(font ?? ('primary' as FontKey));
+    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
 
     this.createButtonText(scene);
-    this.createShadowSprite(scene);
     this.createBackgroundSprite(scene);
     this.setupContainer();
     this.setupInteractivity(onClick);
@@ -174,11 +168,11 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
    * @returns This FlatTextButton instance.
    */
   public setFont(font: FontKey | string): this {
-    this.fontValue =
+    this.fontFamily =
       typeof font === 'string'
         ? font
         : this.pw.font.family(font ?? ('primary' as FontKey));
-    this.buttonText.setFontFamily(this.fontValue);
+    this.buttonText.setFontFamily(this.fontFamily);
     this.regenerateSprites();
     return this;
   }
@@ -188,8 +182,8 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
    * @param color Color as token or CSS string.
    * @returns This FlatTextButton instance.
    */
-  public setBackgroundColor(color: ColorKey | string): this {
-    this.backgroundColorValue = Color.rgb(color as ColorKey);
+  public setColor(color: ColorKey | string): this {
+    this.colorButton = Color.rgb(color as ColorKey);
     this.regenerateSprites();
     return this;
   }
@@ -220,15 +214,15 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
   }
 
   /**
-   * Sets the margin (padding).
-   * @param margin Margin in px or token.
+   * Sets the padding.
+   * @param padding Padding in px or token.
    * @returns This FlatTextButton instance.
    */
-  public setMargin(margin: SpacingKey | number): this {
-    this.marginPx =
-      typeof margin === 'number'
-        ? margin
-        : this.pw.spacing.px(margin ?? ('4' as SpacingKey));
+  public setPadding(padding: SpacingKey | number): this {
+    this.paddingPx =
+      typeof padding === 'number'
+        ? padding
+        : this.pw.spacing.px(padding ?? ('4' as SpacingKey));
     this.regenerateSprites();
     return this;
   }
@@ -238,22 +232,15 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
    * @param scene Phaser scene.
    */
   private createButtonText(scene: Scene): void {
-    this.buttonText = scene.add.text(0, 0, this.textValue, {
-      fontSize: `${this.fontSizePx}px`,
-      fontFamily: this.fontValue,
-      color: this.textColorValue,
+    this.buttonText = new Text({
+      scene,
+      x: 0,
+      y: 0,
+      text: this.textValue,
+      size: this.fontSizePx,
+      fontFamily: this.fontFamily,
     });
     this.buttonText.setOrigin(0.5, 0.5);
-  }
-
-  /**
-   * Creates the shadow sprite for the button.
-   * @param scene Phaser scene.
-   */
-  private createShadowSprite(scene: Scene): void {
-    const shadowTexture = this.createShadowTexture(scene);
-    this.shadowSprite = scene.add.sprite(0, SHADOW_OFFSET, shadowTexture);
-    this.shadowSprite.setOrigin(0.5, 0.5);
   }
 
   /**
@@ -267,65 +254,27 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
   }
 
   /**
-   * Regenerates the background and shadow textures based on current state.
+   * Regenerates the background texture based on current state.
    */
   private regenerateSprites(): void {
     // Update text bounds after text/font changes
     this.buttonText.setText(this.textValue);
 
-    // Regenerate textures
-    const shadowTexture = this.createShadowTexture(this.scene);
+    // Regenerate texture
     const backgroundTexture = this.createBackgroundTexture(this.scene);
 
-    this.shadowSprite.setTexture(shadowTexture);
     this.backgroundSprite.setTexture(backgroundTexture);
   }
 
   /**
-   * Calculates the button's width and height based on text and margin.
+   * Calculates the button's width and height based on text and padding.
    * @returns Object with width and height.
    */
   private getButtonDimensions(): { width: number; height: number } {
     const textBounds = this.buttonText.getBounds();
-    const width = textBounds.width + this.marginPx * 2;
-    const height = textBounds.height + this.marginPx * 2;
+    const width = textBounds.width + this.paddingPx * 2;
+    const height = textBounds.height + this.paddingPx * 2;
     return { width, height };
-  }
-
-  /**
-   * Creates a texture for the button's shadow.
-   * @param scene Phaser scene.
-   * @returns The texture key.
-   */
-  private createShadowTexture(scene: Scene): string {
-    const { width, height } = this.getButtonDimensions();
-    const textureKey = `textButton_shadow_${this.backgroundColorValue}_${this.borderRadiusPx}_${width}_${height}`;
-
-    // Add some padding for shadow
-    const shadowPadding = 8;
-    const textureWidth = width + shadowPadding * 2;
-    const textureHeight = height + shadowPadding * 2;
-
-    const graphics = scene.add.graphics();
-
-    // Limit radius to maximum possible for the button dimensions
-    const maxRadius = Math.min(width / 2, height / 2);
-    const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
-
-    // Shadow
-    graphics.fillStyle(Color.hex('black'), SHADOW_OPACITY);
-    graphics.fillRoundedRect(
-      shadowPadding,
-      shadowPadding + SHADOW_OFFSET,
-      width,
-      height,
-      effectiveRadius
-    );
-
-    graphics.generateTexture(textureKey, textureWidth, textureHeight);
-    graphics.destroy();
-
-    return textureKey;
   }
 
   /**
@@ -335,7 +284,7 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
    */
   private createBackgroundTexture(scene: Scene): string {
     const { width, height } = this.getButtonDimensions();
-    const textureKey = `textButton_bg_${this.backgroundColorValue}_${this.borderRadiusPx}_${width}_${height}`;
+    const textureKey = `flatTextButton_bg_${this.colorButton}_${this.borderRadiusPx}_${width}_${height}`;
 
     // Add some padding for texture
     const padding = 8;
@@ -344,13 +293,17 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
 
     const graphics = scene.add.graphics();
 
-    // Limit radius to maximum possible for the button dimensions
-    const maxRadius = Math.min(width / 2, height / 2);
+    const maxRadius = Math.floor(Math.min(width / 2, height / 2));
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
+    const finalRadius = Math.max(0, effectiveRadius);
 
-    // Main background
-    graphics.fillStyle(Color.hex(this.backgroundColorValue), 1);
-    graphics.fillRoundedRect(padding, padding, width, height, effectiveRadius);
+    // Main background (flat, no gradient overlays)
+    graphics.fillStyle(Color.hex(this.colorButton), 1);
+    graphics.fillRoundedRect(padding, padding, width, height, finalRadius);
+
+    // Black stroke border
+    graphics.lineStyle(2, Color.hex('black'), 1);
+    graphics.strokeRoundedRect(padding, padding, width, height, finalRadius);
 
     graphics.generateTexture(textureKey, textureWidth, textureHeight);
     graphics.destroy();
@@ -362,7 +315,7 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
    * Adds the button's visual elements to the container.
    */
   private setupContainer(): void {
-    this.add([this.shadowSprite, this.backgroundSprite, this.buttonText]);
+    this.add([this.backgroundSprite, this.buttonText]);
   }
 
   /**
@@ -376,9 +329,9 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
     this.backgroundSprite.on('pointerover', () => {
       this.scene.tweens.add({
         targets: this,
+        duration: durations.hover,
         scaleX: HOVER_SCALE,
         scaleY: HOVER_SCALE,
-        duration: durations.hover,
         ease: 'Back.easeOut',
       });
     });
@@ -386,9 +339,9 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
     this.backgroundSprite.on('pointerout', () => {
       this.scene.tweens.add({
         targets: this,
+        duration: durations.hover,
         scaleX: 1,
         scaleY: 1,
-        duration: durations.hover,
         ease: 'Back.easeOut',
       });
     });
@@ -397,7 +350,8 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
     this.backgroundSprite.on('pointerdown', () => {
       this.scene.tweens.add({
         targets: [this.backgroundSprite, this.buttonText],
-        y: CLICK_OFFSET,
+        scaleX: POINTER_DOWN_SCALE,
+        scaleY: POINTER_DOWN_SCALE,
         duration: durations.click,
         ease: 'Linear',
       });
@@ -406,7 +360,8 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
     this.backgroundSprite.on('pointerup', () => {
       this.scene.tweens.add({
         targets: [this.backgroundSprite, this.buttonText],
-        y: 0,
+        scaleX: 1,
+        scaleY: 1,
         duration: durations.click,
         ease: 'Linear',
       });

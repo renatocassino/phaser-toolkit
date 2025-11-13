@@ -202,7 +202,7 @@ describe('TextButton', () => {
       .setFontSize('lg')
       .setColor('green')
       .setBorderRadius('lg')
-      .setMargin('4');
+      .setPadding('4');
 
     expect(result).toBe(textButton);
   });

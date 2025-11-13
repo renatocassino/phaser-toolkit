@@ -46,6 +46,54 @@ vi.mock('../../utils/get-pw-from-scene', () => ({
   })),
 }));
 
+// Mock the Text component
+vi.mock('../text', () => {
+  class MockText {
+    private text: string;
+    private style: Record<string, string | number>;
+
+    constructor(params: { scene: unknown; x: number; y: number; text: string; size?: number; fontFamily?: string }) {
+      this.text = params.text;
+      this.style = {
+        fontSize: params.size || 22,
+        fontFamily: params.fontFamily || 'Bebas Neue',
+      };
+    }
+
+    setText(text: string): this {
+      this.text = text;
+      return this;
+    }
+
+    setOrigin(): this {
+      return this;
+    }
+    setFontSize(size: number): this {
+      this.style['fontSize'] = size;
+      return this;
+    }
+    setFontFamily(family: string): this {
+      this.style['fontFamily'] = family;
+      return this;
+    }
+    setColor(color: string): this {
+      this.style['color'] = color;
+      return this;
+    }
+
+    getBounds(): { width: number; height: number } {
+      const charWidth = 10;
+      const lineHeight = parseInt(this.style['fontSize'] as string) || 16;
+      return {
+        width: this.text.length * charWidth,
+        height: lineHeight,
+      };
+    }
+  }
+
+  return { Text: MockText };
+});
+
 // Mock Phaser
 vi.mock('phaser', () => {
   class MockText {
@@ -117,6 +165,12 @@ vi.mock('phaser', () => {
     fillRoundedRect(): this {
       return this;
     }
+    lineStyle(): this {
+      return this;
+    }
+    strokeRoundedRect(): this {
+      return this;
+    }
     generateTexture(): this {
       return this;
     }
@@ -179,10 +233,10 @@ describe('FlatTextButton', () => {
       y: 100,
       text: 'Custom Button',
       fontSize: 'lg',
-      backgroundColor: 'red',
+      color: 'red',
       textColor: 'white',
       borderRadius: 'lg',
-      margin: '4',
+      padding: '4',
     });
 
     expect(textButton).toBeInstanceOf(FlatTextButton);
@@ -200,9 +254,9 @@ describe('FlatTextButton', () => {
     const result = textButton
       .setText('Chained')
       .setFontSize('lg')
-      .setBackgroundColor('green')
+      .setColor('green')
       .setBorderRadius('lg')
-      .setMargin('4');
+      .setPadding('4');
 
     expect(result).toBe(textButton);
   });

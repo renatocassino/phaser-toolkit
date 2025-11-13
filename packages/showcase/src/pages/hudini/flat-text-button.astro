@@ -103,7 +103,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 <script>
   import Phaser from 'phaser';
   import {
-    Color,
+    loadFonts,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -140,7 +140,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
         { text: 'Success', bg: 'green-500', textColor: 'white' },
         { text: 'Warning', bg: 'yellow-500', textColor: 'black' },
         { text: 'Danger', bg: 'red-500', textColor: 'white' },
-        { text: 'Info', bg: 'cyan-500', textColor: 'white' },
+        { text: 'Custom', bg: '#3B82F6', textColor: 'white' },
       ];
 
       let y = 150;
@@ -150,11 +150,10 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
           x: this.cameras.main.centerX,
           y: y,
           text: config.text,
-          backgroundColor: config.bg,
+          color: config.bg,
           textColor: config.textColor,
           borderRadius: 'md',
-          margin: '4',
-          fontSize: 'base',
+          padding: '4',
         });
 
         y += 60;
@@ -193,28 +192,30 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
-        ...gameConfig,
-        scene: [FlatTextButtonDemoScene],
-        plugins: {
-          global: [
-            {
-              key: HUDINI_KEY,
-              plugin: HudiniPlugin,
-              mapping: HUDINI_KEY,
-              data: {
-                theme,
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [FlatTextButtonDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: {
+                  theme,
+                },
               },
-            },
-          ],
-        },
+            ],
+          },
+        });
+        
+        // Store the game instance
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-flat-text-button-demo'] = game;
       });
-      
-      // Store the game instance
-      if (!(window as any).__phaserGames) {
-        (window as any).__phaserGames = {};
-      }
-      (window as any).__phaserGames['hudini-flat-text-button-demo'] = game;
     }
   });
 </script>

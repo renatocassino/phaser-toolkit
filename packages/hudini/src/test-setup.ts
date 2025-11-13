@@ -35,8 +35,15 @@ vi.mock('phaser', () => {
     }
   }
 
-  const GameObjects = { Container } as const;
-  return { GameObjects, Scene, default: { GameObjects, Scene } };
+  class Text {
+    // Mock Text class for Phaser.GameObjects.Text
+    // eslint-disable-next-line no-unused-vars
+    constructor(..._args: unknown[]) { }
+  }
+
+  const GameObjects = { Container, Text } as const;
+  const Phaser = { GameObjects, Scene };
+  return { GameObjects, Scene, Phaser, default: Phaser };
 });
 
 // Mock phaser-wind globally (after Phaser mock)

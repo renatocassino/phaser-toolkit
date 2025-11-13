@@ -4,12 +4,71 @@
 import { Scene } from 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 
+// Mock hudini Color and Text
+vi.mock('hudini', () => ({
+  Color: {
+    white: vi.fn(() => '#FFFFFF'),
+    black: vi.fn(() => '#000000'),
+  },
+}));
+
+// Mock the Text component from hudini
+vi.mock('../text', () => {
+  class MockText {
+    private text: string;
+    private style: Record<string, string | number>;
+
+    constructor(params: { scene: unknown; x: number; y: number; text: string; size?: number; fontFamily?: string }) {
+      this.text = params.text;
+      this.style = {
+        fontSize: params.size ?? 22,
+        fontFamily: params.fontFamily ?? 'Bebas Neue',
+      };
+    }
+
+    setText(text: string): this {
+      this.text = text;
+      return this;
+    }
+
+    setOrigin(): this {
+      return this;
+    }
+    setFontSize(size: number): this {
+      this.style['fontSize'] = size;
+      return this;
+    }
+    setFontFamily(family: string): this {
+      this.style['fontFamily'] = family;
+      return this;
+    }
+    setColor(color: string): this {
+      this.style['color'] = color;
+      return this;
+    }
+
+    getBounds(): { width: number; height: number } {
+      const charWidth = 10;
+      const lineHeight = parseInt(String(this.style['fontSize'] ?? 22)) ?? 22;
+      return {
+        width: this.text.length * charWidth,
+        height: lineHeight,
+      };
+    }
+  }
+
+  return { Text: MockText };
+});
+
 // Mock phaser-wind
 vi.mock('phaser-wind', () => ({
   Color: {
     rgb: vi.fn((color: string) => `rgb-${color}`),
     hex: vi.fn((color: string) => `hex-${color}`),
+    isValidColorToken: vi.fn(() => false),
   },
+  PHASER_WIND_KEY: 'PhaserWind',
+  SceneWithPhaserWind: class SceneWithPhaserWind { },
 }));
 
 // Mock the getPWFromScene utility
@@ -56,10 +115,10 @@ vi.mock('phaser', () => {
       _x: number,
       _y: number,
       text: string,
-      style: Record<string, string | number>
+      style: Record<string, string | number> = {}
     ) {
       this.text = text;
-      this.style = style;
+      this.style = style || {};
     }
 
     setText(text: string): this {
@@ -117,6 +176,12 @@ vi.mock('phaser', () => {
     fillRoundedRect(): this {
       return this;
     }
+    lineStyle(): this {
+      return this;
+    }
+    strokeRoundedRect(): this {
+      return this;
+    }
     generateTexture(): this {
       return this;
     }
@@ -136,6 +201,11 @@ vi.mock('phaser', () => {
     scene: Scene;
   }
 
+  class MockRectangle {
+    // eslint-disable-next-line no-unused-vars
+    constructor(_scene: Scene, _x: number, _y: number, _width: number, _height: number) { }
+  }
+
   class Scene {
     add = {
       text: vi.fn((x, y, text, style) => new MockText(x, y, text, style)),
@@ -149,9 +219,36 @@ vi.mock('phaser', () => {
     constructor() { }
   }
 
-  const GameObjects = { Container: MockContainer };
+  const GameObjects = { Container: MockContainer, Text: MockText, Rectangle: MockRectangle };
   const Plugins = { BasePlugin };
-  return { GameObjects, Scene, Plugins };
+  const Display = {
+    Color: {
+      ValueToColor: vi.fn(() => ({
+        r: 0,
+        g: 0,
+        b: 0,
+        clone: vi.fn(() => ({
+          lighten: vi.fn(() => ({ color: 0 })),
+          darken: vi.fn(() => ({ color: 0 })),
+        })),
+        darken: vi.fn(() => ({ color: 0 })),
+      })),
+    },
+  };
+  const Phaser = { GameObjects, Scene, Plugins, Display };
+  // Make Phaser available as both default export and named export
+  // This allows Phaser.GameObjects.Text to work in imported modules
+  // Also make it available globally for modules that use Phaser without importing it
+  if (typeof globalThis !== 'undefined') {
+    (globalThis as unknown as { Phaser?: typeof Phaser }).Phaser = Phaser;
+  }
+  return { 
+    default: Phaser, 
+    GameObjects, 
+    Scene, 
+    Plugins, 
+    Phaser 
+  };
 });
 
 import { TextButton } from './text-button';

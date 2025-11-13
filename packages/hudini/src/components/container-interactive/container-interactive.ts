@@ -102,7 +102,7 @@ export class ContainerInteractive<HitArea extends Phaser.GameObjects.GameObject 
     if (this.hitArea && 'width' in this.hitArea) {
       return (this.hitArea as unknown as { width: number }).width;
     }
-    return super.width;
+    return 0;
   }
 
   // @ts-expect-error - height is a property in Container, but we override it here
@@ -110,22 +110,18 @@ export class ContainerInteractive<HitArea extends Phaser.GameObjects.GameObject 
     if (this.hitArea && 'height' in this.hitArea) {
       return (this.hitArea as unknown as { height: number }).height;
     }
-    return super.height;
+    return 0;
   }
 
-  // @ts-expect-error - width is a property in Container, but we override it here
-  public override set width(width: number): void {
+  public override set width(width: number) {
     if (this.hitArea && 'width' in this.hitArea) {
       (this.hitArea as unknown as { width: number }).width = width;
     }
-    super.width = width;
   }
 
-  // @ts-expect-error - height is a property in Container, but we override it here
-  public override set height(height: number): void {
+  public override set height(height: number) {
     if (this.hitArea && 'height' in this.hitArea) {
       (this.hitArea as unknown as { height: number }).height = height;
     }
-    super.height = height;
   }
 }

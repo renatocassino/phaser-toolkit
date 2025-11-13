@@ -189,8 +189,11 @@ vi.mock('phaser', () => {
   }
 
   class Container {
+    scene: Scene;
     // eslint-disable-next-line no-unused-vars
-    constructor(_scene: Scene, _x: number, _y: number) { }
+    constructor(_scene: Scene, _x: number, _y: number) {
+      this.scene = _scene;
+    }
     add(): this {
       return this;
     }

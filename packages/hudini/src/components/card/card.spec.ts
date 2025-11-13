@@ -66,17 +66,44 @@ vi.mock('phaser', () => {
         fillRoundedRect(): this {
             return this;
         }
+        lineStyle(): this {
+            return this;
+        }
+        strokeRoundedRect(): this {
+            return this;
+        }
+        // eslint-disable-next-line no-unused-vars
+        generateTexture(_textureKey: string, _width: number, _height: number): this {
+            return this;
+        }
+        destroy(): this {
+            return this;
+        }
     }
 
     class Container {
         public width = 0;
         public height = 0;
+        public scene: Scene;
         // eslint-disable-next-line no-unused-vars
-        constructor(_scene: Scene, _x: number, _y: number) { }
+        constructor(_scene: Scene, _x: number, _y: number) {
+            this.scene = _scene;
+        }
         add(): this {
             return this;
         }
         remove(): this {
+            return this;
+        }
+    }
+
+    class MockSprite {
+        // eslint-disable-next-line no-unused-vars
+        constructor(_x: number, _y: number, _texture: string) { }
+        setOrigin(): this {
+            return this;
+        }
+        setTexture(): this {
             return this;
         }
     }
@@ -92,6 +119,9 @@ vi.mock('phaser', () => {
                 ) => new MockText(x, y, text, style)
             ),
             graphics: vi.fn(() => new MockGraphics()),
+            sprite: vi.fn(
+                (x: number, y: number, texture: string) => new MockSprite(x, y, texture)
+            ),
         };
     }
 

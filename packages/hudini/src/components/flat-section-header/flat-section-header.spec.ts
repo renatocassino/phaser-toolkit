@@ -134,8 +134,11 @@ vi.mock('phaser', () => {
   }
 
   class Container {
+    scene: Scene;
     // eslint-disable-next-line no-unused-vars
-    constructor(_scene: Scene, _x: number, _y: number) { }
+    constructor(_scene: Scene, _x: number, _y: number) {
+      this.scene = _scene;
+    }
     add(): this {
       return this;
     }
@@ -150,8 +153,61 @@ vi.mock('phaser', () => {
     }
   }
 
+  class MockText {
+    private text: string;
+    private style: Record<string, string | number>;
+
+    constructor(
+      _x: number,
+      _y: number,
+      text: string,
+      style: Record<string, string | number> = {}
+    ) {
+      this.text = text;
+      this.style = style;
+    }
+
+    setText(text: string): this {
+      this.text = text;
+      return this;
+    }
+
+    setOrigin(): this {
+      return this;
+    }
+    setFontSize(size: number): this {
+      this.style['fontSize'] = size;
+      return this;
+    }
+    setFontFamily(family: string): this {
+      this.style['fontFamily'] = family;
+      return this;
+    }
+    setColor(color: string): this {
+      this.style['color'] = color;
+      return this;
+    }
+
+    getBounds(): { width: number; height: number } {
+      const charWidth = 10;
+      const lineHeight = parseInt(this.style['fontSize'] as string) ?? 18;
+      return {
+        width: this.text.length * charWidth,
+        height: lineHeight,
+      };
+    }
+  }
+
   class Scene {
     add = {
+      text: vi.fn(
+        (
+          x: number,
+          y: number,
+          text: string,
+          style: Record<string, string | number>
+        ) => new MockText(x, y, text, style)
+      ),
       sprite: vi.fn(
         (x: number, y: number, texture: string) => new MockSprite(x, y, texture)
       ),

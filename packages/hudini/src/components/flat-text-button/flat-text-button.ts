@@ -104,7 +104,7 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
     text,
     fontSize = 'lg',
     font,
-    color = 'blue',
+    color = 'blue-500',
     textColor = 'white',
     borderRadius = 'md',
     padding = '4',

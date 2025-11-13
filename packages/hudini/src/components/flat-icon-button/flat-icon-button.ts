@@ -76,7 +76,7 @@ export class FlatIconButton extends GameObjects.Container {
     icon,
     iconStyle = 'solid',
     size,
-    backgroundColor = 'gray-600',
+    backgroundColor = 'blue-500',
     iconColor = 'white',
     onClick,
     borderRadius = 'md',

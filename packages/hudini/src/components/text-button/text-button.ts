@@ -112,7 +112,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     text,
     fontSize = 'lg',
     font,
-    color = 'blue',
+    color = 'blue-500',
     textColor = 'white',
     borderRadius = 'md',
     padding = '4',

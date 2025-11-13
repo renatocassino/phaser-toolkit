@@ -89,7 +89,7 @@ export class IconButton extends GameObjects.Container {
         ? size
         : this.pw.fontSize.px(size ?? ('md' as FontSizeKey));
 
-    const baseColor = color ?? 'gray';
+    const baseColor = color ?? 'blue-500';
     this.sizePx = sizePx;
 
     this.updateSize();

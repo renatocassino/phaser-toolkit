@@ -2,17 +2,14 @@
 import Layout from '../../layouts/Layout.astro';
 import PhaserGame from '../../components/PhaserGame.astro';
 ---
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
-<Layout title="Hudini Text Button Component" description="Interactive button with text content and hover effects, built with PhaserWind theming.">
+<Layout title="Hudini Flat Text Button Component" description="Interactive flat button with text content and hover effects, built with PhaserWind theming.">
   <div class="space-y-8">
     <!-- Description -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Text Button Component</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Flat Text Button Component</h2>
       <p class="text-gray-600 mb-4">
-        Interactive button with text content and hover effects, built with PhaserWind theming system.
+        Interactive flat button with text content and hover effects, built with PhaserWind theming system.
       </p>
       
       <!-- Features -->
@@ -32,7 +29,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
         <div class="bg-gray-50 rounded-lg p-4">
           <ul class="space-y-2 text-sm">
             <li><code class="bg-gray-200 px-2 py-1 rounded">text</code> - Button text content</li>
-            <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - Button color token or CSS color</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - Background color token or CSS color</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">textColor</code> - Text color token or CSS color</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius token or pixel value</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">padding</code> - Internal padding using spacing tokens</li>
@@ -56,7 +53,7 @@ import {
     HUDINI_KEY,
     HudiniPlugin,
     SceneWithHudini,
-    TextButton
+    FlatTextButton
 } from 'hudini';
 
 const theme = createTheme({});
@@ -72,7 +69,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         // Create a primary button
-        const primaryButton = new TextButton({
+        const primaryButton = new FlatTextButton({
             scene: this,
             x: this.cameras.main.centerX,
             y: this.cameras.main.centerY - 50,
@@ -85,7 +82,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
         this.add.existing(primaryButton);
 
         // Create a secondary button
-        const secondaryButton = new TextButton({
+        const secondaryButton = new FlatTextButton({
             scene: this,
             x: this.cameras.main.centerX,
             y: this.cameras.main.centerY + 50,
@@ -107,23 +104,22 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
   import Phaser from 'phaser';
   import {
     loadFonts,
-    type RadiusKey,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
     SceneWithHudini,
-    TextButton
+    FlatTextButton
   } from 'hudini';
 
   // Create theme
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class TextButtonDemoScene extends SceneWithHudini<Theme> {
-    private buttons: TextButton[] = [];
+  class FlatTextButtonDemoScene extends SceneWithHudini<Theme> {
+    private buttons: FlatTextButton[] = [];
 
     constructor() {
-      super('text-button-demo');
+      super('flat-text-button-demo');
     }
 
     create(): void {
@@ -131,52 +127,56 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title
-      this.add.text(this.cameras.main.centerX, 80, 'Text Button Examples', {
+      this.add.text(this.cameras.main.centerX, 80, 'Flat Text Button Examples', {
         color: pw.color.slate(200),
         align: 'center',
         fontSize: '32px',
       }).setOrigin(0.5, 0.5);
 
       // Create different button styles
-      const buttonConfigs: { text: string, bg: string, textColor: string, borderRadius: RadiusKey }[] = [
-        { text: 'Primary', bg: 'blue-500', textColor: 'white', borderRadius: 'md' },
-        { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800', borderRadius: 'lg' },
-        { text: 'Success', bg: 'green-500', textColor: 'white', borderRadius: 'xl' },
-        { text: 'Warning', bg: 'yellow-500', textColor: 'black', borderRadius: '2xl' },
-        { text: 'Danger', bg: 'red-500', textColor: 'white', borderRadius: 'sm' },
-        { text: 'Info', bg: 'cyan-500', textColor: 'white', borderRadius: 'none' },
-        { text: 'Custom', bg: '#3B82F6', textColor: 'white', borderRadius: 'md' },
+      const buttonConfigs = [
+        { text: 'Primary', bg: 'blue-500', textColor: 'white' },
+        { text: 'Secondary', bg: 'gray-200', textColor: 'gray-800' },
+        { text: 'Success', bg: 'green-500', textColor: 'white' },
+        { text: 'Warning', bg: 'yellow-500', textColor: 'black' },
+        { text: 'Danger', bg: 'red-500', textColor: 'white' },
+        { text: 'Custom', bg: '#3B82F6', textColor: 'white' },
       ];
 
-      let x = this.cameras.main.width / 4;
       let y = 150;
       buttonConfigs.forEach((config, index) => {
-        const button = new TextButton({
+        const button = new FlatTextButton({
           scene: this,
-          x: x,
+          x: this.cameras.main.centerX,
           y: y,
           text: config.text,
           color: config.bg,
           textColor: config.textColor,
-          borderRadius: config.borderRadius,
+          borderRadius: 'md',
           padding: '4',
         });
 
-        y += 80;
+        y += 60;
 
         // Add click interaction
         button.setInteractive();
         button.on('pointerdown', () => {
           console.log(`${config.text} button clicked!`);
+          // Add a simple click effect
+          button.setScale(0.95);
+        });
+        button.on('pointerup', () => {
+          button.setScale(1);
+        });
+        button.on('pointerover', () => {
+          button.setScale(1.05);
+        });
+        button.on('pointerout', () => {
+          button.setScale(1);
         });
 
         this.add.existing(button);
         this.buttons.push(button);
-
-        if ((index + 1) % 4 === 0) {
-          y = 150;
-          x += this.cameras.main.width / 2;
-        }
       });
 
       // Add instructions
@@ -195,7 +195,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
       loadFonts().then(() => {
         const game = new Phaser.Game({
           ...gameConfig,
-          scene: [TextButtonDemoScene],
+          scene: [FlatTextButtonDemoScene],
           plugins: {
             global: [
               {
@@ -209,14 +209,13 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
             ],
           },
         });
-
-
+        
         // Store the game instance
         if (!(window as any).__phaserGames) {
           (window as any).__phaserGames = {};
         }
-        (window as any).__phaserGames['hudini-text-button-demo'] = game;
-    });
+        (window as any).__phaserGames['hudini-flat-text-button-demo'] = game;
+      });
     }
   });
 </script>

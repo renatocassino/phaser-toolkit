@@ -98,6 +98,7 @@ class ColumnDemoScene extends SceneWithHudini<Theme> {
 <script>
   import Phaser from 'phaser';
   import {
+    loadFonts,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -252,7 +253,8 @@ class ColumnDemoScene extends SceneWithHudini<Theme> {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
         ...gameConfig,
         scene: [ColumnDemoScene],
         plugins: {
@@ -274,6 +276,7 @@ class ColumnDemoScene extends SceneWithHudini<Theme> {
         (window as any).__phaserGames = {};
       }
       (window as any).__phaserGames['hudini-column-demo'] = game;
+      });
     }
   });
 </script>

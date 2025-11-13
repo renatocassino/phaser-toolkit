@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import PhaserGame from '../../components/PhaserGame.astro';
 ---
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <Layout title="Hudini Panel Component" description="A panel component that combines Card, SectionHeader, and optional close button for creating modal-like UI elements.">
   <div class="space-y-8">
@@ -16,7 +19,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
         <ul class="list-disc list-inside space-y-1 text-gray-600">
-          <li>🎴 <strong>Card-based</strong>: Built on top of Card component for consistent styling</li>
+          <li>🎴 <strong>Card-based</strong>: Built on top of Card component with double stroke effect</li>
           <li>📑 <strong>Optional Header</strong>: SectionHeader for panel titles</li>
           <li>❌ <strong>Close Button</strong>: Optional close button with custom callback</li>
           <li>🎨 <strong>Customizable</strong>: Full control over colors, border radius, and margins</li>
@@ -100,8 +103,10 @@ class PanelDemoScene extends SceneWithHudini<Theme> {
             x: 0,
             y: 0,
             text: 'Button 1',
-            backgroundColor: 'blue-500',
+            color: 'blue-500',
             textColor: 'white',
+            borderRadius: 'md',
+            padding: '4',
         });
 
         const button2 = new TextButton({
@@ -109,8 +114,10 @@ class PanelDemoScene extends SceneWithHudini<Theme> {
             x: 0,
             y: 0,
             text: 'Button 2',
-            backgroundColor: 'green-500',
+            color: 'green-500',
             textColor: 'white',
+            borderRadius: 'md',
+            padding: '4',
         });
 
         const content = new Column({
@@ -213,6 +220,7 @@ panel.setMargin(24);`}</code></pre>
 <script>
   import Phaser from 'phaser';
   import {
+    loadFonts,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -242,11 +250,11 @@ import { loadFont } from 'font-awesome-for-phaser';
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title
-      this.add.text(this.cameras.main.centerX, 40, 'Panel Examples', {
+      this.add.text(this.cameras.main.centerX, 40, 'Panel Component Examples', {
         color: pw.color.slate(200),
         align: 'center',
         fontSize: '32px',
-        fontStyle: 'bold',
+        fontFamily: 'Bebas Neue',
       }).setOrigin(0.5, 0.5);
 
       // Example 1: Simple panel with title
@@ -255,10 +263,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Click Me',
-        backgroundColor: 'blue-500',
+        color: 'blue-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '4',
+        padding: '4',
       });
 
       const content1 = new Column({
@@ -284,9 +292,9 @@ import { loadFont } from 'font-awesome-for-phaser';
 
       // Label for panel 1
       this.add.text(200, 250, 'With Title', {
-        color: pw.color.slate(400),
+        color: pw.color.slate(300),
         align: 'center',
-        fontSize: '12px',
+        fontSize: '14px',
       }).setOrigin(0.5, 0.5);
 
       // Example 2: Panel with close button
@@ -295,10 +303,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Save',
-        backgroundColor: 'green-500',
+        color: 'green-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '4',
+        padding: '4',
       });
 
       const button3 = new TextButton({
@@ -306,10 +314,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Cancel',
-        backgroundColor: 'gray-500',
-        textColor: 'white',
+        color: 'gray-300',
+        textColor: 'gray-800',
         borderRadius: 'md',
-        margin: '4',
+        padding: '4',
       });
 
       const content2 = new Row({
@@ -339,9 +347,9 @@ import { loadFont } from 'font-awesome-for-phaser';
 
       // Label for panel 2
       this.add.text(600, 250, 'With Close Button', {
-        color: pw.color.slate(400),
+        color: pw.color.slate(300),
         align: 'center',
-        fontSize: '12px',
+        fontSize: '14px',
       }).setOrigin(0.5, 0.5);
 
       // Example 3: Panel with multiple buttons
@@ -350,10 +358,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Option 1',
-        backgroundColor: 'purple-500',
+        color: 'purple-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const btn2 = new TextButton({
@@ -361,10 +369,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Option 2',
-        backgroundColor: 'indigo-500',
+        color: 'indigo-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const btn3 = new TextButton({
@@ -372,10 +380,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Option 3',
-        backgroundColor: 'pink-500',
+        color: 'pink-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const content3 = new Column({
@@ -401,9 +409,9 @@ import { loadFont } from 'font-awesome-for-phaser';
 
       // Label for panel 3
       this.add.text(200, 500, 'Multiple Options', {
-        color: pw.color.slate(400),
+        color: pw.color.slate(300),
         align: 'center',
-        fontSize: '12px',
+        fontSize: '14px',
       }).setOrigin(0.5, 0.5);
 
       // Example 4: Panel with icons
@@ -413,7 +421,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'heart',
         size: 'base',
-        color: 'red',
+        color: 'red-500',
       });
 
       const icon2 = new IconButton({
@@ -422,7 +430,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'star',
         size: 'base',
-        color: 'yellow',
+        color: 'yellow-500',
       });
 
       const icon3 = new IconButton({
@@ -431,7 +439,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'gear',
         size: 'base',
-        color: 'gray',
+        color: 'gray-500',
       });
 
       const content4 = new Row({
@@ -461,9 +469,9 @@ import { loadFont } from 'font-awesome-for-phaser';
 
       // Label for panel 4
       this.add.text(600, 500, 'With Icons', {
-        color: pw.color.slate(400),
+        color: pw.color.slate(300),
         align: 'center',
-        fontSize: '12px',
+        fontSize: '14px',
       }).setOrigin(0.5, 0.5);
 
       // Example 5: Panel with custom styling
@@ -471,11 +479,12 @@ import { loadFont } from 'font-awesome-for-phaser';
         color: pw.color.rgb('black'),
         align: 'center',
         fontSize: '16px',
+        fontFamily: 'Bebas Neue',
       }).setOrigin(0.5, 0.5);
 
       const panel5 = new Panel({
         scene: this,
-        x: 400,
+        x: this.cameras.main.centerX,
         y: 600,
         title: 'Custom Style',
         backgroundColor: 'gray-100',
@@ -487,17 +496,17 @@ import { loadFont } from 'font-awesome-for-phaser';
       this.panels.push(panel5);
 
       // Label for panel 5
-      this.add.text(400, 680, 'Custom Styling', {
-        color: pw.color.slate(400),
+      this.add.text(this.cameras.main.centerX, 680, 'Custom Styling', {
+        color: pw.color.slate(300),
         align: 'center',
-        fontSize: '12px',
+        fontSize: '14px',
       }).setOrigin(0.5, 0.5);
 
       // Instructions
       this.add.text(this.cameras.main.centerX, 720, 'Panels combine Card, SectionHeader, and optional close button', {
         color: pw.color.slate(400),
         align: 'center',
-        fontSize: '14px',
+        fontSize: '12px',
       }).setOrigin(0.5, 0.5);
     }
   }
@@ -505,7 +514,7 @@ import { loadFont } from 'font-awesome-for-phaser';
   // Initialize the game when the page loads
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
-    loadFont().then(() => {
+    Promise.all([loadFonts(), loadFont()]).then(() => {
       if (gameConfig) {
         const game = new Phaser.Game({
           ...gameConfig,

@@ -10,6 +10,7 @@ import {
 } from 'phaser-wind';
 
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
+import { ContainerInteractive } from '../container-interactive';
 
 export type CardParams = {
   /** The Phaser scene to add the card to */
@@ -32,12 +33,20 @@ export type CardParams = {
   height?: number;
 };
 
+// Border constants
+const BLACK_BORDER_THICKNESS = 2;
+const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 2;
+const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; // 4 pixels total
+const WHITE_BORDER_RADIUS_EXTRA = 2;
+
 /**
  * A flexible card component that adapts to its child content size
  */
-export class Card extends GameObjects.Container {
-  /** The background graphics of the card */
-  public backgroundGraphics!: GameObjects.Graphics;
+export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
+  /** The white border sprite of the card. */
+  public whiteBorderSprite!: GameObjects.Sprite;
+  /** The background sprite of the card. */
+  public backgroundSprite!: GameObjects.Sprite;
   /** The child component contained within the card */
   public child: GameObjects.GameObject | undefined;
 
@@ -68,7 +77,7 @@ export class Card extends GameObjects.Container {
     width,
     height,
   }: CardParams) {
-    super(scene, x, y);
+    super({ scene, x, y });
     this.pw = getPWFromScene(scene);
 
     // Store values
@@ -88,12 +97,15 @@ export class Card extends GameObjects.Container {
     // Check if explicit size was provided
     this.hasExplicitSize = width !== undefined && height !== undefined;
 
-    // Create background and setup container
-    this.createBackgroundGraphics(scene, width, height);
+    // Create sprites and setup container
+    this.createWhiteBorderSprite(scene);
+    this.createBackgroundSprite(scene);
     this.setupContainer();
+
+    this.hitArea = this.backgroundSprite;
   }
   /**
-   * Override setSize to redraw background when size changes
+   * Override setSize to regenerate sprites when size changes
    * @param width Width in pixels
    * @param height Height in pixels
    * @returns this for chaining
@@ -104,8 +116,8 @@ export class Card extends GameObjects.Container {
     // Set size directly on the container to avoid recursion
     this.width = width;
     this.height = height;
-    // Redraw background with new size
-    this.drawBackground(width, height);
+    // Regenerate sprites with new size
+    this.regenerateSprites();
     return this;
   }
 
@@ -136,7 +148,7 @@ export class Card extends GameObjects.Container {
    */
   public setBackgroundColor(color: ColorKey | string): this {
     this.backgroundColorValue = Color.rgb(color as ColorKey);
-    this.drawBackground();
+    this.regenerateSprites();
     return this;
   }
 
@@ -150,7 +162,7 @@ export class Card extends GameObjects.Container {
       typeof borderRadius === 'number'
         ? borderRadius
         : this.pw.radius.px(borderRadius ?? ('md' as RadiusKey));
-    this.drawBackground();
+    this.regenerateSprites();
     return this;
   }
 
@@ -189,19 +201,42 @@ export class Card extends GameObjects.Container {
   }
 
   /**
-   * Creates the background graphics for the card
-   * @param scene The scene to add the graphics to
+   * Creates the white border sprite for the card.
+   * @param scene Phaser scene.
    */
-  private createBackgroundGraphics(scene: Scene, width: number | undefined, height: number | undefined): void {
-    this.backgroundGraphics = scene.add.graphics();
-    this.drawBackground(width, height);
+  private createWhiteBorderSprite(scene: Scene): void {
+    const whiteBorderTexture = this.createWhiteBorderTexture(scene);
+    this.whiteBorderSprite = scene.add.sprite(0, 0, whiteBorderTexture);
+    this.whiteBorderSprite.setOrigin(0.5, 0.5);
+  }
+
+  /**
+   * Creates the background sprite for the card.
+   * @param scene Phaser scene.
+   */
+  private createBackgroundSprite(scene: Scene): void {
+    const backgroundTexture = this.createBackgroundTexture(scene);
+    this.backgroundSprite = scene.add.sprite(0, 0, backgroundTexture);
+    this.backgroundSprite.setOrigin(0.5, 0.5);
+  }
+
+  /**
+   * Regenerates the background and white border textures based on current state.
+   */
+  private regenerateSprites(): void {
+    // Regenerate textures
+    const whiteBorderTexture = this.createWhiteBorderTexture(this.scene);
+    const backgroundTexture = this.createBackgroundTexture(this.scene);
+
+    this.whiteBorderSprite.setTexture(whiteBorderTexture);
+    this.backgroundSprite.setTexture(backgroundTexture);
   }
 
   /**
    * Sets up the container with background and child
    */
   private setupContainer(): void {
-    this.add([this.backgroundGraphics]);
+    this.add([this.whiteBorderSprite, this.backgroundSprite]);
     if (this.child) {
       this.add([this.child]);
     }
@@ -248,8 +283,8 @@ export class Card extends GameObjects.Container {
     // Set size directly (don't use setSize to avoid marking as explicit size)
     this.width = cardWidth;
     this.height = cardHeight;
-    // Redraw background with new dimensions
-    this.drawBackground(cardWidth, cardHeight);
+    // Regenerate sprites with new dimensions
+    this.regenerateSprites();
 
     // Position child in the center of the card
     (
@@ -347,46 +382,100 @@ export class Card extends GameObjects.Container {
   }
 
   /**
-   * Draws the background graphics
+   * Calculates the card's width and height based on child and margin.
+   * @returns Object with width and height.
    */
-  private drawBackground(w?: number, h?: number): void {
-    let [width, height] = [0, 0];
-    if (w && h) {
-      width = w;
-      height = h;
+  private getCardDimensions(): { width: number; height: number } {
+    let width = 0;
+    let height = 0;
+
+    if (this.hasExplicitSize) {
+      width = this.width;
+      height = this.height;
+    } else if (this.child) {
+      const { w: cw, h: ch } = this.measureChild(this.child as GameObjects.GameObject);
+      width = cw + this.marginPx * 2;
+      height = ch + this.marginPx * 2;
     } else {
-      // If no explicit size provided and we have a child, measure it
-      if (this.child) {
-        const { w: cw, h: ch } = this.measureChild(this.child as GameObjects.GameObject);
-        width  = cw + this.marginPx * 2;
-        height = ch + this.marginPx * 2;
-      } else {
-        // If no child and no explicit size, use current size
-        width = this.width;
-        height = this.height;
-      }
+      const DEFAULT_SIZE = 100;
+      width = this.width || DEFAULT_SIZE;
+      height = this.height || DEFAULT_SIZE;
     }
-    // Set size directly to avoid recursion (since we override setSize)
-    this.width = width;
-    this.height = height;
-    this.backgroundGraphics.clear();
 
-    // Limit radius to maximum possible for the card dimensions
-    const maxRadius = Math.min(width / 2, height / 2);
-    const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
+    return { width, height };
+  }
 
-    // Since Graphics doesn't have setOrigin, we need to calculate the offset manually
-    const bgX = -width / 2;
-    const bgY = -height / 2;
+  /**
+   * Creates a texture for the card's white border.
+   * @param scene Phaser scene.
+   * @returns The texture key.
+   */
+  private createWhiteBorderTexture(scene: Scene): string {
+    const { width, height } = this.getCardDimensions();
+    const textureKey = `card_whiteBorder_${this.borderRadiusPx}_${width}_${height}`;
 
-    // Draw background
-    this.backgroundGraphics.fillStyle(Color.hex(this.backgroundColorValue), 1);
-    this.backgroundGraphics.fillRoundedRect(
-      bgX,
-      bgY,
-      width,
-      height,
-      effectiveRadius
+    // White border is larger on each side
+    const borderWidth = width + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
+    const borderHeight = height + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
+
+    // Add some padding for texture
+    const padding = 8;
+    const textureWidth = borderWidth + padding * 2;
+    const textureHeight = borderHeight + padding * 2;
+
+    const graphics = scene.add.graphics();
+
+    const maxRadius = Math.floor(Math.min(borderWidth / 2, borderHeight / 2));
+    const effectiveRadius = Math.min(this.borderRadiusPx + WHITE_BORDER_RADIUS_EXTRA, maxRadius);
+    const finalRadius = Math.max(0, effectiveRadius);
+
+    // White border (outer)
+    graphics.fillStyle(Color.hex('white'), 1);
+    graphics.fillRoundedRect(
+      padding,
+      padding,
+      borderWidth,
+      borderHeight,
+      finalRadius
     );
+
+    graphics.generateTexture(textureKey, textureWidth, textureHeight);
+    graphics.destroy();
+
+    return textureKey;
+  }
+
+  /**
+   * Creates a texture for the card's background.
+   * @param scene Phaser scene.
+   * @returns The texture key.
+   */
+  private createBackgroundTexture(scene: Scene): string {
+    const { width, height } = this.getCardDimensions();
+    const textureKey = `card_bg_${this.backgroundColorValue}_${this.borderRadiusPx}_${width}_${height}`;
+
+    // Add some padding for texture
+    const padding = 8;
+    const textureWidth = width + padding * 2;
+    const textureHeight = height + padding * 2;
+
+    const graphics = scene.add.graphics();
+
+    const maxRadius = Math.floor(Math.min(width / 2, height / 2));
+    const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
+    const finalRadius = Math.max(0, effectiveRadius);
+
+    // Draw background with white fill and black stroke
+    graphics.fillStyle(Color.hex(this.backgroundColorValue), 1);
+    graphics.fillRoundedRect(padding, padding, width, height, finalRadius);
+
+    // Black stroke border
+    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
+    graphics.strokeRoundedRect(padding, padding, width, height, finalRadius);
+
+    graphics.generateTexture(textureKey, textureWidth, textureHeight);
+    graphics.destroy();
+
+    return textureKey;
   }
 }

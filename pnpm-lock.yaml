@@ -81,9 +81,6 @@ importers:
       phaser:
         specifier: 3.90.0
         version: 3.90.0
-      webfontloader:
-        specifier: ^1.6.28
-        version: 1.6.28
     devDependencies:
       '@eslint-recommended/eslint-config':
         specifier: ^28.0.0
@@ -91,9 +88,6 @@ importers:
       '@types/node':
         specifier: ^24.3.0
         version: 24.3.0
-      '@types/webfontloader':
-        specifier: ^1.6.38
-        version: 1.6.38
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.40.0
         version: 8.40.0(@typescript-eslint/parser@8.41.0)(eslint@8.57.1)(typescript@5.9.3)
@@ -2386,10 +2380,6 @@ packages:
   /@types/unist@3.0.3:
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
     dev: false
-
-  /@types/webfontloader@1.6.38:
-    resolution: {integrity: sha512-kUaF72Fv202suFx6yBrwXqeVRMx7hGtJTesyESZgn9sEPCUeDXm2p0SiyS1MTqW74nQP4p7JyrOCwZ7pNFns4w==}
-    dev: true
 
   /@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@6.21.0)(eslint@8.57.1)(typescript@5.9.3):
     resolution: {integrity: sha512-94EQTWZ40mzBc42ATNIBimBEDltSJ9RQHCC8vc/PDbxi4k8dVwUAv4o98dk50M1zB+JGFxp43FP7f8+FP8R6Sw==}
@@ -8514,10 +8504,6 @@ packages:
 
   /web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
-    dev: false
-
-  /webfontloader@1.6.28:
-    resolution: {integrity: sha512-Egb0oFEga6f+nSgasH3E0M405Pzn6y3/9tOVanv/DLfa1YBIgcv90L18YyWnvXkRbIM17v5Kv6IT2N6g1x5tvQ==}
     dev: false
 
   /which-boxed-primitive@1.1.1:

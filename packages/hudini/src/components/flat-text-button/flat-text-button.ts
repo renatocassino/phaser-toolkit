@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
@@ -10,15 +9,14 @@ import {
   type SpacingKey,
 } from 'phaser-wind';
 
-import { getColorVariant } from '../../utils/color-variants';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { ContainerInteractive } from '../container-interactive';
 import { Text } from '../text';
 
 /**
- * Parameters for creating a TextButton.
+ * Parameters for creating a FlatTextButton.
  */
-export type TextButtonParams = {
+export type FlatTextButtonParams = {
   /** Phaser scene where the button will be added. */
   scene: Scene;
   /** X position of the button. */
@@ -29,11 +27,11 @@ export type TextButtonParams = {
   text: string;
   /** 
    * Font size in px (number) or a Phaser Wind font size token (string). 
-   * Defaults to 'md'.
+   * Defaults to 'lg'.
    */
   fontSize?: FontSizeKey | number;
   /** 
-   * Font family. Defaults to 'sans'.
+   * Font family. Defaults to 'Bebas Neue'.
    */
   font?: FontKey | string;
   /** 
@@ -51,7 +49,7 @@ export type TextButtonParams = {
   borderRadius?: RadiusKey | number;
   /** 
    * Padding in px (number) or a Phaser Wind spacing token (string). 
-   * Defaults to 'md'.
+   * Defaults to '4'.
    */
   padding?: SpacingKey | number;
   /** 
@@ -67,11 +65,6 @@ const durations = {
 
 const HOVER_SCALE = 1.05;
 const POINTER_DOWN_SCALE = 0.95;
-const TOKEN_LIGHTER_DIFF = -100;
-const TOKEN_DARKER_DIFF = 100;
-
-const COLOR_LIGHTER_AMOUNT = 30;
-const COLOR_DARKER_AMOUNT = -30;
 
 // Border constants
 const BLACK_BORDER_THICKNESS = 2;
@@ -80,10 +73,10 @@ const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; 
 const WHITE_BORDER_RADIUS_EXTRA = 2;
 
 /**
- * A customizable text button component for Phaser, supporting auto-sizing,
+ * A customizable flat text button component for Phaser, supporting auto-sizing,
  * design tokens, and interactive effects.
  */
-export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> {
+export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   /** The background sprite of the button. */
   public backgroundSprite!: GameObjects.Sprite;
   /** The white border sprite of the button. */
@@ -96,14 +89,13 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   private paddingPx!: number;
   private borderRadiusPx!: number;
   private colorButton!: string;
-  private lightColorButton!: number;
-  private darkColorButton!: number;
   private textColorValue!: string;
   private fontFamily!: string;
   private textValue!: string;
+
   /**
-   * Creates a new TextButton instance.
-   * @param params TextButtonParams
+   * Creates a new FlatTextButton instance.
+   * @param params FlatTextButtonParams
    */
   constructor({
     scene,
@@ -117,7 +109,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     borderRadius = 'md',
     padding = '4',
     onClick,
-  }: TextButtonParams) {
+  }: FlatTextButtonParams) {
     super({ scene, x, y });
     this.pw = getPWFromScene(scene);
 
@@ -132,16 +124,12 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
       typeof padding === 'number'
         ? padding
         : this.pw.spacing.px(padding ?? ('4' as SpacingKey));
-
     this.borderRadiusPx =
       typeof borderRadius === 'number'
         ? borderRadius
         : this.pw.radius.px(borderRadius ?? ('md' as RadiusKey));
 
     this.colorButton = Color.rgb(color as ColorKey);
-    this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
-    this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
-
     this.textColorValue = Color.rgb(textColor as ColorKey);
     this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
 
@@ -154,10 +142,12 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.hitArea = this.backgroundSprite;
   }
 
+  // API Methods
+
   /**
    * Sets the button text.
    * @param text The new text.
-   * @returns This TextButton instance.
+   * @returns This FlatTextButton instance.
    */
   public setText(text: string): this {
     this.textValue = text;
@@ -169,7 +159,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   /**
    * Sets the font size.
    * @param fontSize Font size in px or token.
-   * @returns This TextButton instance.
+   * @returns This FlatTextButton instance.
    */
   public setFontSize(fontSize: FontSizeKey | number): this {
     this.fontSizePx =
@@ -184,7 +174,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   /**
    * Sets the font family.
    * @param font Font family as string or token.
-   * @returns This TextButton instance.
+   * @returns This FlatTextButton instance.
    */
   public setFont(font: FontKey | string): this {
     this.fontFamily =
@@ -199,12 +189,10 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   /**
    * Sets the background color.
    * @param color Color as token or CSS string.
-   * @returns This TextButton instance.
+   * @returns This FlatTextButton instance.
    */
   public setColor(color: ColorKey | string): this {
     this.colorButton = Color.rgb(color as ColorKey);
-    this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
-    this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
     this.regenerateSprites();
     return this;
   }
@@ -212,7 +200,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   /**
    * Sets the text color.
    * @param color Color as token or CSS string.
-   * @returns This TextButton instance.
+   * @returns This FlatTextButton instance.
    */
   public setTextColor(color: ColorKey | string): this {
     this.textColorValue = Color.rgb(color as ColorKey);
@@ -223,7 +211,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   /**
    * Sets the border radius.
    * @param borderRadius Border radius in px or token.
-   * @returns This TextButton instance.
+   * @returns This FlatTextButton instance.
    */
   public setBorderRadius(borderRadius: RadiusKey | number): this {
     this.borderRadiusPx =
@@ -237,7 +225,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   /**
    * Sets the padding.
    * @param padding Padding in px or token.
-   * @returns This TextButton instance.
+   * @returns This FlatTextButton instance.
    */
   public setPadding(padding: SpacingKey | number): this {
     this.paddingPx =
@@ -285,7 +273,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Regenerates the background and shadow textures based on current state.
+   * Regenerates the background texture based on current state.
    */
   private regenerateSprites(): void {
     // Update text bounds after text/font changes
@@ -300,7 +288,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Calculates the button's width and height based on text and margin.
+   * Calculates the button's width and height based on text and padding.
    * @returns Object with width and height.
    */
   private getButtonDimensions(): { width: number; height: number } {
@@ -317,7 +305,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
    */
   private createWhiteBorderTexture(scene: Scene): string {
     const { width, height } = this.getButtonDimensions();
-    const textureKey = `textButton_whiteBorder_${this.borderRadiusPx}_${width}_${height}`;
+    const textureKey = `flatTextButton_whiteBorder_${this.borderRadiusPx}_${width}_${height}`;
 
     // White border is larger on each side
     const borderWidth = width + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
@@ -357,7 +345,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
    */
   private createBackgroundTexture(scene: Scene): string {
     const { width, height } = this.getButtonDimensions();
-    const textureKey = `textButton_bg_${this.colorButton}_${this.borderRadiusPx}_${width}_${height}`;
+    const textureKey = `flatTextButton_bg_${this.colorButton}_${this.borderRadiusPx}_${width}_${height}`;
 
     // Add some padding for texture
     const padding = 8;
@@ -368,51 +356,20 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     const maxRadius = Math.floor(Math.min(width / 2, height / 2));
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
-        const finalRadius = Math.max(0, effectiveRadius);
+    const finalRadius = Math.max(0, effectiveRadius);
 
-    this.drawCssColorGradient(graphics, padding, width, height, finalRadius);
+    // Main background (flat, no gradient overlays)
+    graphics.fillStyle(Color.hex(this.colorButton), 1);
+    graphics.fillRoundedRect(padding, padding, width, height, finalRadius);
+
+    // Black stroke border
+    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
+    graphics.strokeRoundedRect(padding, padding, width, height, finalRadius);
+
     graphics.generateTexture(textureKey, textureWidth, textureHeight);
     graphics.destroy();
 
     return textureKey;
-  }
-
-  /**
-   * Draws gradient using white/black overlays on CSS color.
-   * Uses a mask to ensure overlays respect the button's rounded corners.
-   */
-  private drawCssColorGradient(
-    graphics: Phaser.GameObjects.Graphics,
-    padding: number,
-    width: number,
-    height: number,
-    effectiveRadius: number
-  ): void {
-    // Main background
-    graphics.fillStyle(Color.hex(this.colorButton), 1);
-    graphics.fillRoundedRect(padding, padding, width, height, effectiveRadius);
-
-    const PERCENT_HEIGHT = 0.15;
-    const overlayHeight = height * PERCENT_HEIGHT;
-
-    const topOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
-    graphics.fillStyle(this.lightColorButton, 1);
-    graphics.fillRoundedRect(padding, padding, width, overlayHeight, topOverlayRadius);
-    
-    // Bottom darker overlay
-    const bottomOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
-    graphics.fillStyle(this.darkColorButton, 1);
-    graphics.fillRoundedRect(
-      padding,
-      padding + height - overlayHeight,
-      width,
-      overlayHeight,
-      bottomOverlayRadius,
-    );
-
-    // Black stroke border
-    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
-    graphics.strokeRoundedRect(padding, padding, width, height, effectiveRadius);
   }
 
   /**
@@ -471,5 +428,20 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
       });
       onClick?.();
     });
+  }
+
+
+  /**
+   * Gets the interactive sprite of the icon button
+   * @returns The interactive sprite
+   */
+  public get interactive(): Pick<GameObjects.Sprite, 'on' | 'off' | 'setInteractive' | 'setInteractive' | 'once'> {
+    const { on, off, setInteractive, once } = this.backgroundSprite;
+    return {
+      on: on.bind(this.backgroundSprite),
+      off: off.bind(this.backgroundSprite),
+      setInteractive: setInteractive.bind(this.backgroundSprite),
+      once: once.bind(this.backgroundSprite),
+    };
   }
 }

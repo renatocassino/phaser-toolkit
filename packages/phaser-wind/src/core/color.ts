@@ -120,6 +120,9 @@ export type Color<T = BaseThemeConfig['colors']> = {
   /** Get hex number representation of a color */
   hex(color: ColorToken | keyof T): number;
 
+  /** Is valid color token */
+  isValidColorToken(color: string): boolean;
+
   /** Get RGB string for black color */
   black(): string;
   /** Get RGB string for white color */
@@ -267,7 +270,7 @@ export const createColor = <T = BaseThemeConfig['colors']>(
       return rgb(colorFromTheme as ColorToken);
     }
 
-    const parts = (color as string).split('-');
+    const parts = (color as string | undefined)?.split('-') ?? [];
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
@@ -291,6 +294,20 @@ export const createColor = <T = BaseThemeConfig['colors']>(
     return colorValue;
   };
 
+  const isValidColorToken = (color: string): boolean => {
+    if (color === 'black' || color === 'white') {
+      return true;
+    }
+    
+    const parts = (color as string).split('-');
+    if (parts.length === 2) {
+      const colorKey = parts[0] as ColorKey;
+      const shade = parts[1] as ShadeKey;
+      return colorKey in palette && shade in (palette[colorKey as keyof typeof palette] as Record<ShadeKey, string>);
+    }
+    return false;
+  };
+
   /**
    * Get hex number representation of a color
    * @param color - Color token, theme color key or valid color string
@@ -308,7 +325,7 @@ export const createColor = <T = BaseThemeConfig['colors']>(
       return hex(colorFromTheme as ColorToken);
     }
 
-    const parts = (color as string).split('-');
+    const parts = (color as string | undefined)?.split('-') ?? [];
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
@@ -332,6 +349,7 @@ export const createColor = <T = BaseThemeConfig['colors']>(
   const api: Color<T> = {
     rgb,
     hex,
+    isValidColorToken,
 
     black: () => rgb('black'),
     white: () => rgb('white'),

@@ -8,8 +8,7 @@ import { SectionHeader } from '../section-header';
 const DEFAULT_BORDER_RADIUS = 8;
 const DEFAULT_MARGIN = 16;
 const DEFAULT_BACKGROUND_COLOR = 'red-500';
-const DEFAULT_HEADER_HEIGHT = 60;
-const CLOSE_BUTTON_SIZE = 32;
+const CLOSE_BUTTON_SIZE = 18;
 const CLOSE_BUTTON_MARGIN = 8;
 
 export type PanelParams = {
@@ -32,7 +31,6 @@ export class Panel extends GameObjects.Container {
     private title: string;
     private showCloseButton: boolean;
     private onClose?: (() => void) | undefined;
-    private headerHeight: number;
 
     constructor(params: PanelParams) {
         super(params.scene, params.x ?? 0, params.y ?? 0);
@@ -40,7 +38,6 @@ export class Panel extends GameObjects.Container {
         this.title = params.title ?? '';
         this.showCloseButton = params.showCloseButton ?? false;
         this.onClose = params.onClose;
-        this.headerHeight = DEFAULT_HEADER_HEIGHT;
 
         // Create the card first
         this.card = new Card({
@@ -112,21 +109,20 @@ export class Panel extends GameObjects.Container {
      * Updates the layout after property changes
      */
     private updateLayout(): void {
-        // Get card bounds
-        const cardBounds = this.card.getBounds();
+        // Get card size
+        const cardSize = { width: this.card.width, height: this.card.height };
 
         // Calculate header position (top of the card)
         if (this.sectionHeader) {
-            const headerY = -cardBounds.height / 2 + this.headerHeight / 2;
+            const dividerSectionHeader = 4;
+            const headerY = -cardSize.height / 2 - this.sectionHeader.height / dividerSectionHeader;
             this.sectionHeader.setPosition(0, headerY);
-
-            // Note: SectionHeader doesn't have setWidth, it auto-sizes to content
         }
 
         // Calculate close button position (top-right corner)
         if (this.closeButton) {
-            const buttonX = cardBounds.width / 2 - CLOSE_BUTTON_SIZE / 2 - CLOSE_BUTTON_MARGIN;
-            const buttonY = -cardBounds.height / 2 + CLOSE_BUTTON_SIZE / 2 + CLOSE_BUTTON_MARGIN;
+            const buttonX = cardSize.width / 2 - CLOSE_BUTTON_SIZE / 2 + CLOSE_BUTTON_MARGIN;
+            const buttonY = -cardSize.height / 2 + CLOSE_BUTTON_SIZE / 2 - CLOSE_BUTTON_MARGIN;
             this.closeButton.setPosition(buttonX, buttonY);
         }
     }

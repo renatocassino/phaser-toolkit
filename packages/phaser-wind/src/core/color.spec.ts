@@ -133,8 +133,27 @@ describe('ColorPicker', () => {
         secondary: 'slate-50',
       });
 
-      expect(color.rgb('primary')).toBe('rgb(239, 68, 68)');
-      expect(color.rgb('secondary')).toBe('rgb(248, 250, 252)');
+      expect(color.rgb('primary')).toBe(RED_500_RGB);
+      expect(color.rgb('secondary')).toBe(SLATE_50_RGB);
+    });
+  });
+
+  describe('isValidColorToken method', () => {
+    it('should return true for valid color token', () => {
+      expect(color.isValidColorToken('red-500')).toBe(true);
+      expect(color.isValidColorToken('slate-50')).toBe(true);
+      expect(color.isValidColorToken('black')).toBe(true);
+      expect(color.isValidColorToken('white')).toBe(true);
+    });
+
+    it('should return false for invalid color token', () => {
+      expect(color.isValidColorToken('invalid-color')).toBe(false);
+      expect(color.isValidColorToken('red-999')).toBe(false);
+      expect(color.isValidColorToken('purples-500')).toBe(false);
+      expect(color.isValidColorToken('rgb(239, 68, 68)')).toBe(false);
+      expect(color.isValidColorToken('rgba(239, 68, 68, 1)')).toBe(false);
+      expect(color.isValidColorToken('oklch(40% 0.268 34.568)')).toBe(false);
+      expect(color.isValidColorToken('#000000')).toBe(false);
     });
   });
 

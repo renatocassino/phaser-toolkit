@@ -106,7 +106,7 @@ describe('CircularProgress', () => {
       icon: 'gear',
       color: 'red',
       size: 'lg',
-      rotationsPerSecond: 3,
+      rotationsPerMinute: 180, // 3 rotations per second = 180 RPM
     });
 
     expect(progress.spinning).toBe(true);
@@ -140,11 +140,11 @@ describe('CircularProgress', () => {
       scene: mockScene,
       x: 100,
       y: 200,
-      rotationsPerSecond: 1,
+      rotationsPerMinute: 60, // 1 rotation per second = 60 RPM
     });
 
     vi.clearAllMocks();
-    progress.setRotationsPerSecond(5);
+    progress.setRotationsPerMinute(300); // 5 rotations per second = 300 RPM
 
     // Should restart animation with new speed
     expect(mockTweens.killTweensOf).toHaveBeenCalled();
@@ -209,7 +209,7 @@ describe('CircularProgress', () => {
     });
 
     const result = progress
-      .setRotationsPerSecond(3)
+      .setRotationsPerMinute(180) // 3 rotations per second = 180 RPM
       .setIcon('gear')
       .setColor('red-500')
       .setSize('lg')

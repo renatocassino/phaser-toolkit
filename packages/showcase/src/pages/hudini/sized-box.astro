@@ -92,7 +92,7 @@ class LayoutDemoScene extends SceneWithHudini<Theme> {
             x: 0,
             y: 0,
             text: 'Button 1',
-            backgroundColor: 'blue-500',
+            color: 'blue-500',
             textColor: 'white',
         });
 
@@ -101,7 +101,7 @@ class LayoutDemoScene extends SceneWithHudini<Theme> {
             x: 0,
             y: 0,
             text: 'Button 2',
-            backgroundColor: 'green-500',
+            color: 'green-500',
             textColor: 'white',
         });
 
@@ -192,6 +192,7 @@ spacer.setSize(100, 50);`}</code></pre>
 <script>
   import Phaser from 'phaser';
   import {
+    loadFonts,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -231,10 +232,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Button 1',
-        backgroundColor: 'blue-500',
+        color: 'blue-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '4',
+        padding: '4',
       });
 
       const button2 = new TextButton({
@@ -242,10 +243,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Button 2',
-        backgroundColor: 'green-500',
+        color: 'green-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '4',
+        padding: '4',
       });
 
       const button3 = new TextButton({
@@ -253,10 +254,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Button 3',
-        backgroundColor: 'purple-500',
+        color: 'purple-500',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '4',
+        padding: '4',
       });
 
       const column1 = new Column({
@@ -288,7 +289,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'heart',
         size: 'base',
-        color: 'red',
+        color: 'red-500',
       });
 
       const icon2 = new IconButton({
@@ -297,7 +298,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'star',
         size: 'base',
-        color: 'yellow',
+        color: 'yellow-500',
       });
 
       const icon3 = new IconButton({
@@ -306,7 +307,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'play',
         size: 'base',
-        color: 'green',
+        color: 'green-500',
       });
 
       const row1 = new Row({
@@ -337,10 +338,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Small',
-        backgroundColor: 'blue-600',
+        color: 'blue-600',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const btn2 = new TextButton({
@@ -348,10 +349,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Medium',
-        backgroundColor: 'green-600',
+        color: 'green-600',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const btn3 = new TextButton({
@@ -359,10 +360,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Large',
-        backgroundColor: 'purple-600',
+        color: 'purple-600',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const column2 = new Column({
@@ -395,7 +396,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'circle',
         size: 'sm',
-        color: 'blue',
+        color: 'blue-500',
       });
 
       const iconB = new IconButton({
@@ -404,7 +405,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'square',
         size: 'sm',
-        color: 'green',
+        color: 'green-500',
       });
 
       const iconC = new IconButton({
@@ -413,7 +414,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'diamond',
         size: 'sm',
-        color: 'purple',
+        color: 'purple-500',
       });
 
       const row2 = new Row({
@@ -445,10 +446,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Top',
-        backgroundColor: 'red-600',
+        color: 'red-600',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const leftIcon = new IconButton({
@@ -457,7 +458,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'arrow-left',
         size: 'base',
-        color: 'blue',
+        color: 'blue-500',
       });
 
       const rightIcon = new IconButton({
@@ -466,7 +467,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         y: 0,
         icon: 'arrow-right',
         size: 'base',
-        color: 'blue',
+        color: 'blue-500',
       });
 
       const middleRow = new Row({
@@ -486,10 +487,10 @@ import { loadFont } from 'font-awesome-for-phaser';
         x: 0,
         y: 0,
         text: 'Bottom',
-        backgroundColor: 'green-600',
+        color: 'green-600',
         textColor: 'white',
         borderRadius: 'md',
-        margin: '3',
+        padding: '3',
       });
 
       const mixedColumn = new Column({
@@ -526,7 +527,7 @@ import { loadFont } from 'font-awesome-for-phaser';
   // Initialize the game when the page loads
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
-    loadFont().then(() => {
+    Promise.all([loadFonts(), loadFont()]).then(() => {
       if (gameConfig) {
         const game = new Phaser.Game({
           ...gameConfig,

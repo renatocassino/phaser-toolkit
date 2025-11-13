@@ -1,5 +1,6 @@
-/* eslint-disable no-magic-numbers */
+/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable max-lines-per-function */
+/* eslint-disable no-magic-numbers */
 import { Scene } from 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -17,13 +18,13 @@ vi.mock('../../utils/get-pw-from-scene', () => ({
     fontSize: {
       px: vi.fn((size: string) => {
         const sizes = { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 };
-        return sizes[size as keyof typeof sizes] || 18;
+        return sizes[size as keyof typeof sizes] || 16;
       }),
     },
     spacing: {
       px: vi.fn((spacing: string) => {
         const spacings = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20 };
-        return spacings[spacing as keyof typeof spacings] || 16;
+        return spacings[spacing as keyof typeof spacings] || 12;
       }),
     },
     radius: {
@@ -35,22 +36,14 @@ vi.mock('../../utils/get-pw-from-scene', () => ({
     font: {
       family: vi.fn((font: string) => {
         const fonts = {
-          primary: 'Inter, sans-serif',
-          secondary: 'Roboto, Arial, sans-serif',
-          monospace: 'Courier, monospace',
-          display: 'Poppins, Inter, sans-serif',
+          sans: 'Arial, sans-serif',
+          serif: 'Georgia, serif',
+          mono: 'Courier, monospace',
         };
-        return (
-          fonts[font as keyof typeof fonts] || 'Poppins, Inter, sans-serif'
-        );
+        return fonts[font as keyof typeof fonts] || 'Arial, sans-serif';
       }),
     },
   })),
-}));
-
-// Mock color-variants
-vi.mock('../../utils/color-variants', () => ({
-  getColorVariant: vi.fn(() => 0x000000), // Return black as number
 }));
 
 // Mock the Text component
@@ -89,17 +82,22 @@ vi.mock('../text', () => {
     }
 
     getBounds(): { width: number; height: number } {
-      const charWidth = 10;
-      const lineHeight = parseInt(this.style['fontSize'] as string) || 18;
-      return {
-        width: this.text.length * charWidth,
-        height: lineHeight,
-      };
+      return getTextBounds(this.text, this.style['fontSize'] ?? 16);
     }
   }
 
   return { Text: MockText };
 });
+
+// Helper function for getBounds
+const getTextBounds = (text: string, fontSize: string | number): { width: number; height: number } => {
+  const charWidth = 10;
+  const lineHeight = parseInt(String(fontSize)) || 16;
+  return {
+    width: text.length * charWidth,
+    height: lineHeight,
+  };
+};
 
 // Mock Phaser
 vi.mock('phaser', () => {
@@ -137,19 +135,9 @@ vi.mock('phaser', () => {
       this.style['color'] = color;
       return this;
     }
-    setStroke(color: string, thickness: number): this {
-      this.style['stroke'] = color;
-      this.style['strokeThickness'] = thickness;
-      return this;
-    }
 
     getBounds(): { width: number; height: number } {
-      const charWidth = 10;
-      const lineHeight = parseInt(this.style['fontSize'] as string) ?? 18;
-      return {
-        width: this.text.length * charWidth,
-        height: lineHeight,
-      };
+      return getTextBounds(this.text, this.style['fontSize'] ?? 16);
     }
   }
 
@@ -159,15 +147,18 @@ vi.mock('phaser', () => {
     setOrigin(): this {
       return this;
     }
+    setInteractive(): this {
+      return this;
+    }
     setTexture(): this {
+      return this;
+    }
+    on(): this {
       return this;
     }
   }
 
   class MockGraphics {
-    clear(): this {
-      return this;
-    }
     fillStyle(): this {
       return this;
     }
@@ -188,8 +179,7 @@ vi.mock('phaser', () => {
     }
   }
 
-  class Container {
-    scene: Scene;
+  class MockContainer {
     // eslint-disable-next-line no-unused-vars
     constructor(_scene: Scene, _x: number, _y: number) {
       this.scene = _scene;
@@ -197,120 +187,95 @@ vi.mock('phaser', () => {
     add(): this {
       return this;
     }
-    setInteractive(): this {
-      return this;
-    }
-    on(): this {
-      return this;
-    }
-    setScale(): this {
-      return this;
-    }
+    scene: Scene;
   }
 
   class Scene {
     add = {
-      text: vi.fn(
-        (
-          x: number,
-          y: number,
-          text: string,
-          style: Record<string, string | number>
-        ) => new MockText(x, y, text, style)
-      ),
-      sprite: vi.fn(
-        (x: number, y: number, texture: string) => new MockSprite(x, y, texture)
-      ),
+      text: vi.fn((x, y, text, style) => new MockText(x, y, text, style)),
+      sprite: vi.fn((x, y, texture) => new MockSprite(x, y, texture)),
       graphics: vi.fn(() => new MockGraphics()),
     };
+    tweens = { add: vi.fn() };
   }
 
   class BasePlugin {
     constructor() { }
   }
 
-  const GameObjects = { Container };
+  const GameObjects = { Container: MockContainer };
   const Plugins = { BasePlugin };
   return { GameObjects, Scene, Plugins };
 });
 
-import { SectionHeader } from './section-header';
+import { FlatTextButton } from './flat-text-button';
 
-describe('SectionHeader', () => {
-  it('should create a SectionHeader instance', () => {
+describe('FlatTextButton', () => {
+  it('should create a FlatTextButton instance', () => {
     const scene = new Scene();
 
-    const sectionHeader = new SectionHeader({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
-      text: 'Section Title',
+      text: 'Click Me',
     });
 
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
+    expect(textButton).toBeInstanceOf(FlatTextButton);
   });
 
   it('should create with custom properties', () => {
     const scene = new Scene();
 
-    const sectionHeader = new SectionHeader({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
-      text: 'Custom Header',
-      fontSize: 'xl',
-      font: 'display',
-      backgroundColor: 'purple-600',
+      text: 'Custom Button',
+      fontSize: 'lg',
+      color: 'red',
       textColor: 'white',
       borderRadius: 'lg',
-      margin: '6',
+      padding: '4',
     });
 
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
+    expect(textButton).toBeInstanceOf(FlatTextButton);
   });
 
-  it('should support method chaining for colors', () => {
+  it('should support method chaining', () => {
     const scene = new Scene();
-    const sectionHeader = new SectionHeader({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
-      text: 'Test Header',
+      text: 'Test',
     });
 
-    const result = sectionHeader
-      .setTextColor('white')
-      .setBackgroundColor('blue-600');
+    const result = textButton
+      .setText('Chained')
+      .setFontSize('lg')
+      .setColor('green')
+      .setBorderRadius('lg')
+      .setPadding('4');
 
-    expect(result).toBe(sectionHeader);
+    expect(result).toBe(textButton);
   });
 
-  it('should handle borderRadius full correctly in constructor', () => {
+  it('should handle borderRadius full correctly', () => {
     const scene = new Scene();
 
-    const sectionHeader = new SectionHeader({
+    const textButton = new FlatTextButton({
       scene,
       x: 100,
       y: 100,
-      text: 'Full Radius Header',
+      text: 'Full Radius Test',
       borderRadius: 'full',
     });
 
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
-  });
+    expect(textButton).toBeInstanceOf(FlatTextButton);
 
-
-  it('should use default display font and bold style', () => {
-    const scene = new Scene();
-
-    const sectionHeader = new SectionHeader({
-      scene,
-      x: 100,
-      y: 100,
-      text: 'Default Style',
-    });
-
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
-    expect(sectionHeader.headerText).toBeDefined();
+    // Test setBorderRadius with 'full'
+    const result = textButton.setBorderRadius('full');
+    expect(result).toBe(textButton);
   });
 });

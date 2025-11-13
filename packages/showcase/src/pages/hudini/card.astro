@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import PhaserGame from '../../components/PhaserGame.astro';
 ---
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <Layout title="Hudini Card Component" description="A flexible card component that adapts to its child content size, using phaser-wind tokens for styling.">
   <div class="space-y-8">
@@ -19,7 +22,8 @@ import PhaserGame from '../../components/PhaserGame.astro';
           <li>🎯 <strong>Adaptable</strong>: Automatically adjusts to child size</li>
           <li>🎨 <strong>Stylable</strong>: Uses phaser-wind tokens for colors, border radius, and margins</li>
           <li>🔄 <strong>Flexible</strong>: Supports any Phaser GameObject as child</li>
-          <li>⚡ <strong>Performance</strong>: Uses Graphics directly (no textures)</li>
+          <li>✨ <strong>Double Stroke</strong>: Beautiful white border with black stroke effect</li>
+          <li>📏 <strong>Sized</strong>: Uses ContainerInteractive for proper sizing support</li>
         </ul>
       </div>
 
@@ -75,9 +79,10 @@ class PreviewScene extends SceneWithHudini<Theme> {
             x: 0,
             y: 0,
             text: 'Click Me!',
-            backgroundColor: 'blue-500',
+            color: 'blue-500',
             textColor: 'white',
             borderRadius: 'md',
+            padding: '4',
         });
 
         // Create a card containing the button
@@ -101,13 +106,14 @@ class PreviewScene extends SceneWithHudini<Theme> {
 <script>
   import Phaser from 'phaser';
   import {
-    Color,
+    loadFonts,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
     SceneWithHudini,
     Card,
-    TextButton
+    TextButton,
+    Row
   } from 'hudini';
 
   // Create theme
@@ -115,9 +121,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
   type Theme = typeof theme;
 
   class CardDemoScene extends SceneWithHudini<Theme> {
-    private card?: Card;
-    private emptyCard?: Card;
-    private text?: Phaser.GameObjects.Text;
+    private cards: Card[] = [];
 
     constructor() {
       super('card-demo');
@@ -127,49 +131,275 @@ class PreviewScene extends SceneWithHudini<Theme> {
       const { pw } = this.hudini;
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
-      // Create text for the card
-      this.text = this.add.text(0, 0, 'Card with child', {
-        color: this.pw.color.rgb('black'),
+      // Title
+      this.add.text(this.cameras.main.centerX, 50, 'Card Component Examples', {
+        color: pw.color.slate(200),
         align: 'center',
-        fontSize: '18px',
+        fontSize: '32px',
+        fontFamily: 'Bebas Neue',
+      }).setOrigin(0.5, 0.5);
+
+      // Card 1: Card with TextButton
+      const button1 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Click Me!',
+        color: 'blue-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        padding: '4',
+        onClick: () => {
+          console.log('Button clicked!');
+        },
       });
 
-      // Create a card containing the text
-      this.card = new Card({
+      const card1 = new Card({
         scene: this,
-        x: this.cameras.main.centerX,
-        y: this.cameras.main.centerY,
+        x: 200,
+        y: 150,
         backgroundColor: 'white',
         borderRadius: 'lg',
         margin: '6',
-        child: this.text,
+        child: button1,
       });
-      this.add.existing(this.card);
+      this.add.existing(card1);
+      this.cards.push(card1);
 
-      // Create an empty card
-      this.emptyCard = new Card({
+      // Label for card 1
+      this.add.text(200, 220, 'Card with Button', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Card 2: Card with Text
+      const text2 = this.add.text(0, 0, 'Hello World!\nThis is a card\nwith text content', {
+        color: pw.color.rgb('black'),
+        align: 'center',
+        fontSize: '18px',
+        fontFamily: 'Bebas Neue',
+      });
+      text2.setOrigin(0.5, 0.5);
+
+      const card2 = new Card({
         scene: this,
-        x: this.cameras.main.centerX,
-        y: this.cameras.main.centerY + 130,
-        backgroundColor: 'green-500',
+        x: 400,
+        y: 150,
+        backgroundColor: 'blue-100',
+        borderRadius: 'xl',
+        margin: '8',
+        child: text2,
+      });
+      this.add.existing(card2);
+      this.cards.push(card2);
+
+      // Label for card 2
+      this.add.text(400, 240, 'Card with Text', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Card 3: Colored card with button
+      const button3 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Success',
+        color: 'green-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        padding: '4',
+      });
+
+      const card3 = new Card({
+        scene: this,
+        x: 600,
+        y: 150,
+        backgroundColor: 'green-50',
+        borderRadius: 'md',
+        margin: '6',
+        child: button3,
+      });
+      this.add.existing(card3);
+      this.cards.push(card3);
+
+      // Label for card 3
+      this.add.text(600, 220, 'Colored Card', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Card 4: Small card with icon button
+      const button4 = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: '★',
+        color: 'yellow-500',
+        textColor: 'black',
+        borderRadius: 'full',
+        padding: '3',
+        fontSize: '20px',
+      });
+
+      const card4 = new Card({
+        scene: this,
+        x: 200,
+        y: 350,
+        backgroundColor: 'white',
+        borderRadius: 'full',
+        margin: '4',
+        child: button4,
+      });
+      this.add.existing(card4);
+      this.cards.push(card4);
+
+      // Label for card 4
+      this.add.text(200, 410, 'Circular Card', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Card 5: Wide card with multiple buttons
+      const button5a = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Cancel',
+        color: 'gray-300',
+        textColor: 'gray-800',
+        borderRadius: 'md',
+        padding: '3',
+      });
+
+      const button5b = new TextButton({
+        scene: this,
+        x: 0,
+        y: 0,
+        text: 'Confirm',
+        color: 'blue-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        padding: '3',
+      });
+
+      const buttonRow = new Row({
+        scene: this,
+        x: 0,
+        y: 0,
+        gap: 12,
+        align: 'center',
+        horizontalOrigin: 'center',
+        children: [button5a, button5b],
+      });
+
+      const card5 = new Card({
+        scene: this,
+        x: 400,
+        y: 350,
+        backgroundColor: 'white',
         borderRadius: 'lg',
         margin: '6',
-        width: 200,
+        child: buttonRow,
+      });
+      this.add.existing(card5);
+      this.cards.push(card5);
+
+      // Label for card 5
+      this.add.text(400, 420, 'Card with Multiple Buttons', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Card 6: Empty card with fixed size
+      const card6 = new Card({
+        scene: this,
+        x: 600,
+        y: 350,
+        backgroundColor: 'purple-500',
+        borderRadius: 'xl',
+        margin: '8',
+        width: 150,
         height: 100,
       });
-      this.add.existing(this.emptyCard);
+      this.add.existing(card6);
+      this.cards.push(card6);
 
-      // Add text label for empty card example
-      this.add.text(
-        this.cameras.main.centerX,
-        this.cameras.main.centerY + 200,
-        'Example of empty card',
-        {
-          color: this.pw.color.rgb('white'),
-          align: 'center',
-          fontSize: '16px'
-        }
-      ).setOrigin(0.5, 0.5);
+      // Add text inside card6 manually
+      const card6Text = this.add.text(600, 350, 'Fixed Size', {
+        color: pw.color.rgb('white'),
+        align: 'center',
+        fontSize: '18px',
+        fontFamily: 'Bebas Neue',
+      });
+      card6Text.setOrigin(0.5, 0.5);
+
+      // Label for card 6
+      this.add.text(600, 420, 'Fixed Size Card', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Card 7: Large card with title and description
+      const titleText = this.add.text(0, -20, 'Card Title', {
+        color: pw.color.rgb('black'),
+        align: 'center',
+        fontSize: '24px',
+        fontFamily: 'Bebas Neue',
+      });
+      titleText.setOrigin(0.5, 0.5);
+
+      const descText = this.add.text(0, 10, 'This is a description\nof the card content', {
+        color: pw.color.rgb('gray-600'),
+        align: 'center',
+        fontSize: '14px',
+      });
+      descText.setOrigin(0.5, 0.5);
+
+      const actionButton = new TextButton({
+        scene: this,
+        x: 0,
+        y: 50,
+        text: 'Action',
+        color: 'blue-500',
+        textColor: 'white',
+        borderRadius: 'md',
+        padding: '3',
+      });
+
+      const card7Container = this.add.container(0, 0, [titleText, descText, actionButton]);
+
+      const card7 = new Card({
+        scene: this,
+        x: this.cameras.main.centerX,
+        y: 500,
+        backgroundColor: 'white',
+        borderRadius: 'lg',
+        margin: '8',
+        child: card7Container,
+      });
+      this.add.existing(card7);
+      this.cards.push(card7);
+
+      // Label for card 7
+      this.add.text(this.cameras.main.centerX, 560, 'Complex Card Layout', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontSize: '14px',
+      }).setOrigin(0.5, 0.5);
+
+      // Instructions
+      this.add.text(this.cameras.main.centerX, 580, 'Cards with double stroke effect (white border + black stroke)', {
+        color: pw.color.slate(400),
+        align: 'center',
+        fontSize: '12px',
+      }).setOrigin(0.5, 0.5);
     }
   }
 
@@ -177,7 +407,8 @@ class PreviewScene extends SceneWithHudini<Theme> {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
         ...gameConfig,
         scene: [CardDemoScene],
         plugins: {
@@ -199,6 +430,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
         (window as any).__phaserGames = {};
       }
       (window as any).__phaserGames['hudini-card-demo'] = game;
+      });
     }
   });
 </script>

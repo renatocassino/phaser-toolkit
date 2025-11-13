@@ -108,7 +108,7 @@ class AdvancedCardColumnScene extends Phaser.Scene {
 </Layout>
 
 <script>
-  import { Card, Column, IconButton, Color, createTheme, HUDINI_KEY, HudiniPlugin, SceneWithHudini } from 'hudini';
+  import { loadFonts, Card, Column, IconButton, Color, createTheme, HUDINI_KEY, HudiniPlugin, SceneWithHudini } from 'hudini';
   import { loadFont } from 'font-awesome-for-phaser';
 
   class AdvancedCardColumnScene extends SceneWithHudini {
@@ -197,7 +197,7 @@ class AdvancedCardColumnScene extends Phaser.Scene {
   // Initialize the game when the page loads
   document.addEventListener('DOMContentLoaded', async () => {
     // Load Font Awesome font
-    await loadFont();
+    await Promise.all([loadFonts(), loadFont()]);
     
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {

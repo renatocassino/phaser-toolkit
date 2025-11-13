@@ -5,8 +5,8 @@ import tailwind from '@astrojs/tailwind';
 // Por padrão usa /phaser-toolkit/ para funcionar com GitHub Pages padrão
 // Se o domínio customizado estiver apontando para a raiz, sobrescreva com ASTRO_BASE=/
 // Exemplo: ASTRO_BASE=/ pnpm build
-// Em localhost, não defina ASTRO_BASE para usar a raiz (/)
-const base = process.env.ASTRO_BASE || '/';
+// Em localhost, use ASTRO_BASE=/ para desenvolvimento local
+const base = process.env.ASTRO_BASE || '/phaser-toolkit/';
 
 export default defineConfig({
   output: 'static',

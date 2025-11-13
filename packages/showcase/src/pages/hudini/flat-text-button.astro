@@ -124,7 +124,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 
     create(): void {
       const { pw } = this.hudini;
-      this.cameras.main.setBackgroundColor(pw.color.white());
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title
       this.add.text(this.cameras.main.centerX, 80, 'Flat Text Button Examples', {

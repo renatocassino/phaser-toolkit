@@ -41,6 +41,9 @@ const POINTER_DOWN_SCALE = 0.95;
 
 // Border constants
 const BLACK_BORDER_THICKNESS = 2;
+const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 2;
+const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; // 4 pixels total
+const WHITE_BORDER_RADIUS_EXTRA = 2;
 
 // Icon constants
 const ICON_STROKE_THICKNESS = 3;
@@ -54,6 +57,7 @@ const SPRITE_ORIGIN = 0.5;
 
 export class FlatIconButton extends GameObjects.Container {
   public backgroundSprite!: GameObjects.Sprite;
+  public whiteBorderSprite!: GameObjects.Sprite;
   public iconText!: IconText;
   private pw: PhaserWindPlugin<{}>;
 
@@ -98,6 +102,7 @@ export class FlatIconButton extends GameObjects.Container {
     this.backgroundOpacityValue = backgroundOpacity;
     this.iconOpacityValue = iconOpacity;
 
+    this.createWhiteBorderSprite(scene);
     this.createBackgroundSprite(scene);
     this.createIconText(scene, icon, iconStyle);
     this.setupContainer();
@@ -139,7 +144,13 @@ export class FlatIconButton extends GameObjects.Container {
         : this.pw.radius.px(borderRadius as RadiusKey);
     if (this.borderRadiusPx === newRadiusPx) return this;
     this.borderRadiusPx = newRadiusPx;
-    this.regenerateBackgroundTexture();
+    
+    // Regenerate textures for white border and background
+    const whiteBorderTexture = this.createWhiteBorderTexture(this.scene);
+    const backgroundTexture = this.createBackgroundTexture(this.scene);
+    this.whiteBorderSprite.setTexture(whiteBorderTexture);
+    this.backgroundSprite.setTexture(backgroundTexture);
+    this.backgroundSprite.setAlpha(this.backgroundOpacityValue);
     return this;
   }
 
@@ -158,13 +169,23 @@ export class FlatIconButton extends GameObjects.Container {
 
     this.updateSize();
 
-    this.regenerateBackgroundTexture();
+    const whiteBorderTexture = this.createWhiteBorderTexture(this.scene);
+    const backgroundTexture = this.createBackgroundTexture(this.scene);
+    this.whiteBorderSprite.setTexture(whiteBorderTexture);
+    this.backgroundSprite.setTexture(backgroundTexture);
+    this.backgroundSprite.setAlpha(this.backgroundOpacityValue);
     return this;
   }
 
   private updateSize(): void {
     this.width = this.baseSizePx * BUTTON_SCALE;
     this.height = this.baseSizePx * BUTTON_SCALE;
+  }
+
+  private createWhiteBorderSprite(scene: Scene): void {
+    const whiteBorderTexture = this.createWhiteBorderTexture(scene);
+    this.whiteBorderSprite = scene.add.sprite(0, 0, whiteBorderTexture);
+    this.whiteBorderSprite.setOrigin(SPRITE_ORIGIN, SPRITE_ORIGIN);
   }
 
   private createBackgroundSprite(scene: Scene): void {
@@ -175,9 +196,41 @@ export class FlatIconButton extends GameObjects.Container {
   }
 
   private regenerateBackgroundTexture(): void {
-    const textureKey = this.createBackgroundTexture(this.scene);
-    this.backgroundSprite.setTexture(textureKey);
+    const whiteBorderTexture = this.createWhiteBorderTexture(this.scene);
+    const backgroundTexture = this.createBackgroundTexture(this.scene);
+    this.whiteBorderSprite.setTexture(whiteBorderTexture);
+    this.backgroundSprite.setTexture(backgroundTexture);
     this.backgroundSprite.setAlpha(this.backgroundOpacityValue);
+  }
+
+  private createWhiteBorderTexture(scene: Scene): string {
+    const textureKey = `flatIconButton_whiteBorder_r${this.borderRadiusPx}_${this.baseSizePx}`;
+    // White border is larger on each side
+    const side = this.baseSizePx * 2 + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
+    // Increase texture size to accommodate the larger border
+    const textureSize = this.baseSizePx * BUTTON_SCALE + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
+    const centerX = textureSize / 2;
+    const centerY = textureSize / 2;
+
+    const graphics = scene.add.graphics();
+    const maxRadius = Math.floor(Math.min(side / 2, side / 2));
+    const effectiveRadius = Math.min(this.borderRadiusPx + WHITE_BORDER_RADIUS_EXTRA, maxRadius);
+    const finalRadius = Math.max(0, effectiveRadius);
+
+    // White border (outer)
+    graphics.fillStyle(Color.hex('white'), 1);
+    graphics.fillRoundedRect(
+      centerX - side / 2,
+      centerY - side / 2,
+      side,
+      side,
+      finalRadius
+    );
+
+    graphics.generateTexture(textureKey, textureSize, textureSize);
+    graphics.destroy();
+
+    return textureKey;
   }
 
   private createBackgroundTexture(scene: Scene): string {
@@ -252,7 +305,7 @@ export class FlatIconButton extends GameObjects.Container {
   }
 
   private setupContainer(): void {
-    this.add([this.backgroundSprite, this.iconText]);
+    this.add([this.whiteBorderSprite, this.backgroundSprite, this.iconText]);
   }
 
   private setupInteractivity(onClick?: () => void): void {
@@ -282,7 +335,7 @@ export class FlatIconButton extends GameObjects.Container {
     // Click effects
     this.backgroundSprite.on('pointerdown', () => {
       this.scene.tweens.add({
-        targets: [this.backgroundSprite, this.iconText],
+        targets: [this.whiteBorderSprite, this.backgroundSprite, this.iconText],
         scaleX: POINTER_DOWN_SCALE,
         scaleY: POINTER_DOWN_SCALE,
         duration: durations.click,
@@ -292,7 +345,7 @@ export class FlatIconButton extends GameObjects.Container {
 
     this.backgroundSprite.on('pointerup', () => {
       this.scene.tweens.add({
-        targets: [this.backgroundSprite, this.iconText],
+        targets: [this.whiteBorderSprite, this.backgroundSprite, this.iconText],
         scaleX: 1,
         scaleY: 1,
         duration: durations.click,

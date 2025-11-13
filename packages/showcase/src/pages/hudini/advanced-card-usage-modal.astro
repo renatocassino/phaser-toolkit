@@ -98,7 +98,7 @@ const closeButton = new FlatIconButton({
 </Layout>
 
 <script>
-  import { Card, Column, Row, TextButton, FlatIconButton, SizedBox, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, SceneWithHudini } from 'hudini';
+  import { loadFonts, Card, Column, Row, TextButton, FlatIconButton, SizedBox, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, SceneWithHudini } from 'hudini';
 
   class AdvancedCardModalScene extends SceneWithHudini {
     constructor() {
@@ -262,7 +262,8 @@ const closeButton = new FlatIconButton({
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
         ...gameConfig,
         plugins: {
           global: [
@@ -285,6 +286,7 @@ const closeButton = new FlatIconButton({
         (window as any).__phaserGames = {};
       }
       (window as any).__phaserGames['hudini-advanced-card-usage-modal-demo'] = game;
+      });
     }
   });
 </script>

@@ -213,6 +213,7 @@ panel.setMargin(24);`}</code></pre>
 <script>
   import Phaser from 'phaser';
   import {
+    loadFonts,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -505,7 +506,7 @@ import { loadFont } from 'font-awesome-for-phaser';
   // Initialize the game when the page loads
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
-    loadFont().then(() => {
+    Promise.all([loadFonts(), loadFont()]).then(() => {
       if (gameConfig) {
         const game = new Phaser.Game({
           ...gameConfig,

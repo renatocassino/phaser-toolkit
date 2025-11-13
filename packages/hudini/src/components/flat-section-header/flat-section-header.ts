@@ -10,11 +10,10 @@ import {
   type SpacingKey,
 } from 'phaser-wind';
 
-import { getColorVariant } from '../../utils/color-variants';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { Text } from '../text';
 
-export type SectionHeaderParams = {
+export type FlatSectionHeaderParams = {
   /** The Phaser scene to add the header to */
   scene: Scene;
   /** X position of the header */
@@ -43,16 +42,10 @@ const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 2;
 const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; // 4 pixels total
 const WHITE_BORDER_RADIUS_EXTRA = 2;
 
-// Color variant constants
-const TOKEN_LIGHTER_DIFF = -100;
-const TOKEN_DARKER_DIFF = 100;
-const COLOR_LIGHTER_AMOUNT = 30;
-const COLOR_DARKER_AMOUNT = -30;
-
 /**
- * A stylized section header component with shadow, text stroke and auto-sizing
+ * A flat section header component without gradient overlays, with text stroke and auto-sizing
  */
-export class SectionHeader extends GameObjects.Container {
+export class FlatSectionHeader extends GameObjects.Container {
   /** The white border sprite of the header */
   public whiteBorderSprite!: GameObjects.Sprite;
   /** The background sprite of the header */
@@ -70,10 +63,6 @@ export class SectionHeader extends GameObjects.Container {
   private borderRadiusPx!: number;
   /** Background color value */
   private colorButton!: string;
-  /** Light color variant for gradient */
-  private lightColorButton!: number;
-  /** Dark color variant for gradient */
-  private darkColorButton!: number;
   /** Text color value */
   private textColorValue!: string;
   /** Font family value */
@@ -82,7 +71,7 @@ export class SectionHeader extends GameObjects.Container {
   private textValue!: string;
 
   /**
-   * Creates a new SectionHeader
+   * Creates a new FlatSectionHeader
    * @param params Configuration parameters for the header
    */
   constructor({
@@ -96,7 +85,7 @@ export class SectionHeader extends GameObjects.Container {
     textColor = 'white',
     borderRadius = 'md',
     margin = '4',
-  }: SectionHeaderParams) {
+  }: FlatSectionHeaderParams) {
     super(scene, x, y);
     this.pw = getPWFromScene(scene);
 
@@ -116,8 +105,6 @@ export class SectionHeader extends GameObjects.Container {
         : this.pw.radius.px(borderRadius ?? ('md' as RadiusKey));
 
     this.colorButton = Color.rgb(backgroundColor as ColorKey);
-    this.lightColorButton = getColorVariant(backgroundColor as string, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
-    this.darkColorButton = getColorVariant(backgroundColor as string, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
     this.textColorValue = Color.rgb(textColor as ColorKey);
     this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
 
@@ -174,8 +161,6 @@ export class SectionHeader extends GameObjects.Container {
    */
   public setBackgroundColor(color: ColorKey | string): this {
     this.colorButton = Color.rgb(color as ColorKey);
-    this.lightColorButton = getColorVariant(color as string, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
-    this.darkColorButton = getColorVariant(color as string, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
     this.regenerateGraphics();
     return this;
   }
@@ -190,7 +175,6 @@ export class SectionHeader extends GameObjects.Container {
     this.headerText.setColor(this.textColorValue);
     return this;
   }
-
 
   /**
    * Sets the border radius of the header
@@ -278,7 +262,7 @@ export class SectionHeader extends GameObjects.Container {
    */
   private createWhiteBorderTexture(scene: Scene): string {
     const { width, height } = this.getHeaderDimensions();
-    const textureKey = `sectionHeader_whiteBorder_${this.borderRadiusPx}_${width}_${height}`;
+    const textureKey = `flatSectionHeader_whiteBorder_${this.borderRadiusPx}_${width}_${height}`;
 
     // White border is larger on each side
     const borderWidth = width + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
@@ -318,7 +302,7 @@ export class SectionHeader extends GameObjects.Container {
    */
   private createBackgroundTexture(scene: Scene): string {
     const { width, height } = this.getHeaderDimensions();
-    const textureKey = `sectionHeader_bg_${this.colorButton}_${this.borderRadiusPx}_${width}_${height}`;
+    const textureKey = `flatSectionHeader_bg_${this.colorButton}_${this.borderRadiusPx}_${width}_${height}`;
 
     // Add some padding for texture
     const padding = 8;
@@ -331,50 +315,18 @@ export class SectionHeader extends GameObjects.Container {
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
     const finalRadius = Math.max(0, effectiveRadius);
 
-    this.drawCssColorGradient(graphics, padding, width, height, finalRadius);
+    // Main background (flat, no gradient)
+    graphics.fillStyle(Color.hex(this.colorButton), 1);
+    graphics.fillRoundedRect(padding, padding, width, height, finalRadius);
+
+    // Black stroke border
+    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
+    graphics.strokeRoundedRect(padding, padding, width, height, finalRadius);
 
     graphics.generateTexture(textureKey, textureWidth, textureHeight);
     graphics.destroy();
 
     return textureKey;
-  }
-
-  /**
-   * Draws gradient using light/dark overlays on CSS color.
-   * Uses the same system as TextButton.
-   */
-  private drawCssColorGradient(
-    graphics: Phaser.GameObjects.Graphics,
-    padding: number,
-    width: number,
-    height: number,
-    effectiveRadius: number
-  ): void {
-    // Main background
-    graphics.fillStyle(Color.hex(this.colorButton), 1);
-    graphics.fillRoundedRect(padding, padding, width, height, effectiveRadius);
-
-    const PERCENT_HEIGHT = 0.15;
-    const overlayHeight = height * PERCENT_HEIGHT;
-
-    const topOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
-    graphics.fillStyle(this.lightColorButton, 1);
-    graphics.fillRoundedRect(padding, padding, width, overlayHeight, topOverlayRadius);
-
-    // Bottom darker overlay
-    const bottomOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
-    graphics.fillStyle(this.darkColorButton, 1);
-    graphics.fillRoundedRect(
-      padding,
-      padding + height - overlayHeight,
-      width,
-      overlayHeight,
-      bottomOverlayRadius,
-    );
-
-    // Black stroke border
-    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
-    graphics.strokeRoundedRect(padding, padding, width, height, effectiveRadius);
   }
 
   /**

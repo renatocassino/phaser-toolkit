@@ -137,7 +137,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 </Layout>
 
 <script>
-  import { Color, createTheme, HUDINI_KEY, HudiniPlugin, SceneWithHudini } from 'hudini';
+  import { loadFonts, Color, createTheme, HUDINI_KEY, HudiniPlugin, SceneWithHudini } from 'hudini';
 
   const theme = createTheme({
     colors: {
@@ -185,7 +185,8 @@ class PreviewScene extends SceneWithHudini<Theme> {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
         ...gameConfig,
         plugins: {
           global: [
@@ -207,6 +208,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
         (window as any).__phaserGames = {};
       }
       (window as any).__phaserGames['hudini-install-base-scene-demo'] = game;
+      });
     }
   });
 </script>

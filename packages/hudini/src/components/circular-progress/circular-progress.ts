@@ -16,13 +16,13 @@ export type CircularProgressParams = {
   icon?: IconKey;
   size?: FontSizeKey | number;
   color?: ColorKey | ColorToken;
-  rotationsPerSecond?: number;
+  rotationsPerMinute?: number;
 };
 
 const DEFAULT_ICON: IconKey = 'spinner';
 const DEFAULT_COLOR: ColorKey = 'blue';
-const ROTATIONS_PER_SECOND = 2;
-const ONE_SECOND = 1000;
+const ROTATIONS_PER_MINUTE = 60; // Default: 60 RPM = 1 rotation per second
+const ONE_MINUTE = 60000; // milliseconds
 
 export class CircularProgress extends GameObjects.Container {
   public iconText!: IconText;
@@ -38,11 +38,11 @@ export class CircularProgress extends GameObjects.Container {
     icon = DEFAULT_ICON,
     size,
     color = DEFAULT_COLOR,
-    rotationsPerSecond = ROTATIONS_PER_SECOND
+    rotationsPerMinute = ROTATIONS_PER_MINUTE
   }: CircularProgressParams) {
     super(scene, x, y);
     this.pw = getPWFromScene(scene);
-    this.rotationSpeed = rotationsPerSecond;
+    this.rotationSpeed = rotationsPerMinute;
 
     const sizePx = typeof size === 'number'
       ? size
@@ -75,10 +75,10 @@ export class CircularProgress extends GameObjects.Container {
 
   /**
    * Set the rotation speed
-   * @param speed - Rotations per second
+   * @param speed - Rotations per minute
    */
-  public setRotationsPerSecond(rotationsPerSecond: number): this {
-    this.rotationSpeed = rotationsPerSecond;
+  public setRotationsPerMinute(rotationsPerMinute: number): this {
+    this.rotationSpeed = rotationsPerMinute;
     if (this.isSpinning) {
       this.scene.tweens.killTweensOf(this.iconText);
       this.startSpinning();
@@ -162,7 +162,8 @@ export class CircularProgress extends GameObjects.Container {
   private startSpinning(): void {
     if (!this.isSpinning) return;
 
-    const duration = ONE_SECOND / this.rotationSpeed;
+    // Convert rotations per minute to duration in milliseconds for one full rotation
+    const duration = ONE_MINUTE / this.rotationSpeed;
 
     this.scene.tweens.add({
       targets: this.iconText,

@@ -30,7 +30,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
             <li><code class="bg-gray-200 px-2 py-1 rounded">icon</code> - Font Awesome icon key (default: 'spinner')</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">size</code> - Font size token or pixel value (default: 'md')</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - PhaserWind color token (default: 'blue')</li>
-            <li><code class="bg-gray-200 px-2 py-1 rounded">rotationsPerSecond</code> - Rotation speed (default: 2)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">rotationsPerMinute</code> - Rotation speed in RPM (default: 60)</li>
           </ul>
         </div>
       </div>
@@ -42,7 +42,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
           <ul class="space-y-2 text-sm">
             <li><code class="bg-gray-200 px-2 py-1 rounded">start()</code> - Start the spinning animation</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">stop()</code> - Stop the spinning animation</li>
-            <li><code class="bg-gray-200 px-2 py-1 rounded">setRotationsPerSecond(speed)</code> - Change rotation speed</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setRotationsPerMinute(rpm)</code> - Change rotation speed in RPM</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">setIcon(icon)</code> - Change the icon</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">setColor(color)</code> - Change the color</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">setSize(size)</code> - Change the size</li>
@@ -106,7 +106,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
             y: this.cameras.main.centerY + 100,
             icon: 'gear',
             color: 'purple',
-            rotationsPerSecond: 1,
+            rotationsPerMinute: 60, // 1 rotation per second
         });
         this.add.existing(customProgress);
     }
@@ -119,6 +119,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
 <script>
   import Phaser from 'phaser';
   import {
+    loadFonts,
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
@@ -209,11 +210,11 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         icon: 'rotate',
         color: 'purple-500',
         size: 'lg',
-        rotationsPerSecond: 0.5,
+        rotationsPerMinute: 30, // 0.5 rotations per second
       });
       this.add.existing(slowProgress);
       this.progresses.push(slowProgress);
-      this.add.text(this.cameras.main.centerX - 200, 350, 'Purple Rotate\n(0.5 rps)', {
+      this.add.text(this.cameras.main.centerX - 200, 350, 'Purple Rotate\n(30 RPM)', {
         color: pw.color.slate(300),
         align: 'center',
         fontSize: '14px',
@@ -227,11 +228,11 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         icon: 'arrows-rotate',
         color: 'yellow-500',
         size: 'lg',
-        rotationsPerSecond: 4,
+        rotationsPerMinute: 240, // 4 rotations per second
       });
       this.add.existing(fastProgress);
       this.progresses.push(fastProgress);
-      this.add.text(this.cameras.main.centerX, 350, 'Yellow Arrows\n(4 rps)', {
+      this.add.text(this.cameras.main.centerX, 350, 'Yellow Arrows\n(240 RPM)', {
         color: pw.color.slate(300),
         align: 'center',
         fontSize: '14px',
@@ -354,7 +355,8 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
+      Promise.all([loadFonts(), loadFont()]).then(() => {
+        const game = new Phaser.Game({
         ...gameConfig,
         scene: [CircularProgressDemoScene],
         plugins: {
@@ -376,6 +378,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         (window as any).__phaserGames = {};
       }
       (window as any).__phaserGames['hudini-circular-progress-demo'] = game;
+      });
     }
   });
 </script>

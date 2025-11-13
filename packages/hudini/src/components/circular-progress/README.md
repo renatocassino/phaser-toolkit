@@ -6,7 +6,7 @@ O componente `CircularProgress` é um indicador de carregamento animado que usa 
 
 - Ícone rotativo customizável (padrão: `spinner`)
 - Cores baseadas nos tokens do Phaser Wind (padrão: `blue`)
-- Velocidade de rotação configurável (padrão: 2 rotações por segundo)
+- Velocidade de rotação configurável (padrão: 60 rotações por minuto = 1 rotação por segundo)
 - Tamanho configurável usando tokens do Phaser Wind ou valores em pixels
 - Controles para iniciar/parar a animação
 
@@ -37,7 +37,7 @@ const customProgress = new CircularProgress({
   icon: 'gear',                    // Ícone personalizado
   color: 'red',                    // Cor personalizada
   size: 'lg',                      // Tamanho usando token do Phaser Wind
-  rotationsPerSecond: 1.5,         // 1.5 rotações por segundo
+  rotationsPerMinute: 90,         // 90 RPM = 1.5 rotações por segundo
 });
 
 // Ou usando tamanho em pixels
@@ -70,7 +70,7 @@ if (progress.spinning) {
 
 ```typescript
 // Alterar velocidade
-progress.setRotationsPerSecond(3); // 3 rotações por segundo
+progress.setRotationsPerMinute(180); // 180 RPM = 3 rotações por segundo
 
 // Alterar ícone
 progress.setIcon('rotate');
@@ -92,7 +92,7 @@ progress.setSize('xl'); // ou progress.setSize(48)
 | `icon` | `IconKey` | `'spinner'` | Ícone do Font Awesome |
 | `size` | `FontSizeKey \| number` | `'md'` | Tamanho do ícone |
 | `color` | `ColorKey` | `'blue'` | Cor do ícone |
-| `rotationsPerSecond` | `number` | `2` | Velocidade em rotações por segundo |
+| `rotationsPerMinute` | `number` | `60` | Velocidade em rotações por minuto (RPM) |
 
 ## Ícones Recomendados
 

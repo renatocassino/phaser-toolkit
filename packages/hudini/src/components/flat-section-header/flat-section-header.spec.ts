@@ -48,11 +48,6 @@ vi.mock('../../utils/get-pw-from-scene', () => ({
   })),
 }));
 
-// Mock color-variants
-vi.mock('../../utils/color-variants', () => ({
-  getColorVariant: vi.fn(() => 0x000000), // Return black as number
-}));
-
 // Mock the Text component
 vi.mock('../text', () => {
   class MockText {
@@ -103,56 +98,6 @@ vi.mock('../text', () => {
 
 // Mock Phaser
 vi.mock('phaser', () => {
-  class MockText {
-    private text: string;
-    private style: Record<string, string | number>;
-
-    constructor(
-      _x: number,
-      _y: number,
-      text: string,
-      style: Record<string, string | number>
-    ) {
-      this.text = text;
-      this.style = style;
-    }
-
-    setText(text: string): this {
-      this.text = text;
-      return this;
-    }
-
-    setOrigin(): this {
-      return this;
-    }
-    setFontSize(size: number): this {
-      this.style['fontSize'] = size;
-      return this;
-    }
-    setFontFamily(family: string): this {
-      this.style['fontFamily'] = family;
-      return this;
-    }
-    setColor(color: string): this {
-      this.style['color'] = color;
-      return this;
-    }
-    setStroke(color: string, thickness: number): this {
-      this.style['stroke'] = color;
-      this.style['strokeThickness'] = thickness;
-      return this;
-    }
-
-    getBounds(): { width: number; height: number } {
-      const charWidth = 10;
-      const lineHeight = parseInt(this.style['fontSize'] as string) ?? 18;
-      return {
-        width: this.text.length * charWidth,
-        height: lineHeight,
-      };
-    }
-  }
-
   class MockSprite {
     // eslint-disable-next-line no-unused-vars
     constructor(_x: number, _y: number, _texture: string) { }
@@ -207,14 +152,6 @@ vi.mock('phaser', () => {
 
   class Scene {
     add = {
-      text: vi.fn(
-        (
-          x: number,
-          y: number,
-          text: string,
-          style: Record<string, string | number>
-        ) => new MockText(x, y, text, style)
-      ),
       sprite: vi.fn(
         (x: number, y: number, texture: string) => new MockSprite(x, y, texture)
       ),
@@ -231,26 +168,26 @@ vi.mock('phaser', () => {
   return { GameObjects, Scene, Plugins };
 });
 
-import { SectionHeader } from './section-header';
+import { FlatSectionHeader } from './flat-section-header';
 
-describe('SectionHeader', () => {
-  it('should create a SectionHeader instance', () => {
+describe('FlatSectionHeader', () => {
+  it('should create a FlatSectionHeader instance', () => {
     const scene = new Scene();
 
-    const sectionHeader = new SectionHeader({
+    const flatSectionHeader = new FlatSectionHeader({
       scene,
       x: 100,
       y: 100,
       text: 'Section Title',
     });
 
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
+    expect(flatSectionHeader).toBeInstanceOf(FlatSectionHeader);
   });
 
   it('should create with custom properties', () => {
     const scene = new Scene();
 
-    const sectionHeader = new SectionHeader({
+    const flatSectionHeader = new FlatSectionHeader({
       scene,
       x: 100,
       y: 100,
@@ -263,29 +200,29 @@ describe('SectionHeader', () => {
       margin: '6',
     });
 
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
+    expect(flatSectionHeader).toBeInstanceOf(FlatSectionHeader);
   });
 
   it('should support method chaining for colors', () => {
     const scene = new Scene();
-    const sectionHeader = new SectionHeader({
+    const flatSectionHeader = new FlatSectionHeader({
       scene,
       x: 100,
       y: 100,
       text: 'Test Header',
     });
 
-    const result = sectionHeader
+    const result = flatSectionHeader
       .setTextColor('white')
       .setBackgroundColor('blue-600');
 
-    expect(result).toBe(sectionHeader);
+    expect(result).toBe(flatSectionHeader);
   });
 
   it('should handle borderRadius full correctly in constructor', () => {
     const scene = new Scene();
 
-    const sectionHeader = new SectionHeader({
+    const flatSectionHeader = new FlatSectionHeader({
       scene,
       x: 100,
       y: 100,
@@ -293,21 +230,20 @@ describe('SectionHeader', () => {
       borderRadius: 'full',
     });
 
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
+    expect(flatSectionHeader).toBeInstanceOf(FlatSectionHeader);
   });
 
-
-  it('should use default display font and bold style', () => {
+  it('should use default display font', () => {
     const scene = new Scene();
 
-    const sectionHeader = new SectionHeader({
+    const flatSectionHeader = new FlatSectionHeader({
       scene,
       x: 100,
       y: 100,
       text: 'Default Style',
     });
 
-    expect(sectionHeader).toBeInstanceOf(SectionHeader);
-    expect(sectionHeader.headerText).toBeDefined();
+    expect(flatSectionHeader).toBeInstanceOf(FlatSectionHeader);
+    expect(flatSectionHeader.headerText).toBeDefined();
   });
 });

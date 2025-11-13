@@ -8,6 +8,7 @@ export * from './linear-progress';
 export * from './panel';
 export * from './radial-progress';
 export * from './section-header';
+export * from './flat-section-header';
 export * from './sized-box';
 export * from './text';
 export * from './text-button';

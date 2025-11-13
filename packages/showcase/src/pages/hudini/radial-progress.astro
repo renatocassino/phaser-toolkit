@@ -133,6 +133,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
 <script>
   import Phaser from 'phaser';
   import {
+    loadFonts,
     Color,
     createTheme,
     HUDINI_KEY,
@@ -455,7 +456,8 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
         ...gameConfig,
         scene: [RadialProgressDemoScene],
         plugins: {
@@ -477,6 +479,7 @@ class ProgressDemoScene extends SceneWithHudini<Theme> {
         (window as any).__phaserGames = {};
       }
       (window as any).__phaserGames['hudini-radial-progress-demo'] = game;
+      });
     }
   });
 </script>

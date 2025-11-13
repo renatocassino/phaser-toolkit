@@ -1,5 +1,13 @@
 # phaser-wind
 
+## 0.18.1
+
+### Patch Changes
+
+- c13b677: Consider token color without shade key as 500, better ui to second stroke and optional color to buttons'
+- Updated dependencies [c13b677]
+  - phaser-wind@0.9.1
+
 ## 0.18.0
 
 ### Minor Changes

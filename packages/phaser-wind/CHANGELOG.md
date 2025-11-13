@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.9.1
+
+### Patch Changes
+
+- c13b677: Consider token color without shade key as 500, better ui to second stroke and optional color to buttons'
+
 ## 0.9.0
 
 ### Minor Changes

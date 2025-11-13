@@ -36,7 +36,8 @@ export type CardParams = {
 // Border constants
 const BLACK_BORDER_THICKNESS = 2;
 const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 2;
-const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; // 4 pixels total
+// eslint-disable-next-line no-magic-numbers
+const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 3; // 6 pixels total
 const WHITE_BORDER_RADIUS_EXTRA = 2;
 
 /**

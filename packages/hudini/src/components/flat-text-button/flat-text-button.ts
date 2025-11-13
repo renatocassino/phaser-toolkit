@@ -68,8 +68,8 @@ const POINTER_DOWN_SCALE = 0.95;
 
 // Border constants
 const BLACK_BORDER_THICKNESS = 2;
-const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 2;
-const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; // 4 pixels total
+const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 3;
+const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; // 6 pixels total
 const WHITE_BORDER_RADIUS_EXTRA = 2;
 
 /**
@@ -104,7 +104,7 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
     text,
     fontSize = 'lg',
     font,
-    color = 'blue',
+    color = 'blue-500',
     textColor = 'white',
     borderRadius = 'md',
     padding = '4',

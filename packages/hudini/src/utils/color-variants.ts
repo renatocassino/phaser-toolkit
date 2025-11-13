@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import { Color, type ColorKey, type ShadeKey } from 'phaser-wind';
+import { Color, palette, type ColorKey, type ShadeKey } from 'phaser-wind';
 
 /**
  * Calculates a color variant by adjusting brightness.
  *
- * @param color - The base color (can be a Phaser Wind token like "blue-500" or a CSS color like "#3B82F6")
+ * @param color - The base color (can be a Phaser Wind token like "blue-500", a color name like "red", or a CSS color like "#3B82F6")
  * @param tokenDiff - Amount to adjust the shade for color tokens. Positive values make it darker, negative lighter.
  *                    For example: -400 for lighter (blue-500 → blue-100), +400 for darker (blue-500 → blue-900)
  * @param colorDiff - Amount to lighten/darken CSS colors. Positive values lighten, negative values darken.
@@ -12,6 +12,7 @@ import { Color, type ColorKey, type ShadeKey } from 'phaser-wind';
  * @returns The adjusted color as a number
  *
  * @remarks
+ * - If only a color name is provided without a shade (e.g., "red"), it automatically adds "-500" as the default shade
  * - If a color token is provided (e.g., "blue-500"), it uses the token system to calculate variants
  *   by adjusting the shade value with tokenDiff (clamped between 100-900)
  * - If a CSS color is provided (hex or rgb), it uses Phaser's lighten/darken methods
@@ -19,6 +20,10 @@ import { Color, type ColorKey, type ShadeKey } from 'phaser-wind';
  *
  * @example
  * ```typescript
+ * // Using color name only - defaults to -500
+ * const defaultRed = getColorVariant('red', 0, 0);
+ * // Returns red-500 color value
+ *
  * // Using color token - lighter variant
  * const lightBlue = getColorVariant('blue-500', -400, 0);
  * // Returns blue-100 color value
@@ -41,11 +46,20 @@ export const getColorVariant = (
   tokenDiff: number,
   colorDiff: number
 ): number => {
-  const colorRgb = Color.rgb(color as ColorKey);
+  // If only the color name is provided (without shade), validate and add -500 as default
+  let normalizedColor = color;
+  if (typeof color === 'string' && !color.includes('-') && !Color.isValidColorToken(color)) {
+    // Check if the color exists in the palette
+    if (color in palette && color !== 'black' && color !== 'white') {
+      normalizedColor = `${color}-500`;
+    }
+  }
 
-  if (Color.isValidColorToken(color as string)) {
+  const colorRgb = Color.rgb(normalizedColor as ColorKey);
+
+  if (Color.isValidColorToken(normalizedColor as string)) {
     // Token-based calculation
-    const parts: [string, string] = color.split('-') as [string, string];
+    const parts: [string, string] = normalizedColor.split('-') as [string, string];
     const colorShade = parseInt(parts[1].toString(), 10);
     const shadeMin = 100;
     const shadeMax = 900;

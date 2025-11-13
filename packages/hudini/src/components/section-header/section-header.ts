@@ -12,6 +12,7 @@ import {
 
 import { getColorVariant } from '../../utils/color-variants';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
+import { ContainerInteractive } from '../container-interactive';
 import { Text } from '../text';
 
 export type SectionHeaderParams = {
@@ -52,7 +53,7 @@ const COLOR_DARKER_AMOUNT = -30;
 /**
  * A stylized section header component with shadow, text stroke and auto-sizing
  */
-export class SectionHeader extends GameObjects.Container {
+export class SectionHeader extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   /** The white border sprite of the header */
   public whiteBorderSprite!: GameObjects.Sprite;
   /** The background sprite of the header */
@@ -97,7 +98,7 @@ export class SectionHeader extends GameObjects.Container {
     borderRadius = 'md',
     margin = '4',
   }: SectionHeaderParams) {
-    super(scene, x, y);
+    super({ scene, x, y });
     this.pw = getPWFromScene(scene);
 
     // Store values
@@ -125,7 +126,8 @@ export class SectionHeader extends GameObjects.Container {
     this.createWhiteBorderSprite(scene);
     this.createBackgroundSprite(scene);
     this.setupContainer();
-    this.setupInteractivity();
+    
+    this.hitArea = this.backgroundSprite;
   }
 
   /**
@@ -393,19 +395,6 @@ export class SectionHeader extends GameObjects.Container {
    */
   private setupContainer(): void {
     this.add([this.whiteBorderSprite, this.backgroundSprite, this.headerText]);
-  }
-
-  /**
-   * Sets up interactivity for the header
-   */
-  private setupInteractivity(): void {
-    this.setInteractive();
-    this.on('pointerdown', () => {
-      this.setScale(0.95);
-      this.on('pointerup', () => {
-        this.setScale(1);
-      });
-    });
   }
 
 }

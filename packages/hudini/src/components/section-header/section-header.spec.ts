@@ -62,8 +62,8 @@ vi.mock('../text', () => {
     constructor(params: { scene: unknown; x: number; y: number; text: string; size?: number; fontFamily?: string }) {
       this.text = params.text;
       this.style = {
-        fontSize: params.size || 22,
-        fontFamily: params.fontFamily || 'Bebas Neue',
+        fontSize: params.size ?? 22,
+        fontFamily: params.fontFamily ?? 'Bebas Neue',
       };
     }
 

@@ -133,8 +133,8 @@ describe('ColorPicker', () => {
         secondary: 'slate-50',
       });
 
-      expect(color.rgb('primary')).toBe('rgb(239, 68, 68)');
-      expect(color.rgb('secondary')).toBe('rgb(248, 250, 252)');
+      expect(color.rgb('primary')).toBe(RED_500_RGB);
+      expect(color.rgb('secondary')).toBe(SLATE_50_RGB);
     });
   });
 

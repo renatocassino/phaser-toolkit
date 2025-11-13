@@ -306,7 +306,10 @@ export class IconButton extends GameObjects.Container {
   ): void {
     // Convert darkColorButton (number) to RGB string
     const darkColorObj = Phaser.Display.Color.ValueToColor(this.darkColorButton);
-    const darkColorString = `rgb(${darkColorObj.color32 >> 16 & 0xff}, ${darkColorObj.color32 >> 8 & 0xff}, ${darkColorObj.color32 & 0xff})`;
+    const RGB_MASK = 0xff;
+    const RGB_SHIFT_R = 16;
+    const RGB_SHIFT_G = 8;
+    const darkColorString = `rgb(${darkColorObj.color32 >> RGB_SHIFT_R & RGB_MASK}, ${darkColorObj.color32 >> RGB_SHIFT_G & RGB_MASK}, ${darkColorObj.color32 & RGB_MASK})`;
 
     this.iconText = new IconText({
       scene,

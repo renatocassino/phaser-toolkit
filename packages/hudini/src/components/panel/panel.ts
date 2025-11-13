@@ -109,19 +109,20 @@ export class Panel extends GameObjects.Container {
      * Updates the layout after property changes
      */
     private updateLayout(): void {
-        // Get card bounds
-        const cardBounds = this.card.getBounds();
+        // Get card size
+        const cardSize = { width: this.card.width, height: this.card.height };
 
         // Calculate header position (top of the card)
         if (this.sectionHeader) {
-            const headerY = -cardBounds.height / 2;
+            const dividerSectionHeader = 4;
+            const headerY = -cardSize.height / 2 - this.sectionHeader.height / dividerSectionHeader;
             this.sectionHeader.setPosition(0, headerY);
         }
 
         // Calculate close button position (top-right corner)
         if (this.closeButton) {
-            const buttonX = cardBounds.width / 2 - CLOSE_BUTTON_SIZE / 2 - CLOSE_BUTTON_MARGIN;
-            const buttonY = -cardBounds.height / 2 + CLOSE_BUTTON_SIZE / 2 + CLOSE_BUTTON_MARGIN;
+            const buttonX = cardSize.width / 2 - CLOSE_BUTTON_SIZE / 2 + CLOSE_BUTTON_MARGIN;
+            const buttonY = -cardSize.height / 2 + CLOSE_BUTTON_SIZE / 2 - CLOSE_BUTTON_MARGIN;
             this.closeButton.setPosition(buttonX, buttonY);
         }
     }

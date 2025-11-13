@@ -35,7 +35,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
             <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - Button color token or CSS color</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">textColor</code> - Text color token or CSS color</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius token or pixel value</li>
-            <li><code class="bg-gray-200 px-2 py-1 rounded">margin</code> - Internal padding using spacing tokens</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">padding</code> - Internal padding using spacing tokens</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">fontSize</code> - Text size using typography tokens</li>
           </ul>
         </div>
@@ -77,10 +77,10 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
             x: this.cameras.main.centerX,
             y: this.cameras.main.centerY - 50,
             text: 'Primary Button',
-            backgroundColor: 'blue-500',
+            color: 'blue-500',
             textColor: 'white',
             borderRadius: 'md',
-            margin: '4',
+            padding: '4',
         });
         this.add.existing(primaryButton);
 
@@ -90,10 +90,10 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
             x: this.cameras.main.centerX,
             y: this.cameras.main.centerY + 50,
             text: 'Secondary Button',
-            backgroundColor: 'gray-200',
+            color: 'gray-200',
             textColor: 'gray-800',
             borderRadius: 'lg',
-            margin: '6',
+            padding: '6',
         });
         this.add.existing(secondaryButton);
     }

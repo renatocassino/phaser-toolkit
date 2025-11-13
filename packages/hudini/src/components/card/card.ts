@@ -397,8 +397,9 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
       width = cw + this.marginPx * 2;
       height = ch + this.marginPx * 2;
     } else {
-      width = this.width || 100;
-      height = this.height || 100;
+      const DEFAULT_SIZE = 100;
+      width = this.width || DEFAULT_SIZE;
+      height = this.height || DEFAULT_SIZE;
     }
 
     return { width, height };

@@ -55,8 +55,8 @@ vi.mock('../text', () => {
     constructor(params: { scene: unknown; x: number; y: number; text: string; size?: number; fontFamily?: string }) {
       this.text = params.text;
       this.style = {
-        fontSize: params.size || 22,
-        fontFamily: params.fontFamily || 'Bebas Neue',
+        fontSize: params.size ?? 22,
+        fontFamily: params.fontFamily ?? 'Bebas Neue',
       };
     }
 
@@ -82,17 +82,22 @@ vi.mock('../text', () => {
     }
 
     getBounds(): { width: number; height: number } {
-      const charWidth = 10;
-      const lineHeight = parseInt(this.style['fontSize'] as string) || 16;
-      return {
-        width: this.text.length * charWidth,
-        height: lineHeight,
-      };
+      return getTextBounds(this.text, this.style['fontSize'] ?? 16);
     }
   }
 
   return { Text: MockText };
 });
+
+// Helper function for getBounds
+const getTextBounds = (text: string, fontSize: string | number): { width: number; height: number } => {
+  const charWidth = 10;
+  const lineHeight = parseInt(String(fontSize)) || 16;
+  return {
+    width: text.length * charWidth,
+    height: lineHeight,
+  };
+};
 
 // Mock Phaser
 vi.mock('phaser', () => {
@@ -132,12 +137,7 @@ vi.mock('phaser', () => {
     }
 
     getBounds(): { width: number; height: number } {
-      const charWidth = 10;
-      const lineHeight = parseInt(this.style['fontSize'] as string) || 16;
-      return {
-        width: this.text.length * charWidth,
-        height: lineHeight,
-      };
+      return getTextBounds(this.text, this.style['fontSize'] ?? 16);
     }
   }
 

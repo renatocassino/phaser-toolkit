@@ -106,6 +106,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 <script>
   import Phaser from 'phaser';
   import {
+    loadFonts,
     type RadiusKey,
     createTheme,
     HUDINI_KEY,
@@ -191,28 +192,31 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      const game = new Phaser.Game({
-        ...gameConfig,
-        scene: [TextButtonDemoScene],
-        plugins: {
-          global: [
-            {
-              key: HUDINI_KEY,
-              plugin: HudiniPlugin,
-              mapping: HUDINI_KEY,
-              data: {
-                theme,
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [TextButtonDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: {
+                  theme,
+                },
               },
-            },
-          ],
-        },
-      });
+            ],
+          },
+        });
 
-      // Store the game instance
-      if (!(window as any).__phaserGames) {
-        (window as any).__phaserGames = {};
-      }
-      (window as any).__phaserGames['hudini-text-button-demo'] = game;
+
+        // Store the game instance
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-text-button-demo'] = game;
+    });
     }
   });
 </script>

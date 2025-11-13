@@ -135,10 +135,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
 
     this.textColorValue = Color.rgb(textColor as ColorKey);
-    this.fontFamily =
-      typeof font === 'string'
-        ? font
-        : this.pw.font.family(font ?? ('primary' as FontKey));
+    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
 
     this.createButtonText(scene);
     this.createBackgroundSprite(scene);

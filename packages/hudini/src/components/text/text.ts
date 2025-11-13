@@ -58,9 +58,8 @@ export class Text extends Phaser.GameObjects.Text {
     fontFamily = 'Bebas Neue',
   }: TextParams) {
     super(scene, x, y, text, {
-      font: `${size}px "Bebas Neue"`,
+      font: `${size}px "${fontFamily}"`,
       color: Color.white(),
-      fontWeight: 'bold',
       stroke: Color.black(),
       strokeThickness: 2,
       shadow: {

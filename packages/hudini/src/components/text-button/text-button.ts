@@ -305,12 +305,11 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     const graphics = scene.add.graphics();
 
-    // Limit radius to maximum possible for the button dimensions
-    const maxRadius = Math.min(width / 2, height / 2);
+    const maxRadius = Math.floor(Math.min(width / 2, height / 2));
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
+        const finalRadius = Math.max(0, effectiveRadius);
 
-    this.drawCssColorGradient(graphics, padding, width, height, effectiveRadius);
-
+    this.drawCssColorGradient(graphics, padding, width, height, finalRadius);
     graphics.generateTexture(textureKey, textureWidth, textureHeight);
     graphics.destroy();
 
@@ -319,6 +318,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
   /**
    * Draws gradient using white/black overlays on CSS color.
+   * Uses a mask to ensure overlays respect the button's rounded corners.
    */
   private drawCssColorGradient(
     graphics: Phaser.GameObjects.Graphics,
@@ -331,20 +331,22 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     graphics.fillStyle(Color.hex(this.colorButton), 1);
     graphics.fillRoundedRect(padding, padding, width, height, effectiveRadius);
 
-    // Top lighter overlay (white with alpha)
     const PERCENT_HEIGHT = 0.15;
     const overlayHeight = height * PERCENT_HEIGHT;
-    graphics.fillStyle(this.lightColorButton, 1);
-    graphics.fillRoundedRect(padding, padding, width, overlayHeight, effectiveRadius);
 
-    // Bottom darker overlay (black with alpha)
+    const topOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
+    graphics.fillStyle(this.lightColorButton, 1);
+    graphics.fillRoundedRect(padding, padding, width, overlayHeight, topOverlayRadius);
+    
+    // Bottom darker overlay
+    const bottomOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
     graphics.fillStyle(this.darkColorButton, 1);
     graphics.fillRoundedRect(
       padding,
       padding + height - overlayHeight,
       width,
       overlayHeight,
-      effectiveRadius,
+      bottomOverlayRadius,
     );
 
     // Black stroke border

@@ -270,7 +270,7 @@ export const createColor = <T = BaseThemeConfig['colors']>(
       return rgb(colorFromTheme as ColorToken);
     }
 
-    const parts = (color as string).split('-');
+    const parts = (color as string | undefined)?.split('-') ?? [];
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
@@ -325,7 +325,7 @@ export const createColor = <T = BaseThemeConfig['colors']>(
       return hex(colorFromTheme as ColorToken);
     }
 
-    const parts = (color as string).split('-');
+    const parts = (color as string | undefined)?.split('-') ?? [];
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;

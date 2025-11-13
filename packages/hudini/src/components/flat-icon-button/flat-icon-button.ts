@@ -39,6 +39,19 @@ const CENTER_OFFSET = 1.1;
 const HOVER_SCALE = 1.05;
 const POINTER_DOWN_SCALE = 0.95;
 
+// Border constants
+const BLACK_BORDER_THICKNESS = 2;
+
+// Icon constants
+const ICON_STROKE_THICKNESS = 3;
+const ICON_SHADOW_OFFSET_X = 0;
+const ICON_SHADOW_OFFSET_Y = 3;
+const ICON_SHADOW_BLUR = 0;
+const ICON_OFFSET_Y = -1.5; // Half of shadow offset to keep visually centered
+
+// Origin constants
+const SPRITE_ORIGIN = 0.5;
+
 export class FlatIconButton extends GameObjects.Container {
   public backgroundSprite!: GameObjects.Sprite;
   public iconText!: IconText;
@@ -157,7 +170,7 @@ export class FlatIconButton extends GameObjects.Container {
   private createBackgroundSprite(scene: Scene): void {
     const textureKey = this.createBackgroundTexture(scene);
     this.backgroundSprite = scene.add.sprite(0, 0, textureKey);
-    this.backgroundSprite.setOrigin(0.5, 0.5);
+    this.backgroundSprite.setOrigin(SPRITE_ORIGIN, SPRITE_ORIGIN);
     this.backgroundSprite.setAlpha(this.backgroundOpacityValue);
   }
 
@@ -191,7 +204,7 @@ export class FlatIconButton extends GameObjects.Container {
     );
 
     // Black stroke border
-    graphics.lineStyle(2, Color.hex('black'), 1);
+    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
     graphics.strokeRoundedRect(
       centerX - side / 2,
       centerY - side / 2,
@@ -216,18 +229,18 @@ export class FlatIconButton extends GameObjects.Container {
     this.iconText = new IconText({
       scene,
       x: 0,
-      y: -1.5, // Offset up by half of shadow offset to keep visually centered
+      y: ICON_OFFSET_Y,
       icon,
       size: this.baseSizePx,
       style: {
         color: this.iconColorValue,
-        strokeThickness: 3,
+        strokeThickness: ICON_STROKE_THICKNESS,
         stroke: darkColorString,
         shadow: {
-          offsetX: 0,
-          offsetY: 3,
+          offsetX: ICON_SHADOW_OFFSET_X,
+          offsetY: ICON_SHADOW_OFFSET_Y,
           color: darkColorString,
-          blur: 0,
+          blur: ICON_SHADOW_BLUR,
           stroke: true,
           fill: true,
         },
@@ -235,7 +248,7 @@ export class FlatIconButton extends GameObjects.Container {
       iconStyle,
     });
     this.iconText.setAlpha(this.iconOpacityValue);
-    this.iconText.setOrigin(0.5, 0.5);
+    this.iconText.setOrigin(SPRITE_ORIGIN, SPRITE_ORIGIN);
   }
 
   private setupContainer(): void {

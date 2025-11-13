@@ -210,7 +210,7 @@ import { type ColorKey, type ColorToken, type FontSizeKey } from 'phaser-wind';
 
     create(): void {
       const { pw } = this.hudini;
-      this.cameras.main.setBackgroundColor(pw.color.white());
+      this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title
       this.add.text(this.cameras.main.centerX, 40, 'Icon Button Examples', {

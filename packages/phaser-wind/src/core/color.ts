@@ -253,6 +253,20 @@ export const createColor = <T = BaseThemeConfig['colors']>(
   };
 
   /**
+   * Normalizes a color by adding -500 if only color name is provided
+   * @param color - Color token or color name
+   * @returns Normalized color token
+   */
+  const normalizeColorToken = <K>(color: K): K => {
+    if (typeof color === 'string' && !String(color).includes('-')) {
+      if (color in palette && color !== 'black' && color !== 'white') {
+        return `${color}-500` as K;
+      }
+    }
+    return color;
+  };
+
+  /**
    * Get RGB string representation of a color
    * @param color - Color token, theme color key or valid color string
    * @returns RGB color string
@@ -270,26 +284,29 @@ export const createColor = <T = BaseThemeConfig['colors']>(
       return rgb(colorFromTheme as ColorToken);
     }
 
-    const parts = (color as string | undefined)?.split('-') ?? [];
+    // Normalize color: add -500 if only color name is provided
+    const normalizedColor = normalizeColorToken(color);
+
+    const parts = (normalizedColor as string | undefined)?.split('-') ?? [];
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
       const colorValue = palette[colorKey]?.[shade];
       if (!colorValue) {
-        if (isValidColor(color as string)) {
-          return color as string;
+        if (isValidColor(normalizedColor as string)) {
+          return normalizedColor as string;
         }
         throw new Error(`Color token "${colorKey}-${shade}" not found`);
       }
       return colorValue;
     }
 
-    const colorValue = palette[color as 'black' | 'white'];
+    const colorValue = palette[normalizedColor as 'black' | 'white'];
     if (!colorValue) {
-      if (isValidColor(color as string)) {
-        return color as string;
+      if (isValidColor(normalizedColor as string)) {
+        return normalizedColor as string;
       }
-      throw new Error(`Color token "${color as string}" not found`);
+      throw new Error(`Color token "${normalizedColor as string}" not found`);
     }
     return colorValue;
   };
@@ -325,25 +342,28 @@ export const createColor = <T = BaseThemeConfig['colors']>(
       return hex(colorFromTheme as ColorToken);
     }
 
-    const parts = (color as string | undefined)?.split('-') ?? [];
+    // Normalize color: add -500 if only color name is provided
+    const normalizedColor = normalizeColorToken(color);
+
+    const parts = (normalizedColor as string | undefined)?.split('-') ?? [];
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
       const colorValue = palette[colorKey]?.[shade];
       if (!colorValue) {
-        if (isValidColor(color as string)) {
-          return convertColorValueToNumber(color as string);
+        if (isValidColor(normalizedColor as string)) {
+          return convertColorValueToNumber(normalizedColor as string);
         }
         throw new Error(`Color token "${colorKey}-${shade}" not found`);
       }
       return convertColorValueToNumber(colorValue);
     }
 
-    const colorToConvert = palette[color as 'black' | 'white'] as string;
+    const colorToConvert = palette[normalizedColor as 'black' | 'white'] as string;
     if (isValidColor(colorToConvert)) {
       return convertColorValueToNumber(colorToConvert);
     }
-    throw new Error(`Color token "${color as string}" not found`);
+    throw new Error(`Color token "${normalizedColor as string}" not found`);
   };
 
   const api: Color<T> = {

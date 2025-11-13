@@ -310,4 +310,50 @@ describe('ColorPicker', () => {
       );
     });
   });
+
+  describe('auto-append -500 for color names', () => {
+    it('should add -500 to color name in rgb method', () => {
+      expect(ColorDefault.rgb('red' as ColorToken)).toBe(RED_500_RGB);
+      expect(ColorDefault.rgb('blue' as ColorToken)).toBe('rgb(59, 130, 246)');
+      expect(ColorDefault.rgb('green' as ColorToken)).toBe('rgb(34, 197, 94)');
+    });
+
+    it('should add -500 to color name in hex method', () => {
+      expect(ColorDefault.hex('red' as ColorToken)).toBe(0xef4444);
+      expect(ColorDefault.hex('blue' as ColorToken)).toBe(0x3b82f6);
+      expect(ColorDefault.hex('green' as ColorToken)).toBe(0x22c55e);
+    });
+
+    it('should not add -500 to black or white', () => {
+      expect(ColorDefault.rgb('black')).toBe('#000');
+      expect(ColorDefault.rgb('white')).toBe('#fff');
+      expect(ColorDefault.hex('black')).toBe(0x000000);
+      expect(ColorDefault.hex('white')).toBe(0xffffff);
+    });
+
+    it('should not add -500 if shade is already specified', () => {
+      expect(ColorDefault.rgb('red-300' as ColorToken)).toBe('rgb(252, 165, 165)');
+      expect(ColorDefault.hex('blue-700' as ColorToken)).toBe(0x1d4ed8);
+    });
+
+    it('should work with all palette colors', () => {
+      const colorNames = [
+        'slate', 'gray', 'zinc', 'neutral', 'stone',
+        'red', 'orange', 'amber', 'yellow', 'lime',
+        'green', 'emerald', 'teal', 'cyan', 'sky',
+        'blue', 'indigo', 'violet', 'purple', 'fuchsia',
+        'pink', 'rose'
+      ];
+
+      colorNames.forEach(colorName => {
+        expect(() => ColorDefault.rgb(colorName as ColorToken)).not.toThrow();
+        expect(() => ColorDefault.hex(colorName as ColorToken)).not.toThrow();
+      });
+    });
+
+    it('should throw for invalid color names', () => {
+      expect(() => ColorDefault.rgb('invalidcolor' as ColorToken)).toThrow();
+      expect(() => ColorDefault.hex('notacolor' as ColorToken)).toThrow();
+    });
+  });
 });

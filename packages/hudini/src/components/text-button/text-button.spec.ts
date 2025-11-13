@@ -60,12 +60,21 @@ vi.mock('../text', () => {
   return { Text: MockText };
 });
 
-// Mock phaser-wind
+// Mock phaser-wind with palette
 vi.mock('phaser-wind', () => ({
   Color: {
     rgb: vi.fn((color: string) => `rgb-${color}`),
     hex: vi.fn((color: string) => `hex-${color}`),
     isValidColorToken: vi.fn(() => false),
+  },
+  palette: {
+    red: {}, blue: {}, green: {}, purple: {}, amber: {},
+    slate: {}, gray: {}, zinc: {}, neutral: {}, stone: {},
+    orange: {}, yellow: {}, lime: {}, emerald: {}, teal: {},
+    cyan: {}, sky: {}, indigo: {}, violet: {}, fuchsia: {},
+    pink: {}, rose: {},
+    black: '#000',
+    white: '#fff',
   },
   PHASER_WIND_KEY: 'PhaserWind',
   SceneWithPhaserWind: class SceneWithPhaserWind { },

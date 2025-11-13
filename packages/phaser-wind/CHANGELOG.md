@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.9.0
+
+### Minor Changes
+
+- dc393ae: new style of components to Hudini, new methods do PhaserWind and function to check if is an icon in font-awesome
+
 ## 0.8.0
 
 ### Minor Changes

@@ -193,7 +193,7 @@ button.setBorderRadius('lg');`}</code></pre>
     IconButton,
   } from 'hudini';
 import { type IconKey, loadFont } from 'font-awesome-for-phaser';
-import { type ColorKey, type FontSizeKey } from 'phaser-wind';
+import { type ColorKey, type ColorToken, type FontSizeKey } from 'phaser-wind';
 
   // Create theme
   const theme = createTheme({});
@@ -210,7 +210,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
 
     create(): void {
       const { pw } = this.hudini;
-      this.cameras.main.setBackgroundColor(pw.color.slate(900));
+      this.cameras.main.setBackgroundColor(pw.color.white());
 
       // Title
       this.add.text(this.cameras.main.centerX, 40, 'Icon Button Examples', {
@@ -234,7 +234,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 150,
         icon: 'heart',
         size: 'lg',
-        color: 'red',
+        color: 'red-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -252,7 +252,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 150,
         icon: 'star',
         size: 'lg',
-        color: 'yellow',
+        color: 'yellow-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -270,7 +270,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 150,
         icon: 'play',
         size: 'lg',
-        color: 'green',
+        color: 'green-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -288,7 +288,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 150,
         icon: 'pause',
         size: 'lg',
-        color: 'blue',
+        color: 'blue-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -306,7 +306,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 150,
         icon: 'gear',
         size: 'lg',
-        color: 'gray',
+        color: 'gray-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -324,7 +324,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 280,
         icon: 'trash',
         size: 'base',
-        color: 'red',
+        color: 'red-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -342,7 +342,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 280,
         icon: 'user',
         size: 'base',
-        color: 'purple',
+        color: 'purple-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -360,7 +360,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 280,
         icon: 'house',
         size: 'base',
-        color: 'indigo',
+        color: 'indigo-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -378,7 +378,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 280,
         icon: 'envelope',
         size: 'base',
-        color: 'cyan',
+        color: 'cyan-500',
         onClick: () => {
           this.clickCount++;
           if (this.clickText) {
@@ -390,11 +390,11 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
       this.buttons.push(envelopeButton);
 
       // Example 10: Different sizes row
-      const sizes: { size: FontSizeKey | number, icon: IconKey, color: ColorKey, x: number }[] = [
-        { size: 'sm' as const, icon: 'circle', color: 'blue' as const, x: this.cameras.main.centerX - 180 },
-        { size: 'base' as const, icon: 'square', color: 'green' as const, x: this.cameras.main.centerX - 60 },
-        { size: 'lg' as const, icon: 'diamond', color: 'purple' as const, x: this.cameras.main.centerX + 60 },
-        { size: 'xl' as const, icon: 'triangle-exclamation', color: 'red' as const, x: this.cameras.main.centerX + 180 },
+      const sizes: { size: FontSizeKey | number, icon: IconKey, color: ColorToken, x: number }[] = [
+        { size: 'sm' as const, icon: 'circle', color: 'blue-500' as const, x: this.cameras.main.centerX - 180 },
+        { size: 'base' as const, icon: 'square', color: 'green-500' as const, x: this.cameras.main.centerX - 60 },
+        { size: 'lg' as const, icon: 'diamond', color: 'purple-300' as const, x: this.cameras.main.centerX + 60 },
+        { size: 'xl' as const, icon: 'triangle-exclamation', color: 'emerald-700' as const, x: this.cameras.main.centerX + 180 },
       ];
 
       sizes.forEach((config, index) => {
@@ -423,7 +423,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 540,
         icon: 'check',
         size: 'lg',
-        color: 'green',
+        color: 'green-600',
         borderRadius: 'lg',
         onClick: () => {
           this.clickCount++;
@@ -441,7 +441,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
         y: 540,
         icon: 'xmark',
         size: 'lg',
-        color: 'red',
+        color: 'red-600',
         borderRadius: 'md',
         onClick: () => {
           this.clickCount++;

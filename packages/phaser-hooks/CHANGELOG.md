@@ -1,5 +1,11 @@
 # phaser-hooks
 
+## 0.7.1
+
+### Patch Changes
+
+- d3ff212: remove deprecated onChange in withPersistentState and fix bug with order of callbacks
+
 ## 0.7.0
 
 ### Minor Changes

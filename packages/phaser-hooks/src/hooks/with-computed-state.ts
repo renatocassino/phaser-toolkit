@@ -28,18 +28,38 @@ export const withComputedState = <T, U>(
   sourceState: HookState<T>,
   selector: StateSelector<T, U>
 ): HookState<U> => {
+  const cacheKey = `__phaser-hooks:computed:${key}`;
+
+  const existing = scene.data.get(cacheKey) as HookState<U> | undefined;
+  if (existing) {
+    return existing;
+  }
+
   // Initialize with computed value
   const initialValue = selector(sourceState.get());
   const computedState = withLocalState<U>(scene, key, initialValue);
 
+  let prev = initialValue;
+
   // Update computed state when source changes
-  sourceState.on('change', () => {
-    const newSourceValue = sourceState.get();
-    const newComputedValue = selector(newSourceValue);
-    computedState.set(newComputedValue);
+  const unsubscribe = sourceState.on('change', (newValue) => {
+    const next = selector(newValue);
+
+    if (!Object.is(prev, next)) {
+      prev = next;
+      computedState.set(next);
+    }
   });
 
-  return {
+  scene.events.once(Phaser.Scenes.Events.DESTROY, () => {
+    try {
+      unsubscribe?.();
+    } catch { /* ignore */ }
+
+    scene.data.remove(cacheKey);
+  });
+
+  const wrapped: HookState<U> = {
     ...computedState,
     set: (): void => {
       throw new Error(
@@ -47,4 +67,7 @@ export const withComputedState = <T, U>(
       );
     },
   };
+
+  scene.data.set(cacheKey, wrapped);
+  return wrapped;
 };

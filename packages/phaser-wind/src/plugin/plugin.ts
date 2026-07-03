@@ -11,6 +11,7 @@ import {
   type ShadowApi,
 } from '../core';
 import { createColor, type Color } from '../core/color';
+import { createOpacity, type OpacityApi } from '../core/opacity';
 import { createRadius, type RadiusApi } from '../core/radius';
 import {
   BaseThemeConfig,
@@ -45,6 +46,7 @@ export class PhaserWindPlugin<
   private fontSizeInstance: FontSizeApi<T['fontSizes']> | null = null;
   private spacingInstance: SpacingApi<T['spacing']> | null = null;
   private radiusInstance: RadiusApi<T['radius']> | null = null;
+  private opacityInstance: OpacityApi<T['opacity']> | null = null;
   private fontInstance: FontApi<T['fonts'], T['fontSizes']> | null = null;
   private shadowInstance: ShadowApi<T['effects']> | null = null;
 
@@ -103,6 +105,9 @@ export class PhaserWindPlugin<
     this.radiusInstance = createRadius<T['radius']>(
       this.theme.radius as T['radius']
     );
+    this.opacityInstance = createOpacity<T['opacity']>(
+      this.theme.opacity as T['opacity']
+    );
     this.fontInstance = createFont(
       this.theme.fonts as T['fonts'],
       this.theme.fontSizes as T['fontSizes']
@@ -132,6 +137,10 @@ export class PhaserWindPlugin<
 
   public get radius(): RadiusApi<T['radius']> {
     return this.radiusInstance as RadiusApi<T['radius']>;
+  }
+
+  public get opacity(): OpacityApi<T['opacity']> {
+    return this.opacityInstance as OpacityApi<T['opacity']>;
   }
 
   public get font(): FontApi<T['fonts'], T['fontSizes']> {

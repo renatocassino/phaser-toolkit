@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { fontSizeMap, type FontSizeMap } from '../core/font-size';
+import { opacityMap, type OpacityMap } from '../core/opacity';
 import { radiusMap, type RadiusMap } from '../core/radius';
 import { spacingMap } from '../core/spacing';
 
@@ -43,6 +44,7 @@ export type ThemeOverride = {
   typography?: Partial<TypographyConfig>;
   effects?: Partial<EffectConfig>;
   radius?: Partial<RadiusMap> & { [key: string]: number };
+  opacity?: Partial<OpacityMap> & { [key: string]: number };
   custom?: { [key: string]: unknown };
 };
 
@@ -58,6 +60,9 @@ export type BaseThemeConfig = {
   typography?: TypographyConfig;
   effects?: EffectConfig;
   radius?: RadiusMap & {
+    [key: string]: number;
+  };
+  opacity?: OpacityMap & {
     [key: string]: number;
   };
   custom?: {
@@ -98,6 +103,7 @@ export const defaultLightTheme: BaseThemeConfig = {
     overlay: 'black',
   },
   spacing: { ...spacingMap },
+  opacity: { ...opacityMap },
   typography: {
     heading: {
       fontSize: '2xl',
@@ -179,6 +185,7 @@ export const defaultDarkTheme: BaseThemeConfig = {
     overlay: 'black',
   },
   spacing: { ...spacingMap },
+  opacity: { ...opacityMap },
   typography: {
     heading: {
       fontSize: '2xl',

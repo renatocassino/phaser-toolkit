@@ -14,7 +14,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
       <p class="text-gray-600 mb-4">
         Interactive button with text content and hover effects, built with PhaserWind theming system.
       </p>
-      
+
       <!-- Features -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
@@ -104,7 +104,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
 </Layout>
 
 <script>
-  import Phaser from 'phaser';
+  import Phaser, { Scene } from 'phaser';
   import {
     loadFonts,
     type RadiusKey,
@@ -112,14 +112,15 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
     HUDINI_KEY,
     HudiniPlugin,
     SceneWithHudini,
-    TextButton
+    TextButton,
+withPhaserWind
   } from 'hudini';
 
   // Create theme
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class TextButtonDemoScene extends SceneWithHudini<Theme> {
+  class TextButtonDemoScene extends Scene {
     private buttons: TextButton[] = [];
 
     constructor() {
@@ -127,7 +128,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const pw = withPhaserWind(this);
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title

@@ -283,82 +283,79 @@ new Phaser.Game({
 });
 ```
 
-### 3) How to get strong types in your scene
+### 3) Access the plugin from your scene with `withPhaserWind`
 
-#### 3.1 Lazy way. Define a module and all scenes should be have the "pw" instance
+Use the `withPhaserWind(scene)` accessor to get a fully typed handle to the plugin. It composes with any base scene, doesn't rely on global module augmentation, and infers your theme's tokens at the call site.
 
 ```ts
-// src/my-theme.ts
-import 'phaser';
-import type { PhaserWindPlugin } from 'phaser-wind';
-import type { ThemeType } from './theme';
+import Phaser from 'phaser';
+import { withPhaserWind } from 'phaser-wind';
+import type { ThemeType } from './theme'; // your createTheme() result
 
-const theme = const theme = createTheme({
-  colors: {
-    brand: 'purple-600',
-    danger: 'red-500',
-  }
-});
-export type ThemeType = typeof theme;
+class MyScene extends Phaser.Scene {
+  create(): void {
+    const pw = withPhaserWind<ThemeType>(this);
+    const { color, fontSize, spacing, radius, font, shadow } = pw;
 
-declare module 'phaser' {
-  interface Scene {
-    pw: PhaserWindPlugin<ThemeType>;
+    this.cameras.main.setBackgroundColor(color.rgb('background'));
+
+    this.add
+      .text(300, 100, 'Primary color', {
+        fontSize: fontSize.css('2xl'),
+        color: color.rgb('primary'), // ✅ Type-narrowed to your theme
+      })
+      .setOrigin(0.5);
+
+    // ✅ Type-narrowed to your theme
+    spacing.px('gutter');
+    radius.css('card');
+    font.family('display');
+    shadow.get('glow');
+
+    // ❌ Compile-time errors
+    // color.rgb('blue-501');
+    // spacing.px('unknown');
   }
 }
-
-// In your scene
-
-class MyCustomScene extends Phaser.Scene {
-    create(): void {
-      this.pw // <-- Valid instance in your ts file
 ```
 
-#### 3.1 - Cast way
+Call `withPhaserWind(this)` inside `create()` / `update()` (after the plugin has mounted). Don't call it in the constructor or `init()` — the plugin isn't attached yet.
 
-The original `Phaser.Scene` does not know the `pw` from Phaser-wind. You can make a simple cast to solve this problem
+### 4) Recommended: wrap it in a project-local helper
+
+Passing `<ThemeType>` on every call gets old. Define a one-line helper once in your project so scenes stay short and the theme type stays in one place:
+
+```ts
+// src/theme.ts (in your project)
+import type { Scene } from 'phaser';
+import { createTheme, withPhaserWind, type CreateTheme } from 'phaser-wind';
+
+export const theme = createTheme({
+  colors: { primary: 'blue-600', danger: 'red-500' },
+  // ...
+} satisfies CreateTheme<any>);
+
+export type ThemeType = typeof theme;
+
+/** Project-local accessor — no need to pass the theme type. */
+export const withPw = (scene: Scene) => withPhaserWind<ThemeType>(scene);
+```
+
+Now every scene is a one-liner:
 
 ```ts
 import Phaser from 'phaser';
-import { type ThemeType } from 'src/theme.ts' // In your project
+import { withPw } from './theme';
 
-class MyCustomScene extends Phaser.Scene {
-    create(): void {
-        const { pw } = (this as unknown as SceneWithPhaserWind<Theme>); // cast to get the pw property
-        this.cameras.main.setBackgroundColor(pw.color.slate(900));
-
-        this.add
-            .text(300, 100, 'Primary color', {
-                fontSize: pw.fontSize.css('2xl'), // use the pw property to get the font size
-                color: pw.color.rgb('primary'), // use the pw property to get the color with type safety
-            })
-            .setOrigin(0.5);
+class MyScene extends Phaser.Scene {
+  create(): void {
+    const pw = withPw(this); // fully typed against your theme
+    this.cameras.main.setBackgroundColor(pw.color.rgb('background'));
+  }
+}
 ```
 
-#### 3.2 - Inheritance way
-
-Phaser-wind export an abstract class to type the `Phaser.Scene` and add the attribute `pw`.
-
-```ts
-import Phaser from 'phaser';
-import { type ThemeType } from 'src/theme.ts' // In your project
-
-class PreviewScene extends SceneWithPhaserWind<ThemeType> { // Inherit from SceneWithPhaserWind to get the pw property
-    create(): void {
-      const { color, fontSize, spacing, radius, font, shadow } = this.pw; // Don't need to cast because we're using the generic type
-
-      // ✅ Type-narrowed to your theme
-      color.rgb('primary');
-      fontSize.css('lg');
-      spacing.px('gutter');
-      radius.css('card');
-      font.family('display');
-      shadow.get('glow');
-
-      // ❌ Compile-time errors
-      // color.rgb('blue-501');
-      // spacing.px('unknown');
-```
+You can name the helper whatever fits your style — `withPw`, `usePw`, `getPw`, `pw`. The lib intentionally doesn't ship an alias, so you own the naming in your codebase.
 
 ### 🎮 **Real Game Example**
 

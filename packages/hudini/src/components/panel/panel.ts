@@ -1,7 +1,7 @@
 import { GameObjects, Scene } from 'phaser';
 
 import { Card } from '../card';
-import { FlatIconButton } from '../flat-icon-button';
+import { IconButton } from '../icon-button';
 import { SectionHeader } from '../section-header';
 
 // Constants for default values
@@ -27,7 +27,7 @@ export type PanelParams = {
 export class Panel extends GameObjects.Container {
     private card: Card;
     private sectionHeader: SectionHeader | null = null;
-    private closeButton: FlatIconButton | null = null;
+    private closeButton: IconButton | null = null;
     private title: string;
     private showCloseButton: boolean;
     private onClose?: (() => void) | undefined;
@@ -88,7 +88,7 @@ export class Panel extends GameObjects.Container {
      * Creates the close button
      */
     private createCloseButton(): void {
-        this.closeButton = new FlatIconButton({
+        this.closeButton = new IconButton({
             scene: this.scene,
             x: 0,
             y: 0,
@@ -226,7 +226,7 @@ export class Panel extends GameObjects.Container {
     /**
      * Gets the close button component
      */
-    getCloseButton(): FlatIconButton | null {
+    getCloseButton(): IconButton | null {
         return this.closeButton;
     }
 }

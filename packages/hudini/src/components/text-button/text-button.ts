@@ -12,7 +12,6 @@ import {
   type SpacingKey,
 } from 'phaser-wind';
 
-import { getColorVariant } from '../../utils/color-variants';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { ContainerInteractive } from '../container-interactive';
 import { Text } from '../text';
@@ -69,17 +68,8 @@ const durations = {
 
 const HOVER_SCALE = 1.05;
 const POINTER_DOWN_SCALE = 0.95;
-const TOKEN_LIGHTER_DIFF = -100;
-const TOKEN_DARKER_DIFF = 100;
 
-const COLOR_LIGHTER_AMOUNT = 30;
-const COLOR_DARKER_AMOUNT = -30;
-
-// Border constants
 const BLACK_BORDER_THICKNESS = 2;
-const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 3;
-const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 2; // 6 pixels total
-const WHITE_BORDER_RADIUS_EXTRA = 2;
 
 /**
  * A customizable text button component for Phaser, supporting auto-sizing,
@@ -97,8 +87,6 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   private borderRadiusPx!: number;
   private colorInput!: string;
   private colorButton!: string;
-  private lightColorButton!: number;
-  private darkColorButton!: number;
   private textColorValue!: string;
   private fontFamily!: string;
   private textValue!: string;
@@ -141,16 +129,6 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     this.colorInput = String(color);
     this.colorButton = Color.rgb(color as ColorKey);
-    this.lightColorButton = getColorVariant(
-      color,
-      TOKEN_LIGHTER_DIFF,
-      COLOR_LIGHTER_AMOUNT
-    );
-    this.darkColorButton = getColorVariant(
-      color,
-      TOKEN_DARKER_DIFF,
-      COLOR_DARKER_AMOUNT
-    );
 
     this.textColorValue = Color.rgb(textColor as ColorKey);
     this.fontFamily = font
@@ -217,16 +195,6 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   public setColor(color: ColorKey | string): this {
     this.colorInput = String(color);
     this.colorButton = Color.rgb(color as ColorKey);
-    this.lightColorButton = getColorVariant(
-      color,
-      TOKEN_LIGHTER_DIFF,
-      COLOR_LIGHTER_AMOUNT
-    );
-    this.darkColorButton = getColorVariant(
-      color,
-      TOKEN_DARKER_DIFF,
-      COLOR_DARKER_AMOUNT
-    );
     this.regenerateSprites();
     return this;
   }
@@ -279,7 +247,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     // or a full token like 'blue-500'), derive the stroke as a darker shade
     // via Color.shift so the outline stays inside the palette. For arbitrary
     // CSS colors (hex, rgb, ...), fall back to a soft translucent black —
-    // solid black clashes with some palettes.\
+    // solid black clashes with some palettes.
     const darkColorShift = 400;
     const isPaletteColor =
       isColorKey(this.colorInput) || Color.isValidColorToken(this.colorInput);
@@ -335,49 +303,6 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Creates a texture for the button's white border.
-   * @param scene Phaser scene.
-   * @returns The texture key.
-   */
-  private createWhiteBorderTexture(scene: Scene): string {
-    const { width, height } = this.getButtonDimensions();
-    const textureKey = `textButton_whiteBorder_${this.borderRadiusPx}_${width}_${height}`;
-
-    // White border is larger on each side
-    const borderWidth = width + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
-    const borderHeight = height + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
-
-    // Add some padding for texture
-    const padding = 8;
-    const textureWidth = borderWidth + padding * 2;
-    const textureHeight = borderHeight + padding * 2;
-
-    const graphics = scene.add.graphics();
-
-    const maxRadius = Math.floor(Math.min(borderWidth / 2, borderHeight / 2));
-    const effectiveRadius = Math.min(
-      this.borderRadiusPx + WHITE_BORDER_RADIUS_EXTRA,
-      maxRadius
-    );
-    const finalRadius = Math.max(0, effectiveRadius);
-
-    // White border (outer)
-    graphics.fillStyle(Color.hex('white'), 0);
-    graphics.fillRoundedRect(
-      padding,
-      padding,
-      borderWidth,
-      borderHeight,
-      finalRadius
-    );
-
-    graphics.generateTexture(textureKey, textureWidth, textureHeight);
-    graphics.destroy();
-
-    return textureKey;
-  }
-
-  /**
    * Creates a texture for the button's background.
    * @param scene Phaser scene.
    * @returns The texture key.
@@ -397,7 +322,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
     const finalRadius = Math.max(0, effectiveRadius);
 
-    this.drawCssColorGradient(graphics, padding, width, height, finalRadius);
+    this.drawButtonBackground(graphics, padding, width, height, finalRadius);
     graphics.generateTexture(textureKey, textureWidth, textureHeight);
     graphics.destroy();
 
@@ -405,45 +330,18 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Draws gradient using white/black overlays on CSS color.
-   * Uses a mask to ensure overlays respect the button's rounded corners.
+   * Draws the button's background: filled rounded rect with a black stroke border.
    */
-  private drawCssColorGradient(
+  private drawButtonBackground(
     graphics: Phaser.GameObjects.Graphics,
     padding: number,
     width: number,
     height: number,
     effectiveRadius: number
   ): void {
-    // Main background
     graphics.fillStyle(Color.hex(this.colorButton), 1);
     graphics.fillRoundedRect(padding, padding, width, height, effectiveRadius);
 
-    const PERCENT_HEIGHT = 0.15;
-    const overlayHeight = height * PERCENT_HEIGHT;
-
-    const topOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
-    graphics.fillStyle(this.lightColorButton, 1);
-    // graphics.fillRoundedRect(
-    //   padding,
-    //   padding,
-    //   width,
-    //   overlayHeight,
-    //   topOverlayRadius
-    // );
-
-    // Bottom darker overlay
-    const bottomOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
-    graphics.fillStyle(this.darkColorButton, 1);
-    // graphics.fillRoundedRect(
-    //   padding,
-    //   padding + height - overlayHeight,
-    //   width,
-    //   overlayHeight,
-    //   bottomOverlayRadius
-    // );
-
-    // Black stroke border
     graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
     graphics.strokeRoundedRect(
       padding,

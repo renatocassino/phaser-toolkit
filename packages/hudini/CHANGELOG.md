@@ -1,5 +1,16 @@
 # phaser-wind
 
+## 0.19.0
+
+### Minor Changes
+
+- f43ba73: Add new way to get phaser-wind and hudini instance and opacity to phaser-wind
+
+### Patch Changes
+
+- Updated dependencies [f43ba73]
+  - phaser-wind@0.10.0
+
 ## 0.18.1
 
 ### Patch Changes

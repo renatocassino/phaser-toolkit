@@ -1,6 +1,6 @@
 {
   "name": "hudini",
-  "version": "0.18.1",
+  "version": "0.19.0",
   "description": "🎩 Magical Phaser UI components - Reusable HUD elements for game development. Is magic, like a wizard",
   "type": "module",
   "main": "./dist/index.js",

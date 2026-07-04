@@ -98,15 +98,16 @@ const closeButton = new FlatIconButton({
 </Layout>
 
 <script>
-  import { loadFonts, Card, Column, Row, TextButton, FlatIconButton, SizedBox, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, SceneWithHudini } from 'hudini';
+  import { loadFonts, Card, Column, Row, TextButton, FlatIconButton, SizedBox, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, withHudini } from 'hudini';
 
-  class AdvancedCardModalScene extends SceneWithHudini {
+  class AdvancedCardModalScene extends Phaser.Scene {
     constructor() {
       super('advanced-card-modal');
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const hudini = withHudini(this);
+      const { pw } = hudini;
       const { width, centerY, centerX } = this.cameras.main;
       
       this.cameras.main.setBackgroundColor(pw.color.slate(900));

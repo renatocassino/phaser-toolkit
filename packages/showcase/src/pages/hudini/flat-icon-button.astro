@@ -75,7 +75,7 @@ import {
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     FlatIconButton
 } from 'hudini';
 import { loadFont } from 'font-awesome-for-phaser';
@@ -83,13 +83,14 @@ import { loadFont } from 'font-awesome-for-phaser';
 const theme = createTheme({});
 type Theme = typeof theme;
 
-class ButtonDemoScene extends SceneWithHudini<Theme> {
+class ButtonDemoScene extends Phaser.Scene {
     constructor() {
         super('button-demo');
     }
 
     create(): void {
-        const { pw } = this.hudini;
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         // Create a flat icon button
@@ -243,7 +244,7 @@ button.setBorderRadius('full');`}</code></pre>
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     FlatIconButton,
   } from 'hudini';
 import { type IconKey, loadFont } from 'font-awesome-for-phaser';
@@ -253,7 +254,7 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class FlatIconButtonDemoScene extends SceneWithHudini<Theme> {
+  class FlatIconButtonDemoScene extends Phaser.Scene {
     private buttons: FlatIconButton[] = [];
     private clickCount = 0;
     private clickText?: Phaser.GameObjects.Text;
@@ -263,7 +264,8 @@ import { type ColorKey, type FontSizeKey } from 'phaser-wind';
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const hudini = withHudini<Theme>(this);
+      const { pw } = hudini;
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title

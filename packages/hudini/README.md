@@ -140,6 +140,63 @@ import { Column, Row, IconButton } from 'hudini';
 
 Check the Storybook for live, interactive examples: [Hudini on Storybook](https://renatocassino.github.io/phaser-toolkit/?path=/story/hudini--index)
 
+## 🎯 Access the plugin from your scene
+
+Use the `withHudini(scene)` accessor to get a fully typed handle to the plugin. It composes with any base scene, doesn't rely on global module augmentation, and infers your theme's tokens at the call site.
+
+```ts
+import Phaser from 'phaser';
+import { withHudini } from 'hudini';
+import type { ThemeType } from './theme'; // your createTheme() result
+
+class MyScene extends Phaser.Scene {
+  create(): void {
+    const hudini = withHudini<ThemeType>(this);
+    const pw = hudini.pw; // phaser-wind API, narrowed to your theme
+
+    this.cameras.main.setBackgroundColor(pw.color.rgb('background'));
+  }
+}
+```
+
+Call `withHudini(this)` inside `create()` / `update()` (after the plugin has mounted). Don't call it in the constructor or `init()` — the plugin isn't attached yet.
+
+### Recommended: wrap it in a project-local helper
+
+Passing `<ThemeType>` on every call gets old. Define a one-line helper once in your project so scenes stay short and the theme type stays in one place:
+
+```ts
+// src/theme.ts (in your project)
+import type { Scene } from 'phaser';
+import { createTheme, withHudini, type CreateTheme } from 'hudini';
+
+export const theme = createTheme({
+  colors: { primary: 'blue-600', danger: 'red-500' },
+  // ...
+} satisfies CreateTheme<any>);
+
+export type ThemeType = typeof theme;
+
+/** Project-local accessor — no need to pass the theme type. */
+export const withHud = (scene: Scene) => withHudini<ThemeType>(scene);
+```
+
+Now every scene is a one-liner:
+
+```ts
+import Phaser from 'phaser';
+import { withHud } from './theme';
+
+class MyScene extends Phaser.Scene {
+  create(): void {
+    const hudini = withHud(this); // fully typed against your theme
+    this.cameras.main.setBackgroundColor(hudini.pw.color.rgb('background'));
+  }
+}
+```
+
+You can name the helper whatever fits your style — `withHud`, `useHud`, `getHud`, `hud`. The lib intentionally doesn't ship an alias, so you own the naming in your codebase.
+
 ## 🧩 Components
 
 ### Column

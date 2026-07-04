@@ -52,20 +52,21 @@ import {
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     FlatTextButton
 } from 'hudini';
 
 const theme = createTheme({});
 type Theme = typeof theme;
 
-class ButtonDemoScene extends SceneWithHudini<Theme> {
+class ButtonDemoScene extends Phaser.Scene {
     constructor() {
         super('button-demo');
     }
 
     create(): void {
-        const { pw } = this.hudini;
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         // Create a primary button
@@ -107,7 +108,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     FlatTextButton
   } from 'hudini';
 
@@ -115,7 +116,7 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class FlatTextButtonDemoScene extends SceneWithHudini<Theme> {
+  class FlatTextButtonDemoScene extends Phaser.Scene {
     private buttons: FlatTextButton[] = [];
 
     constructor() {
@@ -123,7 +124,8 @@ class ButtonDemoScene extends SceneWithHudini<Theme> {
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const hudini = withHudini<Theme>(this);
+      const { pw } = hudini;
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title

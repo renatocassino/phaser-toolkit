@@ -56,20 +56,21 @@ import {
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     SectionHeader
 } from 'hudini';
 
 const theme = createTheme({});
 type Theme = typeof theme;
 
-class PreviewScene extends SceneWithHudini<Theme> {
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this.hudini;
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         // Create a simple section header
@@ -174,7 +175,7 @@ dynamicHeader
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     SectionHeader
   } from 'hudini';
 
@@ -182,7 +183,7 @@ dynamicHeader
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class SectionHeaderDemoScene extends SceneWithHudini<Theme> {
+  class SectionHeaderDemoScene extends Phaser.Scene {
     private headers: SectionHeader[] = [];
 
     constructor() {
@@ -190,7 +191,8 @@ dynamicHeader
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const hudini = withHudini<Theme>(this);
+      const { pw } = hudini;
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title

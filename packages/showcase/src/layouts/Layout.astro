@@ -24,6 +24,26 @@ const getUrl = (path: string) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href={getUrl('/favicon.svg')} />
     <title>{title}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css"
+    />
+    <script
+      is:inline
+      src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"
+    ></script>
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (window.hljs) {
+          document.querySelectorAll('pre code').forEach(function (block) {
+            if (!block.className.match(/\blanguage-/)) {
+              block.classList.add('language-typescript');
+            }
+            window.hljs.highlightElement(block);
+          });
+        }
+      });
+    </script>
     <style>
       .sidebar-collapsed {
         width: 4rem !important;

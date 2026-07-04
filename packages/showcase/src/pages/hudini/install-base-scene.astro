@@ -3,21 +3,21 @@ import Layout from '../../layouts/Layout.astro';
 import PhaserGame from '../../components/PhaserGame.astro';
 ---
 
-<Layout title="Hudini Install - Base Scene" description="Examples of how to install and use Hudini with SceneWithHudini base class.">
+<Layout title="Hudini Install - withHudini Hook" description="Examples of how to install and use Hudini with the withHudini accessor.">
   <div class="space-y-8">
     <!-- Description -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Install - Base Scene</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Install - withHudini Hook</h2>
       <p class="text-gray-600 mb-4">
-        Examples of how to install and use Hudini with SceneWithHudini base class for type-safe theming and utilities.
+        Examples of how to install and use Hudini with the withHudini accessor for type-safe theming and utilities.
       </p>
-      
+
       <!-- Features -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
         <ul class="list-disc list-inside space-y-1 text-gray-600">
           <li>🎨 <strong>Type-Safe Theming</strong>: Full TypeScript support for custom themes</li>
-          <li>🔧 <strong>Base Scene Class</strong>: SceneWithHudini provides easy access to utilities</li>
+          <li>🔧 <strong>Accessor Hook</strong>: withHudini(scene) provides easy access to utilities</li>
           <li>🎯 <strong>Color Management</strong>: Type-safe color access with custom theme colors</li>
           <li>📏 <strong>Font Sizing</strong>: Consistent font sizing with theme integration</li>
           <li>⚡ <strong>Performance</strong>: Optimized for 60fps gameplay</li>
@@ -38,7 +38,7 @@ import {
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini
+    withHudini
 } from 'hudini';
 
 const theme = createTheme({
@@ -50,13 +50,14 @@ const theme = createTheme({
 });
 type Theme = typeof theme;
 
-class PreviewScene extends SceneWithHudini<Theme> {
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this.hudini;
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         let y = 90;
@@ -117,8 +118,8 @@ class PreviewScene extends SceneWithHudini<Theme> {
             <span class="text-sm font-semibold text-blue-600">3</span>
           </div>
           <div>
-            <h4 class="font-medium text-gray-900">Extend SceneWithHudini</h4>
-            <p class="text-sm text-gray-600">Use SceneWithHudini as your base scene class for type safety</p>
+            <h4 class="font-medium text-gray-900">Access with withHudini</h4>
+            <p class="text-sm text-gray-600">Call withHudini(this) inside create() to get a type-safe handle to the plugin</p>
           </div>
         </div>
         
@@ -137,7 +138,7 @@ class PreviewScene extends SceneWithHudini<Theme> {
 </Layout>
 
 <script>
-  import { loadFonts, Color, createTheme, HUDINI_KEY, HudiniPlugin, SceneWithHudini } from 'hudini';
+  import { loadFonts, Color, createTheme, HUDINI_KEY, HudiniPlugin, withHudini } from 'hudini';
 
   const theme = createTheme({
     colors: {
@@ -148,13 +149,14 @@ class PreviewScene extends SceneWithHudini<Theme> {
   });
   type Theme = typeof theme;
 
-  class InstallBaseSceneDemo extends SceneWithHudini<Theme> {
+  class InstallBaseSceneDemo extends Phaser.Scene {
     constructor() {
       super('install-base-scene');
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const hudini = withHudini<Theme>(this);
+      const { pw } = hudini;
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       let y = 90;

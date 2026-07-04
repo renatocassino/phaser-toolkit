@@ -108,7 +108,7 @@ class GameScene extends Phaser.Scene {
 
 <script>
   import { getSoundStudio, PHASER_SOUND_STUDIO_KEY, PhaserSoundStudioPlugin, PhaserSoundStudioPluginData, SoundListConfig } from 'phaser-sound-studio';
-  import { Color, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, SceneWithHudini, TextButton } from 'hudini';
+  import { Color, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, withHudini, TextButton } from 'hudini';
 
   const SOUND_KEYS = {
     MOUSE_HOVER: 'mouse-hover',
@@ -141,7 +141,7 @@ class GameScene extends Phaser.Scene {
     }
   };
 
-  class SoundStudioDemoScene extends SceneWithHudini {
+  class SoundStudioDemoScene extends Phaser.Scene {
     constructor() {
       super('sound-studio-demo');
     }
@@ -152,7 +152,8 @@ class GameScene extends Phaser.Scene {
     }
 
     create(): void {
-      this.cameras.main.setBackgroundColor(this.pw.color.rgb('slate-900'));
+      const { pw } = withHudini(this);
+      this.cameras.main.setBackgroundColor(pw.color.rgb('slate-900'));
 
       // Title
       this.add.text(400, 100, 'Phaser Sound Studio Demo', {

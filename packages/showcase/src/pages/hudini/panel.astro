@@ -79,7 +79,7 @@ import {
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     Panel,
     Column,
     TextButton
@@ -88,13 +88,14 @@ import {
 const theme = createTheme({});
 type Theme = typeof theme;
 
-class PanelDemoScene extends SceneWithHudini<Theme> {
+class PanelDemoScene extends Phaser.Scene {
     constructor() {
         super('panel-demo');
     }
 
     create(): void {
-        const { pw } = this.hudini;
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         // Create content for the panel
@@ -224,7 +225,7 @@ panel.setMargin(24);`}</code></pre>
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     Panel,
     Column,
     Row,
@@ -238,7 +239,7 @@ import { loadFont } from 'font-awesome-for-phaser';
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class PanelDemoScene extends SceneWithHudini<Theme> {
+  class PanelDemoScene extends Phaser.Scene {
     private panels: Panel[] = [];
 
     constructor() {
@@ -246,7 +247,8 @@ import { loadFont } from 'font-awesome-for-phaser';
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const hudini = withHudini<Theme>(this);
+      const { pw } = hudini;
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title

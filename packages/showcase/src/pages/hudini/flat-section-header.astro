@@ -55,20 +55,21 @@ import {
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     FlatSectionHeader
 } from 'hudini';
 
 const theme = createTheme({});
 type Theme = typeof theme;
 
-class PreviewScene extends SceneWithHudini<Theme> {
+class PreviewScene extends Phaser.Scene {
     constructor() {
         super('preview');
     }
 
     create(): void {
-        const { pw } = this.hudini;
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
         this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
         // Create a simple flat section header
@@ -170,7 +171,7 @@ dynamicHeader
     createTheme,
     HUDINI_KEY,
     HudiniPlugin,
-    SceneWithHudini,
+    withHudini,
     FlatSectionHeader
   } from 'hudini';
 
@@ -178,7 +179,7 @@ dynamicHeader
   const theme = createTheme({});
   type Theme = typeof theme;
 
-  class FlatSectionHeaderDemoScene extends SceneWithHudini<Theme> {
+  class FlatSectionHeaderDemoScene extends Phaser.Scene {
     private headers: FlatSectionHeader[] = [];
 
     constructor() {
@@ -186,7 +187,8 @@ dynamicHeader
     }
 
     create(): void {
-      const { pw } = this.hudini;
+      const hudini = withHudini<Theme>(this);
+      const { pw } = hudini;
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
       // Title

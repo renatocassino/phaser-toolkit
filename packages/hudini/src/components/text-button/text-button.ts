@@ -2,6 +2,8 @@
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
+  isColorKey,
+  Opacity,
   PhaserWindPlugin,
   type ColorKey,
   type FontKey,
@@ -27,34 +29,34 @@ export type TextButtonParams = {
   y: number;
   /** Button text. */
   text: string;
-  /** 
-   * Font size in px (number) or a Phaser Wind font size token (string). 
+  /**
+   * Font size in px (number) or a Phaser Wind font size token (string).
    * Defaults to 'md'.
    */
   fontSize?: FontSizeKey | number;
-  /** 
+  /**
    * Font family. Defaults to 'sans'.
    */
   font?: FontKey | string;
-  /** 
+  /**
    * Background color. Defaults to 'blue'.
    */
   color?: ColorKey | string;
-  /** 
+  /**
    * Text color. Defaults to 'white'.
    */
   textColor?: ColorKey | string;
-  /** 
-   * Border radius in px (number) or a Phaser Wind radius token (string). 
+  /**
+   * Border radius in px (number) or a Phaser Wind radius token (string).
    * Defaults to 'md'.
    */
   borderRadius?: RadiusKey | number;
-  /** 
-   * Padding in px (number) or a Phaser Wind spacing token (string). 
+  /**
+   * Padding in px (number) or a Phaser Wind spacing token (string).
    * Defaults to 'md'.
    */
   padding?: SpacingKey | number;
-  /** 
+  /**
    * Callback function for click event.
    */
   onClick?: () => void;
@@ -86,8 +88,6 @@ const WHITE_BORDER_RADIUS_EXTRA = 2;
 export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   /** The background sprite of the button. */
   public backgroundSprite!: GameObjects.Sprite;
-  /** The white border sprite of the button. */
-  public whiteBorderSprite!: GameObjects.Sprite;
   /** The text object of the button. */
   public buttonText!: GameObjects.Text;
 
@@ -95,6 +95,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   private fontSizePx!: number;
   private paddingPx!: number;
   private borderRadiusPx!: number;
+  private colorInput!: string;
   private colorButton!: string;
   private lightColorButton!: number;
   private darkColorButton!: number;
@@ -136,17 +137,29 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.borderRadiusPx =
       typeof borderRadius === 'number'
         ? borderRadius
-        : this.pw.radius.px(borderRadius ?? ('md' as RadiusKey));
+        : this.pw.radius.px(borderRadius ?? ('3xl' as RadiusKey));
 
+    this.colorInput = String(color);
     this.colorButton = Color.rgb(color as ColorKey);
-    this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
-    this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
+    this.lightColorButton = getColorVariant(
+      color,
+      TOKEN_LIGHTER_DIFF,
+      COLOR_LIGHTER_AMOUNT
+    );
+    this.darkColorButton = getColorVariant(
+      color,
+      TOKEN_DARKER_DIFF,
+      COLOR_DARKER_AMOUNT
+    );
 
     this.textColorValue = Color.rgb(textColor as ColorKey);
-    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Fredoka';
+    this.fontFamily = font
+      ? typeof font === 'string'
+        ? font
+        : this.pw.font.family(font)
+      : 'Fredoka';
 
     this.createButtonText(scene);
-    this.createWhiteBorderSprite(scene);
     this.createBackgroundSprite(scene);
     this.setupContainer();
     this.setupInteractivity(onClick);
@@ -202,9 +215,18 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
    * @returns This TextButton instance.
    */
   public setColor(color: ColorKey | string): this {
+    this.colorInput = String(color);
     this.colorButton = Color.rgb(color as ColorKey);
-    this.lightColorButton = getColorVariant(color, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
-    this.darkColorButton = getColorVariant(color, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
+    this.lightColorButton = getColorVariant(
+      color,
+      TOKEN_LIGHTER_DIFF,
+      COLOR_LIGHTER_AMOUNT
+    );
+    this.darkColorButton = getColorVariant(
+      color,
+      TOKEN_DARKER_DIFF,
+      COLOR_DARKER_AMOUNT
+    );
     this.regenerateSprites();
     return this;
   }
@@ -253,6 +275,19 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
    * @param scene Phaser scene.
    */
   private createButtonText(scene: Scene): void {
+    // If the button color came from a palette reference (family like 'blue'
+    // or a full token like 'blue-500'), derive the stroke as a darker shade
+    // via Color.shift so the outline stays inside the palette. For arbitrary
+    // CSS colors (hex, rgb, ...), fall back to a soft translucent black —
+    // solid black clashes with some palettes.\
+    const darkColorShift = 400;
+    const isPaletteColor =
+      isColorKey(this.colorInput) || Color.isValidColorToken(this.colorInput);
+
+    const strokeColor = isPaletteColor
+      ? Color.rgb(Color.shift(this.colorInput as ColorKey, darkColorShift))
+      : `rgba(0, 0, 0, ${Opacity.value('60')})`;
+
     this.buttonText = new Text({
       scene,
       x: 0,
@@ -260,18 +295,10 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
       text: this.textValue,
       size: this.fontSizePx,
       fontFamily: this.fontFamily,
+      strokeThickness: 3,
+      strokeColor,
     });
     this.buttonText.setOrigin(0.5, 0.5);
-  }
-
-  /**
-   * Creates the white border sprite for the button.
-   * @param scene Phaser scene.
-   */
-  private createWhiteBorderSprite(scene: Scene): void {
-    const whiteBorderTexture = this.createWhiteBorderTexture(scene);
-    this.whiteBorderSprite = scene.add.sprite(0, 0, whiteBorderTexture);
-    this.whiteBorderSprite.setOrigin(0.5, 0.5);
   }
 
   /**
@@ -292,10 +319,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.buttonText.setText(this.textValue);
 
     // Regenerate textures
-    const whiteBorderTexture = this.createWhiteBorderTexture(this.scene);
     const backgroundTexture = this.createBackgroundTexture(this.scene);
-
-    this.whiteBorderSprite.setTexture(whiteBorderTexture);
     this.backgroundSprite.setTexture(backgroundTexture);
   }
 
@@ -331,11 +355,14 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     const graphics = scene.add.graphics();
 
     const maxRadius = Math.floor(Math.min(borderWidth / 2, borderHeight / 2));
-    const effectiveRadius = Math.min(this.borderRadiusPx + WHITE_BORDER_RADIUS_EXTRA, maxRadius);
+    const effectiveRadius = Math.min(
+      this.borderRadiusPx + WHITE_BORDER_RADIUS_EXTRA,
+      maxRadius
+    );
     const finalRadius = Math.max(0, effectiveRadius);
 
     // White border (outer)
-    graphics.fillStyle(Color.hex('white'), 1);
+    graphics.fillStyle(Color.hex('white'), 0);
     graphics.fillRoundedRect(
       padding,
       padding,
@@ -368,7 +395,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     const maxRadius = Math.floor(Math.min(width / 2, height / 2));
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
-        const finalRadius = Math.max(0, effectiveRadius);
+    const finalRadius = Math.max(0, effectiveRadius);
 
     this.drawCssColorGradient(graphics, padding, width, height, finalRadius);
     graphics.generateTexture(textureKey, textureWidth, textureHeight);
@@ -397,29 +424,41 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     const topOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
     graphics.fillStyle(this.lightColorButton, 1);
-    graphics.fillRoundedRect(padding, padding, width, overlayHeight, topOverlayRadius);
-    
+    // graphics.fillRoundedRect(
+    //   padding,
+    //   padding,
+    //   width,
+    //   overlayHeight,
+    //   topOverlayRadius
+    // );
+
     // Bottom darker overlay
     const bottomOverlayRadius = Math.min(effectiveRadius, overlayHeight / 2);
     graphics.fillStyle(this.darkColorButton, 1);
-    graphics.fillRoundedRect(
-      padding,
-      padding + height - overlayHeight,
-      width,
-      overlayHeight,
-      bottomOverlayRadius,
-    );
+    // graphics.fillRoundedRect(
+    //   padding,
+    //   padding + height - overlayHeight,
+    //   width,
+    //   overlayHeight,
+    //   bottomOverlayRadius
+    // );
 
     // Black stroke border
     graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
-    graphics.strokeRoundedRect(padding, padding, width, height, effectiveRadius);
+    graphics.strokeRoundedRect(
+      padding,
+      padding,
+      width,
+      height,
+      effectiveRadius
+    );
   }
 
   /**
    * Adds the button's visual elements to the container.
    */
   private setupContainer(): void {
-    this.add([this.whiteBorderSprite, this.backgroundSprite, this.buttonText]);
+    this.add([this.backgroundSprite, this.buttonText]);
   }
 
   /**
@@ -453,7 +492,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     // Click effects
     this.backgroundSprite.on('pointerdown', () => {
       this.scene.tweens.add({
-        targets: [this.whiteBorderSprite, this.backgroundSprite, this.buttonText],
+        targets: [this.backgroundSprite, this.buttonText],
         scaleX: POINTER_DOWN_SCALE,
         scaleY: POINTER_DOWN_SCALE,
         duration: durations.click,
@@ -463,7 +502,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     this.backgroundSprite.on('pointerup', () => {
       this.scene.tweens.add({
-        targets: [this.whiteBorderSprite, this.backgroundSprite, this.buttonText],
+        targets: [this.backgroundSprite, this.buttonText],
         scaleX: 1,
         scaleY: 1,
         duration: durations.click,

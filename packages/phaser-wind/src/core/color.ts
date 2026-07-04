@@ -9,11 +9,80 @@ import { palette } from './palette';
 /** Regular expression to match RGB color format */
 const RGB_REGEX = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
 
+/** Palette shades in ascending order — used by `shift` to snap deltas to a valid step. */
+const VALID_SHADES: number[] = [
+  50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
+];
+const MIN_SHADE = 50;
+const MAX_SHADE = 950;
+
+/**
+ * Snap an arbitrary number to the nearest valid palette shade,
+ * clamping to `[50, 950]`.
+ */
+const snapToShade = (value: number): string => {
+  if (value <= MIN_SHADE) return String(MIN_SHADE);
+  if (value >= MAX_SHADE) return String(MAX_SHADE);
+  let closest = VALID_SHADES[0]!;
+  let minDist = Math.abs(value - closest);
+  for (const shade of VALID_SHADES) {
+    const dist = Math.abs(value - shade);
+    if (dist < minDist) {
+      minDist = dist;
+      closest = shade;
+    }
+  }
+  return String(closest);
+};
+
+const DEFAULT_SHADE = 500;
+
+/**
+ * Shift a palette token to a different shade by an absolute delta.
+ * Kept as a module-level pure function so it can be reused by other utilities.
+ * See {@link Color.shift} for the public docs.
+ */
+const shiftToken = (token: ColorToken | ColorKey, diff: number): ColorToken => {
+  if (token === 'black' || token === 'white') {
+    return token;
+  }
+  // Family-only ('blue') — treat as if it were 'blue-500'.
+  if (isColorKey(token)) {
+    const newShade = snapToShade(DEFAULT_SHADE + diff);
+    return `${token}-${newShade}` as ColorToken;
+  }
+  const parts = String(token).split('-');
+  if (parts.length !== 2) {
+    return token as ColorToken;
+  }
+  const family = parts[0];
+  const currentShade = parseInt(parts[1] ?? '', 10);
+  if (Number.isNaN(currentShade)) {
+    return token as ColorToken;
+  }
+  const newShade = snapToShade(currentShade + diff);
+  return `${family}-${newShade}` as ColorToken;
+};
+
 /**
  * Available color families from the built-in palette.
  * Matches Tailwind CSS color families.
  */
 export type ColorKey = keyof typeof palette;
+
+/**
+ * Type-guard: is `value` a palette family name (`'blue'`, `'red'`, ...)
+ * or one of the special tokens `'black'` / `'white'`?
+ *
+ * @example
+ * isColorKey('blue');       // true
+ * isColorKey('black');      // true
+ * isColorKey('blue-500');   // false — this is a ColorToken, use `Color.isValidColorToken` instead
+ * isColorKey('#3B82F6');    // false
+ * isColorKey('rgb(0,0,0)'); // false
+ */
+export const isColorKey = (value: string): value is ColorKey =>
+  value in palette;
 
 /**
  * Available shade values for the color palette.
@@ -119,6 +188,31 @@ export type Color<T = BaseThemeConfig['colors']> = {
   rgb(color: ColorToken | keyof T): string;
   /** Get hex number representation of a color */
   hex(color: ColorToken | keyof T): number;
+
+  /**
+   * Shift a palette token to a different shade by an absolute delta.
+   *
+   * Add `diff` to the current shade number, then snap to the nearest valid
+   * shade (`50`, `100`, `200` … `900`, `950`). Values outside `50..950` are
+   * clamped. `black` / `white` are returned unchanged.
+   *
+   * Compose with `.rgb()` / `.hex()` to get a resolved value.
+   *
+   * @param token - Palette color token (`'blue-500'`), family name (`'blue'`,
+   *                treated as `'blue-500'`), or `'black'`/`'white'`.
+   * @param diff  - Signed shade delta (positive = darker, negative = lighter).
+   * @returns The shifted `ColorToken`.
+   *
+   * @example
+   * Color.shift('blue-500', 200);  // 'blue-700'
+   * Color.shift('blue', 200);      // 'blue-700' (family → -500 → +200)
+   * Color.shift('blue-500', -300); // 'blue-200'
+   * Color.shift('blue-900', 500);  // 'blue-950' (clamped)
+   * Color.shift('blue-50', -50);   // 'blue-50'  (clamped)
+   * Color.shift('black', 100);     // 'black'    (no-op)
+   * Color.rgb(Color.shift('red-500', 200)); // rgb string for 'red-700'
+   */
+  shift(token: ColorToken | ColorKey, diff: number): ColorToken;
 
   /** Is valid color token */
   isValidColorToken(color: string): boolean;
@@ -315,12 +409,19 @@ export const createColor = <T = BaseThemeConfig['colors']>(
     if (color === 'black' || color === 'white') {
       return true;
     }
-    
+
     const parts = (color as string).split('-');
     if (parts.length === 2) {
       const colorKey = parts[0] as ColorKey;
       const shade = parts[1] as ShadeKey;
-      return colorKey in palette && shade in (palette[colorKey as keyof typeof palette] as Record<ShadeKey, string>);
+      return (
+        colorKey in palette &&
+        shade in
+          (palette[colorKey as keyof typeof palette] as Record<
+            ShadeKey,
+            string
+          >)
+      );
     }
     return false;
   };
@@ -359,7 +460,9 @@ export const createColor = <T = BaseThemeConfig['colors']>(
       return convertColorValueToNumber(colorValue);
     }
 
-    const colorToConvert = palette[normalizedColor as 'black' | 'white'] as string;
+    const colorToConvert = palette[
+      normalizedColor as 'black' | 'white'
+    ] as string;
     if (isValidColor(colorToConvert)) {
       return convertColorValueToNumber(colorToConvert);
     }
@@ -369,6 +472,7 @@ export const createColor = <T = BaseThemeConfig['colors']>(
   const api: Color<T> = {
     rgb,
     hex,
+    shift: shiftToken,
     isValidColorToken,
 
     black: () => rgb('black'),

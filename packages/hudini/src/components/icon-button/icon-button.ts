@@ -12,6 +12,7 @@ import {
 
 import { getColorVariant } from '../../utils/color-variants';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
+import { numberToRgb } from '../../utils/number-to-rgb';
 
 export type IconButtonParams = {
   scene: Scene;
@@ -305,12 +306,7 @@ export class IconButton extends GameObjects.Container {
     icon: IconKey,
     size: number
   ): void {
-    // Convert darkColorButton (number) to RGB string
-    const darkColorObj = Phaser.Display.Color.ValueToColor(this.darkColorButton);
-    const RGB_MASK = 0xff;
-    const RGB_SHIFT_R = 16;
-    const RGB_SHIFT_G = 8;
-    const darkColorString = `rgb(${darkColorObj.color32 >> RGB_SHIFT_R & RGB_MASK}, ${darkColorObj.color32 >> RGB_SHIFT_G & RGB_MASK}, ${darkColorObj.color32 & RGB_MASK})`;
+    const darkColorString = numberToRgb(this.darkColorButton);
 
     this.iconText = new IconText({
       scene,

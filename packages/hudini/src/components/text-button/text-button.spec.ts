@@ -65,8 +65,15 @@ vi.mock('phaser-wind', () => ({
   Color: {
     rgb: vi.fn((color: string) => `rgb-${color}`),
     hex: vi.fn((color: string) => `hex-${color}`),
+    shift: vi.fn((token: string, _diff: number) => token),
     isValidColorToken: vi.fn(() => false),
   },
+  Opacity: {
+    value: vi.fn(() => 0.6),
+    percent: vi.fn(() => 60),
+    css: vi.fn(() => '60%'),
+  },
+  isColorKey: vi.fn(() => false),
   palette: {
     red: {}, blue: {}, green: {}, purple: {}, amber: {},
     slate: {}, gray: {}, zinc: {}, neutral: {}, stone: {},

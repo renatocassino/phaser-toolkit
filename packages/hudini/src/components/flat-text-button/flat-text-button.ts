@@ -31,7 +31,7 @@ export type FlatTextButtonParams = {
    */
   fontSize?: FontSizeKey | number;
   /** 
-   * Font family. Defaults to 'Bebas Neue'.
+   * Font family. Defaults to 'Fredoka'.
    */
   font?: FontKey | string;
   /** 
@@ -131,7 +131,7 @@ export class FlatTextButton extends ContainerInteractive<Phaser.GameObjects.Spri
 
     this.colorButton = Color.rgb(color as ColorKey);
     this.textColorValue = Color.rgb(textColor as ColorKey);
-    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
+    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Fredoka';
 
     this.createButtonText(scene);
     this.createWhiteBorderSprite(scene);

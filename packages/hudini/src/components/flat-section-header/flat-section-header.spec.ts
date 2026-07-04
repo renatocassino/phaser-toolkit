@@ -58,7 +58,7 @@ vi.mock('../text', () => {
       this.text = params.text;
       this.style = {
         fontSize: params.size ?? 22,
-        fontFamily: params.fontFamily ?? 'Bebas Neue',
+        fontFamily: params.fontFamily ?? 'Fredoka',
       };
     }
 

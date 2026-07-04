@@ -55,7 +55,7 @@ export class Text extends Phaser.GameObjects.Text {
     y,
     text,
     size = DEFAULT_FONT_SIZE,
-    fontFamily = 'Bebas Neue',
+    fontFamily = 'Fredoka',
   }: TextParams) {
     super(scene, x, y, text, {
       font: `${size}px "${fontFamily}"`,

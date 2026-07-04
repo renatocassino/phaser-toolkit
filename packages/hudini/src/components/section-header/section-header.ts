@@ -120,7 +120,7 @@ export class SectionHeader extends ContainerInteractive<Phaser.GameObjects.Sprit
     this.lightColorButton = getColorVariant(backgroundColor as string, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
     this.darkColorButton = getColorVariant(backgroundColor as string, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
     this.textColorValue = Color.rgb(textColor as ColorKey);
-    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
+    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Fredoka';
 
     this.createHeaderText(scene);
     this.createWhiteBorderSprite(scene);
@@ -163,7 +163,7 @@ export class SectionHeader extends ContainerInteractive<Phaser.GameObjects.Sprit
    * @returns this for chaining
    */
   public setFont(font: FontKey | string): this {
-    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
+    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Fredoka';
     this.headerText.setFontFamily(this.fontFamily);
     this.regenerateGraphics();
     return this;

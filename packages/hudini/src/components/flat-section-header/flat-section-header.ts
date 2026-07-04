@@ -106,7 +106,7 @@ export class FlatSectionHeader extends GameObjects.Container {
 
     this.colorButton = Color.rgb(backgroundColor as ColorKey);
     this.textColorValue = Color.rgb(textColor as ColorKey);
-    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
+    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Fredoka';
 
     this.createHeaderText(scene);
     this.createWhiteBorderSprite(scene);
@@ -148,7 +148,7 @@ export class FlatSectionHeader extends GameObjects.Container {
    * @returns this for chaining
    */
   public setFont(font: FontKey | string): this {
-    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Bebas Neue';
+    this.fontFamily = font ? (typeof font === 'string' ? font : this.pw.font.family(font)) : 'Fredoka';
     this.headerText.setFontFamily(this.fontFamily);
     this.regenerateGraphics();
     return this;

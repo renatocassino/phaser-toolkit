@@ -14,7 +14,14 @@ vi.mock('../../utils/get-pw-from-scene', () => ({
   getPWFromScene: vi.fn(() => ({
     fontSize: {
       px: vi.fn((key: string) => {
-        const map: Record<string, number> = { xs: 12, sm: 14, base: 16, lg: 18, xl: 20, '2xl': 24 };
+        const map: Record<string, number> = {
+          xs: 12,
+          sm: 14,
+          base: 16,
+          lg: 18,
+          xl: 20,
+          '2xl': 24,
+        };
         return map[key] ?? 16;
       }),
     },
@@ -68,8 +75,20 @@ vi.mock('phaser', () => {
   }
   class MockRectangle {
     public listeners: Record<string, Array<() => void>> = {};
-    // eslint-disable-next-line no-unused-vars
-    constructor(_x: number, _y: number, _w: number, _h: number, _c: number, _a: number) {}
+    constructor(
+      // eslint-disable-next-line no-unused-vars
+      _x: number,
+      // eslint-disable-next-line no-unused-vars
+      _y: number,
+      // eslint-disable-next-line no-unused-vars
+      _w: number,
+      // eslint-disable-next-line no-unused-vars
+      _h: number,
+      // eslint-disable-next-line no-unused-vars
+      _c: number,
+      // eslint-disable-next-line no-unused-vars
+      _a: number
+    ) {}
     setOrigin(): this {
       return this;
     }
@@ -81,7 +100,7 @@ vi.mock('phaser', () => {
       return this;
     }
     emit(evt: string): this {
-      (this.listeners[evt] ?? []).forEach((cb) => cb());
+      (this.listeners[evt] ?? []).forEach(cb => cb());
       return this;
     }
   }
@@ -112,12 +131,18 @@ vi.mock('phaser', () => {
   class Scene {
     add = {
       existing: vi.fn(),
-      text: vi.fn((x: number, y: number, t: string, s: unknown) => new MockText(x, y, t, s)),
+      text: vi.fn(
+        (x: number, y: number, t: string, s: unknown) =>
+          new MockText(x, y, t, s)
+      ),
       rectangle: vi.fn(
         (x: number, y: number, w: number, h: number, c: number, a: number) =>
           new MockRectangle(x, y, w, h, c, a)
       ),
-      container: vi.fn((x: number, y: number, children: unknown[]) => new MockInnerContainer(x, y, children)),
+      container: vi.fn(
+        (x: number, y: number, children: unknown[]) =>
+          new MockInnerContainer(x, y, children)
+      ),
     };
   }
   const GameObjects = { Container };

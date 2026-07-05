@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable max-lines-per-function */
+/* eslint-disable sonarjs/no-identical-functions */
 import { Scene } from 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 

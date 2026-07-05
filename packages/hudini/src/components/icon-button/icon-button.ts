@@ -4,6 +4,8 @@ import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
+  Duration,
+  Ease,
   PhaserWindPlugin,
   type ColorKey,
   type FontSizeKey,
@@ -35,10 +37,6 @@ export type IconButtonParams = {
   variant?: ButtonVariant;
 };
 
-const durations = {
-  click: 60,
-  hover: 100,
-};
 
 const BUTTON_SCALE = 2.2;
 const CENTER_OFFSET = 1.1;
@@ -277,20 +275,20 @@ export class IconButton extends GameObjects.Container {
     this.backgroundSprite.on('pointerover', () => {
       this.scene.tweens.add({
         targets: this,
-        duration: durations.hover,
+        duration: Duration.ms("100"),
         scaleX: HOVER_SCALE,
         scaleY: HOVER_SCALE,
-        ease: 'Back.easeOut',
+        ease: Ease.value("back-out"),
       });
     });
 
     this.backgroundSprite.on('pointerout', () => {
       this.scene.tweens.add({
         targets: this,
-        duration: durations.hover,
+        duration: Duration.ms("100"),
         scaleX: 1,
         scaleY: 1,
-        ease: 'Back.easeOut',
+        ease: Ease.value("back-out"),
       });
     });
 
@@ -300,8 +298,8 @@ export class IconButton extends GameObjects.Container {
         targets: [this.backgroundSprite, this.iconText],
         scaleX: POINTER_DOWN_SCALE,
         scaleY: POINTER_DOWN_SCALE,
-        duration: durations.click,
-        ease: 'Linear',
+        duration: Duration.ms("75"),
+        ease: Ease.value("linear"),
       });
     });
 
@@ -310,8 +308,8 @@ export class IconButton extends GameObjects.Container {
         targets: [this.backgroundSprite, this.iconText],
         scaleX: 1,
         scaleY: 1,
-        duration: durations.click,
-        ease: 'Linear',
+        duration: Duration.ms("75"),
+        ease: Ease.value("linear"),
       });
       onClick?.();
     });

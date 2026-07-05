@@ -5,6 +5,8 @@ import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
+  Duration,
+  Ease,
   Opacity,
   PhaserWindPlugin,
   type ColorKey,
@@ -90,10 +92,6 @@ const BOX_BORDER_THICKNESS = 2;
 const TEXTURE_ANTIALIAS_MARGIN = 1;
 const DEFAULT_LABEL_GAP = 8;
 const DISABLED_ALPHA = 0.4;
-const SELECT_TWEEN_DURATION_MS = 140;
-const SELECT_TWEEN_EASE = 'Back.easeOut';
-const DESELECT_TWEEN_DURATION_MS = 100;
-const DESELECT_TWEEN_EASE = 'Sine.easeIn';
 
 /**
  * Radio — a single-selection form control.
@@ -416,10 +414,8 @@ export class Radio extends ContainerInteractive<Phaser.GameObjects.Rectangle> {
       alpha: targetAlpha,
       scaleX: targetScale,
       scaleY: targetScale,
-      duration: toChecked
-        ? SELECT_TWEEN_DURATION_MS
-        : DESELECT_TWEEN_DURATION_MS,
-      ease: toChecked ? SELECT_TWEEN_EASE : DESELECT_TWEEN_EASE,
+      duration: toChecked ? Duration.ms('150') : Duration.ms('100'),
+      ease: toChecked ? Ease.value('back-out') : Ease.value('sine-in'),
     });
   }
 

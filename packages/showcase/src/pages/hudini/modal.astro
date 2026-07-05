@@ -1,0 +1,323 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Modal Component" description="Centered dialog with dim overlay, pop animation, keyboard/click dismissal and preset slots for title / description / media / actions.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Modal Component</h2>
+      <p class="text-gray-600 mb-4">
+        A centered dialog that composes an <code class="bg-gray-100 px-1 rounded">Overlay</code> backdrop with a card containing your content. Preset slots for title, description, media and actions cover the common case; header/body/footer slot overrides handle custom layouts.
+      </p>
+      <p class="text-gray-600 mb-4">
+        Convention-over-config defaults: X button in the top-right, click-outside to dismiss, ESC key to close. Each one is a single prop away from being disabled.
+      </p>
+
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🪟 <strong>Overlay + card</strong>: dim backdrop + centered rounded card, both animated in/out</li>
+          <li>🎯 <strong>Preset content</strong>: <code>title</code>, <code>description</code>, <code>media</code>, <code>actions</code> resolve 95% of dialogs</li>
+          <li>🧱 <strong>Slots</strong>: <code>header</code>, <code>body</code>, <code>footer</code> take a GameObject when you need custom layout</li>
+          <li>⌨️ <strong>Keyboard</strong>: <code>keysToClose: ['ESC']</code> by default — pass <code>[]</code> to disable or <code>['ESC', 'C']</code> to add custom keys</li>
+          <li>🖱️ <strong>Overlay click</strong>: dismisses by default; <code>closeOnOverlayClick: false</code> disables</li>
+          <li>❌ <strong>Close button</strong>: X in the top-right; <code>showCloseButton: false</code> hides it</li>
+          <li>🎞️ <strong>Animated</strong>: overlay fades, card pops (scale + fade, back-out ease)</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">title</code> - Bold heading at the top of the card</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">description</code> - Supporting copy under the title</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">media</code> - GameObject shown above the header (image, sprite, container)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">actions</code> - Array of buttons. Last one is auto-primary (filled), others are outline</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">header</code> / <code>body</code> / <code>footer</code> - Slot overrides for custom layouts</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">size</code> - <code>'sm'</code> (320), <code>'md'</code> (480, default), <code>'lg'</code> (640), or <code>{`{ width }`}</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">showCloseButton</code> - Default <code>true</code>. Toggles the X in the top-right</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">closeButton</code> - Optional customization <code>{`{ icon, color, size, variant }`}</code> — icon (default <code>'xmark'</code>), color (default <code>'gray'</code>), size (default <code>14</code>), variant (default <code>'outline'</code>)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">closeOnOverlayClick</code> - Default <code>true</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">keysToClose</code> - Default <code>['ESC']</code>, pass <code>[]</code> to disable</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onClose</code> - Fired after exit animation, before destroy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={640} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import { HUDINI_KEY, HudiniPlugin, withHudini, Modal, TextButton } from 'hudini';
+
+class ConfirmDeleteScene extends Phaser.Scene {
+    create(): void {
+        withHudini(this);
+
+        new TextButton({
+            scene: this, x: 400, y: 300,
+            text: 'Delete save',
+            color: 'red-500',
+            onClick: () => {
+                const modal = new Modal({
+                    scene: this,
+                    title: 'Delete save?',
+                    description: 'This cannot be undone.',
+                    actions: [
+                        { label: 'Cancel', onClick: () => modal.close() },
+                        { label: 'Delete',  onClick: () => { deleteSave(); modal.close(); } },
+                    ],
+                });
+                modal.open();
+            },
+        });
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import { loadFont } from 'font-awesome-for-phaser';
+  import {
+    loadFonts,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Modal,
+    TextButton,
+  } from 'hudini';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class ModalDemoScene extends Phaser.Scene {
+    constructor() {
+      super('modal-demo');
+    }
+
+    create(): void {
+      const { pw } = withHudini<Theme>(this);
+      this.cameras.main.setBackgroundColor(pw.color.slate(300));
+
+      const centerX = this.cameras.main.centerX;
+
+      // Header
+      this.add
+        .text(centerX, 30, 'Modal Component', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '28px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      this.add
+        .text(centerX, 65, 'Click any button to open the corresponding modal', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const openBasic = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 140,
+        text: 'Basic modal',
+        color: 'blue-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            title: 'Welcome!',
+            description: 'This is a basic modal — click outside, hit ESC, or use the X to close.',
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openBasic);
+
+      const openConfirm = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 210,
+        text: 'Confirm dialog',
+        color: 'red-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            title: 'Delete save?',
+            description: 'This cannot be undone. All your progress will be lost.',
+            actions: [
+              { label: 'Cancel', onClick: () => modal.close() },
+              {
+                label: 'Delete',
+                color: 'red-500',
+                onClick: () => {
+                  // eslint-disable-next-line no-console
+                  console.log('deleted!');
+                  modal.close();
+                },
+              },
+            ],
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openConfirm);
+
+      const openLarge = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 280,
+        text: 'Large modal with 3 actions',
+        color: 'green-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            size: 'lg',
+            title: 'Level complete!',
+            description: 'You finished the level in 42 seconds. Great job!',
+            actions: [
+              { label: 'Menu', onClick: () => modal.close() },
+              { label: 'Retry', onClick: () => modal.close() },
+              { label: 'Next', onClick: () => modal.close() },
+            ],
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openLarge);
+
+      const openForced = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 350,
+        text: 'Forced choice (no dismiss)',
+        color: 'yellow-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            title: 'Are you sure?',
+            description: 'You must pick one — no ESC, no overlay click, no X.',
+            showCloseButton: false,
+            closeOnOverlayClick: false,
+            keysToClose: [],
+            actions: [
+              { label: 'No', onClick: () => modal.close() },
+              { label: 'Yes', onClick: () => modal.close() },
+            ],
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openForced);
+
+      const openTitleOnly = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 420,
+        text: 'Title only (small)',
+        color: 'purple-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            size: 'sm',
+            title: 'Saved!',
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openTitleOnly);
+
+      const openCustomKeys = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 490,
+        text: 'Custom keys: ESC or C',
+        color: 'cyan-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            title: 'Custom keys',
+            description: 'Press ESC or C to close this dialog.',
+            keysToClose: ['ESC', 'C'],
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openCustomKeys);
+
+      const openCustomClose = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 560,
+        text: 'Custom close button',
+        color: 'pink-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            title: 'Custom X',
+            description: 'The close button uses a filled pink circle-xmark icon.',
+            closeButton: {
+              icon: 'circle-xmark',
+              color: 'pink',
+              size: 20,
+              variant: 'filled',
+            },
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openCustomClose);
+
+      // Footer hint
+      this.add
+        .text(centerX, 620, 'Overlay + pop animation • depth stack via depth tokens', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0.5, 0.5);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      Promise.all([loadFonts(), loadFont()]).then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [ModalDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: { theme },
+              },
+            ],
+          },
+        });
+
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-modal-demo'] = game;
+      });
+    }
+  });
+</script>

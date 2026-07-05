@@ -1,6 +1,8 @@
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
+  Duration,
+  Ease,
   PhaserWindPlugin,
   type ColorToken,
   type RadiusKey,
@@ -111,8 +113,8 @@ export class LinearProgress extends GameObjects.Container {
       this.scene.tweens.add({
         targets: target,
         value: newProgress,
-        duration: 300,
-        ease: 'Power2',
+        duration: Duration.ms('300'),
+        ease: Ease.value('out'),
         onUpdate: () => {
           this.currentProgress = target.value;
           this.updateProgressBar();
@@ -280,7 +282,7 @@ export class LinearProgress extends GameObjects.Container {
       targets: this.progressBar,
       x: maxX,
       duration: this.indeterminateAnimationDuration,
-      ease: 'Sine.easeInOut',
+      ease: Ease.value('sine-in-out'),
       yoyo: true,
       repeat: -1,
     });

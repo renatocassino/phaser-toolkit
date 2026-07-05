@@ -16,6 +16,8 @@ vi.mock('hudini', () => ({
 }));
 
 vi.mock('phaser-wind', () => ({
+  Duration: { ms: vi.fn(() => 100), seconds: vi.fn(() => 0.1), css: vi.fn(() => '100ms') },
+  Ease: { value: vi.fn(() => 'Linear') },
   Color: {
     rgb: vi.fn((color: string) => `rgb-${color}`),
     hex: vi.fn((color: string) => `hex-${color}`),

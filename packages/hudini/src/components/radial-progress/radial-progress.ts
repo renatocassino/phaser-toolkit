@@ -1,6 +1,12 @@
 /* eslint-disable max-lines */
 import { GameObjects, Scene } from 'phaser';
-import { FontSizeKey, PhaserWindPlugin, type ColorToken } from 'phaser-wind';
+import {
+  Duration,
+  Ease,
+  FontSizeKey,
+  PhaserWindPlugin,
+  type ColorToken,
+} from 'phaser-wind';
 
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 
@@ -119,8 +125,8 @@ export class RadialProgress extends GameObjects.Container {
             this.scene.tweens.add({
                 targets: target,
                 value: newProgress,
-                duration: 300,
-                ease: 'Power2',
+                duration: Duration.ms('300'),
+                ease: Ease.value('out'),
                 onUpdate: () => {
                     this.currentProgress = target.value;
                     this.updateProgressBar();

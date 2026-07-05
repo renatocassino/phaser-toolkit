@@ -1,6 +1,7 @@
 export * from './alert';
 export * from './badge';
 export * from './card';
+export * from './checkbox';
 export * from './circular-progress';
 export * from './container-interactive';
 export * from './dock';

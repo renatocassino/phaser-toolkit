@@ -11,6 +11,7 @@ import {
   type ShadowApi,
 } from '../core';
 import { createColor, type Color } from '../core/color';
+import { createDepth, type DepthApi } from '../core/depth';
 import { createDuration, type DurationApi } from '../core/duration';
 import { createEase, type EaseApi } from '../core/ease';
 import { createOpacity, type OpacityApi } from '../core/opacity';
@@ -51,6 +52,7 @@ export class PhaserWindPlugin<
   private opacityInstance: OpacityApi<T['opacity']> | null = null;
   private durationInstance: DurationApi<T['duration']> | null = null;
   private easeInstance: EaseApi<T['ease']> | null = null;
+  private depthInstance: DepthApi<T['depth']> | null = null;
   private fontInstance: FontApi<T['fonts'], T['fontSizes']> | null = null;
   private shadowInstance: ShadowApi<T['effects']> | null = null;
 
@@ -116,6 +118,7 @@ export class PhaserWindPlugin<
       this.theme.duration as T['duration']
     );
     this.easeInstance = createEase<T['ease']>(this.theme.ease as T['ease']);
+    this.depthInstance = createDepth<T['depth']>(this.theme.depth as T['depth']);
     this.fontInstance = createFont(
       this.theme.fonts as T['fonts'],
       this.theme.fontSizes as T['fontSizes']
@@ -157,6 +160,10 @@ export class PhaserWindPlugin<
 
   public get ease(): EaseApi<T['ease']> {
     return this.easeInstance as EaseApi<T['ease']>;
+  }
+
+  public get depth(): DepthApi<T['depth']> {
+    return this.depthInstance as DepthApi<T['depth']>;
   }
 
   public get font(): FontApi<T['fonts'], T['fontSizes']> {

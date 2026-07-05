@@ -1,4 +1,5 @@
 export * from './color';
+export * from './depth';
 export * from './duration';
 export * from './ease';
 export * from './font';

@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable sonarjs/no-duplicate-string */
+import { depthMap, type DepthMap } from '../core/depth';
 import { durationMap, type DurationMap } from '../core/duration';
 import { easeMap, type EaseMap } from '../core/ease';
 import { fontSizeMap, type FontSizeMap } from '../core/font-size';
@@ -49,6 +50,7 @@ export type ThemeOverride = {
   opacity?: Partial<OpacityMap> & { [key: string]: number };
   duration?: Partial<DurationMap> & { [key: string]: number };
   ease?: Partial<EaseMap> & { [key: string]: string };
+  depth?: Partial<DepthMap> & { [key: string]: number };
   custom?: { [key: string]: unknown };
 };
 
@@ -74,6 +76,9 @@ export type BaseThemeConfig = {
   };
   ease?: EaseMap & {
     [key: string]: string;
+  };
+  depth?: DepthMap & {
+    [key: string]: number;
   };
   custom?: {
     [key: string]: unknown;
@@ -116,6 +121,7 @@ export const defaultLightTheme: BaseThemeConfig = {
   opacity: { ...opacityMap },
   duration: { ...durationMap },
   ease: { ...easeMap },
+  depth: { ...depthMap },
   typography: {
     heading: {
       fontSize: '2xl',
@@ -200,6 +206,7 @@ export const defaultDarkTheme: BaseThemeConfig = {
   opacity: { ...opacityMap },
   duration: { ...durationMap },
   ease: { ...easeMap },
+  depth: { ...depthMap },
   typography: {
     heading: {
       fontSize: '2xl',

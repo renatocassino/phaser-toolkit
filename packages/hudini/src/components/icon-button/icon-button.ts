@@ -10,9 +10,11 @@ import {
   type RadiusKey,
 } from 'phaser-wind';
 
-import { getColorVariant } from '../../utils/color-variants';
+import {
+  BUTTON_STROKE_THICKNESS,
+  getButtonStrokeColor,
+} from '../../utils/button-style';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
-import { numberToRgb } from '../../utils/number-to-rgb';
 
 export type IconButtonParams = {
   scene: Scene;
@@ -35,40 +37,17 @@ const BUTTON_SCALE = 2.2;
 const CENTER_OFFSET = 1.1;
 const HOVER_SCALE = 1.05;
 const POINTER_DOWN_SCALE = 0.95;
-const TOKEN_LIGHTER_DIFF = -100;
-
-const COLOR_LIGHTER_AMOUNT = 30;
-
-// Border constants
-const BLACK_BORDER_THICKNESS = 2;
-const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 2;
-// eslint-disable-next-line no-magic-numbers
-const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 3; // 5 pixels total
-const WHITE_BORDER_RADIUS_EXTRA = 2;
-
-// Overlay constants
-const LIGHT_OVERLAY_SCALE = 0.6;
-
-// Icon constants
-const ICON_STROKE_THICKNESS = 3;
-const ICON_SHADOW_OFFSET_X = 0;
-const ICON_SHADOW_OFFSET_Y = 3;
-const ICON_SHADOW_BLUR = 0;
-const ICON_OFFSET_Y = -1.5; // Half of shadow offset to keep visually centered
 
 // Origin constants
 const SPRITE_ORIGIN = 0.5;
 
 export class IconButton extends GameObjects.Container {
   public backgroundSprite!: GameObjects.Sprite;
-  public whiteBorderSprite!: GameObjects.Sprite;
   public iconText!: IconText;
 
   private pw: PhaserWindPlugin<{}>;
   private baseColor!: Omit<ColorKey, 'black' | 'white'>;
   private colorButton!: string;
-  private lightColorButton!: number;
-  private darkColorButton!: number;
   private sizePx!: number;
   private borderRadiusPx!: number;
 
@@ -97,15 +76,11 @@ export class IconButton extends GameObjects.Container {
 
     this.baseColor = baseColor;
     this.colorButton = Color.rgb(baseColor as ColorKey);
-    this.lightColorButton = getColorVariant(baseColor as string, TOKEN_LIGHTER_DIFF, COLOR_LIGHTER_AMOUNT);
-    // this.darkColorButton = getColorVariant(baseColor as string, TOKEN_DARKER_DIFF, COLOR_DARKER_AMOUNT);
-    this.darkColorButton = Color.blackHex();
     this.borderRadiusPx =
       typeof borderRadius === 'number'
         ? borderRadius
         : this.pw.radius.px((borderRadius ?? 'full') as RadiusKey);
 
-    this.createWhiteBorderSprite(scene, sizePx, this.borderRadiusPx);
     this.createBackgroundSprite(scene, sizePx, baseColor, this.borderRadiusPx);
     this.createIconText(scene, icon, sizePx);
     this.setupContainer();
@@ -120,19 +95,12 @@ export class IconButton extends GameObjects.Container {
     if (this.borderRadiusPx === newRadiusPx) return this;
     this.borderRadiusPx = newRadiusPx;
 
-    // Regenerate textures for white border and background
-    const whiteBorderTexture = this.createWhiteBorderTexture(
-      this.scene,
-      this.sizePx,
-      this.borderRadiusPx
-    );
     const backgroundTexture = this.createBackgroundTexture(
       this.scene,
       this.sizePx,
       this.baseColor,
       this.borderRadiusPx
     );
-    this.whiteBorderSprite.setTexture(whiteBorderTexture);
     this.backgroundSprite.setTexture(backgroundTexture);
     return this;
   }
@@ -146,18 +114,12 @@ export class IconButton extends GameObjects.Container {
 
     this.updateSize();
 
-    const whiteBorderTexture = this.createWhiteBorderTexture(
-      this.scene,
-      this.sizePx,
-      this.borderRadiusPx
-    );
     const backgroundTexture = this.createBackgroundTexture(
       this.scene,
       this.sizePx,
       this.baseColor,
       this.borderRadiusPx
     );
-    this.whiteBorderSprite.setTexture(whiteBorderTexture);
     this.backgroundSprite.setTexture(backgroundTexture);
     return this;
   }
@@ -165,20 +127,6 @@ export class IconButton extends GameObjects.Container {
 
   private updateSize(): void {
     this.setSize(this.sizePx * BUTTON_SCALE, this.sizePx * BUTTON_SCALE);
-  }
-
-  private createWhiteBorderSprite(
-    scene: Scene,
-    size: number,
-    borderRadiusPx: number
-  ): void {
-    const whiteBorderTexture = this.createWhiteBorderTexture(
-      scene,
-      size,
-      borderRadiusPx
-    );
-    this.whiteBorderSprite = scene.add.sprite(0, 0, whiteBorderTexture);
-    this.whiteBorderSprite.setOrigin(SPRITE_ORIGIN, SPRITE_ORIGIN);
   }
 
   private createBackgroundSprite(
@@ -195,40 +143,6 @@ export class IconButton extends GameObjects.Container {
     );
     this.backgroundSprite = scene.add.sprite(0, 0, backgroundTexture);
     this.backgroundSprite.setOrigin(SPRITE_ORIGIN, SPRITE_ORIGIN);
-  }
-
-  private createWhiteBorderTexture(
-    scene: Scene,
-    size: number,
-    borderRadiusPx: number
-  ): string {
-    const textureKey = `iconButton_whiteBorder_r${borderRadiusPx}_${size}`;
-    // White border is larger on each side
-    const side = size * 2 + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
-    // Increase texture size to accommodate the larger border
-    const textureSize = size * BUTTON_SCALE + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
-    const centerX = textureSize / 2;
-    const centerY = textureSize / 2;
-
-    const graphics = scene.add.graphics();
-    const maxRadius = Math.floor(Math.min(side / 2, side / 2));
-    const effectiveRadius = Math.min(borderRadiusPx + WHITE_BORDER_RADIUS_EXTRA, maxRadius);
-    const finalRadius = Math.max(0, effectiveRadius);
-
-    // White border (outer)
-    graphics.fillStyle(Color.hex('white'), 1);
-    graphics.fillRoundedRect(
-      centerX - side / 2,
-      centerY - side / 2,
-      side,
-      side,
-      finalRadius
-    );
-
-    graphics.generateTexture(textureKey, textureSize, textureSize);
-    graphics.destroy();
-
-    return textureKey;
   }
 
   private createBackgroundTexture(
@@ -248,7 +162,7 @@ export class IconButton extends GameObjects.Container {
     const effectiveRadius = Math.min(borderRadiusPx, maxRadius);
     const finalRadius = Math.max(0, effectiveRadius);
 
-    this.drawCssColorGradient(graphics, centerX, centerY, side, finalRadius);
+    this.drawButtonBackground(graphics, centerX, centerY, side, finalRadius);
 
     graphics.generateTexture(textureKey, textureSize, textureSize);
     graphics.destroy();
@@ -257,42 +171,17 @@ export class IconButton extends GameObjects.Container {
   }
 
   /**
-   * Draws gradient using a centered light overlay on CSS color.
-   * For round buttons, uses a smaller centered graphic with light color.
+   * Draws the button's background as a flat filled rounded rect.
    */
-  private drawCssColorGradient(
+  private drawButtonBackground(
     graphics: Phaser.GameObjects.Graphics,
     centerX: number,
     centerY: number,
     side: number,
     effectiveRadius: number
   ): void {
-    // Main background
     graphics.fillStyle(Color.hex(this.colorButton), 1);
     graphics.fillRoundedRect(
-      centerX - side / 2,
-      centerY - side / 2,
-      side,
-      side,
-      effectiveRadius
-    );
-
-    // Centered light overlay (smaller, circular/rounded)
-    const overlaySide = side * LIGHT_OVERLAY_SCALE;
-    const overlayRadius = Math.min(effectiveRadius, overlaySide / 2);
-    
-    graphics.fillStyle(this.lightColorButton, 1);
-    graphics.fillRoundedRect(
-      centerX - overlaySide / 2,
-      centerY - overlaySide / 2,
-      overlaySide,
-      overlaySide,
-      overlayRadius
-    );
-
-    // Black stroke border
-    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
-    graphics.strokeRoundedRect(
       centerX - side / 2,
       centerY - side / 2,
       side,
@@ -306,26 +195,16 @@ export class IconButton extends GameObjects.Container {
     icon: IconKey,
     size: number
   ): void {
-    const darkColorString = numberToRgb(this.darkColorButton);
-
     this.iconText = new IconText({
       scene,
       x: 0,
-      y: ICON_OFFSET_Y,
+      y: 0,
       icon,
       size,
       style: {
         color: Color.rgb('white'),
-        strokeThickness: ICON_STROKE_THICKNESS,
-        stroke: darkColorString,
-        shadow: {
-          offsetX: ICON_SHADOW_OFFSET_X,
-          offsetY: ICON_SHADOW_OFFSET_Y,
-          color: darkColorString,
-          blur: ICON_SHADOW_BLUR,
-          stroke: true,
-          fill: true,
-        },
+        strokeThickness: BUTTON_STROKE_THICKNESS,
+        stroke: getButtonStrokeColor(this.baseColor as string),
       },
     });
     this.iconText.setFontStyle('900');
@@ -333,7 +212,7 @@ export class IconButton extends GameObjects.Container {
   }
 
   private setupContainer(): void {
-    this.add([this.whiteBorderSprite, this.backgroundSprite, this.iconText]);
+    this.add([this.backgroundSprite, this.iconText]);
   }
 
   private setupInteractivity(onClick?: () => void): void {
@@ -363,7 +242,7 @@ export class IconButton extends GameObjects.Container {
     // Click effects
     this.backgroundSprite.on('pointerdown', () => {
       this.scene.tweens.add({
-        targets: [this.whiteBorderSprite, this.backgroundSprite, this.iconText],
+        targets: [this.backgroundSprite, this.iconText],
         scaleX: POINTER_DOWN_SCALE,
         scaleY: POINTER_DOWN_SCALE,
         duration: durations.click,
@@ -373,7 +252,7 @@ export class IconButton extends GameObjects.Container {
 
     this.backgroundSprite.on('pointerup', () => {
       this.scene.tweens.add({
-        targets: [this.whiteBorderSprite, this.backgroundSprite, this.iconText],
+        targets: [this.backgroundSprite, this.iconText],
         scaleX: 1,
         scaleY: 1,
         duration: durations.click,

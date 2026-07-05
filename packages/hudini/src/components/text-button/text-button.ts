@@ -2,8 +2,6 @@
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
-  isColorKey,
-  Opacity,
   PhaserWindPlugin,
   type ColorKey,
   type FontKey,
@@ -12,6 +10,10 @@ import {
   type SpacingKey,
 } from 'phaser-wind';
 
+import {
+  BUTTON_STROKE_THICKNESS,
+  getButtonStrokeColor,
+} from '../../utils/button-style';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { ContainerInteractive } from '../container-interactive';
 import { Text } from '../text';
@@ -69,14 +71,13 @@ const durations = {
 const HOVER_SCALE = 1.05;
 const POINTER_DOWN_SCALE = 0.95;
 
-const BLACK_BORDER_THICKNESS = 2;
 /**
  * Extra transparent margin around the drawn button inside its texture, just
- * enough so the anti-aliased stroke isn't clipped at the texture edge.
+ * enough so the anti-aliased rounded-corner fill isn't clipped at the edge.
  * The container itself is resized to the *visual* box (see setSize below),
  * so this margin never leaks into layout measurements.
  */
-const TEXTURE_STROKE_MARGIN = BLACK_BORDER_THICKNESS + 1;
+const TEXTURE_ANTIALIAS_MARGIN = 1;
 
 /**
  * A customizable text button component for Phaser, supporting auto-sizing,
@@ -250,19 +251,6 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
    * @param scene Phaser scene.
    */
   private createButtonText(scene: Scene): void {
-    // If the button color came from a palette reference (family like 'blue'
-    // or a full token like 'blue-500'), derive the stroke as a darker shade
-    // via Color.shift so the outline stays inside the palette. For arbitrary
-    // CSS colors (hex, rgb, ...), fall back to a soft translucent black —
-    // solid black clashes with some palettes.
-    const darkColorShift = 400;
-    const isPaletteColor =
-      isColorKey(this.colorInput) || Color.isValidColorToken(this.colorInput);
-
-    const strokeColor = isPaletteColor
-      ? Color.rgb(Color.shift(this.colorInput as ColorKey, darkColorShift))
-      : `rgba(0, 0, 0, ${Opacity.value('60')})`;
-
     this.buttonText = new Text({
       scene,
       x: 0,
@@ -270,8 +258,8 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
       text: this.textValue,
       size: this.fontSizePx,
       fontFamily: this.fontFamily,
-      strokeThickness: 3,
-      strokeColor,
+      strokeThickness: BUTTON_STROKE_THICKNESS,
+      strokeColor: getButtonStrokeColor(this.colorInput),
     });
     this.buttonText.setOrigin(0.5, 0.5);
   }
@@ -329,7 +317,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     const { width, height } = this.getButtonDimensions();
     const textureKey = `textButton_bg_${this.colorButton}_${this.borderRadiusPx}_${width}_${height}`;
 
-    const padding = TEXTURE_STROKE_MARGIN;
+    const padding = TEXTURE_ANTIALIAS_MARGIN;
     const textureWidth = width + padding * 2;
     const textureHeight = height + padding * 2;
 
@@ -347,7 +335,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Draws the button's background: filled rounded rect with a black stroke border.
+   * Draws the button's background as a flat filled rounded rect.
    */
   private drawButtonBackground(
     graphics: Phaser.GameObjects.Graphics,
@@ -358,15 +346,6 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   ): void {
     graphics.fillStyle(Color.hex(this.colorButton), 1);
     graphics.fillRoundedRect(padding, padding, width, height, effectiveRadius);
-
-    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
-    graphics.strokeRoundedRect(
-      padding,
-      padding,
-      width,
-      height,
-      effectiveRadius
-    );
   }
 
   /**

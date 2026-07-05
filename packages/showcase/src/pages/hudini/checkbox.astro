@@ -1,0 +1,341 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Checkbox Component" description="Uncontrolled toggleable form control with custom icon, disabled/readOnly states, and a pop animation on state change.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Checkbox Component</h2>
+      <p class="text-gray-600 mb-4">
+        A toggleable form control. The Checkbox owns its own state (uncontrolled): read it back via <code class="bg-gray-100 px-1 rounded">getValue()</code> / <code class="bg-gray-100 px-1 rounded">isChecked()</code>, mutate it via <code class="bg-gray-100 px-1 rounded">toggle()</code> / <code class="bg-gray-100 px-1 rounded">setChecked(v)</code>, observe changes via the <code class="bg-gray-100 px-1 rounded">onChange</code> callback.
+      </p>
+      <p class="text-gray-600 mb-4">
+        For persistent named state, wire it up with <code class="bg-gray-100 px-1 rounded">phaser-hooks</code>' <code class="bg-gray-100 px-1 rounded">withLocalState</code> on the outside — the Checkbox stays decoupled from any store.
+      </p>
+
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>💚 <strong>Custom icon</strong>: default <code>check</code>, use any Font Awesome key (<code>heart</code>, <code>star</code>, <code>thumbs-up</code>, ...)</li>
+          <li>🎨 <strong>Custom colors</strong>: box color + icon color independently</li>
+          <li>🏷️ <strong>Optional label</strong>: clicking the label toggles too (HTML-label behavior)</li>
+          <li>🚫 <strong>Disabled + readOnly</strong>: separate states — disabled mutes the visual, readOnly only blocks clicks</li>
+          <li>✨ <strong>Pop animation</strong>: icon scales + fades in on check, out on uncheck (Back.easeOut)</li>
+          <li>📋 <strong>Form-ready</strong>: <code>name</code> + <code>getValue()</code> for building a Form later — no runtime dep on any state store</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">checked</code> - Initial state (default <code>false</code>)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">label</code> - Optional text label to the right of the box</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">icon</code> - Font Awesome icon shown when checked (default <code>check</code>)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">iconColor</code> - Color of the icon (default <code>white</code>)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - Box fill / border color (default <code>blue-500</code>)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">labelColor</code>, <code class="bg-gray-200 px-2 py-1 rounded">size</code>, <code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code>, <code class="bg-gray-200 px-2 py-1 rounded">labelGap</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">disabled</code>, <code class="bg-gray-200 px-2 py-1 rounded">readOnly</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">name</code> - Form field name, passed as the second arg of <code>onChange</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onChange</code> - <code>(checked, name?) =&gt; void</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onClick</code> - Fires on any click, even if the state does not change</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Methods -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Methods</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">toggle()</code> / <code class="bg-gray-200 px-2 py-1 rounded">setChecked(v)</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">isChecked()</code> / <code class="bg-gray-200 px-2 py-1 rounded">getValue()</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">disable()</code> / <code class="bg-gray-200 px-2 py-1 rounded">enable()</code> / <code class="bg-gray-200 px-2 py-1 rounded">setDisabled(v)</code> / <code class="bg-gray-200 px-2 py-1 rounded">isDisabled()</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setReadOnly(v)</code> / <code class="bg-gray-200 px-2 py-1 rounded">isReadOnly()</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onChange(cb)</code> / <code class="bg-gray-200 px-2 py-1 rounded">onClick(cb)</code> - Replace the handlers post-construction</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={620} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Checkbox,
+} from 'hudini';
+
+class SettingsScene extends Phaser.Scene {
+    create(): void {
+        // 1. Basic checkbox with a label
+        const sound = new Checkbox({
+            scene: this, x: 100, y: 100,
+            label: 'Enable sound',
+            checked: true,
+            name: 'sound',
+            onChange: (v, name) => console.log(name, v),
+        });
+
+        // 2. Custom icon (a heart for "favorite")
+        const favorite = new Checkbox({
+            scene: this, x: 100, y: 160,
+            label: 'Favorite',
+            icon: 'heart',
+            color: 'red-500',
+        });
+
+        // 3. Collect values later (mini form)
+        const submit = () => {
+            const payload = {
+                sound: sound.getValue(),
+                favorite: favorite.getValue(),
+            };
+            console.log('form:', payload);
+        };
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import { loadFont } from 'font-awesome-for-phaser';
+  import {
+    loadFonts,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Checkbox,
+    TextButton,
+  } from 'hudini';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class CheckboxDemoScene extends Phaser.Scene {
+    constructor() {
+      super('checkbox-demo');
+    }
+
+    create(): void {
+      const { pw } = withHudini<Theme>(this);
+      this.cameras.main.setBackgroundColor(pw.color.slate(200));
+
+      const centerX = this.cameras.main.centerX;
+
+      // Header
+      this.add
+        .text(centerX, 30, 'Checkbox Component', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '28px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // --- Left column: variations ---
+      const leftX = 180;
+      let y = 100;
+
+      const addSectionTitle = (text: string): void => {
+        this.add
+          .text(leftX, y, text, {
+            color: pw.color.slate(700),
+            fontFamily: 'Fredoka',
+            fontSize: '13px',
+          })
+          .setOrigin(0, 0.5);
+        y += 30;
+      };
+
+      addSectionTitle('Basic (default check icon)');
+      this.add.existing(
+        new Checkbox({
+          scene: this,
+          x: leftX + 15,
+          y,
+          label: 'Enable sound',
+          checked: true,
+        })
+      );
+      y += 45;
+
+      addSectionTitle('Custom icon (heart)');
+      this.add.existing(
+        new Checkbox({
+          scene: this,
+          x: leftX + 15,
+          y,
+          label: 'Favorite',
+          icon: 'heart',
+          color: 'red-500',
+        })
+      );
+      y += 45;
+
+      addSectionTitle('Star icon + purple');
+      this.add.existing(
+        new Checkbox({
+          scene: this,
+          x: leftX + 15,
+          y,
+          label: 'Rated',
+          icon: 'star',
+          color: 'purple-600',
+        })
+      );
+      y += 45;
+
+      addSectionTitle('Disabled (checked)');
+      this.add.existing(
+        new Checkbox({
+          scene: this,
+          x: leftX + 15,
+          y,
+          label: 'Locked feature',
+          checked: true,
+          disabled: true,
+        })
+      );
+      y += 45;
+
+      addSectionTitle('ReadOnly (click ignored, normal look)');
+      this.add.existing(
+        new Checkbox({
+          scene: this,
+          x: leftX + 15,
+          y,
+          label: 'Terms accepted',
+          checked: true,
+          readOnly: true,
+        })
+      );
+
+      // --- Right column: live form ---
+      const rightX = 500;
+      let ry = 100;
+
+      this.add
+        .text(rightX, ry, 'Mini form (getValue on submit)', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0, 0.5);
+      ry += 30;
+
+      const cbSound = new Checkbox({
+        scene: this,
+        x: rightX + 15,
+        y: ry,
+        label: 'Sound',
+        name: 'sound',
+        checked: true,
+        color: 'green-500',
+      });
+      this.add.existing(cbSound);
+      ry += 45;
+
+      const cbMusic = new Checkbox({
+        scene: this,
+        x: rightX + 15,
+        y: ry,
+        label: 'Music',
+        name: 'music',
+        color: 'green-500',
+      });
+      this.add.existing(cbMusic);
+      ry += 45;
+
+      const cbHaptics = new Checkbox({
+        scene: this,
+        x: rightX + 15,
+        y: ry,
+        label: 'Haptics',
+        name: 'haptics',
+        color: 'green-500',
+      });
+      this.add.existing(cbHaptics);
+      ry += 60;
+
+      const output = this.add
+        .text(rightX + 15, ry, '(click submit to log values)', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0, 0.5);
+      ry += 45;
+
+      const submitBtn = new TextButton({
+        scene: this,
+        x: rightX + 60,
+        y: ry,
+        text: 'Submit',
+        color: 'blue-500',
+        padding: '3',
+        onClick: () => {
+          const payload = {
+            sound: cbSound.getValue(),
+            music: cbMusic.getValue(),
+            haptics: cbHaptics.getValue(),
+          };
+          output.setText(JSON.stringify(payload));
+          console.log('form:', payload);
+        },
+      });
+      this.add.existing(submitBtn);
+
+      // Footer
+      this.add
+        .text(centerX, 590, 'Click any checkbox to see the pop animation.', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0.5, 0.5);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      Promise.all([loadFonts(), loadFont()]).then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [CheckboxDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: { theme },
+              },
+            ],
+          },
+        });
+
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-checkbox-demo'] = game;
+      });
+    }
+  });
+</script>

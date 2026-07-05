@@ -1,0 +1,395 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Radio + RadioGroup" description="Single-selection form control. RadioGroup manages the 'only one selected' invariant via a factory; individual Radios are free to be positioned anywhere in the scene.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Radio + RadioGroup</h2>
+      <p class="text-gray-600 mb-4">
+        Two components that work together. <strong>Radio</strong> is a single-selection form control — same contract as Checkbox (uncontrolled state, <code class="bg-gray-100 px-1 rounded">getValue()</code>, <code class="bg-gray-100 px-1 rounded">disabled</code>, <code class="bg-gray-100 px-1 rounded">readOnly</code>, custom icon), but click always <em>selects</em> and never deselects (matches native <code>&lt;input type="radio"&gt;</code>).
+      </p>
+      <p class="text-gray-600 mb-4">
+        <strong>RadioGroup</strong> is a stateless controller — no visual, just a factory. Call <code class="bg-gray-100 px-1 rounded">group.createRadio()</code> and place the returned Radios anywhere you want. The group enforces "only one selected" internally.
+      </p>
+      <p class="text-gray-600 mb-4 font-semibold text-blue-700">
+        Recommended: use <code class="bg-blue-50 px-1 rounded">RadioGroup</code> whenever you have 2+ related radios. Standalone Radio is supported but you own the "only one" logic manually.
+      </p>
+
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎯 <strong>Layout-free grouping</strong>: <code>createRadio()</code> returns a Radio you can drop anywhere — Stack, Card, scattered HUD positions</li>
+          <li>🔒 <strong>"Only one" invariant</strong> guaranteed by the group; no hidden global state, no scene-wide registry</li>
+          <li>💚 <strong>Custom icon</strong> per Radio (default <code>'circle'</code>, or use <code>'heart'</code>, <code>'star'</code>, <code>'skull'</code>, ...)</li>
+          <li>🎨 <strong>Group-level defaults</strong> (color, size, icon) inherited by every Radio, overridable per Radio</li>
+          <li>✨ <strong>Pop animation</strong> on the inner icon — scale + fade in with <code>Back.easeOut</code></li>
+          <li>📋 <strong>Form-ready</strong>: <code>group.getValue()</code> returns the selected string</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">RadioGroup props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">scene</code> - Phaser scene shared by all radios in the group</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">name</code> - Form field name, passed to <code>onChange</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">value</code> - Initially selected value</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">disabled</code>, <code class="bg-gray-200 px-2 py-1 rounded">readOnly</code> - Apply to every radio in the group</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">color</code>, <code class="bg-gray-200 px-2 py-1 rounded">icon</code>, <code class="bg-gray-200 px-2 py-1 rounded">iconColor</code>, <code class="bg-gray-200 px-2 py-1 rounded">size</code>, <code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code>, <code class="bg-gray-200 px-2 py-1 rounded">labelColor</code> - Defaults for every Radio created by this group</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onChange</code> - <code>(value, name?) =&gt; void</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Methods -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">RadioGroup methods</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">createRadio(params)</code> - Factory. Same params as Radio, but the group manages <code>checked</code> and <code>onChange</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setValue(v)</code> / <code class="bg-gray-200 px-2 py-1 rounded">getValue()</code> - Programmatic selection</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">disable()</code> / <code class="bg-gray-200 px-2 py-1 rounded">enable()</code> / <code class="bg-gray-200 px-2 py-1 rounded">setDisabled(v)</code> / <code class="bg-gray-200 px-2 py-1 rounded">isDisabled()</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setReadOnly(v)</code> / <code class="bg-gray-200 px-2 py-1 rounded">isReadOnly()</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onChange(cb)</code> - Replace the callback</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">destroy()</code> - Clear the group's registry (does not destroy the Radios themselves)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={720} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    RadioGroup,
+    Stack,
+} from 'hudini';
+
+class DifficultyScene extends Phaser.Scene {
+    create(): void {
+        // 1. Create the group first — no visual.
+        const group = new RadioGroup({
+            scene: this,
+            name: 'difficulty',
+            value: 'normal',
+            color: 'blue-500',
+            onChange: (value) => {
+                console.log('selected:', value);
+            },
+        });
+
+        // 2. Create Radios via the factory. Place them anywhere.
+        const easy   = group.createRadio({ x: 0, y: 0, value: 'easy',   label: 'Easy' });
+        const normal = group.createRadio({ x: 0, y: 0, value: 'normal', label: 'Normal' });
+        const hard   = group.createRadio({ x: 0, y: 0, value: 'hard',   label: 'Hard' });
+
+        // 3. Lay them out — Stack (or wherever you want).
+        const layout = new Stack({
+            scene: this, x: 400, y: 300,
+            direction: 'column',
+            gap: 12,
+            children: [easy, normal, hard],
+        });
+        this.add.existing(layout);
+
+        // Read the current value later (form-style):
+        console.log(group.getValue()); // 'normal'
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import { loadFont } from 'font-awesome-for-phaser';
+  import {
+    loadFonts,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Radio,
+    RadioGroup,
+    Stack,
+    TextButton,
+  } from 'hudini';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class RadioDemoScene extends Phaser.Scene {
+    constructor() {
+      super('radio-demo');
+    }
+
+    create(): void {
+      const { pw } = withHudini<Theme>(this);
+      this.cameras.main.setBackgroundColor(pw.color.slate(200));
+
+      const centerX = this.cameras.main.centerX;
+
+      // Header
+      this.add
+        .text(centerX, 30, 'Radio + RadioGroup', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '28px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // --- Section 1: difficulty group in a Stack ---
+      this.add
+        .text(180, 90, "Difficulty — group in a column Stack", {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0, 0.5);
+
+      const diffCurrent = this.add
+        .text(180, 118, 'selected: normal', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0, 0.5);
+
+      const diffGroup = new RadioGroup({
+        scene: this,
+        name: 'difficulty',
+        value: 'normal',
+        color: 'blue-500',
+        onChange: (value) => {
+          diffCurrent.setText(`selected: ${value ?? '(none)'}`);
+        },
+      });
+
+      const diffStack = new Stack({
+        scene: this,
+        x: 220,
+        y: 210,
+        direction: 'column',
+        gap: 12,
+        align: 'left',
+        children: [
+          diffGroup.createRadio({ x: 0, y: 0, value: 'easy',   label: 'Easy' }),
+          diffGroup.createRadio({ x: 0, y: 0, value: 'normal', label: 'Normal' }),
+          diffGroup.createRadio({ x: 0, y: 0, value: 'hard',   label: 'Hard' }),
+        ],
+      });
+      this.add.existing(diffStack);
+
+      // --- Section 2: custom icon per Radio (heart / star / skull) ---
+      this.add
+        .text(500, 90, 'Custom icon per Radio', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0, 0.5);
+
+      const flavorCurrent = this.add
+        .text(500, 118, 'selected: (none)', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0, 0.5);
+
+      const flavorGroup = new RadioGroup({
+        scene: this,
+        name: 'flavor',
+        color: 'red-500',
+        onChange: (value) => {
+          flavorCurrent.setText(`selected: ${value ?? '(none)'}`);
+        },
+      });
+
+      const flavorStack = new Stack({
+        scene: this,
+        x: 550,
+        y: 210,
+        direction: 'column',
+        gap: 12,
+        align: 'left',
+        children: [
+          flavorGroup.createRadio({
+            x: 0, y: 0, value: 'love', label: 'Love',
+            icon: 'heart', color: 'red-500', iconSize: 12,
+          }),
+          flavorGroup.createRadio({
+            x: 0, y: 0, value: 'star', label: 'Star',
+            icon: 'star', color: 'amber-500', iconSize: 12,
+          }),
+          flavorGroup.createRadio({
+            x: 0, y: 0, value: 'danger', label: 'Danger',
+            icon: 'skull', color: 'slate-800', iconSize: 12,
+          }),
+        ],
+      });
+      this.add.existing(flavorStack);
+
+      // --- Section 3: scattered layout (radios placed at arbitrary positions) ---
+      this.add
+        .text(centerX, 335, 'Scattered layout — radios positioned freely', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const scatteredCurrent = this.add
+        .text(centerX, 358, 'selected: (none)', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const scatteredGroup = new RadioGroup({
+        scene: this,
+        name: 'position',
+        color: 'purple-600',
+        onChange: (value) => {
+          scatteredCurrent.setText(`selected: ${value ?? '(none)'}`);
+        },
+      });
+
+      // Each Radio in its own place — no Stack, no options array.
+      this.add.existing(
+        scatteredGroup.createRadio({
+          x: 200,
+          y: 410,
+          value: 'top-left',
+          label: 'Top left',
+        })
+      );
+      this.add.existing(
+        scatteredGroup.createRadio({
+          x: 500,
+          y: 410,
+          value: 'top-right',
+          label: 'Top right',
+        })
+      );
+      this.add.existing(
+        scatteredGroup.createRadio({
+          x: 200,
+          y: 460,
+          value: 'bottom-left',
+          label: 'Bottom left',
+        })
+      );
+      this.add.existing(
+        scatteredGroup.createRadio({
+          x: 500,
+          y: 460,
+          value: 'bottom-right',
+          label: 'Bottom right',
+        })
+      );
+
+      // --- Section 4: mini form ---
+      this.add
+        .text(centerX, 530, 'Mini form (getValue on submit)', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const formOutput = this.add
+        .text(centerX, 685, '(click submit to log values)', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const submitBtn = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 640,
+        text: 'Submit',
+        color: 'blue-500',
+        padding: '3',
+        onClick: () => {
+          const payload = {
+            difficulty: diffGroup.getValue(),
+            flavor: flavorGroup.getValue(),
+            position: scatteredGroup.getValue(),
+          };
+          formOutput.setText(JSON.stringify(payload));
+          console.log('form:', payload);
+        },
+      });
+      this.add.existing(submitBtn);
+
+      // --- Section 5: standalone Radio (rare — not managed by a group) ---
+      this.add
+        .text(centerX, 560, 'Standalone Radio (no group — manual state):', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      this.add.existing(
+        new Radio({
+          scene: this,
+          x: centerX,
+          y: 590,
+          label: 'I agree to the terms',
+          value: 'terms',
+          color: 'emerald-600',
+          onChange: (checked, value) => {
+            console.log('standalone:', value, checked);
+          },
+        })
+      );
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      Promise.all([loadFonts(), loadFont()]).then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [RadioDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: { theme },
+              },
+            ],
+          },
+        });
+
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-radio-demo'] = game;
+      });
+    }
+  });
+</script>

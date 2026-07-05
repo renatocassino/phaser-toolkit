@@ -1,0 +1,247 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Alert Component" description="Static notification banner with semantic variants (success / error / warning / info / neutral), optional icons and click handler — the content half of a daisyUI-style toast.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Alert Component</h2>
+      <p class="text-gray-600 mb-4">
+        A static (or optionally clickable) notification banner. Same visual language as a filled TextButton — colored fill, outlined text/icon — but without hover/click animations. Semantic variants come with sensible default colors and icons (daisyUI parity).
+      </p>
+      <p class="text-gray-600 mb-4">
+        Alert is intentionally content-only. For auto-dismiss / timing / entry animation, wrap it in a <code class="bg-gray-100 px-1 rounded">Toast</code> (separate component, later).
+      </p>
+
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎨 <strong>Semantic variants</strong>: <code>success</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>neutral</code></li>
+          <li>🎯 <strong>Default icon per variant</strong>: check for success, X for error, etc — omit or override at will</li>
+          <li>🖼️ <strong>Left + right icons</strong>: same API as TextButton (leftIcon / rightIcon)</li>
+          <li>🖱️ <strong>Optional onClick</strong>: cursor becomes pointer, fires callback (great for "close" affordance)</li>
+          <li>🧱 <strong>Composes</strong>: sizes itself so Row/Column/Stack measures it correctly</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">text</code> - Message shown in the alert</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">variant</code> - <code>'info'</code> (default), <code>'success'</code>, <code>'error'</code>, <code>'warning'</code>, <code>'neutral'</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - Override the variant's background color</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">textColor</code> - Text/icon color (default <code>'white'</code>)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">leftIcon</code> - Font Awesome icon. Omit to use the variant default; pass <code>null</code> to explicitly disable it</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">rightIcon</code> - Optional Font Awesome icon on the right (e.g. <code>'xmark'</code> for a "close" hint)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">fontSize</code>, <code class="bg-gray-200 px-2 py-1 rounded">font</code>, <code class="bg-gray-200 px-2 py-1 rounded">padding</code>, <code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Sizing/tokens</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onClick</code> - Optional click handler; when set the alert becomes interactive</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={640} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Alert,
+} from 'hudini';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class AlertDemoScene extends Phaser.Scene {
+    create(): void {
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
+
+        // 1. Semantic variants — default color + icon per variant
+        new Alert({
+            scene: this, x: 400, y: 100,
+            variant: 'success',
+            text: 'Player saved!',
+        });
+
+        // 2. Override the variant's icon or color
+        new Alert({
+            scene: this, x: 400, y: 200,
+            variant: 'warning',
+            text: 'Low health',
+            leftIcon: 'heart-crack',   // override the default
+            rightIcon: 'xmark',         // "close" hint
+        });
+
+        // 3. Clickable
+        const alert = new Alert({
+            scene: this, x: 400, y: 300,
+            variant: 'error',
+            text: 'Tap to dismiss',
+            rightIcon: 'xmark',
+            onClick: () => alert.destroy(),
+        });
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import { loadFont } from 'font-awesome-for-phaser';
+  import {
+    loadFonts,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Alert,
+  } from 'hudini';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class AlertDemoScene extends Phaser.Scene {
+    constructor() {
+      super('alert-demo');
+    }
+
+    create(): void {
+      const { pw } = withHudini<Theme>(this);
+      this.cameras.main.setBackgroundColor(pw.color.slate(300));
+
+      const centerX = this.cameras.main.centerX;
+
+      // Header
+      this.add
+        .text(centerX, 30, 'Alert Component', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '28px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // --- Section 1: variants with default icons ---
+      this.add
+        .text(centerX, 75, 'Semantic variants (default color + icon)', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const variants: Array<{ v: 'success' | 'error' | 'warning' | 'info' | 'neutral'; text: string }> = [
+        { v: 'success', text: 'Player saved!' },
+        { v: 'error', text: 'Connection lost' },
+        { v: 'warning', text: 'Low health' },
+        { v: 'info', text: 'New quest available' },
+        { v: 'neutral', text: 'Tutorial available' },
+      ];
+
+      variants.forEach((cfg, i) => {
+        const alert = new Alert({
+          scene: this,
+          x: centerX,
+          y: 120 + i * 55,
+          variant: cfg.v,
+          text: cfg.text,
+        });
+        this.add.existing(alert);
+      });
+
+      // --- Section 2: overrides / clickable ---
+      this.add
+        .text(centerX, 415, 'Icon overrides + clickable', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Custom icon override
+      const customIcon = new Alert({
+        scene: this,
+        x: centerX,
+        y: 460,
+        variant: 'warning',
+        text: 'Health critical',
+        leftIcon: 'heart-crack',
+      });
+      this.add.existing(customIcon);
+
+      // Right icon (close hint) + click to dismiss
+      const dismissable = new Alert({
+        scene: this,
+        x: centerX,
+        y: 515,
+        variant: 'error',
+        text: 'Tap to dismiss',
+        rightIcon: 'xmark',
+        onClick: () => dismissable.destroy(),
+      });
+      this.add.existing(dismissable);
+
+      // Custom color (bypasses semantic variant color)
+      const custom = new Alert({
+        scene: this,
+        x: centerX,
+        y: 570,
+        variant: 'neutral',
+        color: 'purple-600',
+        text: 'Achievement unlocked',
+        leftIcon: 'trophy',
+      });
+      this.add.existing(custom);
+
+      // Footer
+      this.add
+        .text(centerX, 615, 'Wrap in a Toast (upcoming) for auto-dismiss + animation.', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0.5, 0.5);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      Promise.all([loadFonts(), loadFont()]).then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [AlertDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: { theme },
+              },
+            ],
+          },
+        });
+
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-alert-demo'] = game;
+      });
+    }
+  });
+</script>

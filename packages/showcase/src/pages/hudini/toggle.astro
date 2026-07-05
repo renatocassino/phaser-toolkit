@@ -1,0 +1,343 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Toggle Component" description="daisyUI-style switch — pill-shaped track + sliding handle with per-state icons that cross-fade.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Toggle Component</h2>
+      <p class="text-gray-600 mb-4">
+        A daisyUI-style switch. Same contract as <a href="/hudini/checkbox" class="text-blue-600 hover:underline">Checkbox</a> — uncontrolled state, <code class="bg-gray-100 px-1 rounded">onChange</code> callback, <code class="bg-gray-100 px-1 rounded">disabled</code>/<code class="bg-gray-100 px-1 rounded">readOnly</code>, <code class="bg-gray-100 px-1 rounded">getValue()</code> for form serialization. The visual is a pill-shaped track with a handle that slides between left (off) and right (on).
+      </p>
+      <p class="text-gray-600 mb-4">
+        Two icons — <code class="bg-gray-100 px-1 rounded">onIcon</code> and <code class="bg-gray-100 px-1 rounded">offIcon</code> — ride inside the handle. When the toggle flips, the handle slides while the icons cross-fade (outgoing → 0, incoming → 1).
+      </p>
+
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎯 <strong>Same API as Checkbox</strong>: <code>toggle</code>, <code>setChecked</code>, <code>getValue</code>, <code>disable</code>, <code>readOnly</code>, <code>onChange</code>, <code>onClick</code>, <code>name</code></li>
+          <li>🎨 <strong>Two icons</strong>: <code>onIcon</code> (default <code>'check'</code>) + <code>offIcon</code> (default <code>'xmark'</code>). Pass <code>null</code> to disable either</li>
+          <li>💫 <strong>Cross-fade during slide</strong>: outgoing icon fades to 0 while incoming fades to 1, all in sync with the handle motion</li>
+          <li>🖌️ <strong>Two track colors</strong>: <code>color</code> (on) + <code>offColor</code> (off) — perfect for dark-mode toggles etc.</li>
+          <li>🧱 <strong>Composable</strong>: reports its size so Row / Column / Stack lay it out correctly</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">checked</code> - Initial state (default <code>false</code>)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">label</code> - Optional text to the right</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onIcon</code> / <code class="bg-gray-200 px-2 py-1 rounded">offIcon</code> - FA icon per state. Pass <code>null</code> to disable</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">iconColor</code> - Default <code>'slate-700'</code> (contrast on white handle)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> / <code class="bg-gray-200 px-2 py-1 rounded">offColor</code> - Track color per state</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">handleColor</code> - Default <code>'white'</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">labelColor</code>, <code class="bg-gray-200 px-2 py-1 rounded">size</code>, <code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code>, <code class="bg-gray-200 px-2 py-1 rounded">labelGap</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">disabled</code>, <code class="bg-gray-200 px-2 py-1 rounded">readOnly</code>, <code class="bg-gray-200 px-2 py-1 rounded">name</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onChange</code> - <code>(checked, name?) =&gt; void</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onClick</code> - Fires on any click</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={620} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Toggle,
+} from 'hudini';
+
+class SettingsScene extends Phaser.Scene {
+    create(): void {
+        // 1. Default toggle — check / xmark icons that cross-fade
+        const sound = new Toggle({
+            scene: this, x: 200, y: 100,
+            label: 'Sound',
+            checked: true,
+            name: 'sound',
+            onChange: (v) => console.log('sound:', v),
+        });
+
+        // 2. Dark-mode toggle — moon (on) + sun (off), different track colors
+        const darkMode = new Toggle({
+            scene: this, x: 200, y: 160,
+            label: 'Dark mode',
+            onIcon: 'moon',
+            offIcon: 'sun',
+            color: 'indigo-600',
+            offColor: 'yellow-400',
+        });
+
+        // 3. Read the current values later (form-style)
+        const submit = () => ({
+            sound: sound.getValue(),
+            dark: darkMode.getValue(),
+        });
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import { loadFont } from 'font-awesome-for-phaser';
+  import {
+    loadFonts,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Toggle,
+    TextButton,
+  } from 'hudini';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class ToggleDemoScene extends Phaser.Scene {
+    constructor() {
+      super('toggle-demo');
+    }
+
+    create(): void {
+      const { pw } = withHudini<Theme>(this);
+      this.cameras.main.setBackgroundColor(pw.color.slate(200));
+
+      const centerX = this.cameras.main.centerX;
+
+      this.add
+        .text(centerX, 30, 'Toggle Component', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '28px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // --- Left column: variations ---
+      const leftX = 180;
+      let y = 100;
+
+      const addSectionTitle = (text: string): void => {
+        this.add
+          .text(leftX, y, text, {
+            color: pw.color.slate(700),
+            fontFamily: 'Fredoka',
+            fontSize: '13px',
+          })
+          .setOrigin(0, 0.5);
+        y += 30;
+      };
+
+      addSectionTitle('Default (check / xmark)');
+      this.add.existing(
+        new Toggle({
+          scene: this,
+          x: leftX + 25,
+          y,
+          label: 'Enable sound',
+          checked: true,
+        })
+      );
+      y += 55;
+
+      addSectionTitle('Dark mode (moon / sun)');
+      this.add.existing(
+        new Toggle({
+          scene: this,
+          x: leftX + 25,
+          y,
+          label: 'Dark mode',
+          onIcon: 'moon',
+          offIcon: 'sun',
+          color: 'indigo-600',
+          offColor: 'yellow-400',
+        })
+      );
+      y += 55;
+
+      addSectionTitle('Volume (volume-high / volume-xmark)');
+      this.add.existing(
+        new Toggle({
+          scene: this,
+          x: leftX + 25,
+          y,
+          label: 'Ambient audio',
+          onIcon: 'volume-high',
+          offIcon: 'volume-xmark',
+          color: 'cyan-600',
+          checked: true,
+        })
+      );
+      y += 55;
+
+      addSectionTitle('Notifications (bell / bell-slash)');
+      this.add.existing(
+        new Toggle({
+          scene: this,
+          x: leftX + 25,
+          y,
+          label: 'Push notifications',
+          onIcon: 'bell',
+          offIcon: 'bell-slash',
+          color: 'amber-500',
+        })
+      );
+      y += 55;
+
+      addSectionTitle('No icons (bare switch)');
+      this.add.existing(
+        new Toggle({
+          scene: this,
+          x: leftX + 25,
+          y,
+          label: 'Beta features',
+          onIcon: null,
+          offIcon: null,
+          color: 'emerald-500',
+        })
+      );
+      y += 55;
+
+      addSectionTitle('Disabled');
+      this.add.existing(
+        new Toggle({
+          scene: this,
+          x: leftX + 25,
+          y,
+          label: 'Locked feature',
+          checked: true,
+          disabled: true,
+        })
+      );
+
+      // --- Right column: live form ---
+      const rightX = 500;
+      let ry = 100;
+
+      this.add
+        .text(rightX, ry, 'Mini settings panel (getValue on submit)', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0, 0.5);
+      ry += 30;
+
+      const tSound = new Toggle({
+        scene: this,
+        x: rightX + 25,
+        y: ry,
+        label: 'Sound',
+        name: 'sound',
+        checked: true,
+        color: 'green-500',
+      });
+      this.add.existing(tSound);
+      ry += 50;
+
+      const tMusic = new Toggle({
+        scene: this,
+        x: rightX + 25,
+        y: ry,
+        label: 'Music',
+        name: 'music',
+        color: 'green-500',
+      });
+      this.add.existing(tMusic);
+      ry += 50;
+
+      const tHaptics = new Toggle({
+        scene: this,
+        x: rightX + 25,
+        y: ry,
+        label: 'Haptics',
+        name: 'haptics',
+        color: 'green-500',
+      });
+      this.add.existing(tHaptics);
+      ry += 55;
+
+      const output = this.add
+        .text(rightX + 15, ry, '(click submit to log values)', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0, 0.5);
+      ry += 45;
+
+      const submitBtn = new TextButton({
+        scene: this,
+        x: rightX + 60,
+        y: ry,
+        text: 'Submit',
+        color: 'blue-500',
+        padding: '3',
+        onClick: () => {
+          const payload = {
+            sound: tSound.getValue(),
+            music: tMusic.getValue(),
+            haptics: tHaptics.getValue(),
+          };
+          output.setText(JSON.stringify(payload));
+          console.log('settings:', payload);
+        },
+      });
+      this.add.existing(submitBtn);
+
+      // Footer
+      this.add
+        .text(centerX, 590, 'Click any toggle — the handle slides while the icons cross-fade.', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0.5, 0.5);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      Promise.all([loadFonts(), loadFont()]).then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [ToggleDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: { theme },
+              },
+            ],
+          },
+        });
+
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-toggle-demo'] = game;
+      });
+    }
+  });
+</script>

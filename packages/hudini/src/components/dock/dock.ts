@@ -17,10 +17,13 @@ import { Stack } from '../stack';
 export type DockItem = {
   /** Unique identifier passed back to `onSelect`. */
   id: string;
-  /** Font Awesome icon key to render above the label. */
+  /** Font Awesome icon key to render above the label (or alone if no label). */
   icon: IconKey;
-  /** Text shown under the icon. */
-  label: string;
+  /**
+   * Optional text shown under the icon. When omitted, the item renders as
+   * icon-only — useful for minimalist docks / toolbars.
+   */
+  label?: string;
 };
 
 /**
@@ -79,7 +82,8 @@ export type DockParams = {
 
 type DockItemVisual = {
   icon: IconText;
-  label: GameObjects.Text;
+  /** Undefined when the item was created without a label (icon-only). */
+  label: GameObjects.Text | undefined;
   container: GameObjects.Container;
 };
 
@@ -229,14 +233,21 @@ export class Dock extends GameObjects.Container {
     iconText.setOrigin(0.5, 0.5);
     scene.add.existing(iconText);
 
-    const label = scene.add.text(0, 0, item.label, {
-      fontFamily: 'Fredoka',
-      fontSize: `${this.labelSizePx}px`,
-      color: initialColor,
-    });
-    label.setOrigin(0.5, 0.5);
+    // Label is optional — icon-only items just skip building it.
+    let label: GameObjects.Text | undefined;
+    if (item.label !== undefined && item.label !== '') {
+      label = scene.add.text(0, 0, item.label, {
+        fontFamily: 'Fredoka',
+        fontSize: `${this.labelSizePx}px`,
+        color: initialColor,
+      });
+      label.setOrigin(0.5, 0.5);
+    }
 
-    // Icon+label as a vertical Stack (pure layout, no bg).
+    // Icon(+label) as a vertical Stack (pure layout, no bg).
+    const columnChildren: GameObjects.GameObject[] = label
+      ? [iconText, label]
+      : [iconText];
     const column = new Stack({
       scene,
       x: 0,
@@ -244,7 +255,7 @@ export class Dock extends GameObjects.Container {
       direction: 'column',
       gap: ICON_LABEL_GAP,
       align: 'center',
-      children: [iconText, label],
+      children: columnChildren,
     });
 
     // Widen the click target beyond the visible column footprint.
@@ -277,6 +288,6 @@ export class Dock extends GameObjects.Container {
     const isActive = itemId === this.activeId;
     const c = isActive ? this.activeColorValue : this.inactiveColorValue;
     visual.icon.setColor(c);
-    visual.label.setColor(c);
+    visual.label?.setColor(c);
   }
 }

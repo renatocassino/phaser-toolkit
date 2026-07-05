@@ -37,13 +37,15 @@ import PhaserGame from '../../components/PhaserGame.astro';
             <li><code class="bg-gray-200 px-2 py-1 rounded">padding</code> - Internal padding using spacing tokens</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">fontSize</code> - Text size using typography tokens</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">variant</code> - <code>'filled'</code> (default) or <code>'outline'</code> — daisyUI-style visual variants</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">leftIcon</code> / <code class="bg-gray-200 px-2 py-1 rounded">rightIcon</code> - Optional Font Awesome icons (IconKey) shown on either side of the text</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">iconGap</code> - Space between icon and text (defaults to ~35% of the font size)</li>
           </ul>
         </div>
       </div>
     </div>
 
     <!-- Live Example -->
-    <PhaserGame width={800} height={720} />
+    <PhaserGame width={800} height={860} />
 
     <!-- Usage Example -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -110,6 +112,17 @@ class ButtonDemoScene extends Phaser.Scene {
             variant: 'outline',
         });
         this.add.existing(outlineButton);
+
+        // Button with a left icon — < home > Home
+        const homeButton = new TextButton({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: this.cameras.main.centerY + 210,
+            text: 'Home',
+            color: 'blue-500',
+            leftIcon: 'house',
+        });
+        this.add.existing(homeButton);
     }
 }`}</code></pre>
       </div>
@@ -119,6 +132,7 @@ class ButtonDemoScene extends Phaser.Scene {
 
 <script>
   import Phaser, { Scene } from 'phaser';
+  import { loadFont } from 'font-awesome-for-phaser';
   import {
     loadFonts,
     type RadiusKey,
@@ -222,6 +236,52 @@ class ButtonDemoScene extends Phaser.Scene {
         this.buttons.push(outline);
       });
 
+      // --- With Icons section ---
+      const iconRowY = startY + buttonConfigs.length * rowSpacing + 20;
+
+      this.add.text(centerX, iconRowY, 'With Icons (leftIcon / rightIcon)', {
+        color: pw.color.slate(300),
+        fontFamily: 'Fredoka',
+        fontSize: '20px',
+      }).setOrigin(0.5, 0.5);
+
+      const iconExamples: {
+        text: string;
+        color: string;
+        leftIcon?: string;
+        rightIcon?: string;
+        variant?: 'filled' | 'outline';
+      }[] = [
+        { text: 'Home', color: 'blue-500', leftIcon: 'house' },
+        { text: 'Next', color: 'green-500', rightIcon: 'arrow-right' },
+        { text: 'Search', color: 'purple-500', leftIcon: 'magnifying-glass' },
+        { text: 'Save', color: 'emerald-500', leftIcon: 'floppy-disk', rightIcon: 'check' },
+        { text: 'Delete', color: 'red-500', leftIcon: 'trash', variant: 'outline' },
+        { text: 'Star', color: 'yellow-500', leftIcon: 'star', rightIcon: 'star', variant: 'outline' },
+      ];
+
+      const iconBaseY = iconRowY + 45;
+      iconExamples.forEach((ex, i) => {
+        const col = i % 3;
+        const row = Math.floor(i / 3);
+        const x = width * (0.25 + col * 0.25);
+        const y = iconBaseY + row * 65;
+        const btn = new TextButton({
+          scene: this,
+          x,
+          y,
+          text: ex.text,
+          color: ex.color,
+          borderRadius: 'md',
+          padding: '4',
+          ...(ex.leftIcon && { leftIcon: ex.leftIcon as never }),
+          ...(ex.rightIcon && { rightIcon: ex.rightIcon as never }),
+          ...(ex.variant && { variant: ex.variant }),
+        });
+        this.add.existing(btn);
+        this.buttons.push(btn);
+      });
+
       // Add instructions
       this.add.text(centerX, this.cameras.main.height - 30, 'Click and hover over the buttons to see interactions', {
         color: pw.color.slate(400),
@@ -236,7 +296,7 @@ class ButtonDemoScene extends Phaser.Scene {
   document.addEventListener('DOMContentLoaded', () => {
     const gameConfig = (window as any).gameContainer;
     if (gameConfig) {
-      loadFonts().then(() => {
+      Promise.all([loadFonts(), loadFont()]).then(() => {
         const game = new Phaser.Game({
           ...gameConfig,
           scene: [TextButtonDemoScene],

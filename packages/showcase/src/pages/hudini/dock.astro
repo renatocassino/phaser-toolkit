@@ -29,7 +29,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
         <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
         <div class="bg-gray-50 rounded-lg p-4">
           <ul class="space-y-2 text-sm">
-            <li><code class="bg-gray-200 px-2 py-1 rounded">items</code> - <code>DockItem[]</code> where each item has <code>id</code>, <code>icon</code> and <code>label</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">items</code> - <code>DockItem[]</code> where each item has <code>id</code>, <code>icon</code> and an optional <code>label</code> (icon-only if omitted)</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">active</code> - Initial active item id (optional)</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">onSelect</code> - <code>(id, index) =&gt; void</code> callback fired on click</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">activeColor</code> / <code class="bg-gray-200 px-2 py-1 rounded">inactiveColor</code> - Icon/label colors per state</li>
@@ -53,7 +53,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
     </div>
 
     <!-- Live Example -->
-    <PhaserGame width={800} height={520} />
+    <PhaserGame width={800} height={620} />
 
     <!-- Usage Example -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -210,6 +210,36 @@ class DockDemoScene extends Phaser.Scene {
         onSelect: (id) => bareDock.setActiveItem(id),
       });
       this.add.existing(bareDock);
+
+      // --- Dock C: icon-only variant ---
+      this.add
+        .text(centerX, 420, 'Icon-only variant (omit label)', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const iconOnlyDock = new Dock({
+        scene: this,
+        x: centerX,
+        y: 465,
+        active: 'play',
+        activeColor: 'emerald-600',
+        inactiveColor: 'slate-500',
+        gap: 24,
+        backgroundColor: 'slate-100',
+        borderRadius: 'full',
+        padding: '3',
+        items: [
+          { id: 'backward', icon: 'backward' },
+          { id: 'play', icon: 'play' },
+          { id: 'forward', icon: 'forward' },
+          { id: 'stop', icon: 'stop' },
+        ],
+        onSelect: (id) => iconOnlyDock.setActiveItem(id),
+      });
+      this.add.existing(iconOnlyDock);
     }
   }
 

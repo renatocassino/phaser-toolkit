@@ -1,5 +1,7 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable complexity */
+/* eslint-disable max-lines */
+import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
@@ -19,6 +21,7 @@ import {
 } from '../../utils/button-style';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { ContainerInteractive } from '../container-interactive';
+import { Stack } from '../stack';
 import { Text } from '../text';
 
 /**
@@ -67,6 +70,21 @@ export type TextButtonParams = {
    */
   variant?: ButtonVariant;
   /**
+   * Optional Font Awesome icon shown to the LEFT of the text.
+   * Renders with the same color/stroke rules as the text (variant-aware).
+   */
+  leftIcon?: IconKey;
+  /**
+   * Optional Font Awesome icon shown to the RIGHT of the text.
+   * Renders with the same color/stroke rules as the text (variant-aware).
+   */
+  rightIcon?: IconKey;
+  /**
+   * Gap between icon(s) and text in pixels. Defaults to a value proportional
+   * to the font size (roughly `fontSize * 0.35`), min 4px.
+   */
+  iconGap?: number;
+  /**
    * Callback function for click event.
    */
   onClick?: () => void;
@@ -88,6 +106,11 @@ const POINTER_DOWN_SCALE = 0.95;
  */
 const TEXTURE_ANTIALIAS_MARGIN = 1;
 
+/** Minimum gap between icon and text, in pixels. */
+const MIN_ICON_TEXT_GAP_PX = 4;
+/** Default icon-text gap as a fraction of the font size. */
+const ICON_TEXT_GAP_RATIO = 0.35;
+
 /**
  * A customizable text button component for Phaser, supporting auto-sizing,
  * design tokens, and interactive effects.
@@ -97,6 +120,12 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   public backgroundSprite!: GameObjects.Sprite;
   /** The text object of the button. */
   public buttonText!: GameObjects.Text;
+  /** Horizontal Stack composing (optional leftIcon) + text + (optional rightIcon). */
+  public contentStack!: Stack;
+  /** Left icon glyph, when `leftIcon` is set. */
+  public leftIconText: IconText | undefined;
+  /** Right icon glyph, when `rightIcon` is set. */
+  public rightIconText: IconText | undefined;
 
   private pw: PhaserWindPlugin<{}>;
   private fontSizePx!: number;
@@ -108,6 +137,9 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   private fontFamily!: string;
   private textValue!: string;
   private variant!: ButtonVariant;
+  private leftIconKey: IconKey | undefined;
+  private rightIconKey: IconKey | undefined;
+  private iconGap: number | undefined;
   /**
    * Creates a new TextButton instance.
    * @param params TextButtonParams
@@ -124,6 +156,9 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     borderRadius = 'md',
     padding = '4',
     variant = 'filled',
+    leftIcon,
+    rightIcon,
+    iconGap,
     onClick,
   }: TextButtonParams) {
     super({ scene, x, y });
@@ -132,6 +167,9 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     // Store values
     this.textValue = text;
     this.variant = variant;
+    this.leftIconKey = leftIcon;
+    this.rightIconKey = rightIcon;
+    this.iconGap = iconGap;
     this.fontSizePx =
       typeof fontSize === 'number'
         ? fontSize
@@ -161,7 +199,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
         : this.pw.font.family(font)
       : 'Fredoka';
 
-    this.createButtonText(scene);
+    this.createButtonContent(scene);
     this.createBackgroundSprite(scene);
     this.setupContainer();
     this.hitArea = this.backgroundSprite;
@@ -191,7 +229,8 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
       typeof fontSize === 'number'
         ? fontSize
         : this.pw.fontSize.px(fontSize ?? ('md' as FontSizeKey));
-    this.buttonText.setFontSize(this.fontSizePx);
+    // Icons also scale with fontSizePx, so rebuild the whole content.
+    this.rebuildContent();
     this.regenerateSprites();
     return this;
   }
@@ -219,6 +258,8 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   public setColor(color: ColorKey | string): this {
     this.colorInput = String(color);
     this.colorButton = Color.rgb(color as ColorKey);
+    // Text stroke + icon colors derive from `colorInput` — rebuild.
+    this.rebuildContent();
     this.regenerateSprites();
     return this;
   }
@@ -264,28 +305,53 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
   /**
    * Switch between `'filled'` and `'outline'` variants at runtime.
-   * Rebuilds the button text (stroke on/off) as well as the background sprite.
+   * Rebuilds both content (text + icons stroke/color) and the background.
    */
   public setVariant(variant: ButtonVariant): this {
     if (this.variant === variant) return this;
     this.variant = variant;
-    // Recreate the text so its stroke config reflects the new variant.
-    this.remove(this.buttonText, true);
-    this.createButtonText(this.scene);
-    this.addAt(this.buttonText, this.list.length);
+    this.rebuildContent();
     this.regenerateSprites();
     return this;
   }
 
   /**
-   * Creates the button text GameObject.
-   * @param scene Phaser scene.
+   * Sets (or removes) the left icon. Pass `undefined` to clear.
    */
-  private createButtonText(scene: Scene): void {
-    // In `outline`, the border itself does the visual work — the text sits on
-    // a transparent bg, so an extra stroke around it would look muddy. Keep
-    // it clean (no stroke) and let the text color carry the contrast.
+  public setLeftIcon(icon: IconKey | undefined): this {
+    this.leftIconKey = icon;
+    this.rebuildContent();
+    this.regenerateSprites();
+    return this;
+  }
+
+  /**
+   * Sets (or removes) the right icon. Pass `undefined` to clear.
+   */
+  public setRightIcon(icon: IconKey | undefined): this {
+    this.rightIconKey = icon;
+    this.rebuildContent();
+    this.regenerateSprites();
+    return this;
+  }
+
+  /**
+   * Creates the button's content: optional left icon + text + optional right
+   * icon, composed in a horizontal Stack. In `outline` mode, icons and text
+   * share the same colored appearance (no stroke); in `filled` mode both
+   * carry a darker outline stroke via `getButtonStrokeColor`.
+   */
+  private createButtonContent(scene: Scene): void {
     const isOutline = this.variant === 'outline';
+    const strokeThickness = isOutline ? 0 : BUTTON_STROKE_THICKNESS;
+    const strokeColor = isOutline
+      ? 'rgba(0,0,0,0)'
+      : getButtonStrokeColor(this.colorInput);
+    const glyphColor = isOutline
+      ? Color.rgb(this.colorInput as ColorKey)
+      : Color.rgb('white');
+
+    // Text
     this.buttonText = new Text({
       scene,
       x: 0,
@@ -293,17 +359,85 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
       text: this.textValue,
       size: this.fontSizePx,
       fontFamily: this.fontFamily,
-      strokeThickness: isOutline ? 0 : BUTTON_STROKE_THICKNESS,
-      strokeColor: isOutline ? 'rgba(0,0,0,0)' : getButtonStrokeColor(this.colorInput),
+      strokeThickness,
+      strokeColor,
     });
     // Preserve legacy behavior for `filled`: `textColor` on the constructor
     // was historically dead (only `setTextColor()` after construction applied
     // it). Outline needs the color for the border/text pairing to work, so
     // we only push it into the Text object in that mode.
-    if (this.variant === 'outline') {
+    if (isOutline) {
       this.buttonText.setColor(this.textColorValue);
     }
     this.buttonText.setOrigin(0.5, 0.5);
+
+    // Optional icons — same visual treatment as the text so the composition
+    // reads as one unified label.
+    this.leftIconText = this.leftIconKey
+      ? this.createIcon(scene, this.leftIconKey, glyphColor, strokeColor, strokeThickness)
+      : undefined;
+    this.rightIconText = this.rightIconKey
+      ? this.createIcon(scene, this.rightIconKey, glyphColor, strokeColor, strokeThickness)
+      : undefined;
+
+    // Compose in a horizontal Stack. Order: [leftIcon?, text, rightIcon?].
+    const children: GameObjects.GameObject[] = [];
+    if (this.leftIconText) children.push(this.leftIconText);
+    children.push(this.buttonText);
+    if (this.rightIconText) children.push(this.rightIconText);
+
+    const gap =
+      this.iconGap ??
+      Math.max(
+        MIN_ICON_TEXT_GAP_PX,
+        Math.round(this.fontSizePx * ICON_TEXT_GAP_RATIO)
+      );
+    this.contentStack = new Stack({
+      scene,
+      x: 0,
+      y: 0,
+      direction: 'row',
+      align: 'center',
+      gap,
+      children,
+    });
+  }
+
+  private createIcon(
+    scene: Scene,
+    icon: IconKey,
+    color: string,
+    strokeColor: string,
+    strokeThickness: number
+  ): IconText {
+    const iconText = new IconText({
+      scene,
+      x: 0,
+      y: 0,
+      icon,
+      size: this.fontSizePx,
+      style: {
+        color,
+        strokeThickness,
+        stroke: strokeColor,
+      },
+    });
+    iconText.setFontStyle('900');
+    iconText.setOrigin(0.5, 0.5);
+    scene.add.existing(iconText);
+    return iconText;
+  }
+
+  /**
+   * Tear down the current content stack and rebuild it. Used by setters that
+   * change how the content should be rendered (variant, color, font size,
+   * icons). Cheap enough to not worry about it — buttons aren't tweened on
+   * every frame.
+   */
+  private rebuildContent(): void {
+    this.remove(this.contentStack, true);
+    this.createButtonContent(this.scene);
+    this.add(this.contentStack);
   }
 
   /**
@@ -317,11 +451,14 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Regenerates the background and shadow textures based on current state.
+   * Regenerates the background sprite based on current state. Also relayouts
+   * the content Stack (icons + text) to reflect fresh text bounds.
    */
   private regenerateSprites(): void {
     // Update text bounds after text/font changes
     this.buttonText.setText(this.textValue);
+    // Re-layout the horizontal Stack so icons stay flush to the new text width.
+    this.contentStack.layout();
 
     // Regenerate textures
     const backgroundTexture = this.createBackgroundTexture(this.scene);
@@ -340,13 +477,14 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Calculates the button's width and height based on text and margin.
-   * @returns Object with width and height.
+   * Calculates the button's width and height from the horizontal content
+   * Stack (icons + text) plus the button's own padding on both axes.
    */
   private getButtonDimensions(): { width: number; height: number } {
-    const textBounds = this.buttonText.getBounds();
-    const width = textBounds.width + this.paddingPx * 2;
-    const height = textBounds.height + this.paddingPx * 2;
+    const contentWidth = this.contentStack.width;
+    const contentHeight = this.contentStack.height;
+    const width = contentWidth + this.paddingPx * 2;
+    const height = contentHeight + this.paddingPx * 2;
     return { width, height };
   }
 
@@ -406,10 +544,11 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Adds the button's visual elements to the container.
+   * Adds the button's visual elements to the container. Order matters:
+   * background first (behind), then the icon+text content (in front).
    */
   private setupContainer(): void {
-    this.add([this.backgroundSprite, this.buttonText]);
+    this.add([this.backgroundSprite, this.contentStack]);
   }
 
   /**
@@ -443,7 +582,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     // Click effects
     this.backgroundSprite.on('pointerdown', () => {
       this.scene.tweens.add({
-        targets: [this.backgroundSprite, this.buttonText],
+        targets: [this.backgroundSprite, this.contentStack],
         scaleX: POINTER_DOWN_SCALE,
         scaleY: POINTER_DOWN_SCALE,
         duration: durations.click,
@@ -453,7 +592,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     this.backgroundSprite.on('pointerup', () => {
       this.scene.tweens.add({
-        targets: [this.backgroundSprite, this.buttonText],
+        targets: [this.backgroundSprite, this.contentStack],
         scaleX: 1,
         scaleY: 1,
         duration: durations.click,

@@ -69,6 +69,41 @@ vi.mock('../text', () => {
 });
 
 // Mock phaser-wind with palette
+vi.mock('font-awesome-for-phaser', () => {
+  class IconText {
+    // eslint-disable-next-line no-unused-vars
+    constructor(_params: unknown) {}
+    setFontStyle(): this {
+      return this;
+    }
+    setOrigin(): this {
+      return this;
+    }
+    setColor(): this {
+      return this;
+    }
+  }
+  return { IconText };
+});
+
+vi.mock('../stack', () => {
+  class MockStack {
+    public width = 40;
+    public height = 20;
+    // eslint-disable-next-line no-unused-vars
+    constructor(_params: unknown) {}
+    layout(): void {
+      /* noop */
+    }
+    setSize(w: number, h: number): this {
+      this.width = w;
+      this.height = h;
+      return this;
+    }
+  }
+  return { Stack: MockStack };
+});
+
 vi.mock('phaser-wind', () => ({
   Color: {
     rgb: vi.fn((color: string) => `rgb-${color}`),
@@ -247,6 +282,13 @@ vi.mock('phaser', () => {
     add(): this {
       return this;
     }
+    remove(): this {
+      return this;
+    }
+    addAt(): this {
+      return this;
+    }
+    list: unknown[] = [];
     scene: Scene;
   }
 

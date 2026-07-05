@@ -1,5 +1,11 @@
 # phaser-wind
 
+## 0.12.0
+
+### Minor Changes
+
+- 92a7bea: add tokens extra to phaser wind and modal to hudini
+
 ## 0.11.0
 
 ### Minor Changes

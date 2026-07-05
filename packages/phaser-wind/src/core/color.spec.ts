@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines */
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { createTheme } from '../theme';
@@ -7,6 +8,7 @@ import { createTheme } from '../theme';
 import {
   createColor,
   Color as ColorDefault,
+  isColorKey,
   type Color,
   type ColorToken,
 } from './color';
@@ -332,17 +334,36 @@ describe('ColorPicker', () => {
     });
 
     it('should not add -500 if shade is already specified', () => {
-      expect(ColorDefault.rgb('red-300' as ColorToken)).toBe('rgb(252, 165, 165)');
+      expect(ColorDefault.rgb('red-300' as ColorToken)).toBe(
+        'rgb(252, 165, 165)'
+      );
       expect(ColorDefault.hex('blue-700' as ColorToken)).toBe(0x1d4ed8);
     });
 
     it('should work with all palette colors', () => {
       const colorNames = [
-        'slate', 'gray', 'zinc', 'neutral', 'stone',
-        'red', 'orange', 'amber', 'yellow', 'lime',
-        'green', 'emerald', 'teal', 'cyan', 'sky',
-        'blue', 'indigo', 'violet', 'purple', 'fuchsia',
-        'pink', 'rose'
+        'slate',
+        'gray',
+        'zinc',
+        'neutral',
+        'stone',
+        'red',
+        'orange',
+        'amber',
+        'yellow',
+        'lime',
+        'green',
+        'emerald',
+        'teal',
+        'cyan',
+        'sky',
+        'blue',
+        'indigo',
+        'violet',
+        'purple',
+        'fuchsia',
+        'pink',
+        'rose',
       ];
 
       colorNames.forEach(colorName => {
@@ -354,6 +375,79 @@ describe('ColorPicker', () => {
     it('should throw for invalid color names', () => {
       expect(() => ColorDefault.rgb('invalidcolor' as ColorToken)).toThrow();
       expect(() => ColorDefault.hex('notacolor' as ColorToken)).toThrow();
+    });
+  });
+
+  describe('shift', () => {
+    it('should shift shade by absolute delta', () => {
+      expect(ColorDefault.shift('blue-500', 200)).toBe('blue-700');
+      expect(ColorDefault.shift('blue-500', -300)).toBe('blue-200');
+      expect(ColorDefault.shift('red-300', 400)).toBe('red-700');
+    });
+
+    it('should clamp above 950', () => {
+      expect(ColorDefault.shift('blue-900', 500)).toBe('blue-950');
+      expect(ColorDefault.shift('blue-950', 100)).toBe('blue-950');
+    });
+
+    it('should clamp below 50', () => {
+      expect(ColorDefault.shift('blue-50', -50)).toBe('blue-50');
+      expect(ColorDefault.shift('blue-100', -1000)).toBe('blue-50');
+    });
+
+    it('should snap odd numbers to the nearest valid shade', () => {
+      // 500 + 50 = 550 → closer to 500 than 600
+      expect(ColorDefault.shift('blue-500', 50)).toBe('blue-500');
+      // 500 + 60 = 560 → closer to 600 than 500
+      expect(ColorDefault.shift('blue-500', 60)).toBe('blue-600');
+      // 100 + 25 = 125 → snaps to 100 (nearest below 200)
+      expect(ColorDefault.shift('blue-100', 25)).toBe('blue-100');
+    });
+
+    it('should be a no-op for black and white', () => {
+      expect(ColorDefault.shift('black', 500)).toBe('black');
+      expect(ColorDefault.shift('white', -500)).toBe('white');
+    });
+
+    it('should compose with rgb() and hex()', () => {
+      const shifted = ColorDefault.shift('red-500', 200);
+      expect(ColorDefault.rgb(shifted)).toBe(
+        ColorDefault.rgb('red-700' as ColorToken)
+      );
+      expect(ColorDefault.hex(shifted)).toBe(
+        ColorDefault.hex('red-700' as ColorToken)
+      );
+    });
+
+    it('should accept a bare family name and treat it as -500', () => {
+      expect(ColorDefault.shift('blue', 200)).toBe('blue-700');
+      expect(ColorDefault.shift('red', -300)).toBe('red-200');
+      expect(ColorDefault.shift('slate', 0)).toBe('slate-500');
+    });
+  });
+
+  describe('isColorKey', () => {
+    it('should return true for palette families', () => {
+      expect(isColorKey('blue')).toBe(true);
+      expect(isColorKey('red')).toBe(true);
+      expect(isColorKey('slate')).toBe(true);
+    });
+
+    it('should return true for the special tokens black and white', () => {
+      expect(isColorKey('black')).toBe(true);
+      expect(isColorKey('white')).toBe(true);
+    });
+
+    it('should return false for full tokens', () => {
+      expect(isColorKey('blue-500')).toBe(false);
+      expect(isColorKey('red-100')).toBe(false);
+    });
+
+    it('should return false for CSS colors and garbage', () => {
+      expect(isColorKey('#3B82F6')).toBe(false);
+      expect(isColorKey('rgb(0,0,0)')).toBe(false);
+      expect(isColorKey('bluue')).toBe(false);
+      expect(isColorKey('')).toBe(false);
     });
   });
 });

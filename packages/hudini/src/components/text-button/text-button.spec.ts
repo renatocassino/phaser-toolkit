@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-magic-numbers */
+/* eslint-disable max-lines */
 import { Scene } from 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -18,11 +19,18 @@ vi.mock('../text', () => {
     private text: string;
     private style: Record<string, string | number>;
 
-    constructor(params: { scene: unknown; x: number; y: number; text: string; size?: number; fontFamily?: string }) {
+    constructor(params: {
+      scene: unknown;
+      x: number;
+      y: number;
+      text: string;
+      size?: number;
+      fontFamily?: string;
+    }) {
       this.text = params.text;
       this.style = {
         fontSize: params.size ?? 22,
-        fontFamily: params.fontFamily ?? 'Bebas Neue',
+        fontFamily: params.fontFamily ?? 'Fredoka',
       };
     }
 
@@ -65,19 +73,44 @@ vi.mock('phaser-wind', () => ({
   Color: {
     rgb: vi.fn((color: string) => `rgb-${color}`),
     hex: vi.fn((color: string) => `hex-${color}`),
+    /* eslint-disable-next-line no-unused-vars */
+    shift: vi.fn((token: string, _diff: number) => token),
     isValidColorToken: vi.fn(() => false),
   },
+  Opacity: {
+    value: vi.fn(() => 0.6),
+    percent: vi.fn(() => 60),
+    css: vi.fn(() => '60%'),
+  },
+  isColorKey: vi.fn(() => false),
   palette: {
-    red: {}, blue: {}, green: {}, purple: {}, amber: {},
-    slate: {}, gray: {}, zinc: {}, neutral: {}, stone: {},
-    orange: {}, yellow: {}, lime: {}, emerald: {}, teal: {},
-    cyan: {}, sky: {}, indigo: {}, violet: {}, fuchsia: {},
-    pink: {}, rose: {},
+    red: {},
+    blue: {},
+    green: {},
+    purple: {},
+    amber: {},
+    slate: {},
+    gray: {},
+    zinc: {},
+    neutral: {},
+    stone: {},
+    orange: {},
+    yellow: {},
+    lime: {},
+    emerald: {},
+    teal: {},
+    cyan: {},
+    sky: {},
+    indigo: {},
+    violet: {},
+    fuchsia: {},
+    pink: {},
+    rose: {},
     black: '#000',
     white: '#fff',
   },
   PHASER_WIND_KEY: 'PhaserWind',
-  SceneWithPhaserWind: class SceneWithPhaserWind { },
+  SceneWithPhaserWind: class SceneWithPhaserWind {},
 }));
 
 // Mock the getPWFromScene utility
@@ -162,8 +195,10 @@ vi.mock('phaser', () => {
   }
 
   class MockSprite {
+    public width = 0;
+    public height = 0;
     // eslint-disable-next-line no-unused-vars
-    constructor(_x: number, _y: number, _texture: string) { }
+    constructor(_x: number, _y: number, _texture: string) {}
     setOrigin(): this {
       return this;
     }
@@ -171,6 +206,11 @@ vi.mock('phaser', () => {
       return this;
     }
     setTexture(): this {
+      return this;
+    }
+    setSize(width: number, height: number): this {
+      this.width = width;
+      this.height = height;
       return this;
     }
     on(): this {
@@ -211,8 +251,18 @@ vi.mock('phaser', () => {
   }
 
   class MockRectangle {
-    // eslint-disable-next-line no-unused-vars
-    constructor(_scene: Scene, _x: number, _y: number, _width: number, _height: number) { }
+    constructor(
+      // eslint-disable-next-line no-unused-vars
+      _scene: Scene,
+      // eslint-disable-next-line no-unused-vars
+      _x: number,
+      // eslint-disable-next-line no-unused-vars
+      _y: number,
+      // eslint-disable-next-line no-unused-vars
+      _width: number,
+      // eslint-disable-next-line no-unused-vars
+      _height: number
+    ) {}
   }
 
   class Scene {
@@ -225,10 +275,14 @@ vi.mock('phaser', () => {
   }
 
   class BasePlugin {
-    constructor() { }
+    constructor() {}
   }
 
-  const GameObjects = { Container: MockContainer, Text: MockText, Rectangle: MockRectangle };
+  const GameObjects = {
+    Container: MockContainer,
+    Text: MockText,
+    Rectangle: MockRectangle,
+  };
   const Plugins = { BasePlugin };
   const Display = {
     Color: {
@@ -251,12 +305,12 @@ vi.mock('phaser', () => {
   if (typeof globalThis !== 'undefined') {
     (globalThis as unknown as { Phaser?: typeof Phaser }).Phaser = Phaser;
   }
-  return { 
-    default: Phaser, 
-    GameObjects, 
-    Scene, 
-    Plugins, 
-    Phaser 
+  return {
+    default: Phaser,
+    GameObjects,
+    Scene,
+    Plugins,
+    Phaser,
   };
 });
 

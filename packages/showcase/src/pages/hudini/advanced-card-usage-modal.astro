@@ -32,7 +32,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
       <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
-        <pre class="text-sm text-gray-100"><code>{`import { Card, Column, Row, TextButton, FlatIconButton, SizedBox } from 'hudini';
+        <pre class="text-sm text-gray-100"><code>{`import { Card, Column, Row, TextButton, IconButton, SizedBox } from 'hudini';
 
 // Create a modal card with settings
 const modalCard = new Card({
@@ -84,7 +84,7 @@ const modalCard = new Card({
 });
 
 // Close button positioned outside the card
-const closeButton = new FlatIconButton({
+const closeButton = new IconButton({
     scene: this,
     x: centerX + Math.min(width * 0.4, 300),
     y: centerY - 240,
@@ -98,7 +98,7 @@ const closeButton = new FlatIconButton({
 </Layout>
 
 <script>
-  import { loadFonts, Card, Column, Row, TextButton, FlatIconButton, SizedBox, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, withHudini } from 'hudini';
+  import { loadFonts, Card, Column, Row, TextButton, IconButton, SizedBox, defaultLightTheme, HUDINI_KEY, HudiniPlugin, HudiniPluginData, withHudini } from 'hudini';
 
   class AdvancedCardModalScene extends Phaser.Scene {
     constructor() {
@@ -180,7 +180,7 @@ const closeButton = new FlatIconButton({
       });
 
       // Create close button positioned outside the card
-      const closeButton = new FlatIconButton({
+      const closeButton = new IconButton({
           scene: this,
           x: centerX + Math.min(width * 0.4, 300),
           y: centerY - 240,
@@ -211,7 +211,7 @@ const closeButton = new FlatIconButton({
             fixedWidth: 100,
         });
 
-        const lessButton = new FlatIconButton({
+        const lessButton = new IconButton({
             scene: this,
             x: 0,
             y: 0,
@@ -223,7 +223,7 @@ const closeButton = new FlatIconButton({
             },
         });
 
-        const plusButton = new FlatIconButton({
+        const plusButton = new IconButton({
             scene: this,
             x: 0,
             y: 0,

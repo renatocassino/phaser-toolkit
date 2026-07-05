@@ -4,7 +4,6 @@ import PhaserGame from '../../components/PhaserGame.astro';
 ---
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <Layout title="Hudini Text Button Component" description="Interactive button with text content and hover effects, built with PhaserWind theming.">
   <div class="space-y-8">
@@ -135,6 +134,7 @@ class ButtonDemoScene extends Phaser.Scene {
       this.add.text(this.cameras.main.centerX, 80, 'Text Button Examples', {
         color: pw.color.slate(200),
         align: 'center',
+        fontFamily: 'Fredoka',
         fontSize: '32px',
       }).setOrigin(0.5, 0.5);
 

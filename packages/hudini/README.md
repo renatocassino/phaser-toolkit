@@ -293,35 +293,9 @@ Notes:
 - Hover scales the icon subtly, click animates press/release.
 - Colors and sizes integrate with `phaser-wind` theme tokens.
 
-### FlatIconButton
-
-A flat-style icon button with customizable colors, opacity, and border radius.
-
-```ts
-import { FlatIconButton } from 'hudini';
-
-const flatBtn = new FlatIconButton({
-  scene: this,
-  x: 200,
-  y: 100,
-  icon: 'solid/play',
-  size: 'lg',
-  backgroundColor: 'blue-600',
-  iconColor: 'white',
-  borderRadius: 'md',
-  backgroundOpacity: 0.8,
-  iconOpacity: 1,
-  onClick: () => {
-    // your click handler
-  },
-});
-
-this.add.existing(flatBtn);
-```
-
 ### Interactive API
 
-Both `IconButton` and `FlatIconButton` provide direct access to event methods for advanced event handling:
+`IconButton` provides direct access to event methods for advanced event handling:
 
 ```ts
 const button = new IconButton({ 

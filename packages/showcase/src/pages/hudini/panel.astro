@@ -4,15 +4,15 @@ import PhaserGame from '../../components/PhaserGame.astro';
 ---
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
 
-<Layout title="Hudini Panel Component" description="A panel component that combines Card, SectionHeader, and optional close button for creating modal-like UI elements.">
+<Layout title="Hudini Panel Component" description="A panel component that combines Card, Badge, and optional close button for creating modal-like UI elements.">
   <div class="space-y-8">
     <!-- Description -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h2 class="text-xl font-semibold text-gray-900 mb-4">Panel Component</h2>
       <p class="text-gray-600 mb-4">
-        A panel component that combines Card, SectionHeader, and optional close button for creating modal-like UI elements. Perfect for settings panels, information dialogs, and popup windows.
+        A panel component that combines Card, Badge, and optional close button for creating modal-like UI elements. Perfect for settings panels, information dialogs, and popup windows.
       </p>
       
       <!-- Features -->
@@ -20,7 +20,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
         <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
         <ul class="list-disc list-inside space-y-1 text-gray-600">
           <li>🎴 <strong>Card-based</strong>: Built on top of Card component with double stroke effect</li>
-          <li>📑 <strong>Optional Header</strong>: SectionHeader for panel titles</li>
+          <li>📑 <strong>Optional Header</strong>: Badge for panel titles</li>
           <li>❌ <strong>Close Button</strong>: Optional close button with custom callback</li>
           <li>🎨 <strong>Customizable</strong>: Full control over colors, border radius, and margins</li>
           <li>🔄 <strong>Dynamic Updates</strong>: Update title, child, and styling dynamically</li>
@@ -60,7 +60,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
             <li><code class="bg-gray-200 px-2 py-1 rounded">setMargin(margin)</code> - Change internal margin</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">setChild(child)</code> - Replace the panel content</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">getCard()</code> - Get the underlying Card component</li>
-            <li><code class="bg-gray-200 px-2 py-1 rounded">getSectionHeader()</code> - Get the SectionHeader component (if exists)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">getBadge()</code> - Get the Badge component (if exists)</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">getCloseButton()</code> - Get the close button component (if exists)</li>
           </ul>
         </div>
@@ -256,7 +256,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         color: pw.color.slate(200),
         align: 'center',
         fontSize: '32px',
-        fontFamily: 'Bebas Neue',
+        fontFamily: 'Fredoka',
       }).setOrigin(0.5, 0.5);
 
       // Example 1: Simple panel with title
@@ -481,7 +481,7 @@ import { loadFont } from 'font-awesome-for-phaser';
         color: pw.color.rgb('black'),
         align: 'center',
         fontSize: '16px',
-        fontFamily: 'Bebas Neue',
+        fontFamily: 'Fredoka',
       }).setOrigin(0.5, 0.5);
 
       const panel5 = new Panel({
@@ -505,7 +505,7 @@ import { loadFont } from 'font-awesome-for-phaser';
       }).setOrigin(0.5, 0.5);
 
       // Instructions
-      this.add.text(this.cameras.main.centerX, 720, 'Panels combine Card, SectionHeader, and optional close button', {
+      this.add.text(this.cameras.main.centerX, 720, 'Panels combine Card, Badge, and optional close button', {
         color: pw.color.slate(400),
         align: 'center',
         fontSize: '12px',

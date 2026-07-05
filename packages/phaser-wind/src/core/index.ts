@@ -1,4 +1,6 @@
 export * from './color';
+export * from './duration';
+export * from './ease';
 export * from './font';
 export * from './font-size';
 export * from './opacity';

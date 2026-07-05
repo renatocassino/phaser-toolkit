@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable sonarjs/no-duplicate-string */
+import { durationMap, type DurationMap } from '../core/duration';
+import { easeMap, type EaseMap } from '../core/ease';
 import { fontSizeMap, type FontSizeMap } from '../core/font-size';
 import { opacityMap, type OpacityMap } from '../core/opacity';
 import { radiusMap, type RadiusMap } from '../core/radius';
@@ -45,6 +47,8 @@ export type ThemeOverride = {
   effects?: Partial<EffectConfig>;
   radius?: Partial<RadiusMap> & { [key: string]: number };
   opacity?: Partial<OpacityMap> & { [key: string]: number };
+  duration?: Partial<DurationMap> & { [key: string]: number };
+  ease?: Partial<EaseMap> & { [key: string]: string };
   custom?: { [key: string]: unknown };
 };
 
@@ -64,6 +68,12 @@ export type BaseThemeConfig = {
   };
   opacity?: OpacityMap & {
     [key: string]: number;
+  };
+  duration?: DurationMap & {
+    [key: string]: number;
+  };
+  ease?: EaseMap & {
+    [key: string]: string;
   };
   custom?: {
     [key: string]: unknown;
@@ -104,6 +114,8 @@ export const defaultLightTheme: BaseThemeConfig = {
   },
   spacing: { ...spacingMap },
   opacity: { ...opacityMap },
+  duration: { ...durationMap },
+  ease: { ...easeMap },
   typography: {
     heading: {
       fontSize: '2xl',
@@ -186,6 +198,8 @@ export const defaultDarkTheme: BaseThemeConfig = {
   },
   spacing: { ...spacingMap },
   opacity: { ...opacityMap },
+  duration: { ...durationMap },
+  ease: { ...easeMap },
   typography: {
     heading: {
       fontSize: '2xl',

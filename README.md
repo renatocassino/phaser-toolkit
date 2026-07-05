@@ -2,13 +2,25 @@
 
 A comprehensive collection of tools and utilities for game development with Phaser.
 
-## 📦 Packages
-
-This monorepo contains a cohesive suite of TypeScript-first libraries for Phaser. Each package is focused, well-tested, and built to work great together or stand alone.
-
 <p align="center">
   <img src="packages/phaser-wind/data/image.png" alt="Phaser Toolkit" style="max-width: 600px">
 </p>
+
+## 📦 Packages at a glance
+
+A cohesive suite of TypeScript-first libraries for Phaser. Each package is focused, well-tested, and built to work great together or stand alone.
+
+| Package | Purpose | npm |
+|---|---|---|
+| 🎩 [**Hudini**](#-hudini--magical-ui-components-for-phaser) | UI components (buttons, cards, modals, forms, HUD) | [`hudini`](https://www.npmjs.com/package/hudini) |
+| 🌪️ [**phaser-wind**](#%EF%B8%8F-phaser-wind--theme-system-inspired-by-tailwind) | Tailwind-like design tokens (color, spacing, motion, depth…) | [`phaser-wind`](https://www.npmjs.com/package/phaser-wind) |
+| 🎨 [**font-awesome-for-phaser**](#-font-awesome-for-phaser--font-awesome-icons-in-phaser) | Render Font Awesome icons directly in Phaser | [`font-awesome-for-phaser`](https://www.npmjs.com/package/font-awesome-for-phaser) |
+| 🕹️ [**phaser-virtual-joystick**](#%EF%B8%8F-phaser-virtual-joystick--brawl-stars-style-touch-controls) | Touch joystick for mobile games | [`phaser-virtual-joystick`](https://www.npmjs.com/package/phaser-virtual-joystick) |
+| 🪝 [**phaser-hooks**](#-phaser-hooks--react-style-hooks-for-phaser) | React-style state management hooks | [`phaser-hooks`](https://www.npmjs.com/package/phaser-hooks) |
+| 🎵 [**phaser-sound-studio**](#-phaser-sound-studio--professional-audio-management) | Type-safe multi-channel audio | [`phaser-sound-studio`](https://www.npmjs.com/package/phaser-sound-studio) |
+| 🔍 [**phaser-data-inspector**](#-phaser-data-inspector--devtools-for-phaser-state) | Chrome DevTools extension for game state | [Chrome Web Store](https://chromewebstore.google.com/detail/phaser-data-inspector/jjcogkkooficbbdhfcamcojmepbjnpdk) |
+
+> 🎮 **[Try the live showcase →](https://renatocassino.github.io/phaser-toolkit/)** — interactive demos of every component and feature.
 
 ### 🎩 Hudini — Magical UI components for Phaser
 
@@ -19,20 +31,24 @@ This monorepo contains a cohesive suite of TypeScript-first libraries for Phaser
 **Hudini** is a collection of reusable, themeable UI components for Phaser games. Named after the famous magician Houdini and HUD (Head-Up Display), it provides a magical toolkit for building consistent game interfaces.
 
 **Key Features:**
-- 🎨 **Themeable** - Dark/light themes with full customization
-- 📦 **Phaser-wind Dependency** - Only requires phaser-wind
+- 🎨 **Themeable** - Dark/light themes with full customization via phaser-wind tokens
+- 🧱 **Composable** - Preset content + slot overrides (matches daisyUI / Radix mental model)
 - 🎯 **TypeScript First** - Full type safety and IntelliSense
 - 🧪 **Tested** - Comprehensive test coverage
+- 🎬 **Motion-aware** - Consistent animation defaults driven by `Duration` / `Ease` tokens
 
 **Components:**
-- `Column` - Stacks children vertically with spacing and alignment
-- `Row` - Arranges children horizontally with spacing and alignment  
-- `IconButton` - Interactive circular icon button with animations
+
+*Buttons & inputs:* `TextButton`, `IconButton`, `Checkbox`, `Toggle`, `Radio` + `RadioGroup`
+*Layout:* `Row`, `Column`, `Stack`, `SizedBox`, `Card`
+*Feedback:* `Alert`, `Badge`, `LinearProgress`, `RadialProgress`, `CircularProgress`
+*Overlays:* `Modal`, `Overlay`
+*Structure:* `Text`, `Dock`
 
 **Links:**
 - 📦 [NPM Package](https://www.npmjs.com/package/hudini)
 - 📖 [Documentation](packages/hudini/README.md)
-- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/?path=/story/hudini--index)
+- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/hudini)
 
 ---
 
@@ -47,26 +63,34 @@ This monorepo contains a cohesive suite of TypeScript-first libraries for Phaser
 **Key Features:**
 - 🎨 **Complete Tailwind-like Color Palette** - 22 families × 11 shades
 - 📐 **Semantic Font Sizes** - From `xs` to `6xl`
-- 🧩 **Default constants ready-to-use** - `Color`, `FontSize`, `Spacing`, `Radius`, `Shadow`
+- 🧩 **Full token set** - `Color`, `FontSize`, `Font`, `Spacing`, `Radius`, `Shadow`, `Opacity`, `Duration`, `Ease`, `Depth`, `Pos`
+- 📏 **Layout primitives** - `Row` / `Column` for flex-like arrangement with `gap` and `align`
 - 🧭 **Optional theme system (typed)** - Add your own tokens with strong typing
 - 🔧 **TypeScript First** - Full type safety and IntelliSense
 - 🎮 **Phaser Ready** - Global plugin for easy access in scenes
 
 **Example:**
 ```typescript
-import { Color, FontSize } from 'phaser-wind';
+import { Color, FontSize, Duration, Ease } from 'phaser-wind';
 
 const button = this.add.text(100, 50, 'Click me!', {
-  fontSize: FontSize.css('lg'), // Clear intention!
-  fill: Color.rgb('blue-500'), // Beautiful blue
-  backgroundColor: Color.rgb('gray-800'), // Perfect contrast
+  fontSize: FontSize.css('lg'),          // Clear intention!
+  color: Color.rgb('blue-500'),          // Beautiful blue
+  backgroundColor: Color.rgb('gray-800'),// Perfect contrast
+});
+
+this.tweens.add({
+  targets: button,
+  scale: 1.1,
+  duration: Duration.ms('200'),          // 200ms
+  ease: Ease.value('back-out'),          // Cubic-like pop
 });
 ```
 
 **Links:**
 - 📦 [NPM Package](https://www.npmjs.com/package/phaser-wind)
 - 📖 [Documentation](packages/phaser-wind/README.md)
-- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit)
+- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/phaser-wind)
 
 ---
 
@@ -97,7 +121,43 @@ const icon = new IconText(this, 90, 90, 'gamepad', 64, {
 **Links:**
 - 📦 [NPM Package](https://www.npmjs.com/package/font-awesome-for-phaser)
 - 📖 [Documentation](packages/font-awesome-for-phaser/README.md)
-- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/?path=/story/font-awesome-for-phaser-icontext--basic)
+- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/font-awesome-for-phaser)
+
+---
+
+### 🕹️ phaser-virtual-joystick — Brawl Stars-style touch controls
+
+<p align="center">
+  <img src="packages/phaser-virtual-joystick/data/phaser-virtual-joystick.png" alt="Phaser Virtual Joystick" style="max-width: 400px">
+</p>
+
+A highly customizable, strongly typed virtual joystick for Phaser games — inspired by the smooth follow-behavior of **Brawl Stars**. Great for mobile and touch-based games.
+
+**Key Features:**
+- 🎯 **Brawl Stars-inspired follow** - Base drags with the finger for that "on-rails" feel
+- 🔧 **Fully customizable** - Colors, sizes, alpha, dead-zone, activation area
+- 📱 **Touch-optimized** - Designed for mobile from the ground up
+- ⚡ **High performance** - Lightweight, event-driven (`move`, `press`, `release`)
+- 🛡️ **Strongly typed** - Complete TypeScript definitions
+- 🚫 **UI conflict prevention** - Won't hijack pointer events over buttons
+
+**Example:**
+```typescript
+import { VirtualJoystick } from 'phaser-virtual-joystick';
+
+const joystick = new VirtualJoystick({
+  scene: this,
+  baseArea: { radius: 60, fillColor: 0x333333 },
+  stick:    { radius: 30, fillColor: 0xffffff },
+});
+this.add.existing(joystick); // don't forget!
+joystick.on('move', ({ x, y }) => player.setVelocity(x * 300, y * 300));
+```
+
+**Links:**
+- 📦 [NPM Package](https://www.npmjs.com/package/phaser-virtual-joystick)
+- 📖 [Documentation](packages/phaser-virtual-joystick/README.md)
+- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/phaser-virtual-joystick)
 
 ---
 
@@ -142,7 +202,7 @@ const currentPlayer = playerState.get();
 **Links:**
 - 📦 [NPM Package](https://www.npmjs.com/package/phaser-hooks)
 - 📖 [Documentation](packages/phaser-hooks/README.md)
-- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/?path=/story/phaser-hooks--index)
+- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/phaser-hooks)
 
 ---
 
@@ -174,6 +234,7 @@ studio.setChannelVolume(this, 'music', 0.1); // Lower background music
 **Links:**
 - 📦 [NPM Package](https://www.npmjs.com/package/phaser-sound-studio)
 - 📖 [Documentation](packages/phaser-sound-studio/README.md)
+- 🎮 [Live Demos](https://renatocassino.github.io/phaser-toolkit/phaser-sound-studio)
 - 🎮 [Showcase Games](https://games.cassino.dev)
 
 ---
@@ -212,62 +273,67 @@ set(100);
 
 ## 🚀 Getting started
 
+Individual packages are installable from npm — pick the ones you need. See the "at a glance" table above for install commands.
+
+To contribute or run the showcase locally, clone the monorepo:
+
 ### Prerequisites
 
 - Node.js >= 18.0.0
 - pnpm >= 8.0.0
 
-### Instalação
+### Installation
 
 ```bash
-# Clone o repositório
-git clone https://github.com/cassinodev/phaser-toolkit.git
+# Clone the repository
+git clone https://github.com/renatocassino/phaser-toolkit.git
 cd phaser-toolkit
 
-# Instale as dependências
+# Install dependencies
 pnpm install
 
-# Construa todos os pacotes
+# Build every package
 pnpm build
 ```
 
-### Scripts Disponíveis
+### Available scripts
 
-- `pnpm build` - Builds all packages
-- `pnpm test` - Runs tests across all packages
-- `pnpm dev` - Starts development mode
-- `pnpm lint` - Runs linting across all packages
-- `pnpm typecheck` - Checks TypeScript types
-- `pnpm clean` - Cleans previous builds
-- `pnpm changeset` - Creates a new changeset for versioning
-- `pnpm release` - Publishes new versions of packages
+- `pnpm build` - Build all packages
+- `pnpm test` - Run tests across all packages
+- `pnpm dev` - Start development mode (showcase + package watchers)
+- `pnpm lint` - Run linting across all packages
+- `pnpm typecheck` - Check TypeScript types
+- `pnpm clean` - Clean previous builds
+- `pnpm changeset` - Create a new changeset for versioning
+- `pnpm release` - Publish new versions of packages
 
-## 📋 Project Structure
+## 📋 Project structure
 
 ```
 phaser-toolkit/
 ├── packages/
-│   ├── hudini/                    # UI components
-│   ├── phaser-wind/              # Design tokens & theming
-│   ├── font-awesome-for-phaser/   # Font Awesome icons
-│   ├── phaser-hooks/             # State management hooks
-│   ├── phaser-sound-studio/      # Audio management
-│   ├── phaser-data-inspector/    # Chrome DevTools extension
-│   └── showcase/                 # Astro showcase
+│   ├── hudini/                     # UI components
+│   ├── phaser-wind/                # Design tokens & theming
+│   ├── font-awesome-for-phaser/    # Font Awesome icons
+│   ├── phaser-virtual-joystick/    # Touch joystick
+│   ├── phaser-hooks/               # State management hooks
+│   ├── phaser-sound-studio/        # Audio management
+│   ├── phaser-data-inspector/      # Chrome DevTools extension
+│   └── showcase/                   # Astro-powered demo site
 ├── package.json
 ├── pnpm-workspace.yaml
 └── README.md
 ```
 
-## 🤝 Contribute
+## 🤝 Contributing
 
-Contributions are always welcome! Please read our contribution guide before submitting a PR.
+Contributions are always welcome! Please read the [contribution guide](CONTRIBUTING.md) before submitting a PR.
 
 1. Fork the project
-2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a branch for your feature (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request — the [template](.github/pull_request_template.md) will guide you through description, type of change, affected packages, and testing steps.
 
 ## 📄 License
 
@@ -275,11 +341,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**CassinoDev**
+**Renato Cassino** ([CassinoDev](https://games.cassino.dev))
 
 - Website: [games.cassino.dev](https://games.cassino.dev)
-- GitHub: [@cassinodev](https://github.com/cassinodev)
+- GitHub: [@renatocassino](https://github.com/renatocassino)
 
 ## ⭐ Show your support
 
-If this project helped you, please give it a ⭐ in the repository!
+If this project helped you, please give it a ⭐ on the repository!

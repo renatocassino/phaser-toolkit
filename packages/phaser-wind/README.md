@@ -57,14 +57,16 @@ const title = this.add.text(200, 100, 'Game Title', {
 
 ## 🚀 Features
 
-- 🎨 **Complete Tailwind-like Color Palette** - 22 families × 11 shades
-- 📐 **Semantic Font Sizes** - From `xs` to `6xl`
-- 🧩 **Default constants ready-to-use** - `Color`, `FontSize`, `Spacing`, `Radius`, `Shadow`
-- 🧭 **Optional theme system (typed)** - Add your own tokens with strong typing
-- 🔧 **TypeScript First** - Full type safety and IntelliSense
-- 🎮 **Phaser Ready** - Global plugin for easy access in scenes
-- 🌈 **Consistent Design** - No more guessing colors and sizes
-- 📦 **Tiny Bundle** - Great DX, minimal overhead
+- 🎨 **Complete Tailwind-like Color Palette** — 22 families × 11 shades
+- 📐 **Semantic Font Sizes** — from `xs` to `6xl`
+- 🧩 **Full token set** — `Color`, `FontSize`, `Font`, `Spacing`, `Radius`, `Shadow`, `Opacity`, `Duration`, `Ease`, `Depth`, `Pos`
+- 📏 **Layout primitives** — `Row` / `Column` for flex-like arrangement with `gap` + `align`
+- 🎬 **Motion tokens** — `Duration.ms('300')` and `Ease.value('back-out')` for consistent tween timing
+- 🗺️ **Depth stack** — semantic z-layer names (`base`, `content`, `overlay`, `modal`, `tooltip`)
+- 📍 **Positioning helpers** — `Pos.center(scene)`, `Pos.topRight(scene, 16)`, `Pos.safeArea(scene)`
+- 🧭 **Optional theme system (typed)** — add your own tokens with strong typing
+- 🔧 **TypeScript First** — full type safety and IntelliSense
+- 🎮 **Phaser Ready** — global plugin for easy access in scenes
 
 ---
 
@@ -83,7 +85,7 @@ pnpm add phaser-wind
 If you prefer not to use TypeScript or want to include the library via CDN, you can use the UMD build:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/phaser-wind@0.7.0/dist/phaser-wind.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser-wind@latest/dist/phaser-wind.min.js"></script>
 ```
 
 The library will be available globally as `window.PhaserWind`. You can use it like this:
@@ -96,7 +98,7 @@ const fontSize = window.PhaserWind.FontSize.css('lg');
 // Create styled text
 const text = scene.add.text(100, 50, 'Hello World', {
   fontSize: fontSize,
-  fill: blueColor
+  color: blueColor,
 });
 ```
 
@@ -220,6 +222,85 @@ Shadow.get('md');
 ### Shadow
 
 - Default keys: `sm`, `md`, `lg`, `xl`, `2xl`, `inner`
+
+### Opacity
+
+- Tailwind-style keys: `0`, `5`, `10`, `20`, `25`, `30`, `40`, `50`, `60`, `70`, `75`, `80`, `90`, `95`, `100`
+- API: `Opacity.value('60')` → `0.6`
+
+```ts
+import { Opacity } from 'phaser-wind';
+sprite.setAlpha(Opacity.value('80')); // 0.8
+```
+
+### Duration (motion timing)
+
+- Tailwind-style scale (ms): `0`, `75`, `100`, `150`, `200`, `300`, `500`, `700`, `1000`
+- API: `Duration.ms(key)`, `Duration.seconds(key)`, `Duration.css(key)`
+
+```ts
+import { Duration, Ease } from 'phaser-wind';
+
+this.tweens.add({
+  targets: sprite,
+  scale: 1.1,
+  duration: Duration.ms('200'),    // 200
+  ease: Ease.value('back-out'),    // 'Back.easeOut'
+});
+```
+
+### Ease (motion curve)
+
+- Base curves (Tailwind parity, backed by Cubic): `linear`, `in`, `out`, `in-out`
+- Character curves: `sine-*`, `back-*`, `expo-*`, `bounce-*`, `elastic-*` (each with `-in`, `-out`, `-in-out`)
+- API: `Ease.value(key)` → Phaser ease-name string
+
+### Depth (semantic z-layers)
+
+Named layers for `setDepth()`. Values are gap-spaced so you can slot custom depths between them.
+
+- `base` (0), `content` (100), `overlay` (1000), `modal` (2000), `tooltip` (3000)
+
+```ts
+import { Depth } from 'phaser-wind';
+modalCard.setDepth(Depth.value('modal'));   // 2000
+tooltip.setDepth(Depth.value('tooltip'));   // 3000
+```
+
+### Pos (positioning helpers)
+
+Spread-friendly `{ x, y }` (or `Rect`) helpers that read from `scene.cameras.main` — great for HUD and modals.
+
+- `Pos.center(scene)`
+- `Pos.top/bottom/left/right(scene, padding?)`
+- `Pos.topLeft/topRight/bottomLeft/bottomRight(scene, padding?)`
+- `Pos.safeArea(scene, inset?)` → `{ x, y, width, height, centerX, centerY }`
+
+```ts
+import { Pos } from 'phaser-wind';
+
+new Modal({ scene, ...Pos.center(scene) });
+new IconButton({ scene, ...Pos.topRight(scene, 16), icon: 'xmark' });
+```
+
+### Layout primitives (Row / Column)
+
+Flex-like layout `Phaser.GameObjects.Container` subclasses.
+
+- `Row({ scene, x, y, gap, align, horizontalOrigin, children })`
+- `Column({ scene, x, y, gap, align, verticalOrigin, children })`
+- Common API: `setGap`, `setAlign`, `addChild`, `addChildren`, `layout()`
+
+```ts
+import { Row } from 'phaser-wind';
+
+const hud = new Row({
+  scene: this, x: 400, y: 40,
+  gap: 12,
+  align: 'center',
+  children: [scoreText, timerText, pauseBtn],
+});
+```
 
 ---
 
@@ -379,7 +460,7 @@ new Phaser.Game({
         key: PHASER_WIND_KEY,
         plugin: PhaserWindPlugin,
         mapping: PHASER_WIND_KEY, // scene.pw
-        data: { theme: defaultLighTheme }, // or { theme: defaultDarkTheme }
+        data: { theme: defaultLightTheme }, // or { theme: defaultDarkTheme }
       },
     ],
   },

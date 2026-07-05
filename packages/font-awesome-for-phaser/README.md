@@ -1,6 +1,6 @@
 # Font Awesome for Phaser
 
-[![NPM Version](https://img.shields.io/npm/v/phaser-wind)](https://www.npmjs.com/package/phaser-wind)
+[![NPM Version](https://img.shields.io/npm/v/font-awesome-for-phaser)](https://www.npmjs.com/package/font-awesome-for-phaser)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 

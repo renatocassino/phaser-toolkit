@@ -3,7 +3,7 @@
 </p>
 
 
-[![NPM Version](https://img.shields.io/npm/v/phaser-wind)](https://www.npmjs.com/package/phaser-wind)
+[![NPM Version](https://img.shields.io/npm/v/phaser-sound-studio)](https://www.npmjs.com/package/phaser-sound-studio)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
@@ -222,7 +222,7 @@ export class GameScene extends Phaser.Scene {
     studio.muteChannel(this, 'voice'); // Mute voice channel
 
     // Play background music
-    studio.play(CHANNELS.BG_MUSIC); // ✅ Type-safe!
+    studio.play('game-music'); // ✅ Type-safe (a sound key from GameSounds)
     // Example of error. If you call
     // studio.play('invalid-key'); // ❌ Type check error!!!
   }

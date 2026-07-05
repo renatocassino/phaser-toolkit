@@ -1,8 +1,8 @@
 import { GameObjects, Scene } from 'phaser';
 
+import { Badge } from '../badge';
 import { Card } from '../card';
 import { IconButton } from '../icon-button';
-import { SectionHeader } from '../section-header';
 
 // Constants for default values
 const DEFAULT_BORDER_RADIUS = 8;
@@ -26,7 +26,7 @@ export type PanelParams = {
 
 export class Panel extends GameObjects.Container {
     private card: Card;
-    private sectionHeader: SectionHeader | null = null;
+    private badge: Badge | null = null;
     private closeButton: IconButton | null = null;
     private title: string;
     private showCloseButton: boolean;
@@ -53,9 +53,9 @@ export class Panel extends GameObjects.Container {
         // Add card to container
         this.add(this.card);
 
-        // Create section header if title is provided
+        // Create badge (panel title) if title is provided
         if (this.title) {
-            this.createSectionHeader();
+            this.createBadge();
         }
 
         // Create close button if requested
@@ -68,20 +68,19 @@ export class Panel extends GameObjects.Container {
     }
 
     /**
-     * Creates the section header
+     * Creates the badge that sits on top of the panel as its title.
      */
-    private createSectionHeader(): void {
-        this.sectionHeader = new SectionHeader({
+    private createBadge(): void {
+        this.badge = new Badge({
             scene: this.scene,
             x: 0,
             y: 0,
             text: this.title,
-            backgroundColor: DEFAULT_BACKGROUND_COLOR,
-            borderRadius: 0
+            color: DEFAULT_BACKGROUND_COLOR,
+            borderRadius: 0,
         });
 
-        // Add header to container
-        this.add(this.sectionHeader);
+        this.add(this.badge);
     }
 
     /**
@@ -112,11 +111,11 @@ export class Panel extends GameObjects.Container {
         // Get card size
         const cardSize = { width: this.card.width, height: this.card.height };
 
-        // Calculate header position (top of the card)
-        if (this.sectionHeader) {
-            const dividerSectionHeader = 4;
-            const headerY = -cardSize.height / 2 - this.sectionHeader.height / dividerSectionHeader;
-            this.sectionHeader.setPosition(0, headerY);
+        // Calculate badge position (top of the card)
+        if (this.badge) {
+            const dividerBadge = 4;
+            const badgeY = -cardSize.height / 2 - this.badge.height / dividerBadge;
+            this.badge.setPosition(0, badgeY);
         }
 
         // Calculate close button position (top-right corner)
@@ -133,13 +132,13 @@ export class Panel extends GameObjects.Container {
     setTitle(title: string): this {
         this.title = title;
 
-        if (title && !this.sectionHeader) {
-            this.createSectionHeader();
-        } else if (!title && this.sectionHeader) {
-            this.remove(this.sectionHeader);
-            this.sectionHeader = null;
-        } else if (this.sectionHeader) {
-            this.sectionHeader.setText(title);
+        if (title && !this.badge) {
+            this.createBadge();
+        } else if (!title && this.badge) {
+            this.remove(this.badge);
+            this.badge = null;
+        } else if (this.badge) {
+            this.badge.setText(title);
         }
 
         this.updateLayout();
@@ -176,8 +175,8 @@ export class Panel extends GameObjects.Container {
      */
     setBackgroundColor(color: string): this {
         this.card.setBackgroundColor(color);
-        if (this.sectionHeader) {
-            this.sectionHeader.setBackgroundColor(color);
+        if (this.badge) {
+            this.badge.setColor(color);
         }
         return this;
     }
@@ -217,10 +216,10 @@ export class Panel extends GameObjects.Container {
     }
 
     /**
-     * Gets the section header component
+     * Gets the badge (panel title) component.
      */
-    getSectionHeader(): SectionHeader | null {
-        return this.sectionHeader;
+    getBadge(): Badge | null {
+        return this.badge;
     }
 
     /**

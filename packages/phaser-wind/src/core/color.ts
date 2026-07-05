@@ -1,6 +1,7 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines */
 import { BaseThemeConfig } from '../theme';
 import { isValidColor } from '../utils';
 

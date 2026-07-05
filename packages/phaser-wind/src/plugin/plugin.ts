@@ -15,6 +15,7 @@ import { createDepth, type DepthApi } from '../core/depth';
 import { createDuration, type DurationApi } from '../core/duration';
 import { createEase, type EaseApi } from '../core/ease';
 import { createOpacity, type OpacityApi } from '../core/opacity';
+import { Pos, type PosApi } from '../core/pos';
 import { createRadius, type RadiusApi } from '../core/radius';
 import {
   BaseThemeConfig,
@@ -164,6 +165,10 @@ export class PhaserWindPlugin<
 
   public get depth(): DepthApi<T['depth']> {
     return this.depthInstance as DepthApi<T['depth']>;
+  }
+
+  public get pos(): PosApi {
+    return Pos;
   }
 
   public get font(): FontApi<T['fonts'], T['fontSizes']> {

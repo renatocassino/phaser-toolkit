@@ -61,6 +61,15 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
 
   /** Whether we have an explicit size set (width and height provided) */
   private hasExplicitSize: boolean = false;
+  /**
+   * Cached explicit width/height. We can't rely on `this.width` / `this.height`
+   * during initial sprite creation because `ContainerInteractive` proxies them
+   * through `hitArea`, which isn't assigned yet in the constructor. Reading
+   * `this.width` before `hitArea` is set returns 0, so we keep the requested
+   * dimensions here and consult them in {@link getCardDimensions}.
+   */
+  private explicitWidth: number | undefined;
+  private explicitHeight: number | undefined;
 
   /**
    * Creates a new Card
@@ -96,12 +105,22 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
 
     // Check if explicit size was provided
     this.hasExplicitSize = width !== undefined && height !== undefined;
+    this.explicitWidth = width;
+    this.explicitHeight = height;
 
     // Create sprite and setup container
     this.createBackgroundSprite(scene);
     this.setupContainer();
 
     this.hitArea = this.backgroundSprite;
+
+    // Now that hitArea is set, publish the explicit dimensions through the
+    // proxy so that consumers reading `card.width` / `card.height` (Row,
+    // Column, Stack, ...) see the real box, not 0.
+    if (this.hasExplicitSize) {
+      this.backgroundSprite.width = this.explicitWidth as number;
+      this.backgroundSprite.height = this.explicitHeight as number;
+    }
   }
   /**
    * Override setSize to regenerate sprites when size changes
@@ -112,6 +131,8 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   public override setSize(width: number, height: number): this {
     // Mark that we now have explicit size
     this.hasExplicitSize = true;
+    this.explicitWidth = width;
+    this.explicitHeight = height;
     // Set size directly on the container to avoid recursion
     this.width = width;
     this.height = height;
@@ -375,8 +396,11 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
     let height = 0;
 
     if (this.hasExplicitSize) {
-      width = this.width;
-      height = this.height;
+      // Prefer the cached constructor/setSize dims — `this.width`/`this.height`
+      // depend on `hitArea` being wired, which is not the case on the initial
+      // texture generation call during `super`/constructor time.
+      width = this.explicitWidth ?? this.width;
+      height = this.explicitHeight ?? this.height;
     } else if (this.child) {
       const { w: cw, h: ch } = this.measureChild(this.child as GameObjects.GameObject);
       width = cw + this.marginPx * 2;

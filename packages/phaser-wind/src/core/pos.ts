@@ -78,54 +78,54 @@ const resolveInsets = (
  */
 export const Pos = {
   /** Center of the viewport. */
-  center(scene: Scene): Point {
+  center: (scene: Scene): Point => {
     const { width, height } = getViewport(scene);
     return { x: width / 2, y: height / 2 };
   },
 
   /** Horizontal center at the top edge, offset down by `padding`. */
-  top(scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  top: (scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     const { width } = getViewport(scene);
     return { x: width / 2, y: padding };
   },
 
   /** Horizontal center at the bottom edge, offset up by `padding`. */
-  bottom(scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  bottom: (scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     const { width, height } = getViewport(scene);
     return { x: width / 2, y: height - padding };
   },
 
   /** Vertical center at the left edge, offset right by `padding`. */
-  left(scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  left: (scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     const { height } = getViewport(scene);
     return { x: padding, y: height / 2 };
   },
 
   /** Vertical center at the right edge, offset left by `padding`. */
-  right(scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  right: (scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     const { width, height } = getViewport(scene);
     return { x: width - padding, y: height / 2 };
   },
 
   /** Top-left corner, inset by `padding` on both axes. */
-  topLeft(_scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  topLeft: (_scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     return { x: padding, y: padding };
   },
 
   /** Top-right corner, inset by `padding` on both axes. */
-  topRight(scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  topRight: (scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     const { width } = getViewport(scene);
     return { x: width - padding, y: padding };
   },
 
   /** Bottom-left corner, inset by `padding` on both axes. */
-  bottomLeft(scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  bottomLeft: (scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     const { height } = getViewport(scene);
     return { x: padding, y: height - padding };
   },
 
   /** Bottom-right corner, inset by `padding` on both axes. */
-  bottomRight(scene: Scene, padding: number = DEFAULT_PADDING): Point {
+  bottomRight: (scene: Scene, padding: number = DEFAULT_PADDING): Point => {
     const { width, height } = getViewport(scene);
     return { x: width - padding, y: height - padding };
   },
@@ -136,10 +136,10 @@ export const Pos = {
    * or per-edge overrides. Returns pre-computed `centerX`/`centerY` so a
    * modal can drop straight in without re-doing the math.
    */
-  safeArea(
+  safeArea: (
     scene: Scene,
     inset: SafeAreaInsets = DEFAULT_SAFE_INSET
-  ): Rect {
+  ): Rect => {
     const { width, height } = getViewport(scene);
     const { top, right, bottom, left } = resolveInsets(inset);
     const w = width - left - right;

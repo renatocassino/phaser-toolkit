@@ -43,11 +43,14 @@ vi.mock('../../utils/get-pw-from-scene', () => ({
     spacing: { px: vi.fn(() => 24) },
     radius: { px: vi.fn(() => 12) },
     depth: {
-      value: vi.fn((key: string) => ({ overlay: 1000, modal: 2000 }[key] ?? 0)),
+      value: vi.fn((key: string) => ({ overlay: 1000, modal: 2000 })[key] ?? 0),
     },
     font: { family: vi.fn(() => 'Fredoka') },
     fontSize: { px: vi.fn(() => 16) },
-    color: { rgb: vi.fn((c: string) => `rgb-${c}`), hex: vi.fn(() => 0x000000) },
+    color: {
+      rgb: vi.fn((c: string) => `rgb-${c}`),
+      hex: vi.fn(() => 0x000000),
+    },
   })),
 }));
 
@@ -190,8 +193,10 @@ vi.mock('phaser', () => {
           scaleY?: number;
         }) => {
           if (config.alpha !== undefined) config.targets.alpha = config.alpha;
-          if (config.scaleX !== undefined) config.targets.scaleX = config.scaleX;
-          if (config.scaleY !== undefined) config.targets.scaleY = config.scaleY;
+          if (config.scaleX !== undefined)
+            config.targets.scaleX = config.scaleX;
+          if (config.scaleY !== undefined)
+            config.targets.scaleY = config.scaleY;
           config.onComplete?.();
           return { stop: vi.fn() };
         }
@@ -213,7 +218,9 @@ vi.mock('phaser', () => {
     };
     add = {
       existing: vi.fn(),
-      sprite: vi.fn((x: number, y: number, t: string) => new MockSprite(x, y, t)),
+      sprite: vi.fn(
+        (x: number, y: number, t: string) => new MockSprite(x, y, t)
+      ),
       graphics: vi.fn(() => new MockGraphics()),
     };
     textures = {
@@ -307,7 +314,7 @@ describe('Modal', () => {
     const onClose = vi.fn();
     const modal = new Modal({ scene, title: 'Hi', onClose });
     await modal.open();
-    scene.input.keyboard!.emit('keydown', {
+    scene.input.keyboard?.emit('keydown', {
       key: 'Escape',
       preventDefault: vi.fn(),
     } as unknown as KeyboardEvent);
@@ -323,7 +330,7 @@ describe('Modal', () => {
     const onClose = vi.fn();
     const modal = new Modal({ scene, title: 'Hi', keysToClose: [], onClose });
     await modal.open();
-    scene.input.keyboard!.emit('keydown', {
+    scene.input.keyboard?.emit('keydown', {
       key: 'Escape',
       preventDefault: vi.fn(),
     } as unknown as KeyboardEvent);
@@ -334,9 +341,14 @@ describe('Modal', () => {
   it('accepts custom keysToClose (e.g., "C")', async () => {
     const scene = new Scene();
     const onClose = vi.fn();
-    const modal = new Modal({ scene, title: 'Hi', keysToClose: ['C'], onClose });
+    const modal = new Modal({
+      scene,
+      title: 'Hi',
+      keysToClose: ['C'],
+      onClose,
+    });
     await modal.open();
-    scene.input.keyboard!.emit('keydown', {
+    scene.input.keyboard?.emit('keydown', {
       key: 'C',
       preventDefault: vi.fn(),
     } as unknown as KeyboardEvent);
@@ -350,7 +362,9 @@ describe('Modal', () => {
     const scene = new Scene();
     const modal = new Modal({ scene, title: 'Hi' });
     await modal.open();
-    const tweenAdd = scene.tweens.add as unknown as { mock: { calls: unknown[] } };
+    const tweenAdd = scene.tweens.add as unknown as {
+      mock: { calls: unknown[] };
+    };
     const tweenCallsAfterFirstOpen = tweenAdd.mock.calls.length;
     await modal.open();
     // No new tween added on second open

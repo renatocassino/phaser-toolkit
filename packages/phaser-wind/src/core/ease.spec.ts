@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+/* eslint-disable sonarjs/no-duplicate-string */
 import { describe, expect, it } from 'vitest';
 
 import { createEase, Ease } from './ease';

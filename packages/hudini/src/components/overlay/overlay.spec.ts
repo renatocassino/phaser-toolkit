@@ -24,7 +24,7 @@ vi.mock('../../utils/get-pw-from-scene', () => ({
 vi.mock('phaser', () => {
   class MockRectangle {
     public alpha = 1;
-    private handlers = new Map<string, ((...a: unknown[]) => void)[]>();
+    private handlers = new Map<string, Array<(...a: unknown[]) => void>>();
     // eslint-disable-next-line no-unused-vars
     constructor(_x: number, _y: number, _w: number, _h: number, _fill: number) {}
     setScrollFactor(): this {

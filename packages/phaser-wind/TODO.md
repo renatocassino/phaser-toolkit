@@ -15,5 +15,3 @@ Componentes prontos (segunda fase, tipo daisyUI)
 Row/Column especificamente
 - Grid.
 - justify: 'space-between' | 'space-around' além do gap fixo.
-
-Se eu tivesse que apostar em um só primeiro passo pelo ROI: Duration+Ease+Opacity+Depth tokens (uma tarde de trabalho, encaixa 100% no padrão que você já tem) seguido de estados de interação com tokens, porque é o diferencial real que faz "phaser-wind" parecer mágico e não só um dicionário de cores. Quer que eu detalhe/prototipe algum desses?

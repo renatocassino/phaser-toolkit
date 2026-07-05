@@ -375,12 +375,11 @@ export class Modal extends GameObjects.Container {
   }
 
   private buildContent(scene: Scene, params: ModalParams): void {
-    const contentWidth = this.cardWidth - this.paddingPx * 2;
     const sections: GameObjects.GameObject[] = [];
 
     if (params.media) sections.push(params.media);
 
-    const header = params.header ?? this.buildDefaultHeader(scene, params, contentWidth);
+    const header = params.header ?? this.buildDefaultHeader(scene, params);
     if (header) sections.push(header);
 
     if (params.body) sections.push(params.body);
@@ -400,8 +399,7 @@ export class Modal extends GameObjects.Container {
 
   private buildDefaultHeader(
     scene: Scene,
-    params: ModalParams,
-    _contentWidth: number
+    params: ModalParams
   ): GameObjects.GameObject | undefined {
     if (!params.title && !params.description) return undefined;
 

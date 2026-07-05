@@ -1,5 +1,16 @@
 # phaser-wind
 
+## 0.20.0
+
+### Minor Changes
+
+- ddf78a7: Fixes in texts, remove flat button, fix how to get size of button
+
+### Patch Changes
+
+- Updated dependencies [ddf78a7]
+  - phaser-wind@0.11.0
+
 ## 0.19.0
 
 ### Minor Changes

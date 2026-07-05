@@ -2,6 +2,7 @@ import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   ColorToken,
+  Ease,
   PhaserWindPlugin,
   type ColorKey,
   type FontSizeKey,
@@ -169,7 +170,7 @@ export class CircularProgress extends GameObjects.Container {
       targets: this.iconText,
       rotation: Math.PI * 2,
       duration,
-      ease: 'Linear',
+      ease: Ease.value('linear'),
       repeat: -1,
       onComplete: () => {
         // Reset rotation to prevent accumulation

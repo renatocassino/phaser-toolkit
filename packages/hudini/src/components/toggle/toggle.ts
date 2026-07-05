@@ -5,6 +5,8 @@ import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
+  Duration,
+  Ease,
   PhaserWindPlugin,
   type ColorKey,
   type FontSizeKey,
@@ -85,10 +87,6 @@ const TEXTURE_ANTIALIAS_MARGIN = 1;
 const DEFAULT_LABEL_GAP = 8;
 const DISABLED_ALPHA = 0.4;
 
-// Tween timings — a hair slower than Checkbox for a physical "switch" feel.
-const SLIDE_DURATION_MS = 180;
-const SLIDE_EASE = 'Back.easeOut';
-const ICON_FADE_DURATION_MS = 150;
 
 /**
  * Toggle — a daisyUI-style switch. Same API contract as {@link Checkbox},
@@ -450,8 +448,8 @@ export class Toggle extends ContainerInteractive<Phaser.GameObjects.Rectangle> {
     this.scene.tweens.add({
       targets: this.handleGroup,
       x: checked ? this.handleXOn : this.handleXOff,
-      duration: SLIDE_DURATION_MS,
-      ease: SLIDE_EASE,
+      duration: Duration.ms('200'),
+      ease: Ease.value('back-out'),
     });
 
     // Cross-fade icons if they differ. When only one is set, the other side
@@ -462,8 +460,8 @@ export class Toggle extends ContainerInteractive<Phaser.GameObjects.Rectangle> {
       this.scene.tweens.add({
         targets: this.onIconText,
         alpha: checked ? iconTargetAlpha : 0,
-        duration: ICON_FADE_DURATION_MS,
-        ease: 'Sine.easeInOut',
+        duration: Duration.ms('150'),
+        ease: Ease.value('sine-in-out'),
       });
     }
     if (this.offIconText) {
@@ -471,8 +469,8 @@ export class Toggle extends ContainerInteractive<Phaser.GameObjects.Rectangle> {
       this.scene.tweens.add({
         targets: this.offIconText,
         alpha: checked ? 0 : iconTargetAlpha,
-        duration: ICON_FADE_DURATION_MS,
-        ease: 'Sine.easeInOut',
+        duration: Duration.ms('150'),
+        ease: Ease.value('sine-in-out'),
       });
     }
   }

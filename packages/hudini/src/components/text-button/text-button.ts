@@ -5,6 +5,8 @@ import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
+  Duration,
+  Ease,
   PhaserWindPlugin,
   type ColorKey,
   type FontKey,
@@ -90,10 +92,6 @@ export type TextButtonParams = {
   onClick?: () => void;
 };
 
-const durations = {
-  click: 60,
-  hover: 100,
-};
 
 const HOVER_SCALE = 1.05;
 const POINTER_DOWN_SCALE = 0.95;
@@ -562,20 +560,20 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.backgroundSprite.on('pointerover', () => {
       this.scene.tweens.add({
         targets: this,
-        duration: durations.hover,
+        duration: Duration.ms("100"),
         scaleX: HOVER_SCALE,
         scaleY: HOVER_SCALE,
-        ease: 'Back.easeOut',
+        ease: Ease.value("back-out"),
       });
     });
 
     this.backgroundSprite.on('pointerout', () => {
       this.scene.tweens.add({
         targets: this,
-        duration: durations.hover,
+        duration: Duration.ms("100"),
         scaleX: 1,
         scaleY: 1,
-        ease: 'Back.easeOut',
+        ease: Ease.value("back-out"),
       });
     });
 
@@ -585,8 +583,8 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
         targets: [this.backgroundSprite, this.contentStack],
         scaleX: POINTER_DOWN_SCALE,
         scaleY: POINTER_DOWN_SCALE,
-        duration: durations.click,
-        ease: 'Linear',
+        duration: Duration.ms("75"),
+        ease: Ease.value("linear"),
       });
     });
 
@@ -595,8 +593,8 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
         targets: [this.backgroundSprite, this.contentStack],
         scaleX: 1,
         scaleY: 1,
-        duration: durations.click,
-        ease: 'Linear',
+        duration: Duration.ms("75"),
+        ease: Ease.value("linear"),
       });
       onClick?.();
     });

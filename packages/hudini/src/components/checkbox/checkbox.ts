@@ -5,6 +5,8 @@ import { IconText, type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
+  Duration,
+  Ease,
   Opacity,
   PhaserWindPlugin,
   type ColorKey,
@@ -74,10 +76,6 @@ const BOX_BORDER_THICKNESS = 2;
 const TEXTURE_ANTIALIAS_MARGIN = 1;
 const DEFAULT_LABEL_GAP = 8;
 const DISABLED_ALPHA = 0.4;
-const CHECK_TWEEN_DURATION_MS = 140;
-const CHECK_TWEEN_EASE = 'Back.easeOut';
-const UNCHECK_TWEEN_DURATION_MS = 100;
-const UNCHECK_TWEEN_EASE = 'Sine.easeIn';
 
 /**
  * Checkbox — a toggleable form control.
@@ -407,10 +405,8 @@ export class Checkbox extends ContainerInteractive<Phaser.GameObjects.Rectangle>
       alpha: targetAlpha,
       scaleX: targetScale,
       scaleY: targetScale,
-      duration: toChecked
-        ? CHECK_TWEEN_DURATION_MS
-        : UNCHECK_TWEEN_DURATION_MS,
-      ease: toChecked ? CHECK_TWEEN_EASE : UNCHECK_TWEEN_EASE,
+      duration: toChecked ? Duration.ms('150') : Duration.ms('100'),
+      ease: toChecked ? Ease.value('back-out') : Ease.value('sine-in'),
     });
   }
 

@@ -70,6 +70,13 @@ const HOVER_SCALE = 1.05;
 const POINTER_DOWN_SCALE = 0.95;
 
 const BLACK_BORDER_THICKNESS = 2;
+/**
+ * Extra transparent margin around the drawn button inside its texture, just
+ * enough so the anti-aliased stroke isn't clipped at the texture edge.
+ * The container itself is resized to the *visual* box (see setSize below),
+ * so this margin never leaks into layout measurements.
+ */
+const TEXTURE_STROKE_MARGIN = BLACK_BORDER_THICKNESS + 1;
 
 /**
  * A customizable text button component for Phaser, supporting auto-sizing,
@@ -140,9 +147,9 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.createButtonText(scene);
     this.createBackgroundSprite(scene);
     this.setupContainer();
-    this.setupInteractivity(onClick);
-
     this.hitArea = this.backgroundSprite;
+    this.setupInteractivity(onClick);
+    this.syncContainerSize();
   }
 
   /**
@@ -289,6 +296,17 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     // Regenerate textures
     const backgroundTexture = this.createBackgroundTexture(this.scene);
     this.backgroundSprite.setTexture(backgroundTexture);
+    this.syncContainerSize();
+  }
+
+  /**
+   * Keep the container's own width/height in sync with the visible button box
+   * (excluding the transparent margin baked into the sprite texture). This is
+   * what layout containers like Row/Column read when computing positions.
+   */
+  private syncContainerSize(): void {
+    const { width, height } = this.getButtonDimensions();
+    this.setSize(width, height);
   }
 
   /**
@@ -311,8 +329,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     const { width, height } = this.getButtonDimensions();
     const textureKey = `textButton_bg_${this.colorButton}_${this.borderRadiusPx}_${width}_${height}`;
 
-    // Add some padding for texture
-    const padding = 8;
+    const padding = TEXTURE_STROKE_MARGIN;
     const textureWidth = width + padding * 2;
     const textureHeight = height + padding * 2;
 

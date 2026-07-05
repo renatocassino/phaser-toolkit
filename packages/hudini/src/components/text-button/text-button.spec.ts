@@ -169,6 +169,8 @@ vi.mock('phaser', () => {
   }
 
   class MockSprite {
+    public width = 0;
+    public height = 0;
     // eslint-disable-next-line no-unused-vars
     constructor(_x: number, _y: number, _texture: string) { }
     setOrigin(): this {
@@ -178,6 +180,11 @@ vi.mock('phaser', () => {
       return this;
     }
     setTexture(): this {
+      return this;
+    }
+    setSize(width: number, height: number): this {
+      this.width = width;
+      this.height = height;
       return this;
     }
     on(): this {

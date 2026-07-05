@@ -1,7 +1,20 @@
 import { Color, isColorKey, Opacity, type ColorKey } from 'phaser-wind';
 
+/**
+ * Visual variants shared by {@link TextButton} and {@link IconButton}.
+ *
+ * - `'filled'` (default): solid colored fill, white text/icon with a darker
+ *   colored outline stroke (daisyUI `btn-<color>`).
+ * - `'outline'`: transparent fill, colored border, colored text/icon
+ *   (daisyUI `btn-outline btn-<color>`).
+ */
+export type ButtonVariant = 'filled' | 'outline';
+
 /** Thickness of the outline stroke around a button's text or icon glyph. */
 export const BUTTON_STROKE_THICKNESS = 3;
+
+/** Thickness of the outer border used by the `'outline'` button variant. */
+export const BUTTON_OUTLINE_THICKNESS = 3;
 
 /**
  * Amount added to the palette shade to derive the button's stroke color.

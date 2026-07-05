@@ -11,8 +11,10 @@ import {
 } from 'phaser-wind';
 
 import {
+  BUTTON_OUTLINE_THICKNESS,
   BUTTON_STROKE_THICKNESS,
   getButtonStrokeColor,
+  type ButtonVariant,
 } from '../../utils/button-style';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { ContainerInteractive } from '../container-interactive';
@@ -44,7 +46,8 @@ export type TextButtonParams = {
    */
   color?: ColorKey | string;
   /**
-   * Text color. Defaults to 'white'.
+   * Text color. Defaults to `'white'` in the `'filled'` variant, and to the
+   * button's own `color` in the `'outline'` variant (matching daisyUI).
    */
   textColor?: ColorKey | string;
   /**
@@ -57,6 +60,11 @@ export type TextButtonParams = {
    * Defaults to 'md'.
    */
   padding?: SpacingKey | number;
+  /**
+   * Visual variant. `'filled'` = solid background (default). `'outline'` =
+   * transparent background with a colored border and colored text.
+   */
+  variant?: ButtonVariant;
   /**
    * Callback function for click event.
    */
@@ -98,6 +106,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   private textColorValue!: string;
   private fontFamily!: string;
   private textValue!: string;
+  private variant!: ButtonVariant;
   /**
    * Creates a new TextButton instance.
    * @param params TextButtonParams
@@ -110,9 +119,10 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     fontSize = 'lg',
     font,
     color = 'blue-500',
-    textColor = 'white',
+    textColor,
     borderRadius = 'md',
     padding = '4',
+    variant = 'filled',
     onClick,
   }: TextButtonParams) {
     super({ scene, x, y });
@@ -120,6 +130,7 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
 
     // Store values
     this.textValue = text;
+    this.variant = variant;
     this.fontSizePx =
       typeof fontSize === 'number'
         ? fontSize
@@ -138,7 +149,11 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     this.colorInput = String(color);
     this.colorButton = Color.rgb(color as ColorKey);
 
-    this.textColorValue = Color.rgb(textColor as ColorKey);
+    // Default text color depends on variant: filled → white, outline → same
+    // as the button color (daisyUI parity). Explicit user value always wins.
+    const resolvedTextColor =
+      textColor ?? (variant === 'outline' ? color : 'white');
+    this.textColorValue = Color.rgb(resolvedTextColor as ColorKey);
     this.fontFamily = font
       ? typeof font === 'string'
         ? font
@@ -247,10 +262,29 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
+   * Switch between `'filled'` and `'outline'` variants at runtime.
+   * Rebuilds the button text (stroke on/off) as well as the background sprite.
+   */
+  public setVariant(variant: ButtonVariant): this {
+    if (this.variant === variant) return this;
+    this.variant = variant;
+    // Recreate the text so its stroke config reflects the new variant.
+    this.remove(this.buttonText, true);
+    this.createButtonText(this.scene);
+    this.addAt(this.buttonText, this.list.length);
+    this.regenerateSprites();
+    return this;
+  }
+
+  /**
    * Creates the button text GameObject.
    * @param scene Phaser scene.
    */
   private createButtonText(scene: Scene): void {
+    // In `outline`, the border itself does the visual work — the text sits on
+    // a transparent bg, so an extra stroke around it would look muddy. Keep
+    // it clean (no stroke) and let the text color carry the contrast.
+    const isOutline = this.variant === 'outline';
     this.buttonText = new Text({
       scene,
       x: 0,
@@ -258,9 +292,16 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
       text: this.textValue,
       size: this.fontSizePx,
       fontFamily: this.fontFamily,
-      strokeThickness: BUTTON_STROKE_THICKNESS,
-      strokeColor: getButtonStrokeColor(this.colorInput),
+      strokeThickness: isOutline ? 0 : BUTTON_STROKE_THICKNESS,
+      strokeColor: isOutline ? 'rgba(0,0,0,0)' : getButtonStrokeColor(this.colorInput),
     });
+    // Preserve legacy behavior for `filled`: `textColor` on the constructor
+    // was historically dead (only `setTextColor()` after construction applied
+    // it). Outline needs the color for the border/text pairing to work, so
+    // we only push it into the Text object in that mode.
+    if (this.variant === 'outline') {
+      this.buttonText.setColor(this.textColorValue);
+    }
     this.buttonText.setOrigin(0.5, 0.5);
   }
 
@@ -335,7 +376,10 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
   }
 
   /**
-   * Draws the button's background as a flat filled rounded rect.
+   * Draws the button's background. `filled` → solid fill. `outline` → colored
+   * border only, drawn inset by half the stroke width so the outer edge of
+   * the stroke sits exactly at the visual box boundary (i.e. `.width` /
+   * `.height` remain accurate for Row/Column).
    */
   private drawButtonBackground(
     graphics: Phaser.GameObjects.Graphics,
@@ -344,6 +388,18 @@ export class TextButton extends ContainerInteractive<Phaser.GameObjects.Sprite> 
     height: number,
     effectiveRadius: number
   ): void {
+    if (this.variant === 'outline') {
+      const half = BUTTON_OUTLINE_THICKNESS / 2;
+      graphics.lineStyle(BUTTON_OUTLINE_THICKNESS, Color.hex(this.colorButton), 1);
+      graphics.strokeRoundedRect(
+        padding + half,
+        padding + half,
+        width - BUTTON_OUTLINE_THICKNESS,
+        height - BUTTON_OUTLINE_THICKNESS,
+        Math.max(0, effectiveRadius - half)
+      );
+      return;
+    }
     graphics.fillStyle(Color.hex(this.colorButton), 1);
     graphics.fillRoundedRect(padding, padding, width, height, effectiveRadius);
   }

@@ -35,6 +35,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
             <li><code class="bg-gray-200 px-2 py-1 rounded">color</code> - Base color from phaser-wind (except black/white) - default: 'gray'</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">onClick</code> - Optional click handler function</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius token ('none', 'sm', 'md', 'lg', 'xl', 'full') or pixel value - default: 'full'</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">variant</code> - <code>'filled'</code> (default) or <code>'outline'</code> — daisyUI-style visual variants</li>
           </ul>
         </div>
       </div>
@@ -54,7 +55,7 @@ import PhaserGame from '../../components/PhaserGame.astro';
     </div>
 
     <!-- Live Example -->
-    <PhaserGame width={800} height={700} />
+    <PhaserGame width={800} height={820} />
 
     <!-- Usage Example -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -110,6 +111,21 @@ class ButtonDemoScene extends Phaser.Scene {
             },
         });
         this.add.existing(playButton);
+
+        // Outline variant (daisyUI-style)
+        const outlineHeart = new IconButton({
+            scene: this,
+            x: this.cameras.main.centerX + 100,
+            y: 300,
+            icon: 'heart',
+            size: 'xl',
+            color: 'red',
+            variant: 'outline',
+            onClick: () => {
+                console.log('Outline heart clicked!');
+            },
+        });
+        this.add.existing(outlineHeart);
     }
 }`}</code></pre>
       </div>
@@ -529,8 +545,50 @@ import { type ColorKey, type ColorToken, type FontSizeKey } from 'phaser-wind';
         fontSize: '12px',
       }).setOrigin(0.5, 0.5);
 
+      // Outline variant row
+      this.add.text(this.cameras.main.centerX, 650, 'Outline Variant', {
+        color: pw.color.slate(300),
+        align: 'center',
+        fontFamily: 'Fredoka',
+        fontSize: '18px',
+      }).setOrigin(0.5, 0.5);
+
+      const outlineConfigs: { icon: IconKey, color: ColorKey, label: string, x: number }[] = [
+        { icon: 'heart' as IconKey, color: 'red' as ColorKey, label: 'Heart', x: this.cameras.main.centerX - 240 },
+        { icon: 'star' as IconKey, color: 'yellow' as ColorKey, label: 'Star', x: this.cameras.main.centerX - 120 },
+        { icon: 'play' as IconKey, color: 'green' as ColorKey, label: 'Play', x: this.cameras.main.centerX },
+        { icon: 'gear' as IconKey, color: 'blue' as ColorKey, label: 'Gear', x: this.cameras.main.centerX + 120 },
+        { icon: 'envelope' as IconKey, color: 'cyan' as ColorKey, label: 'Mail', x: this.cameras.main.centerX + 240 },
+      ];
+
+      outlineConfigs.forEach((config) => {
+        const outlineButton = new IconButton({
+          scene: this,
+          x: config.x,
+          y: 710,
+          icon: config.icon,
+          size: 'lg',
+          color: config.color,
+          variant: 'outline',
+          onClick: () => {
+            this.clickCount++;
+            if (this.clickText) {
+              this.clickText.setText(`Clicks: ${this.clickCount}`);
+            }
+          },
+        });
+        this.add.existing(outlineButton);
+        this.buttons.push(outlineButton);
+
+        this.add.text(config.x, 760, config.label, {
+          color: pw.color.slate(400),
+          align: 'center',
+          fontSize: '12px',
+        }).setOrigin(0.5, 0.5);
+      });
+
       // Add instructions
-      this.add.text(this.cameras.main.centerX, 640, 'Hover and click the buttons to see interactions', {
+      this.add.text(this.cameras.main.centerX, 795, 'Hover and click the buttons to see interactions', {
         color: pw.color.slate(400),
         align: 'center',
         fontSize: '14px',

@@ -1,0 +1,242 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Dock Component" description="Bottom-navigation style bar (daisyUI's dock) — a row of clickable icon+label items with a controlled active state.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Dock Component</h2>
+      <p class="text-gray-600 mb-4">
+        A daisyUI-style bottom-navigation bar. Receives a list of items (icon + label) and fires <code class="bg-gray-100 px-1 rounded">onSelect(id, index)</code> when one is clicked. The Dock is <strong>stateless</strong> — it renders whichever item you mark as <code class="bg-gray-100 px-1 rounded">active</code>. The client decides what to do with the click and whether to move the active marker (via <code class="bg-gray-100 px-1 rounded">setActiveItem(id)</code>).
+      </p>
+
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎯 <strong>Icon + label per item</strong>: Font Awesome icon above a text label</li>
+          <li>🖱️ <strong>Callback API</strong>: <code>onSelect(id, index)</code> — you decide what happens</li>
+          <li>🎨 <strong>Active/inactive tint</strong>: distinct colors, controlled from outside</li>
+          <li>🧱 <strong>Optional background</strong>: <code>backgroundColor</code> + <code>borderRadius</code> for a bar-shaped surface</li>
+          <li>📐 <strong>Composes</strong>: Dock is a Container, use it anywhere (bottom of screen, side panel, etc)</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">items</code> - <code>DockItem[]</code> where each item has <code>id</code>, <code>icon</code> and <code>label</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">active</code> - Initial active item id (optional)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">onSelect</code> - <code>(id, index) =&gt; void</code> callback fired on click</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">activeColor</code> / <code class="bg-gray-200 px-2 py-1 rounded">inactiveColor</code> - Icon/label colors per state</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">iconSize</code> / <code class="bg-gray-200 px-2 py-1 rounded">labelSize</code> - Type sizing (FontSizeKey or px)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">gap</code> - Space between items (default 24px)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">padding</code>, <code class="bg-gray-200 px-2 py-1 rounded">backgroundColor</code>, <code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Optional bar background</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Methods -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Methods</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">setActiveItem(id)</code> - Update the visual active state (no callback fired)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">getActiveItem()</code> - Read the currently active id</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={520} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Dock,
+} from 'hudini';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class DockDemoScene extends Phaser.Scene {
+    create(): void {
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
+
+        const dock = new Dock({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: this.cameras.main.height - 60,
+            active: 'home',
+            backgroundColor: 'slate-800',
+            borderRadius: 'xl',
+            padding: '3',
+            items: [
+                { id: 'home',    icon: 'house',            label: 'Home' },
+                { id: 'search',  icon: 'magnifying-glass', label: 'Search' },
+                { id: 'profile', icon: 'user',             label: 'Profile' },
+                { id: 'settings', icon: 'gear',            label: 'Settings' },
+            ],
+            onSelect: (id, index) => {
+                // Client decides what to do — update visual state:
+                dock.setActiveItem(id);
+                console.log('Selected', id, 'at index', index);
+            },
+        });
+
+        this.add.existing(dock);
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import { loadFont } from 'font-awesome-for-phaser';
+  import {
+    loadFonts,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Dock,
+  } from 'hudini';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class DockDemoScene extends Phaser.Scene {
+    private lastPickText?: Phaser.GameObjects.Text;
+
+    constructor() {
+      super('dock-demo');
+    }
+
+    create(): void {
+      const { pw } = withHudini<Theme>(this);
+      this.cameras.main.setBackgroundColor(pw.color.slate(300));
+
+      const centerX = this.cameras.main.centerX;
+
+      this.add
+        .text(centerX, 40, 'Dock Component', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '28px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      this.add
+        .text(centerX, 80, 'Click an item — the client decides what happens.', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '14px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Simulated "content" that reacts to the current selection.
+      this.lastPickText = this.add
+        .text(centerX, 200, 'Current selection: home', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '22px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // --- Dock A: with background, at the bottom ---
+      const bottomDock = new Dock({
+        scene: this,
+        x: centerX,
+        y: this.cameras.main.height - 60,
+        active: 'home',
+        backgroundColor: 'slate-800',
+        borderRadius: 'xl',
+        padding: '3',
+        activeColor: 'cyan-400',
+        inactiveColor: 'slate-400',
+        items: [
+          { id: 'home', icon: 'house', label: 'Home' },
+          { id: 'search', icon: 'magnifying-glass', label: 'Search' },
+          { id: 'profile', icon: 'user', label: 'Profile' },
+          { id: 'settings', icon: 'gear', label: 'Settings' },
+        ],
+        onSelect: (id: string) => {
+          // Client controls both the visual state and the "route".
+          bottomDock.setActiveItem(id);
+          if (this.lastPickText) {
+            this.lastPickText.setText(`Current selection: ${id}`);
+          }
+        },
+      });
+      this.add.existing(bottomDock);
+
+      // --- Dock B: no background, showing a subset of icons ---
+      this.add
+        .text(centerX, 300, 'No background variant', {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '13px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const bareDock = new Dock({
+        scene: this,
+        x: centerX,
+        y: 360,
+        active: 'library',
+        activeColor: 'purple-600',
+        inactiveColor: 'slate-500',
+        gap: 40,
+        items: [
+          { id: 'library', icon: 'book', label: 'Library' },
+          { id: 'compass', icon: 'compass', label: 'Explore' },
+          { id: 'heart', icon: 'heart', label: 'Liked' },
+        ],
+        onSelect: (id) => bareDock.setActiveItem(id),
+      });
+      this.add.existing(bareDock);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      Promise.all([loadFonts(), loadFont()]).then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [DockDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: { theme },
+              },
+            ],
+          },
+        });
+
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-dock-demo'] = game;
+      });
+    }
+  });
+</script>

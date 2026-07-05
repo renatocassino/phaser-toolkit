@@ -11,8 +11,10 @@ import {
 } from 'phaser-wind';
 
 import {
+  BUTTON_OUTLINE_THICKNESS,
   BUTTON_STROKE_THICKNESS,
   getButtonStrokeColor,
+  type ButtonVariant,
 } from '../../utils/button-style';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 
@@ -26,6 +28,11 @@ export type IconButtonParams = {
   onClick?: () => void;
   /** Border radius in px (number) or a Phaser Wind radius token (string). Defaults to 'full'. */
   borderRadius?: RadiusKey | number;
+  /**
+   * Visual variant. `'filled'` = solid background (default). `'outline'` =
+   * transparent background with a colored border and colored icon.
+   */
+  variant?: ButtonVariant;
 };
 
 const durations = {
@@ -50,6 +57,8 @@ export class IconButton extends GameObjects.Container {
   private colorButton!: string;
   private sizePx!: number;
   private borderRadiusPx!: number;
+  private variant!: ButtonVariant;
+  private icon!: IconKey;
 
   constructor({
     scene,
@@ -60,6 +69,7 @@ export class IconButton extends GameObjects.Container {
     color,
     onClick,
     borderRadius,
+    variant = 'filled',
   }: IconButtonParams) {
     super(scene, x, y);
     this.pw = getPWFromScene(scene);
@@ -71,6 +81,8 @@ export class IconButton extends GameObjects.Container {
 
     const baseColor = color ?? 'blue-500';
     this.sizePx = sizePx;
+    this.variant = variant;
+    this.icon = icon;
 
     this.updateSize();
 
@@ -95,6 +107,28 @@ export class IconButton extends GameObjects.Container {
     if (this.borderRadiusPx === newRadiusPx) return this;
     this.borderRadiusPx = newRadiusPx;
 
+    const backgroundTexture = this.createBackgroundTexture(
+      this.scene,
+      this.sizePx,
+      this.baseColor,
+      this.borderRadiusPx
+    );
+    this.backgroundSprite.setTexture(backgroundTexture);
+    return this;
+  }
+
+  /**
+   * Switch between `'filled'` and `'outline'` variants at runtime. Regenerates
+   * both the background and the icon so their styling reflects the variant.
+   */
+  public setVariant(variant: ButtonVariant): this {
+    if (this.variant === variant) return this;
+    this.variant = variant;
+    // Recreate the icon so its color/stroke reflect the new variant.
+    this.remove(this.iconText, true);
+    this.createIconText(this.scene, this.icon, this.sizePx);
+    this.add(this.iconText);
+    // Regenerate the background texture with the new drawing mode.
     const backgroundTexture = this.createBackgroundTexture(
       this.scene,
       this.sizePx,
@@ -171,7 +205,9 @@ export class IconButton extends GameObjects.Container {
   }
 
   /**
-   * Draws the button's background as a flat filled rounded rect.
+   * Draws the button's background. `filled` → solid fill. `outline` → colored
+   * border inset by half its thickness so the outer edge sits at the visual
+   * box boundary.
    */
   private drawButtonBackground(
     graphics: Phaser.GameObjects.Graphics,
@@ -180,6 +216,18 @@ export class IconButton extends GameObjects.Container {
     side: number,
     effectiveRadius: number
   ): void {
+    if (this.variant === 'outline') {
+      const half = BUTTON_OUTLINE_THICKNESS / 2;
+      graphics.lineStyle(BUTTON_OUTLINE_THICKNESS, Color.hex(this.colorButton), 1);
+      graphics.strokeRoundedRect(
+        centerX - side / 2 + half,
+        centerY - side / 2 + half,
+        side - BUTTON_OUTLINE_THICKNESS,
+        side - BUTTON_OUTLINE_THICKNESS,
+        Math.max(0, effectiveRadius - half)
+      );
+      return;
+    }
     graphics.fillStyle(Color.hex(this.colorButton), 1);
     graphics.fillRoundedRect(
       centerX - side / 2,
@@ -195,6 +243,9 @@ export class IconButton extends GameObjects.Container {
     icon: IconKey,
     size: number
   ): void {
+    // In `outline`, the border carries the visual weight — icon uses the
+    // button color as fill, with no stroke, matching daisyUI.
+    const isOutline = this.variant === 'outline';
     this.iconText = new IconText({
       scene,
       x: 0,
@@ -202,9 +253,13 @@ export class IconButton extends GameObjects.Container {
       icon,
       size,
       style: {
-        color: Color.rgb('white'),
-        strokeThickness: BUTTON_STROKE_THICKNESS,
-        stroke: getButtonStrokeColor(this.baseColor as string),
+        color: isOutline
+          ? Color.rgb(this.baseColor as ColorKey)
+          : Color.rgb('white'),
+        strokeThickness: isOutline ? 0 : BUTTON_STROKE_THICKNESS,
+        stroke: isOutline
+          ? 'rgba(0,0,0,0)'
+          : getButtonStrokeColor(this.baseColor as string),
       },
     });
     this.iconText.setFontStyle('900');

@@ -1,0 +1,317 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PhaserGame from '../../components/PhaserGame.astro';
+---
+
+<Layout title="Hudini Stack Component" description="Row or Column layout with optional background, padding and border radius — the equivalent of a Tailwind flex div in canvas.">
+  <div class="space-y-8">
+    <!-- Description -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Stack Component</h2>
+      <p class="text-gray-600 mb-4">
+        Layout primitive that arranges children in a <code class="bg-gray-100 px-1 rounded">'row'</code> or <code class="bg-gray-100 px-1 rounded">'column'</code>.
+        When <code class="bg-gray-100 px-1 rounded">backgroundColor</code>, <code class="bg-gray-100 px-1 rounded">padding</code> or <code class="bg-gray-100 px-1 rounded">borderRadius</code> is set, Stack also
+        renders a Card behind the children — matching the Tailwind pattern
+        <code class="bg-gray-100 px-1 rounded">&lt;div class="flex flex-row bg-slate-800 p-4 rounded-lg"&gt;...&lt;/div&gt;</code>.
+      </p>
+
+      <!-- Features -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li>🎯 <strong>Direction</strong>: <code>'row'</code> or <code>'column'</code> — one component, two behaviors</li>
+          <li>🎨 <strong>Optional background</strong>: pass <code>backgroundColor</code> to render a Card behind the children</li>
+          <li>📏 <strong>Padding</strong>: inner spacing between children and the background's edge</li>
+          <li>🔲 <strong>Border radius</strong>: rounded corners on the background</li>
+          <li>🧩 <strong>Composes</strong>: measure via <code>.width</code> / <code>.height</code> so a parent Row/Column/Stack lays it out correctly</li>
+        </ul>
+      </div>
+
+      <!-- Props -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Props</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <ul class="space-y-2 text-sm">
+            <li><code class="bg-gray-200 px-2 py-1 rounded">direction</code> - <code>'row'</code> (default) or <code>'column'</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">gap</code> - Space between children in pixels (default: 8)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">align</code> - Cross-axis alignment (<code>'top'|'center'|'bottom'</code> for row, <code>'left'|'center'|'right'</code> for column)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">children</code> - GameObjects to stack</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">padding</code> - Inner padding (SpacingKey or px). Only visible with a background</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">backgroundColor</code> - Optional fill color (ColorKey or CSS)</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius on the background (RadiusKey or px)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Example -->
+    <PhaserGame width={800} height={640} />
+
+    <!-- Usage Example -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Usage Example</h3>
+      <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm text-gray-100"><code>{`import Phaser from 'phaser';
+import {
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Stack,
+    TextButton,
+    Badge,
+} from 'hudini';
+
+const theme = createTheme({});
+type Theme = typeof theme;
+
+class StackDemoScene extends Phaser.Scene {
+    create(): void {
+        const hudini = withHudini<Theme>(this);
+        const { pw } = hudini;
+        this.cameras.main.setBackgroundColor(pw.color.slate(300));
+
+        // 1. Pure layout — no background
+        const row = new Stack({
+            scene: this,
+            x: 400,
+            y: 100,
+            direction: 'row',
+            gap: 12,
+            children: [
+                new TextButton({ scene: this, x: 0, y: 0, text: 'A', color: 'blue-500' }),
+                new TextButton({ scene: this, x: 0, y: 0, text: 'B', color: 'green-500' }),
+                new TextButton({ scene: this, x: 0, y: 0, text: 'C', color: 'red-500' }),
+            ],
+        });
+        this.add.existing(row);
+
+        // 2. Layout + background (like <div class="flex bg-slate-800 p-4 rounded-lg">)
+        const paddedRow = new Stack({
+            scene: this,
+            x: 400,
+            y: 250,
+            direction: 'row',
+            gap: 12,
+            padding: '4',
+            backgroundColor: 'slate-800',
+            borderRadius: 'lg',
+            children: [
+                new Badge({ scene: this, x: 0, y: 0, text: 'PRO', color: 'purple-600' }),
+                new Badge({ scene: this, x: 0, y: 0, text: 'NEW', color: 'green-600' }),
+                new Badge({ scene: this, x: 0, y: 0, text: 'HOT', color: 'red-600' }),
+            ],
+        });
+        this.add.existing(paddedRow);
+
+        // 3. Column direction
+        const column = new Stack({
+            scene: this,
+            x: 400,
+            y: 450,
+            direction: 'column',
+            gap: 8,
+            padding: '4',
+            backgroundColor: 'slate-700',
+            borderRadius: 'md',
+            children: [
+                new TextButton({ scene: this, x: 0, y: 0, text: 'Save' }),
+                new TextButton({ scene: this, x: 0, y: 0, text: 'Cancel', color: 'gray-500' }),
+            ],
+        });
+        this.add.existing(column);
+    }
+}`}</code></pre>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import Phaser from 'phaser';
+  import {
+    loadFonts,
+    createTheme,
+    HUDINI_KEY,
+    HudiniPlugin,
+    withHudini,
+    Stack,
+    TextButton,
+    Badge,
+  } from 'hudini';
+
+  const theme = createTheme({});
+  type Theme = typeof theme;
+
+  class StackDemoScene extends Phaser.Scene {
+    constructor() {
+      super('stack-demo');
+    }
+
+    create(): void {
+      const { pw } = withHudini<Theme>(this);
+      this.cameras.main.setBackgroundColor(pw.color.slate(300));
+
+      const centerX = this.cameras.main.centerX;
+
+      // Header
+      this.add
+        .text(centerX, 40, 'Stack Component', {
+          color: pw.color.slate(900),
+          fontFamily: 'Fredoka',
+          fontSize: '28px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      // --- Section 1: Row, no background ---
+      this.add
+        .text(centerX, 90, "direction: 'row' — pure layout", {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '14px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const rowNoBg = new Stack({
+        scene: this,
+        x: centerX,
+        y: 140,
+        direction: 'row',
+        gap: 12,
+        children: [
+          new TextButton({ scene: this, x: 0, y: 0, text: 'A', color: 'blue-500', padding: '3' }),
+          new TextButton({ scene: this, x: 0, y: 0, text: 'B', color: 'green-500', padding: '3' }),
+          new TextButton({ scene: this, x: 0, y: 0, text: 'C', color: 'red-500', padding: '3' }),
+        ],
+      });
+      this.add.existing(rowNoBg);
+
+      // --- Section 2: Row with background ---
+      this.add
+        .text(centerX, 210, "with backgroundColor + padding + borderRadius", {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '14px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const rowWithBg = new Stack({
+        scene: this,
+        x: centerX,
+        y: 265,
+        direction: 'row',
+        gap: 10,
+        padding: '4',
+        backgroundColor: 'slate-800',
+        borderRadius: 'lg',
+        children: [
+          new Badge({ scene: this, x: 0, y: 0, text: 'PRO', color: 'purple-600' }),
+          new Badge({ scene: this, x: 0, y: 0, text: 'NEW', color: 'green-600' }),
+          new Badge({ scene: this, x: 0, y: 0, text: 'HOT', color: 'red-600' }),
+          new Badge({ scene: this, x: 0, y: 0, text: 'BETA', color: 'amber-600' }),
+        ],
+      });
+      this.add.existing(rowWithBg);
+
+      // --- Section 3: Column direction with bg ---
+      this.add
+        .text(centerX - 180, 340, "direction: 'column' with bg", {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '14px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const columnWithBg = new Stack({
+        scene: this,
+        x: centerX - 180,
+        y: 460,
+        direction: 'column',
+        gap: 10,
+        padding: '4',
+        backgroundColor: 'slate-800',
+        borderRadius: 'md',
+        children: [
+          new TextButton({ scene: this, x: 0, y: 0, text: 'Save', color: 'blue-500', padding: '3' }),
+          new TextButton({ scene: this, x: 0, y: 0, text: 'Cancel', color: 'gray-500', padding: '3' }),
+          new TextButton({ scene: this, x: 0, y: 0, text: 'Delete', color: 'red-500', padding: '3' }),
+        ],
+      });
+      this.add.existing(columnWithBg);
+
+      // --- Section 4: Nested Stack (row of columns) ---
+      this.add
+        .text(centerX + 140, 340, "Nested — row of column Stacks", {
+          color: pw.color.slate(700),
+          fontFamily: 'Fredoka',
+          fontSize: '14px',
+        })
+        .setOrigin(0.5, 0.5);
+
+      const makeColumnCard = (title: string, badgeColor: string) =>
+        new Stack({
+          scene: this,
+          x: 0,
+          y: 0,
+          direction: 'column',
+          gap: 8,
+          padding: '4',
+          backgroundColor: 'slate-700',
+          borderRadius: 'md',
+          children: [
+            new Badge({ scene: this, x: 0, y: 0, text: title, color: badgeColor }),
+            new TextButton({ scene: this, x: 0, y: 0, text: 'Open', color: 'blue-500', padding: '3' }),
+          ],
+        });
+
+      const nested = new Stack({
+        scene: this,
+        x: centerX + 140,
+        y: 460,
+        direction: 'row',
+        gap: 12,
+        children: [
+          makeColumnCard('DEV', 'green-600'),
+          makeColumnCard('PROD', 'red-600'),
+        ],
+      });
+      this.add.existing(nested);
+
+      // Footer note
+      this.add
+        .text(centerX, 610, 'Stack composes Row/Column + Card in a single node — layout + visual.', {
+          color: pw.color.slate(600),
+          fontFamily: 'Fredoka',
+          fontSize: '12px',
+        })
+        .setOrigin(0.5, 0.5);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gameConfig = (window as any).gameContainer;
+    if (gameConfig) {
+      loadFonts().then(() => {
+        const game = new Phaser.Game({
+          ...gameConfig,
+          scene: [StackDemoScene],
+          plugins: {
+            global: [
+              {
+                key: HUDINI_KEY,
+                plugin: HudiniPlugin,
+                mapping: HUDINI_KEY,
+                data: { theme },
+              },
+            ],
+          },
+        });
+
+        if (!(window as any).__phaserGames) {
+          (window as any).__phaserGames = {};
+        }
+        (window as any).__phaserGames['hudini-stack-demo'] = game;
+      });
+    }
+  });
+</script>

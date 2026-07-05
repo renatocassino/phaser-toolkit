@@ -33,19 +33,18 @@ export type CardParams = {
   height?: number;
 };
 
-// Border constants
-const BLACK_BORDER_THICKNESS = 2;
-const WHITE_BORDER_EXTRA_PIXELS_PER_SIDE = 2;
-// eslint-disable-next-line no-magic-numbers
-const WHITE_BORDER_TOTAL_EXTRA_PIXELS = WHITE_BORDER_EXTRA_PIXELS_PER_SIDE * 3; // 6 pixels total
-const WHITE_BORDER_RADIUS_EXTRA = 2;
+/**
+ * Extra transparent margin around the drawn card inside its texture, just
+ * enough so the anti-aliased rounded-corner fill isn't clipped at the edge.
+ * The container itself is resized to the *visual* box, so this margin never
+ * leaks into layout measurements.
+ */
+const TEXTURE_ANTIALIAS_MARGIN = 1;
 
 /**
  * A flexible card component that adapts to its child content size
  */
 export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
-  /** The white border sprite of the card. */
-  public whiteBorderSprite!: GameObjects.Sprite;
   /** The background sprite of the card. */
   public backgroundSprite!: GameObjects.Sprite;
   /** The child component contained within the card */
@@ -62,6 +61,15 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
 
   /** Whether we have an explicit size set (width and height provided) */
   private hasExplicitSize: boolean = false;
+  /**
+   * Cached explicit width/height. We can't rely on `this.width` / `this.height`
+   * during initial sprite creation because `ContainerInteractive` proxies them
+   * through `hitArea`, which isn't assigned yet in the constructor. Reading
+   * `this.width` before `hitArea` is set returns 0, so we keep the requested
+   * dimensions here and consult them in {@link getCardDimensions}.
+   */
+  private explicitWidth: number | undefined;
+  private explicitHeight: number | undefined;
 
   /**
    * Creates a new Card
@@ -97,13 +105,22 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
 
     // Check if explicit size was provided
     this.hasExplicitSize = width !== undefined && height !== undefined;
+    this.explicitWidth = width;
+    this.explicitHeight = height;
 
-    // Create sprites and setup container
-    this.createWhiteBorderSprite(scene);
+    // Create sprite and setup container
     this.createBackgroundSprite(scene);
     this.setupContainer();
 
     this.hitArea = this.backgroundSprite;
+
+    // Now that hitArea is set, publish the explicit dimensions through the
+    // proxy so that consumers reading `card.width` / `card.height` (Row,
+    // Column, Stack, ...) see the real box, not 0.
+    if (this.hasExplicitSize) {
+      this.backgroundSprite.width = this.explicitWidth as number;
+      this.backgroundSprite.height = this.explicitHeight as number;
+    }
   }
   /**
    * Override setSize to regenerate sprites when size changes
@@ -114,6 +131,8 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   public override setSize(width: number, height: number): this {
     // Mark that we now have explicit size
     this.hasExplicitSize = true;
+    this.explicitWidth = width;
+    this.explicitHeight = height;
     // Set size directly on the container to avoid recursion
     this.width = width;
     this.height = height;
@@ -202,16 +221,6 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   }
 
   /**
-   * Creates the white border sprite for the card.
-   * @param scene Phaser scene.
-   */
-  private createWhiteBorderSprite(scene: Scene): void {
-    const whiteBorderTexture = this.createWhiteBorderTexture(scene);
-    this.whiteBorderSprite = scene.add.sprite(0, 0, whiteBorderTexture);
-    this.whiteBorderSprite.setOrigin(0.5, 0.5);
-  }
-
-  /**
    * Creates the background sprite for the card.
    * @param scene Phaser scene.
    */
@@ -222,14 +231,10 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   }
 
   /**
-   * Regenerates the background and white border textures based on current state.
+   * Regenerates the background texture based on current state.
    */
   private regenerateSprites(): void {
-    // Regenerate textures
-    const whiteBorderTexture = this.createWhiteBorderTexture(this.scene);
     const backgroundTexture = this.createBackgroundTexture(this.scene);
-
-    this.whiteBorderSprite.setTexture(whiteBorderTexture);
     this.backgroundSprite.setTexture(backgroundTexture);
   }
 
@@ -237,7 +242,7 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
    * Sets up the container with background and child
    */
   private setupContainer(): void {
-    this.add([this.whiteBorderSprite, this.backgroundSprite]);
+    this.add([this.backgroundSprite]);
     if (this.child) {
       this.add([this.child]);
     }
@@ -391,8 +396,11 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
     let height = 0;
 
     if (this.hasExplicitSize) {
-      width = this.width;
-      height = this.height;
+      // Prefer the cached constructor/setSize dims — `this.width`/`this.height`
+      // depend on `hitArea` being wired, which is not the case on the initial
+      // texture generation call during `super`/constructor time.
+      width = this.explicitWidth ?? this.width;
+      height = this.explicitHeight ?? this.height;
     } else if (this.child) {
       const { w: cw, h: ch } = this.measureChild(this.child as GameObjects.GameObject);
       width = cw + this.marginPx * 2;
@@ -407,47 +415,7 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
   }
 
   /**
-   * Creates a texture for the card's white border.
-   * @param scene Phaser scene.
-   * @returns The texture key.
-   */
-  private createWhiteBorderTexture(scene: Scene): string {
-    const { width, height } = this.getCardDimensions();
-    const textureKey = `card_whiteBorder_${this.borderRadiusPx}_${width}_${height}`;
-
-    // White border is larger on each side
-    const borderWidth = width + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
-    const borderHeight = height + WHITE_BORDER_TOTAL_EXTRA_PIXELS;
-
-    // Add some padding for texture
-    const padding = 8;
-    const textureWidth = borderWidth + padding * 2;
-    const textureHeight = borderHeight + padding * 2;
-
-    const graphics = scene.add.graphics();
-
-    const maxRadius = Math.floor(Math.min(borderWidth / 2, borderHeight / 2));
-    const effectiveRadius = Math.min(this.borderRadiusPx + WHITE_BORDER_RADIUS_EXTRA, maxRadius);
-    const finalRadius = Math.max(0, effectiveRadius);
-
-    // White border (outer)
-    graphics.fillStyle(Color.hex('white'), 1);
-    graphics.fillRoundedRect(
-      padding,
-      padding,
-      borderWidth,
-      borderHeight,
-      finalRadius
-    );
-
-    graphics.generateTexture(textureKey, textureWidth, textureHeight);
-    graphics.destroy();
-
-    return textureKey;
-  }
-
-  /**
-   * Creates a texture for the card's background.
+   * Creates a texture for the card's background: a flat filled rounded rect.
    * @param scene Phaser scene.
    * @returns The texture key.
    */
@@ -455,8 +423,7 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
     const { width, height } = this.getCardDimensions();
     const textureKey = `card_bg_${this.backgroundColorValue}_${this.borderRadiusPx}_${width}_${height}`;
 
-    // Add some padding for texture
-    const padding = 8;
+    const padding = TEXTURE_ANTIALIAS_MARGIN;
     const textureWidth = width + padding * 2;
     const textureHeight = height + padding * 2;
 
@@ -466,13 +433,8 @@ export class Card extends ContainerInteractive<Phaser.GameObjects.Sprite> {
     const effectiveRadius = Math.min(this.borderRadiusPx, maxRadius);
     const finalRadius = Math.max(0, effectiveRadius);
 
-    // Draw background with white fill and black stroke
     graphics.fillStyle(Color.hex(this.backgroundColorValue), 1);
     graphics.fillRoundedRect(padding, padding, width, height, finalRadius);
-
-    // Black stroke border
-    graphics.lineStyle(BLACK_BORDER_THICKNESS, Color.hex('black'), 1);
-    graphics.strokeRoundedRect(padding, padding, width, height, finalRadius);
 
     graphics.generateTexture(textureKey, textureWidth, textureHeight);
     graphics.destroy();

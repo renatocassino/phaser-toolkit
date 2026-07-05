@@ -36,13 +36,14 @@ import PhaserGame from '../../components/PhaserGame.astro';
             <li><code class="bg-gray-200 px-2 py-1 rounded">borderRadius</code> - Border radius token or pixel value</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">padding</code> - Internal padding using spacing tokens</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">fontSize</code> - Text size using typography tokens</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">variant</code> - <code>'filled'</code> (default) or <code>'outline'</code> — daisyUI-style visual variants</li>
           </ul>
         </div>
       </div>
     </div>
 
     <!-- Live Example -->
-    <PhaserGame width={800} height={600} />
+    <PhaserGame width={800} height={720} />
 
     <!-- Usage Example -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -96,6 +97,19 @@ class ButtonDemoScene extends Phaser.Scene {
             padding: '6',
         });
         this.add.existing(secondaryButton);
+
+        // Create an outline button (daisyUI-style)
+        const outlineButton = new TextButton({
+            scene: this,
+            x: this.cameras.main.centerX,
+            y: this.cameras.main.centerY + 130,
+            text: 'Outline Button',
+            color: 'blue-500',
+            borderRadius: 'md',
+            padding: '4',
+            variant: 'outline',
+        });
+        this.add.existing(outlineButton);
     }
 }`}</code></pre>
       </div>
@@ -130,12 +144,29 @@ class ButtonDemoScene extends Phaser.Scene {
       const { pw } = withHudini(this);
       this.cameras.main.setBackgroundColor(pw.color.slate(900));
 
+      const centerX = this.cameras.main.centerX;
+      const width = this.cameras.main.width;
+      const leftX = width / 4;
+      const rightX = (width * 3) / 4;
+
       // Title
-      this.add.text(this.cameras.main.centerX, 80, 'Text Button Examples', {
+      this.add.text(centerX, 40, 'Text Button Examples', {
         color: pw.color.slate(200),
         align: 'center',
         fontFamily: 'Fredoka',
         fontSize: '32px',
+      }).setOrigin(0.5, 0.5);
+
+      // Column headers
+      this.add.text(leftX, 90, 'Filled', {
+        color: pw.color.slate(300),
+        fontFamily: 'Fredoka',
+        fontSize: '20px',
+      }).setOrigin(0.5, 0.5);
+      this.add.text(rightX, 90, 'Outline', {
+        color: pw.color.slate(300),
+        fontFamily: 'Fredoka',
+        fontSize: '20px',
       }).setOrigin(0.5, 0.5);
 
       // Create different button styles
@@ -149,41 +180,53 @@ class ButtonDemoScene extends Phaser.Scene {
         { text: 'Custom', bg: '#3B82F6', textColor: 'white', borderRadius: 'md' },
       ];
 
-      let x = this.cameras.main.width / 4;
-      let y = 150;
+      const startY = 140;
+      const rowSpacing = 75;
       buttonConfigs.forEach((config, index) => {
-        const button = new TextButton({
+        const y = startY + index * rowSpacing;
+
+        // Filled — left column
+        const filled = new TextButton({
           scene: this,
-          x: x,
-          y: y,
+          x: leftX,
+          y,
           text: config.text,
           color: config.bg,
           textColor: config.textColor,
           borderRadius: config.borderRadius,
           padding: '4',
         });
-
-        y += 80;
-
-        // Add click interaction
-        button.setInteractive();
-        button.on('pointerdown', () => {
-          console.log(`${config.text} button clicked!`);
+        filled.setInteractive();
+        filled.on('pointerdown', () => {
+          console.log(`${config.text} (filled) clicked!`);
         });
+        this.add.existing(filled);
+        this.buttons.push(filled);
 
-        this.add.existing(button);
-        this.buttons.push(button);
-
-        if ((index + 1) % 4 === 0) {
-          y = 150;
-          x += this.cameras.main.width / 2;
-        }
+        // Outline — right column
+        const outline = new TextButton({
+          scene: this,
+          x: rightX,
+          y,
+          text: config.text,
+          color: config.bg,
+          borderRadius: config.borderRadius,
+          padding: '4',
+          variant: 'outline',
+        });
+        outline.setInteractive();
+        outline.on('pointerdown', () => {
+          console.log(`${config.text} (outline) clicked!`);
+        });
+        this.add.existing(outline);
+        this.buttons.push(outline);
       });
 
       // Add instructions
-      this.add.text(this.cameras.main.centerX, 500, 'Click and hover over the buttons to see interactions', {
+      this.add.text(centerX, this.cameras.main.height - 30, 'Click and hover over the buttons to see interactions', {
         color: pw.color.slate(400),
         align: 'center',
+        fontFamily: 'Fredoka',
         fontSize: '16px',
       }).setOrigin(0.5, 0.5);
     }

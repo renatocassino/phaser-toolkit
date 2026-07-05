@@ -1,5 +1,18 @@
 # phaser-wind
 
+## 0.21.0
+
+### Minor Changes
+
+- 45b7fd4: Add checkbox, toggle, radio, radiogroup, icons in text button
+- 92a7bea: add tokens extra to phaser wind and modal to hudini
+- dbf93d9: Add component Stack and Dock
+
+### Patch Changes
+
+- Updated dependencies [92a7bea]
+  - phaser-wind@0.12.0
+
 ## 0.20.0
 
 ### Minor Changes

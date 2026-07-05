@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
+import { type IconKey } from 'font-awesome-for-phaser';
 import { GameObjects, Scene } from 'phaser';
 import {
   Color,
@@ -14,6 +15,7 @@ import {
   type SpacingKey,
 } from 'phaser-wind';
 
+import { type ButtonVariant } from '../../utils/button-style';
 import { getPWFromScene } from '../../utils/get-pw-from-scene';
 import { IconButton } from '../icon-button';
 import { Overlay } from '../overlay';
@@ -35,6 +37,25 @@ export type ModalAction = {
   variant?: 'filled' | 'outline';
   /** Overrides the auto-assigned color. */
   color?: ColorToken | string;
+};
+
+/**
+ * Visual customization for the top-right close button. `showCloseButton`
+ * controls whether it's rendered at all; this object tweaks its appearance
+ * when it is shown. All fields are optional and merged with sensible defaults.
+ */
+export type ModalCloseButtonConfig = {
+  /** Font Awesome icon key. Defaults to `'xmark'`. */
+  icon?: IconKey;
+  /**
+   * Icon/border color. Accepts the same palette family names as IconButton
+   * (`'gray'`, `'blue'`, `'red-500'`, …). Defaults to `'gray'`.
+   */
+  color?: Omit<ColorKey, 'black' | 'white'>;
+  /** Icon size in pixels. Defaults to `14`. */
+  size?: number;
+  /** `'outline'` (default) or `'filled'`. */
+  variant?: ButtonVariant;
 };
 
 /**
@@ -105,6 +126,13 @@ export type ModalParams = {
    * Disable for forced-choice dialogs (error, critical confirmation).
    */
   showCloseButton?: boolean;
+  /**
+   * Visual customization for the close button (icon, color, size, variant).
+   * Only applied when `showCloseButton` is `true`. Fields are optional and
+   * merged with defaults (`icon: 'xmark'`, `color: 'gray'`, `size: 14`,
+   * `variant: 'outline'`).
+   */
+  closeButton?: ModalCloseButtonConfig;
   /**
    * Close when the user clicks the dim overlay. Defaults to `true`.
    * Disable for confirmations you don't want dismissed by accident.
@@ -250,7 +278,11 @@ export class Modal extends GameObjects.Container {
     this.buildContent(scene, params);
     this.createBackgroundSprite(scene);
     this.arrangeChildren();
-    this.createCloseButton(scene, params.showCloseButton ?? true);
+    this.createCloseButton(
+      scene,
+      params.showCloseButton ?? true,
+      params.closeButton
+    );
 
     // Start invisible + slightly shrunk for pop-in animation.
     this.setAlpha(0);
@@ -461,16 +493,20 @@ export class Modal extends GameObjects.Container {
     this.contentColumn.setPosition(0, 0);
   }
 
-  private createCloseButton(scene: Scene, show: boolean): void {
+  private createCloseButton(
+    scene: Scene,
+    show: boolean,
+    config: ModalCloseButtonConfig | undefined
+  ): void {
     if (!show) return;
     const btn = new IconButton({
       scene,
       x: this.cardWidth / 2 - CLOSE_BUTTON_INSET,
       y: -this.cardHeight / 2 + CLOSE_BUTTON_INSET,
-      icon: 'xmark',
-      size: CLOSE_BUTTON_SIZE,
-      color: CLOSE_BUTTON_COLOR,
-      variant: 'outline',
+      icon: config?.icon ?? 'xmark',
+      size: config?.size ?? CLOSE_BUTTON_SIZE,
+      color: config?.color ?? CLOSE_BUTTON_COLOR,
+      variant: config?.variant ?? 'outline',
       onClick: (): void => {
         if (this.isOpen && !this.isAnimating) void this.close();
       },

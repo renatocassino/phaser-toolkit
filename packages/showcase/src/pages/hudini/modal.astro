@@ -40,7 +40,8 @@ import PhaserGame from '../../components/PhaserGame.astro';
             <li><code class="bg-gray-200 px-2 py-1 rounded">actions</code> - Array of buttons. Last one is auto-primary (filled), others are outline</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">header</code> / <code>body</code> / <code>footer</code> - Slot overrides for custom layouts</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">size</code> - <code>'sm'</code> (320), <code>'md'</code> (480, default), <code>'lg'</code> (640), or <code>{`{ width }`}</code></li>
-            <li><code class="bg-gray-200 px-2 py-1 rounded">showCloseButton</code> - Default <code>true</code></li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">showCloseButton</code> - Default <code>true</code>. Toggles the X in the top-right</li>
+            <li><code class="bg-gray-200 px-2 py-1 rounded">closeButton</code> - Optional customization <code>{`{ icon, color, size, variant }`}</code> — icon (default <code>'xmark'</code>), color (default <code>'gray'</code>), size (default <code>14</code>), variant (default <code>'outline'</code>)</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">closeOnOverlayClick</code> - Default <code>true</code></li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">keysToClose</code> - Default <code>['ESC']</code>, pass <code>[]</code> to disable</li>
             <li><code class="bg-gray-200 px-2 py-1 rounded">onClose</code> - Fired after exit animation, before destroy</li>
@@ -259,9 +260,32 @@ class ConfirmDeleteScene extends Phaser.Scene {
       });
       this.add.existing(openCustomKeys);
 
+      const openCustomClose = new TextButton({
+        scene: this,
+        x: centerX,
+        y: 560,
+        text: 'Custom close button',
+        color: 'pink-500',
+        onClick: () => {
+          const modal = new Modal({
+            scene: this,
+            title: 'Custom X',
+            description: 'The close button uses a filled pink circle-xmark icon.',
+            closeButton: {
+              icon: 'circle-xmark',
+              color: 'pink',
+              size: 20,
+              variant: 'filled',
+            },
+          });
+          modal.open();
+        },
+      });
+      this.add.existing(openCustomClose);
+
       // Footer hint
       this.add
-        .text(centerX, 605, 'Overlay + pop animation • depth stack via depth tokens', {
+        .text(centerX, 620, 'Overlay + pop animation • depth stack via depth tokens', {
           color: pw.color.slate(600),
           fontFamily: 'Fredoka',
           fontSize: '12px',

@@ -48,25 +48,25 @@ const getUrl = (path: string) => {
       .sidebar-collapsed {
         width: 4rem !important;
       }
-      
+
       .sidebar-collapsed .sidebar-content {
         opacity: 0;
         transform: translateX(-100%);
         pointer-events: none;
       }
-      
+
       .sidebar-collapsed .sidebar-toggle {
         transform: rotate(180deg);
       }
-      
+
       .sidebar-content {
         transition: all 0.3s ease-in-out;
       }
-      
+
       .sidebar-toggle {
         transition: transform 0.3s ease-in-out;
       }
-      
+
       .sidebar {
         transition: width 0.3s ease-in-out;
       }
@@ -75,27 +75,27 @@ const getUrl = (path: string) => {
       .category-collapsed .category-links {
         display: none;
       }
-      
+
       .category-toggle {
         cursor: pointer;
         user-select: none;
         transition: all 0.2s ease-in-out;
       }
-      
+
       .category-toggle:hover {
         background-color: #f3f4f6;
       }
-      
+
       .category-toggle-icon {
         transition: transform 0.2s ease-in-out;
         display: inline-block;
         margin-left: 0.5rem;
       }
-      
+
       .category-collapsed .category-toggle-icon {
         transform: rotate(-90deg);
       }
-      
+
       .category-links {
         transition: all 0.2s ease-in-out;
       }
@@ -116,7 +116,7 @@ const getUrl = (path: string) => {
             </svg>
           </button>
         </div>
-        
+
         <nav class="sidebar-content p-4 space-y-2 overflow-y-auto flex-1">
           <!-- Main Navigation -->
           <div class="mb-4">
@@ -266,7 +266,7 @@ const getUrl = (path: string) => {
           <h1 class="text-2xl font-bold text-gray-900">{title}</h1>
           {description && <p class="text-gray-600 mt-1">{description}</p>}
         </div>
-        
+
         <div class="p-6">
           <slot />
         </div>
@@ -278,22 +278,22 @@ const getUrl = (path: string) => {
         const sidebar = document.getElementById('sidebar');
         const toggleButton = document.getElementById('sidebar-toggle');
         const titleButton = document.getElementById('sidebar-title');
-        
+
         // Função para alternar o estado da sidebar
         function toggleSidebar() {
           sidebar.classList.toggle('sidebar-collapsed');
-          
+
           // Salvar estado no localStorage
           const isNowCollapsed = sidebar.classList.contains('sidebar-collapsed');
           localStorage.setItem('sidebar-collapsed', isNowCollapsed.toString());
         }
-        
+
         // Verificar se há estado salvo no localStorage
         const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
         if (isCollapsed) {
           sidebar.classList.add('sidebar-collapsed');
         }
-        
+
         // Event listeners para sidebar
         toggleButton.addEventListener('click', toggleSidebar);
         titleButton.addEventListener('click', toggleSidebar);
@@ -302,7 +302,7 @@ const getUrl = (path: string) => {
         function toggleCategory(categoryName) {
           const categoryDiv = document.querySelector(`[data-category="${categoryName}"]`).parentElement;
           const isCollapsed = categoryDiv.classList.contains('category-collapsed');
-          
+
           if (isCollapsed) {
             categoryDiv.classList.remove('category-collapsed');
             localStorage.setItem(`category-${categoryName}-collapsed`, 'false');
@@ -315,13 +315,13 @@ const getUrl = (path: string) => {
         // Adicionar event listeners para todos os toggles de categoria
         document.querySelectorAll('.category-toggle').forEach(toggle => {
           const categoryName = toggle.getAttribute('data-category');
-          
+
           // Verificar estado salvo no localStorage
           const isCollapsed = localStorage.getItem(`category-${categoryName}-collapsed`) === 'true';
           if (isCollapsed) {
             toggle.parentElement.classList.add('category-collapsed');
           }
-          
+
           // Adicionar event listener
           toggle.addEventListener('click', () => toggleCategory(categoryName));
         });

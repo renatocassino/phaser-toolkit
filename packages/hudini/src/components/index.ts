@@ -2,6 +2,7 @@ export * from './badge';
 export * from './card';
 export * from './circular-progress';
 export * from './container-interactive';
+export * from './dock';
 export * from './icon-button';
 export * from './linear-progress';
 export * from './panel';
